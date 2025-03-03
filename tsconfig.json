@@ -15,6 +15,7 @@
     "incremental": true,
     "outDir": "./bin",
     "rootDir": "/",
+    "baseUrl": "/",
     "plugins": [
       {
         "name": "next"
