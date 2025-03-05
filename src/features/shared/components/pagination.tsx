@@ -65,7 +65,7 @@ export function DynamicPagination({ totalPages }: DynamicPaginationProps) {
     const params = new URLSearchParams(searchParams.toString());
     params.set("page", newPage.toString());
 
-    router.push(`?${params.toString()}`, { scroll: false }); // Update query without scrolling
+    router.push(`?${params.toString()}`, { scroll: false });
   };
 
   const pageNumbers = getPageNumbers();
