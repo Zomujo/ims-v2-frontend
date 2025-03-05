@@ -14,15 +14,17 @@
     "jsx": "preserve",
     "incremental": true,
     "outDir": "./bin",
-    "rootDir": "/",
-    "baseUrl": "/",
+    "rootDir": "./",
+    "baseUrl": "",
     "plugins": [
       {
         "name": "next"
       }
     ],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@features/*": ["./src/features/*"],
+      "@public/*": ["./public/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
