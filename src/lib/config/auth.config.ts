@@ -49,15 +49,11 @@ export const authOptions = {
       if (token) {
         session.user = { ...session.user, ...token };
       }
-      console.log("session>>>", session);
       return session;
     },
   },
   logger: {
     error: console.error,
-    debug(code, metadata) {
-      console.log(code, metadata);
-    },
   },
 } satisfies NextAuthOptions;
 

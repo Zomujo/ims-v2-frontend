@@ -25,7 +25,6 @@ const fetchApi = async <T>({
   headers,
 }: FetchApi): Promise<T> => {
   const fetchUrl = `${ENV_VARIABLES.IMS_API_ENPOINT}${url}`;
-  console.log("fetchUrl>>>", fetchUrl);
   const response = await fetch(fetchUrl, {
     method,
     headers: {

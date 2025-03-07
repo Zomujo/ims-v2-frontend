@@ -14,10 +14,8 @@ export const authLoginAction = async ({
       method: "POST",
       body: JSON.stringify({ email, password }),
     });
-    console.log("res>>>", res);
     return res.data;
   } catch (error) {
-    console.log("error>>>", error);
     return null;
   }
 };
