@@ -1,18 +1,14 @@
+"use client";
 import { cn } from "@/lib/utils";
 import { ButtonLink } from "../shared/components/button-link";
 import { Badge } from "../ui/badge";
-import React from "react";
-
-export function LoginForm() {
-  return <div className="bg-blue w-2/3 text-8xl">Login</div>;
-}
+import { AuthFormHeadingProps, AuthHeaderProps } from "./auth.types";
 
 export function AuthHeader({
   btnLabel,
   btnHrf,
   ...props
-}: Readonly<{ btnLabel: string; btnHrf: string }> &
-  React.HTMLAttributes<HTMLDivElement>) {
+}: Readonly<AuthHeaderProps>) {
   return (
     <div className={cn("flex items-center justify-between", props.className)}>
       <div className="flex items-center gap-2">
@@ -21,9 +17,22 @@ export function AuthHeader({
           BETA
         </Badge>
       </div>
-      <ButtonLink href={btnHrf} variant="secondary">
+      <ButtonLink className="" href={btnHrf} variant="secondary">
         {btnLabel}
       </ButtonLink>
     </div>
+  );
+}
+
+export function AuthFormHeading({
+  title,
+  description,
+  ...props
+}: Readonly<AuthFormHeadingProps>) {
+  return (
+    <section className={cn("mt-[20%] flex flex-col gap-4", props.className)}>
+      <h2 className="text-2xl font-semibold md:text-4xl">{title}</h2>
+      <p className="text-muted-foreground text-lg">{description}</p>
+    </section>
   );
 }

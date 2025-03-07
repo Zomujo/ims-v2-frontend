@@ -118,6 +118,8 @@
   --color-ims-red-200: oklch(71.46% 0.1787 25.76);
   --color-ims-red-300: oklch(71.46% 0.1787 25.76);
   --color-neutral-100: oklch(96.83% 0.0069 247.9);
+  --color-ims-blue-300: oklch(53.75% 0.2114 269.63);
+  --color-ims-blue-200: oklch(50.75% 0.2114 269.63);
 }
 
 @layer base {

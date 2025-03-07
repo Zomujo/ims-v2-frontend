@@ -1,11 +1,8 @@
 export const getEnv = (key: string) => {
-  const value = process.env[key];
-  if (typeof value === "undefined") {
-    throw new Error(`Missing env key: ${key}`);
-  }
-  return value;
+  return process.env[key];
 };
 
 export const ENV_VARIABLES = {
   IMS_API_ENPOINT: getEnv("IMS_API_URL"),
+  NEXT_AUTH_SECRET: getEnv("NEXT_AUTH_SECRET"),
 };
