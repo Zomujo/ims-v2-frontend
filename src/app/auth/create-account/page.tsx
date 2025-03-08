@@ -1,21 +1,20 @@
 import { AuthFormHeading, AuthHeader } from "@/features/auth/auth-components";
-import { LoginForm } from "@/features/auth/auth-login";
 import { AUTH_ROUTES } from "@/lib/constant";
 
-export default function Login() {
+export default function CreateAccount() {
   return (
     <section className="flex flex-col items-center pt-6">
       <div className="flex w-[90%] flex-1 flex-col sm:w-[65%]">
         <AuthHeader
-          btnLabel="Super admin? Login"
-          btnHrf={AUTH_ROUTES.CREATE_ACCOUNT}
+          btnLabel="Already have an account? Login"
+          btnHrf={AUTH_ROUTES.LOG_IN}
           className="flex"
         />
         <AuthFormHeading
-          title="Welcome back!"
-          description="Provide this information from your healthcare facility to get started."
+          title="Get started"
+          description="Complete your details to get started."
         />
-        <LoginForm />
+        {/* <CreateAccountForm /> */}
       </div>
     </section>
   );

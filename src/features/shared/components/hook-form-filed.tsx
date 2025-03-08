@@ -28,7 +28,7 @@ export default function HookFormField({
       control={formControl}
       name={name}
       render={(field) => (
-        <FormItem className={cn("", className)}>
+        <FormItem className={cn("gap-3", className)}>
           <FormLabel>{label}</FormLabel>
           <FormControl>{renderInput(field)}</FormControl>
           <FormMessage />

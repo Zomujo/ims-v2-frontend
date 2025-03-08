@@ -1,14 +1,18 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { Control } from "react-hook-form";
 import { z } from "zod";
 import HookFormField from "../shared/components/hook-form-filed";
 import { ImsButton } from "../shared/components/ims-button";
 import useHookForm from "../shared/hooks/use-hook-form";
-import { Form } from "../ui/form";
 import { Input } from "../ui/input";
+import { AuthForm } from "./auth-components-client";
 import { loginSchema } from "./auth.schemas";
-import { handleSignIn } from "./auth.utils";
+import { handleAuth } from "./auth.utils";
+import { AUTH_OPTIONS_CONSTANTS } from "@/lib/config/auth.config";
+import { AUTH_ROUTES, PAGE_ROUTES } from "@/lib/constant";
 
 export function LoginForm() {
   const router = useRouter();
@@ -20,50 +24,85 @@ export function LoginForm() {
     },
   });
 
+  const handleSubmitFn = async (data: unknown) => {
+    await handleAuth({
+      credentials: data as z.infer<typeof loginSchema>,
+      routeTo: router.push,
+      options: {
+        authId: AUTH_OPTIONS_CONSTANTS.EMAIL_PASSWORD,
+        route: PAGE_ROUTES.DASHBOARD,
+        loadingMsg: "Logging in...",
+        successMsg: "Logged in successfully",
+        errorMsg: "Failed to login with provided credentials",
+      },
+    });
+  };
+
   return (
-    <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit((data) =>
-          handleSignIn(data as z.infer<typeof loginSchema>, router.push),
+    <AuthForm
+      form={form}
+      handleAuthSubmit={handleSubmitFn}
+      RenderActions={
+        <AuthLoginActions isSubmitting={form.formState.isSubmitting} />
+      }
+      RenderInputs={<AuthLoginInputs control={form.control} />}
+    />
+  );
+}
+
+function AuthLoginInputs({ control }: Readonly<{ control: Control }>) {
+  return (
+    <>
+      <HookFormField
+        formControl={control}
+        name="email"
+        label="Email"
+        renderInput={({ field }) => (
+          <Input
+            {...field}
+            className="focus-visible:ring-ims-blue-300 bg-white"
+            type="email"
+            placeholder="Email"
+          />
         )}
-        className="flex flex-col gap-7 pt-10"
+      />
+      <HookFormField
+        formControl={control}
+        name="password"
+        label="Password"
+        renderInput={({ field }) => (
+          <Input
+            {...field}
+            className="focus-visible:ring-ims-blue-300 bg-white"
+            type="password"
+            placeholder="Password"
+          />
+        )}
+      />
+    </>
+  );
+}
+
+function AuthLoginActions({
+  isSubmitting,
+}: Readonly<{ isSubmitting: boolean }>) {
+  return (
+    <>
+      <ImsButton
+        isLoading={isSubmitting}
+        isLoadingLabel="Logging in..."
+        variant="ghost"
+        className="bg-ims-blue-300 hover:bg-ims-blue-200 dark:bg-ims-blue-300 dark:hover:bg-ims-blue-300/80 order-last h-12 cursor-pointer justify-self-end text-white hover:text-white md:order-none"
+        type="submit"
       >
-        <HookFormField
-          formControl={form.control}
-          name="email"
-          label="Email"
-          renderInput={({ field }) => (
-            <Input
-              {...field}
-              className="focus-visible:ring-ims-blue-300 bg-white"
-              type="email"
-              placeholder="Email"
-            />
-          )}
-        />
-        <HookFormField
-          formControl={form.control}
-          name="password"
-          label="Password"
-          renderInput={({ field }) => (
-            <Input
-              {...field}
-              className="focus-visible:ring-ims-blue-300 bg-white"
-              type="password"
-              placeholder="Password"
-            />
-          )}
-        />
-        <ImsButton
-          isLoading={form.formState.isSubmitting}
-          isLoadingLabel="Logging in..."
-          variant="ghost"
-          className="bg-ims-blue-300 hover:bg-ims-blue-200 dark:bg-ims-blue-300 dark:hover:bg-ims-blue-300/80 h-12 cursor-pointer text-white hover:text-white"
-          type="submit"
-        >
-          Submit
-        </ImsButton>
-      </form>
-    </Form>
+        Submit
+      </ImsButton>
+      <Link
+        href={AUTH_ROUTES.FORGOT_PASSWORD}
+        className="text-center font-medium underline"
+      >
+        Forgot password?
+      </Link>
+    </>
   );
 }

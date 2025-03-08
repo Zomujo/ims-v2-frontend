@@ -10,6 +10,10 @@ import { NextAuthOptions, getServerSession } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { ENV_VARIABLES } from "./env.config";
 
+export const AUTH_OPTIONS_CONSTANTS = {
+  EMAIL_PASSWORD: "email-password",
+};
+
 export const authOptions = {
   pages: {
     signIn: "/auth/login",
