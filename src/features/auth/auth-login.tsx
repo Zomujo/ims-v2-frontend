@@ -1,5 +1,7 @@
 "use client";
 
+import { AUTH_OPTIONS_CONSTANTS } from "@/lib/config/auth.config";
+import { AUTH_ROUTES, PAGE_ROUTES } from "@/lib/constant";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Control } from "react-hook-form";
@@ -8,11 +10,9 @@ import HookFormField from "../shared/components/hook-form-filed";
 import { ImsButton } from "../shared/components/ims-button";
 import useHookForm from "../shared/hooks/use-hook-form";
 import { Input } from "../ui/input";
-import { AuthForm } from "./auth-components-client";
+import { AuthForm, RenderPasswordInput } from "./auth-components-client";
 import { loginSchema } from "./auth.schemas";
 import { handleAuth } from "./auth.utils";
-import { AUTH_OPTIONS_CONSTANTS } from "@/lib/config/auth.config";
-import { AUTH_ROUTES, PAGE_ROUTES } from "@/lib/constant";
 
 export function LoginForm() {
   const router = useRouter();
@@ -70,14 +70,7 @@ function AuthLoginInputs({ control }: Readonly<{ control: Control }>) {
         formControl={control}
         name="password"
         label="Password"
-        renderInput={({ field }) => (
-          <Input
-            {...field}
-            className="focus-visible:ring-ims-blue-300 bg-white"
-            type="password"
-            placeholder="Password"
-          />
-        )}
+        renderInput={(inputSates) => <RenderPasswordInput {...inputSates} />}
       />
     </>
   );
@@ -99,7 +92,7 @@ function AuthLoginActions({
       </ImsButton>
       <Link
         href={AUTH_ROUTES.FORGOT_PASSWORD}
-        className="text-center font-medium underline"
+        className="text-center text-sm font-medium underline"
       >
         Forgot password?
       </Link>

@@ -1,9 +1,12 @@
 "use client";
 
+import { EyeOffIcon, LucideEye } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { Form } from "../ui/form";
-import { AuthFormProps } from "./auth.types";
+import { useState } from "react";
 import { Button } from "../ui/button";
+import { Form } from "../ui/form";
+import { Input } from "../ui/input";
+import { AuthFormProps, RenderPasswordInputProps } from "./auth.types";
 
 export function AuthForm({
   form,
@@ -20,7 +23,7 @@ export function AuthForm({
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(handleSubmitFn)}
-        className="flex flex-1 flex-col justify-between pt-10 md:justify-normal md:gap-y-15"
+        className="flex flex-1 flex-col justify-between gap-y-15 pt-10 md:justify-normal md:gap-y-15"
       >
         <section className="space-y-8">{RenderInputs}</section>
         <section className="flex flex-col gap-y-4">{RenderActions}</section>
@@ -35,5 +38,35 @@ export function GobackButton() {
     <Button type="button" onClick={() => router.back()} variant="secondary">
       Go back
     </Button>
+  );
+}
+
+export function RenderPasswordInput({
+  field,
+}: Readonly<RenderPasswordInputProps>) {
+  const [showPassword, setShowPassword] = useState(false);
+  const handleShowPassword = () => setShowPassword((prev) => !prev);
+  return (
+    <div className="relative">
+      <Input
+        {...field}
+        className="focus-visible:ring-ims-blue-300 bg-white"
+        type={showPassword ? "text" : "password"}
+        placeholder="Password"
+      />
+      {showPassword ? (
+        <LucideEye
+          size={20}
+          className="absolute top-1/2 right-4 -translate-y-1/2 stroke-neutral-400"
+          onClick={handleShowPassword}
+        />
+      ) : (
+        <EyeOffIcon
+          size={20}
+          className="absolute top-1/2 right-4 -translate-y-1/2 stroke-neutral-400"
+          onClick={handleShowPassword}
+        />
+      )}
+    </div>
   );
 }

@@ -36,7 +36,7 @@ export function AuthFormHeading({
   return (
     <section className={cn("mt-[20%] flex flex-col gap-y-3", props.className)}>
       <h2 className="text-2xl font-semibold md:text-4xl">{title}</h2>
-      <p className="text-muted-foreground text-sm md:text-lg">{description}</p>
+      <p className="text-sm text-gray-500">{description}</p>
     </section>
   );
 }

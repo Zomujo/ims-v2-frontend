@@ -34,3 +34,14 @@ export const handleAuth = async ({
     routeTo(authRes.url);
   }
 };
+
+export const getFormDefaultValues = (
+  inputs: Readonly<Record<string, string>[]>,
+) =>
+  inputs.reduce(
+    (acc, input) => {
+      acc[input.name] = "";
+      return acc;
+    },
+    {} as Record<string, string>,
+  );

@@ -1,6 +1,6 @@
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
-import { ReactElement } from "react";
-import { UseFormReturn } from "react-hook-form";
+import { ComponentProps, ReactElement } from "react";
+import { ControllerProps, FieldValues, UseFormReturn } from "react-hook-form";
 
 export type AuthFormHeadingProps = {
   title: string;
@@ -24,3 +24,7 @@ export type AuthFormProps = {
   RenderInputs: ReactElement;
   RenderActions: ReactElement;
 };
+
+export type RenderPasswordInputProps = ComponentProps<
+  ControllerProps<FieldValues>["render"]
+>;
