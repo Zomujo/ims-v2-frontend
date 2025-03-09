@@ -1,4 +1,5 @@
 import "next-auth";
+import "next-auth/jwt";
 import { AuthIMSUser } from "./auth-action.types";
 
 declare module "next-auth" {
@@ -10,6 +11,12 @@ declare module "next-auth" {
   }
 
   interface User extends AuthIMSUser {
+    id: string;
+  }
+}
+
+declare module "next-auth/jwt" {
+  interface JWT extends AuthIMSUser {
     id: string;
   }
 }

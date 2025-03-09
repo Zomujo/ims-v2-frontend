@@ -45,3 +45,11 @@ export const getFormDefaultValues = (
     },
     {} as Record<string, string>,
   );
+
+export const isTokenExpired = (timeToCompare: string) => {
+  const currentDate = new Date().getTime();
+  const formatTimeToCompare = new Date(timeToCompare).getTime();
+  const currentTimeStampInSec = Math.floor(currentDate / 1000);
+  const timeToCompareInSec = Math.floor(formatTimeToCompare / 1000);
+  return currentTimeStampInSec > timeToCompareInSec;
+};

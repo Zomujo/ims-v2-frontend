@@ -1,6 +1,9 @@
 /* eslint-disable no-param-reassign */
 
-import { authLoginAction } from "@/features/shared/actions/auth.action";
+import {
+  authLoginAction,
+  authRefreshTokenAction,
+} from "@/features/shared/actions/auth.action";
 import {
   GetServerSidePropsContext,
   NextApiRequest,
@@ -9,6 +12,8 @@ import {
 import { NextAuthOptions, getServerSession } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { ENV_VARIABLES } from "./env.config";
+import { isTokenExpired } from "@/features/auth/auth.utils";
+import { JWT } from "next-auth/jwt";
 
 export const AUTH_OPTIONS_CONSTANTS = {
   EMAIL_PASSWORD: "email-password",
@@ -47,6 +52,10 @@ export const authOptions = {
       if (user) {
         token = { ...user };
       }
+
+      if (!user && isTokenExpired(token.expiresAt)) {
+        token = await refresToken(token);
+      }
       return token;
     },
     async session({ session, token }) {
@@ -69,3 +78,15 @@ export function imsServerSession(
 ) {
   return getServerSession(...args, authOptions);
 }
+
+const refresToken = async (tokenObj: JWT) => {
+  const refreshToken = await authRefreshTokenAction(
+    tokenObj.tokens.refreshToken,
+  );
+
+  const newToken = refreshToken
+    ? { ...tokenObj, tokens: { ...tokenObj.tokens, ...refreshToken } }
+    : tokenObj;
+
+  return newToken;
+};

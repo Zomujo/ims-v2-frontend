@@ -5,6 +5,24 @@ export type AuthLoginActionCredentials = {
   password: string;
 };
 
+export type AuthCreateAccountActionCredentials = {
+  fullName: string;
+  email: string;
+  password: string;
+  facilityName: string;
+  facilityPassword: string;
+};
+
+export type AuthCreateAccountActionApiBody = {
+  fullName: string;
+  email: string;
+  facility: {
+    name: string;
+    password: string;
+  };
+  password: string;
+};
+
 export type AuthIMSUser = {
   id: string;
   fullName: string;
@@ -18,6 +36,7 @@ export type AuthIMSUser = {
     accessToken: string;
     refreshToken: string;
   };
+  expiresAt: string;
 };
 
 export type AuthLoginActionResponse = Pick<
