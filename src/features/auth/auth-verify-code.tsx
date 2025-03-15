@@ -65,7 +65,7 @@ function AuthLoginInputs({ control }: Readonly<{ control: Control }>) {
                   key={index}
                   index={index}
                   defaultValue={"O"}
-                  className="h-17 w-[40%] text-3xl border rounded-2xl!"
+                  className="h-17 w-[40%] text-2xl border rounded-2xl!"
                 />
             ))
             }
