@@ -1,8 +1,8 @@
 import { AuthFormHeading, AuthHeader } from "@/features/auth/auth-components";
-import { CreateAccountForm } from "@/features/auth/auth-create-account";
+import { VerifyCodeForm } from "@/features/auth/auth-verify-code";
 import { AUTH_PAGE_ROUTES } from "@/lib/constant";
 
-export default function CreateAccount() {
+export default async function VerifyCode() {
   return (
     <section className="flex flex-col items-center overflow-y-auto pt-6">
       <div className="flex w-[90%] flex-1 flex-col sm:w-[65%]">
@@ -16,7 +16,7 @@ export default function CreateAccount() {
           description="Complete your details to get started."
           className="mt-[12%]"
         />
-        <CreateAccountForm />
+        <VerifyCodeForm />
       </div>
     </section>
   );

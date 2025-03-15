@@ -17,7 +17,14 @@ export const authCreateAccountInputsData = [
     type: "password",
     label: "Password",
     name: "password",
-    placeholder: "",
+    placeholder: "Password",
+    className: "",
+  },
+  {
+    type: "password",
+    label: "Confirm Password",
+    name: "confirmPassword",
+    placeholder: "Confirm Password",
     className: "",
   },
   {

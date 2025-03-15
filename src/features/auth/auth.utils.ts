@@ -4,10 +4,10 @@ import { toast } from "sonner";
 
 type HandleAuthFnProps = {
   credentials: Record<string, unknown>;
-  routeTo: AppRouterInstance["push"];
+  routeFn: AppRouterInstance["push"];
   options: {
     authId: string;
-    route: string;
+    routeTo: string;
     loadingMsg?: string;
     successMsg?: string;
     errorMsg?: string;
@@ -16,12 +16,12 @@ type HandleAuthFnProps = {
 
 export const handleAuth = async ({
   credentials,
-  routeTo,
-  options: { authId, route, loadingMsg, successMsg, errorMsg },
+  routeFn,
+  options: { authId, routeTo, loadingMsg, successMsg, errorMsg },
 }: HandleAuthFnProps) => {
   const res = signIn(authId, {
     ...credentials,
-    callbackUrl: route,
+    callbackUrl: routeTo,
     redirect: false,
   });
   toast.promise(res, {
@@ -31,7 +31,7 @@ export const handleAuth = async ({
   });
   const authRes = await res;
   if (authRes?.ok && authRes.url) {
-    routeTo(authRes.url);
+    routeFn(authRes.url);
   }
 };
 

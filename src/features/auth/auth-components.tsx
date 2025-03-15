@@ -6,10 +6,9 @@ import { AuthFormHeadingProps, AuthHeaderProps } from "./auth.types";
 export function AuthHeader({
   btnLabel,
   btnHrf,
-  hideButton,
   children,
   ...props
-}: Readonly<AuthHeaderProps>) {
+}: Readonly<Partial<AuthHeaderProps>>) {
   return (
     <div className={cn("flex items-center justify-between", props.className)}>
       <div className="flex items-center gap-2">
@@ -18,7 +17,7 @@ export function AuthHeader({
           BETA
         </Badge>
       </div>
-      {!hideButton && (
+      {btnHrf && (
         <ButtonLink className="" href={btnHrf} variant="secondary">
           {btnLabel}
         </ButtonLink>

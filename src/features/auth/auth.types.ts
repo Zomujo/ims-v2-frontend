@@ -11,7 +11,6 @@ export type AuthFormHeadingProps = {
 export type AuthHeaderProps = {
   btnLabel: string;
   btnHrf: string;
-  hideButton?: boolean;
   hideBadge?: boolean;
 } & React.HTMLAttributes<HTMLDivElement>;
 
@@ -20,7 +19,7 @@ export type AuthFormProps = {
   handleAuthSubmit: (
     credentials: unknown,
     routerFn: AppRouterInstance["push"],
-  ) => void;
+  ) => Promise<unknown>;
   RenderInputs: ReactElement;
   RenderActions: ReactElement;
 };

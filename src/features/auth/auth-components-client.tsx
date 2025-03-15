@@ -7,6 +7,7 @@ import { Button } from "../ui/button";
 import { Form } from "../ui/form";
 import { Input } from "../ui/input";
 import { AuthFormProps, RenderPasswordInputProps } from "./auth.types";
+import { signOut } from "next-auth/react";
 
 export function AuthForm({
   form,
@@ -15,8 +16,8 @@ export function AuthForm({
   RenderInputs,
 }: Readonly<AuthFormProps>) {
   const router = useRouter();
-  const handleSubmitFn = (data: unknown) => {
-    handleAuthSubmit(data, router.push);
+  const handleSubmitFn = async (data: unknown) => {
+    await handleAuthSubmit(data, router.push);
   };
 
   return (
@@ -41,11 +42,20 @@ export function GobackButton() {
   );
 }
 
+export function LogOutButton() {
+  return (
+    <Button type="button" onClick={() => signOut()} variant="secondary">
+      Log Out
+    </Button>
+  );
+}
+
 export function RenderPasswordInput({
   field,
 }: Readonly<RenderPasswordInputProps>) {
   const [showPassword, setShowPassword] = useState(false);
   const handleShowPassword = () => setShowPassword((prev) => !prev);
+
   return (
     <div className="relative">
       <Input

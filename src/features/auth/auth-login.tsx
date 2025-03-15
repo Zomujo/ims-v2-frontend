@@ -1,7 +1,7 @@
 "use client";
 
 import { AUTH_OPTIONS_CONSTANTS } from "@/lib/config/auth.config";
-import { AUTH_ROUTES, PAGE_ROUTES } from "@/lib/constant";
+import { AUTH_PAGE_ROUTES, PAGE_ROUTES } from "@/lib/constant";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Control } from "react-hook-form";
@@ -24,13 +24,13 @@ export function LoginForm() {
     },
   });
 
-  const handleSubmitFn = async (data: unknown) => {
-    await handleAuth({
+  const handleSubmitFn = (data: unknown) => {
+    return handleAuth({
       credentials: data as z.infer<typeof loginSchema>,
-      routeTo: router.push,
+      routeFn: router.push,
       options: {
         authId: AUTH_OPTIONS_CONSTANTS.EMAIL_PASSWORD,
-        route: PAGE_ROUTES.DASHBOARD,
+        routeTo: `${PAGE_ROUTES.DASHBOARD}?auth=login`,
         loadingMsg: "Logging in...",
         successMsg: "Logged in successfully",
         errorMsg: "Failed to login with provided credentials",
@@ -88,10 +88,10 @@ function AuthLoginActions({
         className="bg-ims-blue-300 hover:bg-ims-blue-200 dark:bg-ims-blue-300 dark:hover:bg-ims-blue-300/80 order-last h-12 cursor-pointer justify-self-end text-white hover:text-white md:order-none"
         type="submit"
       >
-        Submit
+        Log in
       </ImsButton>
       <Link
-        href={AUTH_ROUTES.FORGOT_PASSWORD}
+        href={AUTH_PAGE_ROUTES.FORGOT_PASSWORD}
         className="text-center text-sm font-medium underline"
       >
         Forgot password?

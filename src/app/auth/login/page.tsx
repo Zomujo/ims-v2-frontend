@@ -1,6 +1,6 @@
 import { AuthFormHeading, AuthHeader } from "@/features/auth/auth-components";
 import { LoginForm } from "@/features/auth/auth-login";
-import { AUTH_ROUTES } from "@/lib/constant";
+import { AUTH_PAGE_ROUTES } from "@/lib/constant";
 
 export default function Login() {
   return (
@@ -8,7 +8,7 @@ export default function Login() {
       <div className="flex w-[90%] flex-1 flex-col sm:w-[65%]">
         <AuthHeader
           btnLabel="Super admin? Login"
-          btnHrf={AUTH_ROUTES.CREATE_ACCOUNT}
+          btnHrf={AUTH_PAGE_ROUTES.CREATE_ACCOUNT}
           className="flex"
         />
         <AuthFormHeading

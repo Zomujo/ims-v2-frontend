@@ -1,5 +1,6 @@
 import { ENV_VARIABLES } from "@/lib/config/env.config";
 import { FetchApi, IMSApiErrorResponse } from "../types/ims-api-action.types";
+import { imsServerSession } from "@/lib/config/auth.config";
 
 export const imsApiWithAuth = async <T>({
   url,
@@ -7,7 +8,17 @@ export const imsApiWithAuth = async <T>({
   body,
   headers,
 }: FetchApi) => {
-  return await fetchApi<T>({ url, method, body, headers });
+  const session = await imsServerSession();
+  const accessToken = session?.user?.tokens?.accessToken;
+  if (!accessToken) {
+    throw new Error("No access token");
+  }
+  return await fetchApi<T>({
+    url,
+    method,
+    body,
+    headers: { ...headers, Authorization: `Bearer ${accessToken}` },
+  });
 };
 export const imsApiWithoutAuth = async <T>({
   url,

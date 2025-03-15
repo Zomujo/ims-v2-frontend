@@ -1,7 +1,7 @@
 "use client";
 
 import { AUTH_OPTIONS_CONSTANTS } from "@/lib/config/auth.config";
-import { AUTH_ROUTES, PAGE_ROUTES } from "@/lib/constant";
+import { AUTH_PAGE_ROUTES, PAGE_ROUTES } from "@/lib/constant";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Control } from "react-hook-form";
@@ -23,15 +23,15 @@ export function CreateAccountForm() {
   });
 
   const handleSubmitFn = async (data: unknown) => {
-    await handleAuth({
+    return handleAuth({
       credentials: data as z.infer<typeof loginSchema>,
-      routeTo: router.push,
+      routeFn: router.push,
       options: {
         authId: AUTH_OPTIONS_CONSTANTS.EMAIL_PASSWORD,
-        route: PAGE_ROUTES.DASHBOARD,
-        loadingMsg: "Logging in...",
-        successMsg: "Logged in successfully",
-        errorMsg: "Failed to login with provided credentials",
+        routeTo: PAGE_ROUTES.DASHBOARD,
+        loadingMsg: "Creating account...",
+        successMsg: "Account created successfully",
+        errorMsg: "Failed to create account with provided credentials",
       },
     });
   };
@@ -98,19 +98,19 @@ function AuthCreateAccountActions({
         className="bg-ims-blue-300 hover:bg-ims-blue-200 dark:bg-ims-blue-300 dark:hover:bg-ims-blue-300/80 h-12 cursor-pointer justify-self-end text-white hover:text-white md:order-none"
         type="submit"
       >
-        Submit
+        Create Account
       </ImsButton>
       <p className="text-sm text-gray-500">
         By creating an account, you agree to Stealth{" "}
         <Link
-          href={AUTH_ROUTES.FORGOT_PASSWORD}
+          href={AUTH_PAGE_ROUTES.FORGOT_PASSWORD}
           className="text-center font-medium underline"
         >
           Terms of Service
         </Link>{" "}
         &{" "}
         <Link
-          href={AUTH_ROUTES.FORGOT_PASSWORD}
+          href={AUTH_PAGE_ROUTES.FORGOT_PASSWORD}
           className="text-center font-medium underline"
         >
           Privacy Policy

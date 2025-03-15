@@ -23,10 +23,30 @@ export type AuthCreateAccountActionApiBody = {
   password: string;
 };
 
+export enum UserStatus {
+  PENDING = "Pending",
+  ACCEPTED = "Accepted",
+  DECLINED = "Declined",
+  ACTIVE = "Active",
+  INACTIVE = "Inactive",
+}
+
+export type AuthActionProps = {
+  fullName: string;
+  email: string;
+  password: string;
+  facilityName: string;
+  facilityPassword: string;
+  newPassword: string;
+  refreshToken: string;
+  code: number;
+};
+
 export type AuthIMSUser = {
   id: string;
   fullName: string;
   email: string;
+  status: UserStatus;
   phoneNumber: string;
   facilityId: string;
   departmentId: string;
@@ -43,3 +63,14 @@ export type AuthLoginActionResponse = Pick<
   IMSApiActionResponse<AuthIMSUser>,
   "data"
 >;
+
+export type AuthForgotPasswordActionApiResponse = {
+  message: string;
+  statusCode: number;
+};
+
+export type AuthApiStandardResponse = {
+  message: string;
+  statusCode: number;
+  error: string;
+};
