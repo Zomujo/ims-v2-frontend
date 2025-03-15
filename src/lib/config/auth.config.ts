@@ -1,75 +1,51 @@
-// import {
-//     signInAction
-// } from "@/server-actions/auth-actions";
+/* eslint-disable no-param-reassign */
+
+import { isTokenExpired } from "@/features/auth/auth.utils";
+import { authRefreshTokenAction } from "@/features/shared/actions/auth.action";
 import {
   GetServerSidePropsContext,
   NextApiRequest,
   NextApiResponse,
 } from "next";
 import { NextAuthOptions, getServerSession } from "next-auth";
+import { JWT } from "next-auth/jwt";
+import {
+  CreateAccountCredentialsProvider,
+  LoginCredentialsProvider,
+} from "./auth.providers";
+
+export const AUTH_OPTIONS_CONSTANTS = {
+  EMAIL_PASSWORD: "email-password",
+  CREATE_ACCOUNT: "create-account",
+  LOG_OUT: "log-out",
+};
 
 export const authOptions = {
   pages: {
     signIn: "/auth/login",
   },
-  providers: [
-    // CredentialsProvider({
-    //   name: "Credentials",
-    //   id: "email-password",
-    //   credentials: {
-    //     email: {
-    //       label: "Email",
-    //       type: "email",
-    //     },
-    //     password: {
-    //       label: "Password",
-    //       type: "password",
-    //     },
-    //   },
-    //   async authorize(credentials) {
-    //     if (!credentials) return null;
-    //     return {} as { email: string; password: string};
-    //   },
-    // }),
-  ],
-  //   callbacks: {
-  //     async jwt({ token, user }) {
-  //       if (user) {
-  //         token = user as unknown as Omit<SignInObject, "id">;
-  //       }
+  providers: [LoginCredentialsProvider(), CreateAccountCredentialsProvider()],
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token = { ...user };
+      }
 
-  //       if (!user && isTokenExpired(token.expireTime)) {
-  //         const newToken = await refreshTheToken(token.refreshToken);
-  //         token = { ...token, ...(newToken ?? {}) };
-  //       }
-  //       return token;
-  //     },
-  //     async signIn({ account, user }) {
-  //       if (account?.provider === "google") {
-  //         try {
-  //           const res = await signInWithGoogleAction({
-  //             email: user.email ?? "",
-  //             googleId: user.id,
-  //           });
-  //           if (!res) return false;
-  //           user.token = res?.token ?? "";
-  //           user.user = { ...user.user, ...res?.user };
-  //         } catch (error) {
-  //           console.log("error", error);
-  //           return false;
-  //         }
-  //       }
-  //       return true;
-  //     },
-  //     async session({ session, token }) {
-  //       if (token) {
-  //         session.user = { ...session.user, ...token.user };
-  //         session.token = token.token;
-  //         session.refreshToken = token.refreshToken;
-  //       }
-  //       return session;
-  //     },
-  //   },
+      if (!user && isTokenExpired(token.expiresAt)) {
+        token = await refresToken(token);
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (token) {
+        session.user = { ...session.user, ...token };
+      }
+      return session;
+    },
+  },
+  logger: {
+    error: console.error,
+  },
 } satisfies NextAuthOptions;
 
 export function imsServerSession(
@@ -80,3 +56,15 @@ export function imsServerSession(
 ) {
   return getServerSession(...args, authOptions);
 }
+
+const refresToken = async (tokenObj: JWT) => {
+  const refreshToken = await authRefreshTokenAction(
+    tokenObj.tokens.refreshToken,
+  );
+
+  const newToken = refreshToken
+    ? { ...tokenObj, tokens: { ...tokenObj.tokens, ...refreshToken } }
+    : ({} as JWT);
+
+  return newToken;
+};

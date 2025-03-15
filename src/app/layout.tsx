@@ -1,4 +1,4 @@
-import { Analytics } from "@vercel/analytics/react";
+import { Toaster } from "@/features/ui/sonner";
 import type { Metadata } from "next";
 import "./globals.css";
 
@@ -16,7 +16,7 @@ export default function RootLayout({
     <html lang="en">
       <body>
         {children}
-        <Analytics />
+        <Toaster position="top-right" />
       </body>
     </html>
   );

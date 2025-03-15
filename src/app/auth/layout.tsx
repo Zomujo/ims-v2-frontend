@@ -4,14 +4,14 @@ import { PropsWithChildren } from "react";
 
 export default function AuthLayout({ children }: Readonly<PropsWithChildren>) {
   return (
-    <section className="b grid h-dvh grid-cols-2 justify-center p-4">
+    <section className="grid h-dvh grid-cols-1 justify-center gap-x-10 bg-[#FCFCFC] p-4 md:grid-cols-2 dark:bg-[#1A1A1A]">
       {children}
       <Image
         src={authBgImage}
         width={6000}
         height={6000}
         alt="auth-bg"
-        className="h-full w-full rounded-2xl"
+        className="hidden h-full w-full rounded-2xl md:block"
       />
     </section>
   );

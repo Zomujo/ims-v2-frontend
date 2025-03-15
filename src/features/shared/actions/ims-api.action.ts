@@ -1,23 +1,32 @@
 import { ENV_VARIABLES } from "@/lib/config/env.config";
+import { FetchApi, IMSApiErrorResponse } from "../types/ims-api-action.types";
+import { imsServerSession } from "@/lib/config/auth.config";
 
-type FetchApi = {
-  url: string;
-  method?: RequestInit["method"];
-  body?: RequestInit["body"];
-  headers?: RequestInit["headers"];
+export const imsApiWithAuth = async <T>({
+  url,
+  method,
+  body,
+  headers,
+}: FetchApi) => {
+  const session = await imsServerSession();
+  const accessToken = session?.user?.tokens?.accessToken;
+  if (!accessToken) {
+    throw new Error("No access token");
+  }
+  return await fetchApi<T>({
+    url,
+    method,
+    body,
+    headers: { ...headers, Authorization: `Bearer ${accessToken}` },
+  });
 };
-
-export const imsApi = ({ url, method, body, headers }: FetchApi) => {
-  const fetchUrl = `${ENV_VARIABLES.IMS_API_ENPOINT}${url}`;
-
-  return {
-    apiWithAuth: async function <T>() {
-      return await fetchApi<T>({ url: fetchUrl, method, body, headers });
-    },
-    apiWithoutAuth: async function <T>() {
-      return await fetchApi<T>({ url, method, body, headers });
-    },
-  };
+export const imsApiWithoutAuth = async <T>({
+  url,
+  method,
+  body,
+  headers,
+}: FetchApi) => {
+  return await fetchApi<T>({ url, method, body, headers });
 };
 
 const fetchApi = async <T>({
@@ -33,11 +42,12 @@ const fetchApi = async <T>({
       "Content-Type": "application/json",
       ...headers,
     },
-    body: body ? JSON.stringify(body) : undefined,
+    body,
   });
 
   if (!response.ok) {
-    throw new Error(response.statusText);
+    const errorData = await response.json();
+    throw new Error(JSON.stringify(errorData as IMSApiErrorResponse));
   }
 
   return response.json();
