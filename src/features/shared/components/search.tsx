@@ -1,8 +1,8 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { Input } from "@/features/ui/input";
-import { Icon } from "@iconify/react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { SearchIcon } from "lucide-react";
 
 const Search = ({ placeholder = "Search" }: { placeholder?: string }) => {
   const [search, setSearch] = useState("");
@@ -22,7 +22,7 @@ const Search = ({ placeholder = "Search" }: { placeholder?: string }) => {
 
   return (
     <div className="flex h-auto w-full max-w-xl items-center justify-start gap-2 rounded-[10px] border-[1px] bg-[#F4F7FA] px-4 py-2">
-      <Icon icon="mynaui:search" className="text-2xl text-[#64748B]" />
+      <SearchIcon size={20} className="text-[#64748B]" />
 
       <Input
         type="text"

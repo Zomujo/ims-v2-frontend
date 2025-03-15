@@ -8,15 +8,17 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/features/ui/pagination";
+import { cn } from "@/lib/utils";
 
-import { useSearchParams } from "next/navigation";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 interface DynamicPaginationProps {
   totalPages: number;
 }
 
-export function DynamicPagination({ totalPages }: DynamicPaginationProps) {
+export function DynamicPagination({
+  totalPages,
+}: Readonly<DynamicPaginationProps>) {
   const searchParams = useSearchParams();
   const activePage = searchParams.get("page")
     ? +(searchParams.get("page") as string)
@@ -76,19 +78,18 @@ export function DynamicPagination({ totalPages }: DynamicPaginationProps) {
         <PaginationItem className="rounded-tl-[5px] rounded-bl-[5px] border-[1px] border-r-0">
           <PaginationPrevious
             onClick={() => onPageChange(Math.max(1, currentPage - 1))}
-            className={
-              currentPage === 1
-                ? "pointer-events-none opacity-50"
-                : "cursor-pointer"
-            }
+            className={cn({
+              "pointer-events-none opacity-50": currentPage === 1,
+              "cursor-pointer": currentPage !== 1,
+            })}
             aria-disabled={currentPage === 1}
           />
         </PaginationItem>
 
-        {pageNumbers.map((page, index) => {
+        {pageNumbers.map((page) => {
           if (page === "ellipsis-start" || page === "ellipsis-end") {
             return (
-              <PaginationItem key={`ellipsis-${index}`}>
+              <PaginationItem key={`ellipsis-${page}`}>
                 <PaginationEllipsis />
               </PaginationItem>
             );
@@ -99,11 +100,11 @@ export function DynamicPagination({ totalPages }: DynamicPaginationProps) {
               <PaginationLink
                 isActive={page === currentPage}
                 onClick={() => onPageChange(page as number)}
-                className={
-                  page !== currentPage
-                    ? "text-pagination-inactive cursor-pointer !rounded-none"
-                    : "!rounded-none bg-[#F9FAFB]"
-                }
+                className={cn({
+                  "text-pagination-inactive cursor-pointer !rounded-none":
+                    page !== currentPage,
+                  "!rounded-none bg-[#F9FAFB]": page === currentPage,
+                })}
               >
                 {page}
               </PaginationLink>
@@ -114,11 +115,10 @@ export function DynamicPagination({ totalPages }: DynamicPaginationProps) {
         <PaginationItem className="rounded-tr-[5px] rounded-br-[5px] border-[1px] border-l-0">
           <PaginationNext
             onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
-            className={
-              currentPage === totalPages
-                ? "pointer-events-none opacity-50"
-                : "cursor-pointer"
-            }
+            className={cn({
+              "pointer-events-none opacity-50": currentPage === totalPages,
+              "cursor-pointer": currentPage !== totalPages,
+            })}
             aria-disabled={currentPage === totalPages}
           />
         </PaginationItem>
