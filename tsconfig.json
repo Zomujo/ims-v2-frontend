@@ -14,7 +14,7 @@
     "jsx": "preserve",
     "incremental": true,
     "outDir": "./bin",
-    "rootDir": "/",
+    "rootDir": "./",
     "baseUrl": "",
     "plugins": [
       {
