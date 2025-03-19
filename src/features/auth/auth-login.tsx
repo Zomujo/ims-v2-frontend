@@ -30,7 +30,7 @@ export function LoginForm() {
       routeFn: router.push,
       options: {
         authId: AUTH_OPTIONS_CONSTANTS.EMAIL_PASSWORD,
-        routeTo: `${PAGE_ROUTES.DASHBOARD}?auth=login`,
+        routeTo: PAGE_ROUTES.DASHBOARD,
         loadingMsg: "Logging in...",
         successMsg: "Logged in successfully",
         errorMsg: "Failed to login with provided credentials",

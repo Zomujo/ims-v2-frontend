@@ -1,5 +1,6 @@
 /* eslint-disable */
 import type { NextConfig } from "next";
+import { redirect } from "next/dist/server/api-utils";
 
 const runtimeCaching = require("next-pwa/cache");
 const withPWA = require("next-pwa")({
@@ -15,6 +16,15 @@ const nextConfig: NextConfig = withPWA({
     dirs: ["src"],
     ignoreDuringBuilds: true,
   },
+  // rewrites: async () => {
+  //   return [
+  //     {
+  //       source: "/:path*",
+  //       destination: "/ims-entry/:path*",
+
+  //     },
+  //   ];
+  // },
 });
 
 export default nextConfig;
