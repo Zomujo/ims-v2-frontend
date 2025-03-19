@@ -6,7 +6,7 @@ export default async function Dashboard() {
   return (
     <div>
       <h1>Dashboard</h1>
-      <div>{JSON.stringify(session?.user)}</div>
+      <div>{JSON.stringify(session?.user?.permissions)}</div>
       <LogOutButton />
     </div>
   );
