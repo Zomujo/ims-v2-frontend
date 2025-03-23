@@ -1,8 +1,12 @@
-import { ReportIncidentButton } from "./header-layout-components";
+import {
+  NotificationButton,
+  UserProfileButton,
+} from "./header-layout-components-server";
+import { ReportIncidentButton } from "./header-layout-components-client";
 
 export function HeaderLayout() {
   return (
-    <header className="b flex h-25 items-center justify-end bg-white pr-6 text-white">
+    <header className="flex h-22 items-center justify-end bg-white pr-6">
       <HeaderLayoutUIActions />
     </header>
   );
@@ -10,8 +14,10 @@ export function HeaderLayout() {
 
 function HeaderLayoutUIActions() {
   return (
-    <div className="">
+    <div className="flex items-center gap-x-6">
       <ReportIncidentButton />
+      <NotificationButton />
+      <UserProfileButton />
     </div>
   );
 }

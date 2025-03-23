@@ -10,11 +10,18 @@ export function ButtonLink({
   href,
   variant,
   size,
+  endIcon,
+  startIcon,
   className,
   ...props
 }: Readonly<
   PropsWithChildren<
-    { href: Url; className?: string } & VariantProps<typeof buttonVariants>
+    {
+      href: Url;
+      className?: string;
+      startIcon?: React.ReactNode;
+      endIcon?: React.ReactNode;
+    } & VariantProps<typeof buttonVariants>
   >
 >) {
   return (
@@ -24,7 +31,9 @@ export function ButtonLink({
       href={href}
       {...props}
     >
+      {startIcon && <span>{startIcon}</span>}
       {children}
+      {endIcon && <span>{endIcon}</span>}
     </Link>
   );
 }

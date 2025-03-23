@@ -22,6 +22,7 @@ export type AuthFormProps = {
   ) => Promise<unknown>;
   RenderInputs: ReactElement;
   RenderActions: ReactElement;
+  className?: string;
 };
 
 export type RenderPasswordInputProps = ComponentProps<

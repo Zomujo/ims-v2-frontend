@@ -1,6 +1,5 @@
 import { AuthApiStandardResponse } from "@/features/shared/types/auth-action.types";
 import { clsx, type ClassValue } from "clsx";
-import { JWT } from "next-auth/jwt";
 import { toast } from "sonner";
 import { twMerge } from "tailwind-merge";
 
@@ -19,15 +18,18 @@ export const setLocalStorage = <T>(key: string, value: T): void => {
   window.localStorage.setItem(key, JSON.stringify(value));
 };
 
-export const getToken = ({ token }: { token: JWT | null }) => {
-  return !!token;
-};
-
 export const apiErrorResponse = (error: unknown) => {
   if (error instanceof Error) {
     return JSON.parse(error.message) as AuthApiStandardResponse;
   }
   return { message: "Something went wrong" };
+};
+
+export const getInitials = (fullName: string): string => {
+  const names = fullName?.split(" ");
+  const firstInitial = names[0]?.charAt(0) ?? "";
+  const lastInitial = names[names.length - 1]?.charAt(0) ?? "";
+  return (firstInitial + lastInitial).toUpperCase();
 };
 
 export const handleRequestState = ({

@@ -43,6 +43,9 @@ const fetchApi = async <T>({
       ...headers,
     },
     body,
+    next: {
+      tags: [url],
+    },
   });
 
   if (!response.ok) {

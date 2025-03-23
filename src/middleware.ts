@@ -2,10 +2,10 @@ import { getToken } from "next-auth/jwt";
 import { withAuth } from "next-auth/middleware";
 import { UserStatus } from "./features/shared/types/auth-action.types";
 import {
+  redirectUsersWithoutTokenBackToLogin,
   getUserStatusFromToken,
   redirectPendingUsers,
-  redirectUsersWithoutTokenBackToLogin,
-} from "./lib/config/middleware.config";
+} from "@/lib/utils/middleware.utils";
 
 export default withAuth(
   async function middleware(req) {

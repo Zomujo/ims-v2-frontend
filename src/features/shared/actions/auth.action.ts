@@ -7,8 +7,17 @@ import {
   AuthApiStandardResponse,
   AuthCreateAccountActionApiBody,
   AuthLoginActionResponse,
+  AuthUserProfileActionResponse,
 } from "../types/auth-action.types";
 import { imsApiWithAuth, imsApiWithoutAuth } from "./ims-api.action";
+
+export const authUserProfileAction = async () => {
+  const res = await imsApiWithAuth<AuthUserProfileActionResponse>({
+    url: API_ENDPOINTS.USER_PROFILE,
+    method: "GET",
+  });
+  return res?.data;
+};
 
 export const authLoginAction = async ({
   email,

@@ -1,6 +1,6 @@
 "use client";
 
-import { EyeOffIcon, LucideEye } from "lucide-react";
+import { EyeOffIcon, LogOutIcon, LucideEye } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "../ui/button";
@@ -8,12 +8,15 @@ import { Form } from "../ui/form";
 import { Input } from "../ui/input";
 import { AuthFormProps, RenderPasswordInputProps } from "./auth.types";
 import { signOut } from "next-auth/react";
+import { ImsButton } from "../shared/components/ims-button";
+import { cn } from "@/lib/utils";
 
 export function AuthForm({
   form,
   handleAuthSubmit,
   RenderActions,
   RenderInputs,
+  className,
 }: Readonly<AuthFormProps>) {
   const router = useRouter();
   const handleSubmitFn = async (data: unknown) => {
@@ -24,7 +27,10 @@ export function AuthForm({
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(handleSubmitFn)}
-        className="flex flex-1 flex-col justify-between gap-y-15 pt-10 md:justify-normal md:gap-y-15"
+        className={cn(
+          "flex flex-1 flex-col justify-between gap-y-15 pt-10 md:justify-normal md:gap-y-15",
+          className,
+        )}
       >
         <section className="space-y-8">{RenderInputs}</section>
         <section className="flex flex-col gap-y-4">{RenderActions}</section>
@@ -44,9 +50,14 @@ export function GobackButton() {
 
 export function LogOutButton() {
   return (
-    <Button type="button" onClick={() => signOut()} variant="secondary">
-      Log Out
-    </Button>
+    <ImsButton
+      onClick={() => signOut()}
+      startIcon={<LogOutIcon className="rotate-180" />}
+      variant="ghost"
+      className="flex justify-start rounded-none p-0 py-6 pl-3 text-red-500 hover:bg-red-500 hover:text-white"
+    >
+      Logout
+    </ImsButton>
   );
 }
 

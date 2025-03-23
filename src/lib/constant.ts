@@ -8,6 +8,12 @@ export const API_ENDPOINTS = {
     RESET_PASSWORD: "/auth/forgot-password/reset",
   },
   CHANGE_PASSWORD: "/auth/change-password",
+  USER_PROFILE: "/auth/user",
+  CHANGE_EMAIL: {
+    SEND_MAIL: "/auth/change-email/send-mail",
+    VERIFY_OTP: "/auth/change-email/validate-otp",
+  },
+  CHANGE_ACCOUNT_INFO: "/auth/",
 };
 
 export const AUTH_PAGE_ROUTES = {
@@ -20,4 +26,5 @@ export const AUTH_PAGE_ROUTES = {
 
 export const PAGE_ROUTES = {
   DASHBOARD: "/dashboard",
+  SETTINGS: "/settings",
 };
