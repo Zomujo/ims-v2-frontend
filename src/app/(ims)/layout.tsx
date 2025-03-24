@@ -2,8 +2,6 @@ import { HeaderLayout } from "@/features/layout/header/header-layout";
 import PageHeading from "@/features/shared/components/page-heading";
 import { PropsWithChildren } from "react";
 
-export const fetchCache = "default-cache";
-
 export default function EntryLayout({ children }: Readonly<PropsWithChildren>) {
   return (
     <>

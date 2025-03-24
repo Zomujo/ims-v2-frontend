@@ -1,6 +1,7 @@
 import { getInitials } from "@/lib/utils";
 import { ImsAvatar } from "../shared/components/ims-avatar";
 import { Badge } from "../ui/badge";
+import { SettingsEditAvatarForm } from "./settings-general-form";
 
 type UserAvatarGeneralSettingsProps = {
   fullName: string;
@@ -17,12 +18,14 @@ export async function UserAvatarGeneralSettings({
 }: Readonly<UserAvatarGeneralSettingsProps>) {
   return (
     <div className="mt-10 flex items-center gap-x-4">
-      <ImsAvatar
-        src={imageUrl}
-        alt={fullName}
-        fallback={getInitials(fullName)}
-        className="h-16 w-16"
-      />
+      <SettingsEditAvatarForm fullName={fullName} imgURL={imageUrl}>
+        <ImsAvatar
+          src={imageUrl}
+          alt={fullName}
+          fallback={getInitials(fullName)}
+          className="h-16 w-16"
+        />
+      </SettingsEditAvatarForm>
       <div className="flex flex-col">
         <p className="flex items-center gap-x-2 text-xl font-bold">
           {fullName}

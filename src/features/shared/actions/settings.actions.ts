@@ -1,8 +1,8 @@
 "use server";
 import { API_ENDPOINTS } from "@/lib/constant";
-import { imsApiWithAuth } from "./ims-api.action";
-import { AuthApiStandardResponse } from "../types/auth-action.types";
 import { revalidateTag } from "next/cache";
+import { AuthApiStandardResponse } from "../types/auth-action.types";
+import { imsApiWithAuth } from "./ims-api.action";
 
 export const changeAccountInfoAction = async ({
   fullName,
@@ -33,7 +33,6 @@ export const changeEmailAction = async (email: string) => {
     });
     return res;
   } catch (error) {
-    console.log("error>>>>", error);
     return error as AuthApiStandardResponse;
   }
 };
@@ -49,8 +48,26 @@ export const verifyChangeMailOtpAction = async ({
     const res = await imsApiWithAuth<AuthApiStandardResponse>({
       url: API_ENDPOINTS.CHANGE_EMAIL.VERIFY_OTP,
       method: "POST",
-      body: JSON.stringify({ otp, email }),
+      body: JSON.stringify({ code: otp, email }),
     });
+    revalidateTag(API_ENDPOINTS.USER_PROFILE);
+    return res;
+  } catch (error) {
+    return error as AuthApiStandardResponse;
+  }
+};
+
+export const uploadAvatarAction = async (file: File) => {
+  const formData = new FormData();
+  formData.append("file", file);
+  try {
+    const res = await imsApiWithAuth<AuthApiStandardResponse>({
+      url: API_ENDPOINTS.UPLOAD_PROFILE_PICTURE,
+      method: "PUT",
+      body: formData,
+      cache: "no-store",
+    });
+    revalidateTag(API_ENDPOINTS.USER_PROFILE);
     return res;
   } catch (error) {
     return error as AuthApiStandardResponse;

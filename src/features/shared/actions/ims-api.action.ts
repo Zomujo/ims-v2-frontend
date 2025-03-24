@@ -7,6 +7,8 @@ export const imsApiWithAuth = async <T>({
   method,
   body,
   headers,
+  cache,
+  next,
 }: FetchApi) => {
   const session = await imsServerSession();
   const accessToken = session?.user?.tokens?.accessToken;
@@ -18,6 +20,8 @@ export const imsApiWithAuth = async <T>({
     method,
     body,
     headers: { ...headers, Authorization: `Bearer ${accessToken}` },
+    cache,
+    next,
   });
 };
 export const imsApiWithoutAuth = async <T>({
@@ -25,8 +29,10 @@ export const imsApiWithoutAuth = async <T>({
   method,
   body,
   headers,
+  next,
+  cache,
 }: FetchApi) => {
-  return await fetchApi<T>({ url, method, body, headers });
+  return await fetchApi<T>({ url, method, body, headers, cache, next });
 };
 
 const fetchApi = async <T>({
@@ -34,18 +40,19 @@ const fetchApi = async <T>({
   method,
   body,
   headers,
+  next,
+  cache,
 }: FetchApi): Promise<T> => {
   const fetchUrl = `${ENV_VARIABLES.IMS_API_ENPOINT}${url}`;
   const response = await fetch(fetchUrl, {
     method,
-    headers: {
-      "Content-Type": "application/json",
-      ...headers,
-    },
+    headers,
     body,
     next: {
-      tags: [url],
+      ...next,
+      tags: url.split("?").slice(0, 1),
     },
+    cache,
   });
 
   if (!response.ok) {

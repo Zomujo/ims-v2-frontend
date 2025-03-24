@@ -12,7 +12,6 @@ export default async function SettingsPages({
   params,
 }: Readonly<SettingPages>) {
   const { page } = await params;
-  console.log(page);
   return (
     <section className="w-full rounded-2xl bg-white p-8">
       <PageHeading routeLevel={2} />

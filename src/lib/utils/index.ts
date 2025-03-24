@@ -20,7 +20,11 @@ export const setLocalStorage = <T>(key: string, value: T): void => {
 
 export const apiErrorResponse = (error: unknown) => {
   if (error instanceof Error) {
-    return JSON.parse(error.message) as AuthApiStandardResponse;
+    try {
+      return JSON.parse(error.message) as AuthApiStandardResponse;
+    } catch (error) {
+      return { message: "Something went wrong" };
+    }
   }
   return { message: "Something went wrong" };
 };

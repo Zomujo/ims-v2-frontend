@@ -13,7 +13,7 @@ export const handleEmailChange = async (
   const res = changeEmailAction(email);
   handleRequestState({ res, loadingMsg: "Sending OTP..." });
   res.then(() => {
-    action && action(true);
+    action?.(true);
   });
 };
 
@@ -28,13 +28,33 @@ export const handleAccountInfoChange = async ({
   handleRequestState({ res, loadingMsg: "Updating account info..." });
 };
 
-export const handleEmailChangeOtp = async ({
-  email,
-  otpCode,
-}: {
-  email: string;
-  otpCode: number;
-}) => {
+export const handleEmailChangeOtp = async (
+  {
+    email,
+    otpCode,
+  }: {
+    email: string;
+    otpCode: number;
+  },
+  action?: Dispatch<SetStateAction<boolean>>,
+) => {
   const res = verifyChangeMailOtpAction({ email, otp: otpCode });
   handleRequestState({ res, loadingMsg: "Verifying OTP..." });
+  res.then(() => {
+    action?.(false);
+  });
+};
+
+export const readImgFile = ({
+  setImg,
+  file,
+}: {
+  setImg: Dispatch<SetStateAction<string | null>>;
+  file: File;
+}) => {
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    setImg(e.target?.result as string);
+  };
+  reader.readAsDataURL(file);
 };

@@ -1,10 +1,12 @@
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/features/ui/input-otp";
+import { cn } from "@/lib/utils";
 import React from "react";
 
 export default function ImsOTPInput({
   otpBoxes,
+  className,
   ...props
-}: Readonly<{ otpBoxes: number }>) {
+}: Readonly<{ otpBoxes: number; className?: string }>) {
   return (
     <InputOTP {...props} maxLength={otpBoxes}>
       <InputOTPGroup className="w-full gap-x-4">
@@ -14,7 +16,10 @@ export default function ImsOTPInput({
               key={item}
               index={index}
               defaultValue={"O"}
-              className="h-17 w-[40%] rounded-2xl! border text-2xl"
+              className={cn(
+                "h-17 w-[40%] rounded-2xl! border text-2xl",
+                className,
+              )}
             />
           );
         })}

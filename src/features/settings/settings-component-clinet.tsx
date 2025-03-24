@@ -9,7 +9,6 @@ import { ImsButton } from "../shared/components/ims-button";
 
 export function SettingsSidebar() {
   const pathname = usePathname();
-  console.log(pathname);
   return (
     <nav className="flex h-full w-85 flex-col gap-y-1 rounded-2xl bg-white px-5 py-7">
       {settingsSidebarNavItems.map((item) => {

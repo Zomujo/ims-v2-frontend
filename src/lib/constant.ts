@@ -14,6 +14,7 @@ export const API_ENDPOINTS = {
     VERIFY_OTP: "/auth/change-email/validate-otp",
   },
   CHANGE_ACCOUNT_INFO: "/auth/",
+  UPLOAD_PROFILE_PICTURE: "/auth/profile-picture",
 };
 
 export const AUTH_PAGE_ROUTES = {
@@ -26,5 +27,9 @@ export const AUTH_PAGE_ROUTES = {
 
 export const PAGE_ROUTES = {
   DASHBOARD: "/dashboard",
-  SETTINGS: "/settings",
+  SETTINGS: {
+    GENERAL: "/settings/general",
+    SECURITY: "/settings/security",
+    NOTIFICATIONS: "/settings/notifications",
+  },
 };

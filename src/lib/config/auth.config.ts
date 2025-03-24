@@ -57,15 +57,19 @@ export function imsServerSession(
   return getServerSession(...args, authOptions);
 }
 
-const refresToken = async (tokenObj: JWT) => {
+async function refresToken(tokenObj: JWT) {
   const refreshToken = await authRefreshTokenAction(
     tokenObj.tokens.refreshToken,
   );
-  console.log("refreshToken>>>>>>", refreshToken);
+  console.log("refreshToken>>>>>>", refreshToken, tokenObj);
 
   const newToken = refreshToken
-    ? { ...tokenObj, tokens: { ...tokenObj.tokens, ...refreshToken } }
+    ? {
+        ...tokenObj,
+        expiresAt: refreshToken.expiresAt,
+        tokens: { ...tokenObj.tokens, ...refreshToken },
+      }
     : ({} as JWT);
 
   return newToken;
-};
+}

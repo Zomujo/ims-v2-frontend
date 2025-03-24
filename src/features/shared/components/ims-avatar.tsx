@@ -8,14 +8,14 @@ export function ImsAvatar({
   alt,
   className,
 }: Readonly<{
-  src: string;
+  src: string | null;
   fallback: string;
   alt: string;
   className?: string;
 }>) {
   return (
     <Avatar className={cn("h-10 w-10", className)}>
-      <AvatarImage alt={alt} src={src} />
+      <AvatarImage alt={alt} src={src ?? undefined} />
       <AvatarFallback className="capitalize">{fallback}</AvatarFallback>
     </Avatar>
   );

@@ -1,21 +1,33 @@
 "use client";
 import { Popover, PopoverContent, PopoverTrigger } from "@/features/ui/popover";
-import { PropsWithChildren } from "react";
+import { cn } from "@/lib/utils";
+import { ComponentProps, PropsWithChildren } from "react";
 
 export function ImsPopover({
   children,
   trigger,
   className,
+  contentAlign,
+  contentClassName,
+  onOpenChange,
 }: Readonly<
   PropsWithChildren<{
     trigger: React.ReactNode;
     className?: string;
+    contentAlign?: ComponentProps<typeof PopoverContent>["align"];
+    contentClassName?: ComponentProps<typeof PopoverContent>["className"];
+    onOpenChange?: (isOpen: boolean) => void;
   }>
 >) {
   return (
-    <Popover>
+    <Popover onOpenChange={onOpenChange}>
       <PopoverTrigger className={className}>{trigger}</PopoverTrigger>
-      <PopoverContent className="w-max p-0">{children}</PopoverContent>
+      <PopoverContent
+        align={contentAlign}
+        className={cn("w-max p-0", contentClassName)}
+      >
+        {children}
+      </PopoverContent>
     </Popover>
   );
 }

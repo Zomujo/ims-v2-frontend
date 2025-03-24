@@ -3,6 +3,8 @@ export type FetchApi = {
   method?: RequestInit["method"];
   body?: RequestInit["body"];
   headers?: RequestInit["headers"];
+  next?: RequestInit["next"];
+  cache?: RequestInit["cache"];
 };
 
 export type IMSApiErrorResponse = {

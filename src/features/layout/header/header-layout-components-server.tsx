@@ -41,7 +41,7 @@ export async function UserProfileButton() {
     >
       <div className="flex w-42 flex-col">
         <ButtonLink
-          href={PAGE_ROUTES.SETTINGS}
+          href={PAGE_ROUTES.SETTINGS.GENERAL}
           variant={"ghost"}
           startIcon={<SettingsIcon />}
           className="flex justify-start rounded-none p-0 py-6 pl-3"
