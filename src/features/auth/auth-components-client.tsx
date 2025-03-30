@@ -54,7 +54,7 @@ export function LogOutButton() {
       onClick={() => signOut()}
       startIcon={<LogOutIcon className="rotate-180" />}
       variant="ghost"
-      className="flex justify-start rounded-none p-0 py-6 pl-3 text-red-500 hover:bg-red-500 hover:text-white"
+      className="flex w-full justify-start rounded-none p-0 py-6 pl-3 text-red-500 hover:bg-red-500 hover:text-white"
     >
       Logout
     </ImsButton>
@@ -63,28 +63,42 @@ export function LogOutButton() {
 
 export function RenderPasswordInput({
   field,
+  className,
+  placeholder,
+  disabled,
 }: Readonly<RenderPasswordInputProps>) {
   const [showPassword, setShowPassword] = useState(false);
   const handleShowPassword = () => setShowPassword((prev) => !prev);
 
   return (
-    <div className="relative">
+    <div className={cn("relative", className)}>
       <Input
         {...field}
-        className="focus-visible:ring-ims-blue-300 bg-white"
+        className="focus-visible:ring-ims-blue-300 bg-white disabled:border-0 disabled:bg-transparent disabled:p-0 disabled:text-lg disabled:opacity-100 disabled:shadow-none"
         type={showPassword ? "text" : "password"}
-        placeholder="Password"
+        placeholder={placeholder ?? "Password"}
+        disabled={disabled}
       />
       {showPassword ? (
         <LucideEye
           size={20}
-          className="absolute top-1/2 right-4 -translate-y-1/2 stroke-neutral-400"
+          className={cn(
+            "absolute top-1/2 right-4 -translate-y-1/2 stroke-neutral-400",
+            {
+              hidden: disabled,
+            },
+          )}
           onClick={handleShowPassword}
         />
       ) : (
         <EyeOffIcon
           size={20}
-          className="absolute top-1/2 right-4 -translate-y-1/2 stroke-neutral-400"
+          className={cn(
+            "absolute top-1/2 right-4 -translate-y-1/2 stroke-neutral-400",
+            {
+              hidden: disabled,
+            },
+          )}
           onClick={handleShowPassword}
         />
       )}

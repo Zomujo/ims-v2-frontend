@@ -1,3 +1,8 @@
+import { ColumnDef } from "@tanstack/react-table";
+import { Department } from "../shared/types/settings-action.types";
+import { PERMISION_MODULES } from "@/lib/constant";
+import { PermissionModules } from "../shared/types/auth-action.types";
+
 export const settingsSidebarNavItems = [
   {
     label: "General",
@@ -63,3 +68,29 @@ export const settingsAccountInfoFields = [
     placeholder: "eg 0248765432",
   },
 ];
+
+export const settingsDepartmentTableColumns: ColumnDef<Department>[] = [
+  {
+    accessorKey: "name",
+    header: "Name",
+  },
+  {
+    accessorKey: "createdBy.fullName",
+    header: "Created By",
+  },
+  {
+    accessorKey: "createdAt",
+    header: "Created At",
+    cell: ({ row }) => {
+      const date = new Date(row.original.createdAt);
+      return date.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      });
+    },
+  },
+];
+export const defaultPermissions = PERMISION_MODULES.map(
+  (item) => PermissionModules[item],
+);

@@ -1,6 +1,7 @@
 import { ENV_VARIABLES } from "@/lib/config/env.config";
 import { FetchApi, IMSApiErrorResponse } from "../types/ims-api-action.types";
 import { imsServerSession } from "@/lib/config/auth.config";
+import { redirect } from "next/navigation";
 
 export const imsApiWithAuth = async <T>({
   url,
@@ -11,10 +12,10 @@ export const imsApiWithAuth = async <T>({
   next,
 }: FetchApi) => {
   const session = await imsServerSession();
-  const accessToken = session?.user?.tokens?.accessToken;
-  if (!accessToken) {
-    throw new Error("No access token");
+  if (!session?.user?.tokens) {
+    redirect("/auth/login");
   }
+  const accessToken = session?.user?.tokens?.accessToken;
   return await fetchApi<T>({
     url,
     method,
@@ -44,13 +45,18 @@ const fetchApi = async <T>({
   cache,
 }: FetchApi): Promise<T> => {
   const fetchUrl = `${ENV_VARIABLES.IMS_API_ENPOINT}${url}`;
+  const getHeaders = () => {
+    if (body instanceof FormData) return headers;
+    return { ...headers, "Content-Type": "application/json" };
+  };
+
   const response = await fetch(fetchUrl, {
     method,
-    headers,
+    headers: getHeaders(),
     body,
     next: {
       ...next,
-      tags: url.split("?").slice(0, 1),
+      tags: [...url.split("?").slice(0, 1), ...(next?.tags ?? [])],
     },
     cache,
   });

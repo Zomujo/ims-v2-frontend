@@ -27,4 +27,8 @@ export type AuthFormProps = {
 
 export type RenderPasswordInputProps = ComponentProps<
   ControllerProps<FieldValues>["render"]
->;
+> & {
+  className?: string;
+  placeholder?: string;
+  disabled?: boolean;
+};

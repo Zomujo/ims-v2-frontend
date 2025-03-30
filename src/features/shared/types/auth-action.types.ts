@@ -105,7 +105,7 @@ export type AuthIMSUserProfile = {
   departmentId: string | null;
   role: string;
   permissions: string[];
-  status: string;
+  status: UserStatus;
   facility: {
     id: string;
     name: string;

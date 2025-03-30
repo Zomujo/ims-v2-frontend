@@ -2,6 +2,7 @@ import { LogOutButton } from "@/features/auth/auth-components-client";
 import { authUserProfileAction } from "@/features/shared/actions/auth.action";
 import { ButtonLink } from "@/features/shared/components/button-link";
 import { ImsAvatar } from "@/features/shared/components/ims-avatar";
+import ImsDropdownMenu from "@/features/shared/components/ims-drop-down-menu";
 import { ImsPopover } from "@/features/shared/components/ims-popover";
 import { PAGE_ROUTES } from "@/lib/constant";
 import { getInitials } from "@/lib/utils";
@@ -25,10 +26,9 @@ export async function UserProfileButton() {
   const imsUserProfile = await authUserProfileAction();
 
   return (
-    <ImsPopover
-      className="flex cursor-pointer items-center gap-x-2"
+    <ImsDropdownMenu
       trigger={
-        <>
+        <div className="flex cursor-pointer items-center gap-x-2">
           <ImsAvatar
             src={imsUserProfile.imageUrl ?? ""}
             alt={imsUserProfile.fullName}
@@ -36,20 +36,27 @@ export async function UserProfileButton() {
           />
           <span className="ml-2">{imsUserProfile.fullName}</span>
           <EllipsisIcon className="rotate-90" size={20} />
-        </>
+        </div>
       }
-    >
-      <div className="flex w-42 flex-col">
-        <ButtonLink
-          href={PAGE_ROUTES.SETTINGS.GENERAL}
-          variant={"ghost"}
-          startIcon={<SettingsIcon />}
-          className="flex justify-start rounded-none p-0 py-6 pl-3"
-        >
-          Settings
-        </ButtonLink>
-        <LogOutButton />
-      </div>
-    </ImsPopover>
+      menuItems={[
+        {
+          id: "settings",
+          node: (
+            <ButtonLink
+              href={PAGE_ROUTES.SETTINGS.GENERAL}
+              variant={"ghost"}
+              startIcon={<SettingsIcon />}
+              className="flex justify-start rounded-none p-0 py-6 pl-3"
+            >
+              Settings
+            </ButtonLink>
+          ),
+        },
+        {
+          id: "logout",
+          node: <LogOutButton />,
+        },
+      ]}
+    />
   );
 }

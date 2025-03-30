@@ -1,11 +1,17 @@
 "use client";
 import { cn } from "@/lib/utils";
 import { Icon } from "@iconify/react";
+import { ColumnDef } from "@tanstack/react-table";
 import { usePathname } from "next/navigation";
-import { ButtonLink } from "../shared/components/button-link";
-import { settingsSidebarNavItems } from "./settings.data";
 import { Dispatch, SetStateAction } from "react";
+import { ButtonLink } from "../shared/components/button-link";
 import { ImsButton } from "../shared/components/ims-button";
+import {
+  FacilityUsers,
+  USER_STATUS,
+} from "../shared/types/settings-action.types";
+import { Badge } from "../ui/badge";
+import { settingsSidebarNavItems } from "./settings.data";
 
 export function SettingsSidebar() {
   const pathname = usePathname();
@@ -43,17 +49,18 @@ export function SettingsFromActions({
   isSubmitting,
   setEidtForm,
   editForm,
+  className,
 }: Readonly<{
   isSubmitting: boolean;
   editForm: boolean;
+  className?: string;
   setEidtForm: Dispatch<SetStateAction<boolean>>;
 }>) {
   return (
-    <div className="absolute top-0 right-0 flex gap-4">
+    <div className={cn("absolute top-0 right-0 flex gap-4", className)}>
       {!editForm && (
         <ImsButton
           startIcon={<Icon icon="hugeicons:edit-01" />}
-          isLoading={isSubmitting}
           isLoadingLabel="Logging in..."
           variant="outline"
           type="button"
@@ -65,7 +72,6 @@ export function SettingsFromActions({
       {editForm && (
         <>
           <ImsButton
-            isLoading={isSubmitting}
             isLoadingLabel="Logging in..."
             variant="ghost"
             className="order-last cursor-pointer justify-self-end bg-red-50 text-red-600 hover:bg-red-600 hover:text-white md:order-none"
@@ -79,8 +85,8 @@ export function SettingsFromActions({
           <ImsButton
             isLoading={isSubmitting}
             isLoadingLabel="Logging in..."
-            variant="ghost"
-            className="bg-ims-blue-300 hover:bg-ims-blue-200 dark:bg-ims-blue-300 dark:hover:bg-ims-blue-300/80 order-last cursor-pointer justify-self-end text-white hover:text-white md:order-none"
+            variant="imsPrimary"
+            className="order-last cursor-pointer justify-self-end md:order-none"
             type="submit"
           >
             Save
@@ -90,3 +96,56 @@ export function SettingsFromActions({
     </div>
   );
 }
+
+export function SettingsCreateButton({
+  label,
+  state,
+}: Readonly<{ label: string; state: string }>) {
+  return (
+    <ButtonLink
+      href={{ query: { state } }}
+      replace
+      className="absolute top-8 right-8 order-last cursor-pointer justify-self-end md:order-none"
+      variant={"imsPrimary"}
+    >
+      {label}
+    </ButtonLink>
+  );
+}
+
+export const settingsUserTableColumns: ColumnDef<FacilityUsers>[] = [
+  {
+    accessorKey: "fullName",
+    header: "User",
+  },
+  {
+    accessorKey: "role",
+    header: "Role",
+  },
+  {
+    accessorKey: "status",
+    header: "Status",
+    cell: ({ row }) => {
+      const status = row.original.status.toLowerCase();
+      return (
+        <Badge
+          className={cn("capitalize", {
+            "bg-green-100 text-green-800 [&_span]:bg-green-500":
+              status === USER_STATUS.ACTIVE,
+            "bg-red-100 text-red-800 [&_span]:bg-red-500":
+              status === USER_STATUS.DECLINED,
+            "bg-orange-100 text-orange-800 [&_span]:bg-yellow-500":
+              status === USER_STATUS.PENDING,
+            "bg-blue-100 text-blue-800 [&_span]:bg-blue-500":
+              status === USER_STATUS.ACCEPTED,
+            "bg-gray-100 text-gray-800 [&_span]:bg-gray-500":
+              status === USER_STATUS.INACTIVE,
+          })}
+        >
+          <span className="h-1.5 w-1.5 rounded-full"></span>
+          {status}
+        </Badge>
+      );
+    },
+  },
+];

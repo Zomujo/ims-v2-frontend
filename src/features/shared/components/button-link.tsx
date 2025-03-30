@@ -18,6 +18,7 @@ export function ButtonLink({
   PropsWithChildren<
     {
       href: Url;
+      replace?: boolean;
       className?: string;
       startIcon?: React.ReactNode;
       endIcon?: React.ReactNode;
@@ -29,7 +30,6 @@ export function ButtonLink({
       {...props}
       className={cn(buttonVariants({ size, variant, className }))}
       href={href}
-      {...props}
     >
       {startIcon && <span>{startIcon}</span>}
       {children}

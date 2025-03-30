@@ -12,12 +12,14 @@ import { cn } from "@/lib/utils";
 
 import { useRouter, useSearchParams } from "next/navigation";
 
-interface DynamicPaginationProps {
+type DynamicPaginationProps = {
   totalPages: number;
-}
+  className?: string;
+};
 
 export function DynamicPagination({
   totalPages,
+  className,
 }: Readonly<DynamicPaginationProps>) {
   const searchParams = useSearchParams();
   const activePage = searchParams.get("page")
@@ -30,10 +32,8 @@ export function DynamicPagination({
 
   const getPageNumbers = () => {
     const pagesArr = [];
-    // Add a start ellipsis if currentPage is greater than 3
     const showEllipsisStart = currentPage > 3;
 
-    // Add a start ellipsis if currentPage is less than totalPages - 2
     const showEllipsisEnd = currentPage < totalPages - 2;
 
     pagesArr.push(1);
@@ -42,7 +42,6 @@ export function DynamicPagination({
       pagesArr.push("ellipsis-start");
     }
 
-    // This part creates the pages around the current page. 4,5,6 where active page is 5
     for (
       let i = Math.max(2, currentPage - 1);
       i <= Math.min(totalPages - 1, currentPage + 1);
@@ -59,7 +58,6 @@ export function DynamicPagination({
       pagesArr.push(totalPages);
     }
 
-    // This returns an array of numbers as well as the strings ['ellipsis-start' , 'ellipsis-end']
     return pagesArr;
   };
 
@@ -73,7 +71,7 @@ export function DynamicPagination({
   const pageNumbers = getPageNumbers();
 
   return (
-    <Pagination>
+    <Pagination className={className}>
       <PaginationContent>
         <PaginationItem className="rounded-tl-[5px] rounded-bl-[5px] border-[1px] border-r-0">
           <PaginationPrevious

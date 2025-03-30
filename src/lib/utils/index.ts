@@ -1,4 +1,9 @@
 import { AuthApiStandardResponse } from "@/features/shared/types/auth-action.types";
+import {
+  CrudAction,
+  GenerateQueryParams,
+  HandleRequestState,
+} from "@/features/shared/types/utitls.types";
 import { clsx, type ClassValue } from "clsx";
 import { toast } from "sonner";
 import { twMerge } from "tailwind-merge";
@@ -41,12 +46,7 @@ export const handleRequestState = ({
   successMsg,
   errorMsg,
   res,
-}: {
-  loadingMsg?: string;
-  successMsg?: string;
-  errorMsg?: string;
-  res: Promise<Record<string, unknown>>;
-}) => {
+}: HandleRequestState) => {
   toast.promise(res, {
     loading: loadingMsg ?? "Loading...",
     success: (data) => successMsg ?? (data.message as string),
@@ -54,4 +54,31 @@ export const handleRequestState = ({
       return errorMsg ?? apiErrorResponse(error).message;
     },
   });
+};
+
+export const generateQueryParams = (params: GenerateQueryParams = {}) => {
+  return (Object.keys(params) as Array<keyof GenerateQueryParams>)
+    .filter((key) => params[key])
+    .map((key) => key + "=" + params[key])
+    .join("&");
+};
+
+export const updateRouteHashFragment = (fragment: string | null) => {
+  if (fragment) {
+    window.location.hash = fragment;
+  } else {
+    window.location.hash = "";
+  }
+};
+
+export const getStoredDataInQueryParam = ({
+  action,
+  value,
+}: {
+  action: CrudAction;
+  value: string;
+}) => {
+  if (!value) return "";
+  const fragmentIdentifier = `${action}-`;
+  return value.replace(fragmentIdentifier, "");
 };

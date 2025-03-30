@@ -92,18 +92,20 @@ export function GeneralSettingsAccountForm({
         />
       }
       RenderInputs={
-        <SettingsFormInputs
+        <GeneralSettingsFormInputs
           otpSent={otpSent}
           editForm={editForm}
           control={form.control}
         />
       }
-      className="relative pt-0"
+      className={cn("relative pt-0", {
+        "[&_[data-slot='form-label']]:text-gray-500": !editForm,
+      })}
     />
   );
 }
 
-function SettingsFormInputs({
+function GeneralSettingsFormInputs({
   control,
   editForm,
   otpSent,
@@ -169,6 +171,16 @@ function SettingsFormInputs({
           );
         })}
       </div>
+      <p className="flex w-max items-center gap-x-2 rounded-lg bg-amber-50 p-3 text-sm text-gray-500">
+        <Icon
+          icon="ph:warning-octagon-fill"
+          className="h-5 w-5 text-amber-500"
+        />
+        <span>
+          Changing your email will require verification—an OTP will be sent to
+          your new email for confirmation.
+        </span>
+      </p>
     </>
   );
 }
@@ -243,7 +255,8 @@ export function SettingsEditAvatarForm({
           </ImsButton>
           <ImsButton
             size="sm"
-            className="bg-ims-blue-300 hover:bg-ims-blue-200 text-xs"
+            variant="imsPrimary"
+            className="text-xs"
             onClick={handleSave}
           >
             Save

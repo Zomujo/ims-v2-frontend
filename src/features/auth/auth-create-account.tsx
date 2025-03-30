@@ -94,8 +94,8 @@ function AuthCreateAccountActions({
       <ImsButton
         isLoading={isSubmitting}
         isLoadingLabel="Logging in..."
-        variant="ghost"
-        className="bg-ims-blue-300 hover:bg-ims-blue-200 dark:bg-ims-blue-300 dark:hover:bg-ims-blue-300/80 h-12 cursor-pointer justify-self-end text-white hover:text-white md:order-none"
+        variant="imsPrimary"
+        className="h-12 cursor-pointer justify-self-end md:order-none"
         type="submit"
       >
         Create Account

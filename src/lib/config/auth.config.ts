@@ -37,7 +37,7 @@ export const authOptions = {
       return token;
     },
     async session({ session, token }) {
-      if (token) {
+      if (token.tokens) {
         session.user = { ...session.user, ...token };
       }
       return session;
@@ -61,7 +61,6 @@ async function refresToken(tokenObj: JWT) {
   const refreshToken = await authRefreshTokenAction(
     tokenObj.tokens.refreshToken,
   );
-  console.log("refreshToken>>>>>>", refreshToken, tokenObj);
 
   const newToken = refreshToken
     ? {
