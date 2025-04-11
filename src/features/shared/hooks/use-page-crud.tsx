@@ -1,7 +1,7 @@
-import React, { useEffect } from "react";
-import useImsSearchParams from "./use-ims-search-params";
 import { getStoredDataInQueryParam } from "@/lib/utils";
+import React, { useEffect } from "react";
 import { CRUDACTION, CrudAction } from "../types/utitls.types";
+import useImsSearchParams from "./use-ims-search-params";
 
 type UsePageCRUDProps<T, K> = {
   data: T[];
@@ -29,16 +29,17 @@ export default function usePageCRUD<
 
   useEffect(() => {
     if (!getSingleDataFn) return;
-    const id = isEditMode ? getId(CRUDACTION.EDIT) : getId(CRUDACTION.VIEW);
-    if (isEditMode || isViewMode) {
-      getSingleDataFn({ id })
-        .then((res) => {
-          setSingleData(res);
-        })
-        .catch(() => {
-          setSingleData(null);
-        });
-    }
+    const getSingleData = async () => {
+      const id = isEditMode ? getId(CRUDACTION.EDIT) : getId(CRUDACTION.VIEW);
+      if (isEditMode || isViewMode) {
+        setSingleData(null);
+        const res = await getSingleDataFn({ id });
+        setSingleData(res);
+      } else {
+        setSingleData(null);
+      }
+    };
+    getSingleData();
   }, [isEditMode, isViewMode]);
 
   const getData = (action?: CrudAction) => {

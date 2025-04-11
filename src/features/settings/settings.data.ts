@@ -75,8 +75,11 @@ export const settingsDepartmentTableColumns: ColumnDef<Department>[] = [
     header: "Name",
   },
   {
-    accessorKey: "createdBy.fullName",
+    accessorKey: "createdBy?.fullName",
     header: "Created By",
+    cell: ({ row }) => {
+      return row.original.createdBy?.fullName ?? "-";
+    },
   },
   {
     accessorKey: "createdAt",

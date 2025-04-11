@@ -6,7 +6,7 @@ import { ReportIncidentButton } from "./header-layout-components-client";
 
 export function HeaderLayout() {
   return (
-    <header className="flex h-22 items-center justify-end bg-white pr-6">
+    <header className="fixed top-0 right-0 z-5 flex h-(--header-height) w-[calc(100%-18rem)] items-center justify-end bg-white pr-6">
       <HeaderLayoutUIActions />
     </header>
   );

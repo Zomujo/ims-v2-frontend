@@ -5,7 +5,7 @@ import {
 
 type User = {
   id: string;
-  name: string;
+  fullName: string;
 };
 
 export type Department = {

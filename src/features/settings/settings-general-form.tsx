@@ -78,6 +78,7 @@ export function GeneralSettingsAccountForm({
 
   useEffect(() => {
     setOtpSent(false);
+    form.reset();
   }, [editForm]);
 
   return (

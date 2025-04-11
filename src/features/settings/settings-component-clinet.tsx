@@ -2,10 +2,10 @@
 import { cn } from "@/lib/utils";
 import { Icon } from "@iconify/react";
 import { ColumnDef } from "@tanstack/react-table";
-import { usePathname } from "next/navigation";
 import { Dispatch, SetStateAction } from "react";
 import { ButtonLink } from "../shared/components/button-link";
 import { ImsButton } from "../shared/components/ims-button";
+import ImsNavTab from "../shared/components/ims-nav-tab";
 import {
   FacilityUsers,
   USER_STATUS,
@@ -14,32 +14,10 @@ import { Badge } from "../ui/badge";
 import { settingsSidebarNavItems } from "./settings.data";
 
 export function SettingsSidebar() {
-  const pathname = usePathname();
   return (
     <nav className="flex h-full w-85 flex-col gap-y-1 rounded-2xl bg-white px-5 py-7">
       {settingsSidebarNavItems.map((item) => {
-        return (
-          <ButtonLink
-            href={item.href}
-            key={item.href}
-            variant="ghost"
-            className={cn(
-              "flex items-center justify-start gap-x-2 rounded-xl p-0 py-6 pl-3 text-gray-500 hover:bg-[#EBF2FF]",
-              {
-                "bg-[#EBF2FF] text-black": pathname.includes(item.href),
-              },
-            )}
-          >
-            <Icon
-              icon={item.icon}
-              speed={20}
-              className={cn("hover:text-[#415BE6]", {
-                "text-[#415BE6]": pathname.includes(item.href),
-              })}
-            />
-            {item.label}
-          </ButtonLink>
-        );
+        return <ImsNavTab key={item.href} {...item} />;
       })}
     </nav>
   );

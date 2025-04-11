@@ -177,7 +177,7 @@ export const getUserAction = async ({ id }: { id: string }) => {
       tags: [id],
     },
   });
-  return res.data;
+  return res?.data;
 };
 
 export const getRolesAction = async (searchParams?: GenerateQueryParams) => {

@@ -1,15 +1,20 @@
 import { HeaderLayout } from "@/features/layout/header/header-layout";
+import SidebarLayout from "@/features/layout/sidebar/sidebar-layout";
 import PageHeading from "@/features/shared/components/page-heading";
+import { SidebarProvider } from "@/features/ui/sidebar";
 import { PropsWithChildren } from "react";
 
 export default function EntryLayout({ children }: Readonly<PropsWithChildren>) {
   return (
     <>
       <HeaderLayout />
-      <main className="flex h-[calc(100dvh-5.5rem)] flex-col gap-y-8 overflow-hidden bg-[#FAFAFA] px-8 pt-8 pb-7">
-        <PageHeading />
-        {children}
-      </main>
+      <SidebarProvider className="pr-4 pb-4">
+        <SidebarLayout />
+        <main className="mt-(--header-height) flex min-h-[calc(100%-var(--header-height))] w-full flex-col gap-y-8 overflow-hidden rounded-2xl border bg-[#FAFAFA] p-8">
+          <PageHeading />
+          {children}
+        </main>
+      </SidebarProvider>
     </>
   );
 }

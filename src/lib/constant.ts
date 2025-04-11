@@ -13,7 +13,7 @@ export const API_ENDPOINTS = {
   USER_PROFILE: "/auth/user",
   CHANGE_EMAIL: {
     SEND_MAIL: "/auth/change-email/send-mail",
-    VERIFY_OTP: "/a3uth/change-email/validate-otp",
+    VERIFY_OTP: "/auth/change-email/validate-otp",
   },
   CHANGE_ACCOUNT_INFO: "/auth/",
   UPLOAD_PROFILE_PICTURE: "/auth/profile-picture",

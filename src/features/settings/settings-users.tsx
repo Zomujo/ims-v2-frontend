@@ -2,12 +2,7 @@
 import { ACCESS_LEVELS, UI_STATE } from "@/lib/constant";
 import { handleRequestState } from "@/lib/utils";
 import { use, useEffect } from "react";
-import {
-  Control,
-  useFieldArray,
-  useFormContext,
-  useWatch,
-} from "react-hook-form";
+import { Control, useFieldArray } from "react-hook-form";
 import { z } from "zod";
 import {
   addUserAction,
@@ -38,7 +33,6 @@ import {
 } from "./settings.context";
 import { defaultPermissions } from "./settings.data";
 import { ManageUsersSettingsProps } from "./settings.types";
-import { useFormField } from "../ui/form";
 
 type ManageUsersSettingsFormProps = {
   defaultValues?: z.infer<typeof newUserSettingsSchema> | null;
@@ -55,10 +49,6 @@ export default function ManageUsersSettings({
     isEditMode,
     singleData,
     getData,
-    getId,
-    getDataById,
-    removeSearchParams,
-    handleDeleteBtnClicked,
     handleActionBtnClicked,
     handleEditBtnClicked,
     handleRemoveQueryparam,
@@ -68,19 +58,17 @@ export default function ManageUsersSettings({
   });
 
   const handleDeactivateUser = async () => {};
-  const handleActivateUser = async () => {};
   const handleChangeUserRole = () => {
-    return {
-      email: singleData?.email,
-      fullName: singleData?.fullName,
-      role: singleData?.role,
-      departmentId: singleData?.departmentId,
-      permissions: getUpdatedPermissions(singleData?.permissions ?? []),
-      id: singleData?.id,
-    } as ManageUsersSettingsFormProps["defaultValues"];
-  };
-  const currentUserStatus = (status: USER_STATUS) => {
-    return getData()?.status === status;
+    return singleData
+      ? ({
+          email: singleData?.email,
+          fullName: singleData?.fullName,
+          role: singleData?.role,
+          departmentId: singleData?.departmentId,
+          permissions: getUpdatedPermissions(singleData?.permissions ?? []),
+          id: singleData?.id,
+        } as ManageUsersSettingsFormProps["defaultValues"])
+      : null;
   };
 
   return (
@@ -88,14 +76,14 @@ export default function ManageUsersSettings({
       moduleName="user"
       data={users}
       state={state}
-      isEditMode={isEditMode}
+      isEditMode={singleData ? isEditMode : false}
       totalPages={totalPages}
       modalAction={handleDeactivateUser}
       modalActionLabel="Deactivate User"
       tableColumns={settingsUserTableColumns}
       handleRemoveQueryparam={handleRemoveQueryparam}
       currentDataDisplayName={getData(CRUDACTION.STATUS)?.fullName ?? ""}
-      openModal={singleData ? state.includes(CRUDACTION.STATUS) : false}
+      openModal={state.includes(CRUDACTION.STATUS)}
       actions={(item) => {
         const status = item.status.toLowerCase();
         const isActive = status === USER_STATUS.ACTIVE;
@@ -122,11 +110,7 @@ export default function ManageUsersSettings({
       }}
     >
       <ManageUsersContextProvider value={{ roles, departments, isEditMode }}>
-        {singleData ? (
-          <ManageUsersSettingsForm defaultValues={handleChangeUserRole()} />
-        ) : (
-          <ManageUsersSettingsForm />
-        )}
+        <ManageUsersSettingsForm defaultValues={handleChangeUserRole()} />
       </ManageUsersContextProvider>
     </CrudPage>
   );
@@ -155,13 +139,6 @@ function ManageUsersSettingsForm({
     },
   });
 
-  const watchPermissions = useWatch({
-    control: form.control,
-    name: "permissions",
-  });
-  if (defaultValues)
-    console.log("watchPermissions>>>>>>>>>>>>>>>>>>", watchPermissions);
-
   const handleSubmit = async (data: unknown) => {
     const newUser = data as ManageUsersSettingsFormProps["defaultValues"];
     const res = isEditMode
@@ -189,7 +166,7 @@ function ManageUsersSettingsForm({
       form.setValue("permissions", defaultPermissions);
     };
 
-    if (!form.getFieldState("role").isDirty) {
+    if (!form.getFieldState("role").isDirty && !defaultValues) {
       setDefaultPermissions();
       return;
     }
@@ -307,21 +284,13 @@ function ManagerUsersSettingsFormInputs({
 }
 
 function PermissionsInputs({ control }: Readonly<{ control: Control }>) {
-  const { isEditMode } = use(ManageUsersContext);
-  const a = useFormContext();
-  console.log("a>>>>>>>>>>>>>>>>>>", a);
-  const {
-    fields: permissions,
-    update,
-    replace,
-  } = useFieldArray({
-    control,
-    name: "permissions",
-  });
-
   const getLabel = (index: number) => {
     return defaultPermissions[index].replace("_", " ");
   };
+  const { fields: permissions } = useFieldArray({
+    control,
+    name: "permissions",
+  });
 
   return (
     <>
