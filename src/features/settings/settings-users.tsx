@@ -23,7 +23,6 @@ import {
   USER_STATUS,
 } from "../shared/types/settings-action.types";
 import { CRUDACTION } from "../shared/types/utitls.types";
-import { Combobox } from "../ui/combobox";
 import { Input } from "../ui/input";
 import { newUserSettingsSchema } from "./settigns.schemas";
 import { settingsUserTableColumns } from "./settings-component-clinet";
@@ -256,12 +255,14 @@ function ManagerUsersSettingsFormInputs({
         name="departmentId"
         label="Choose Department"
         renderInput={({ field }) => (
-          <Combobox
+          <ImsSelect
             disabled={isEditMode}
-            items={comboboxDepartments}
+            options={comboboxDepartments}
             defaultValue={field.value}
             moduleName="department"
             onChange={(value) => field.onChange(value)}
+            value={field.value}
+            className="focus-visible:ring-ims-blue-300 !h-11 bg-white"
           />
         )}
       />
@@ -270,11 +271,12 @@ function ManagerUsersSettingsFormInputs({
         name="role"
         label="Assign Role"
         renderInput={({ field }) => (
-          <Combobox
-            items={comboboxRoles}
-            defaultValue={field.value}
+          <ImsSelect
+            options={comboboxRoles}
             moduleName="role"
             onChange={(value) => field.onChange(value)}
+            value={field.value}
+            className="focus-visible:ring-ims-blue-300 !h-11 bg-white"
           />
         )}
       />
@@ -314,7 +316,7 @@ function PermissionsInputs({ control }: Readonly<{ control: Control }>) {
                       field.onChange("");
                       return;
                     }
-                    field.onChange(field.value + ":" + access);
+                    field.onChange(field.value.split(":")[0] + ":" + access);
                   }}
                   value={field.value.split(":")?.[1] ?? ""}
                   moduleName="permission"

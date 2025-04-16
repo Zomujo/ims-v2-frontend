@@ -10,6 +10,7 @@ import React from "react";
 
 type MenuItem = {
   id: string;
+  varient?: "destructive" | "default";
   node: React.ReactNode;
 };
 
@@ -30,8 +31,8 @@ export default function ImsDropdownMenu({
     <DropdownMenu>
       <DropdownMenuTrigger asChild>{trigger}</DropdownMenuTrigger>
       <DropdownMenuContent className={cn("p-0", className)} align={align}>
-        {menuItems.map(({ id, node }) => (
-          <DropdownMenuItem asChild key={id}>
+        {menuItems.map(({ id, node, varient }) => (
+          <DropdownMenuItem variant={varient} asChild key={id}>
             {node}
           </DropdownMenuItem>
         ))}

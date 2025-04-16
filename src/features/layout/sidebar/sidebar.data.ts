@@ -1,8 +1,8 @@
 export const generalTabs = [
   {
-    name: "Overview",
-    icon: "solar:spedometer-low-bold-duotone",
-    link: "/",
+    name: "Dashboard",
+    icon: "solar:chart-2-outline",
+    link: "/dashboard",
   },
   {
     name: "Inventory",

@@ -30,8 +30,6 @@ export function IMSDataTable<TData, TValue>({
   data,
   totalPages,
 }: Readonly<DataTableProps<TData, TValue>>) {
-  // Combine user-provided columns with actions column
-
   const table = useReactTable({
     data,
     columns,
@@ -49,7 +47,7 @@ export function IMSDataTable<TData, TValue>({
             >
               {headerGroup.headers.map((header) => (
                 <TableHead
-                  className="border-y font-bold uppercase first:rounded-l-2xl first:border-l first:pl-4 last:rounded-r-2xl last:border-r"
+                  className="border-y text-xs font-semibold uppercase first:rounded-l-2xl first:border-l first:pl-4 last:rounded-r-2xl last:border-r"
                   key={header.id}
                 >
                   {header.isPlaceholder
@@ -63,7 +61,7 @@ export function IMSDataTable<TData, TValue>({
             </TableRow>
           ))}
         </TableHeader>
-        <TableBody className="space-y-3">
+        <TableBody className="space-y-3 text-xs">
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
               <TableRow
@@ -90,7 +88,7 @@ export function IMSDataTable<TData, TValue>({
           )}
         </TableBody>
       </Table>
-      {totalPages && totalPages > 1 && (
+      {!!totalPages && totalPages > 1 && (
         <DynamicPagination className="pb-5" totalPages={totalPages} />
       )}
     </div>

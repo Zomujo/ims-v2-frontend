@@ -28,6 +28,7 @@ export const apiErrorResponse = (error: unknown) => {
     try {
       return JSON.parse(error.message) as AuthApiStandardResponse;
     } catch (error) {
+      console.error("Error parsing error message", error);
       return { message: "Something went wrong" };
     }
   }
@@ -53,6 +54,7 @@ export const handleRequestState = ({
     error: (error) => {
       return errorMsg ?? apiErrorResponse(error).message;
     },
+    dismissible: true,
   });
 };
 
@@ -81,4 +83,11 @@ export const getStoredDataInQueryParam = ({
   if (!value) return "";
   const fragmentIdentifier = `${action}-`;
   return value.replace(fragmentIdentifier, "");
+};
+
+export const formateCurrency = (ammount: string | number) => {
+  return ammount?.toLocaleString("en-US", {
+    style: "currency",
+    currency: "GHC",
+  });
 };

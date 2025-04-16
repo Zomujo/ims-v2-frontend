@@ -7,7 +7,8 @@ type TitleFromPath = keyof typeof settingPagesDescription;
 
 export default function PageHeading({
   routeLevel = 1,
-}: Readonly<{ routeLevel?: number }>) {
+  id = "",
+}: Readonly<{ routeLevel?: number; id?: string }>) {
   const pathname = usePathname();
   const titleFromPath = pathname.split("/")[routeLevel];
   const title =
@@ -18,11 +19,11 @@ export default function PageHeading({
   return (
     <>
       <h2
-        className={cn("text-3xl font-bold text-[#111111] capitalize", {
-          "text-2xl": routeLevel === 2,
+        className={cn("text-2xl font-bold text-[#111111] capitalize", {
+          "text-xl": routeLevel === 2,
         })}
       >
-        {title}
+        {id ? "Edit" : title}
       </h2>
       {description && (
         <p className="mt-4 text-sm text-gray-500">{description}</p>

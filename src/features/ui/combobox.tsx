@@ -1,8 +1,7 @@
 "use client";
 
 import { Check, ChevronsUpDown } from "lucide-react";
-import * as React from "react";
-
+import { PropsWithChildren, ReactNode, useState } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "./button";
 import {
@@ -15,102 +14,106 @@ import {
 } from "./command";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 
-const frameworks = [
-  {
-    value: "next.js",
-    label: "Next.js",
-  },
-  {
-    value: "sveltekit",
-    label: "SvelteKit",
-  },
-  {
-    value: "nuxt.js",
-    label: "Nuxt.js",
-  },
-  {
-    value: "remix",
-    label: "Remix",
-  },
-  {
-    value: "astro",
-    label: "Astro",
-  },
-];
-
 type ComboboxProps = {
   items: {
     value: string;
-    label: string;
+    label: string | ReactNode;
   }[];
-  moduleName?: string;
+  value?: string;
+  placeholder?: string;
   defaultValue?: string;
+  className?: string;
   disabled?: boolean;
+  moduleName?: string;
   onChange?: (value: string) => void;
+  onSelected?: (value: string) => void;
+  onOpenChange?: (open: boolean) => void;
 };
 
 export function Combobox({
   items,
-  moduleName,
+  placeholder,
   disabled,
-  defaultValue = "",
+  value,
+  className,
+  moduleName,
+  children,
   onChange,
-}: Readonly<ComboboxProps>) {
-  const [open, setOpen] = React.useState(false);
-  const [value, setValue] = React.useState(defaultValue);
+  onSelected,
+  onOpenChange,
+}: Readonly<PropsWithChildren<ComboboxProps>>) {
+  const [open, setOpen] = useState(false);
 
-  React.useEffect(() => {
-    setValue(defaultValue);
-  }, [defaultValue]);
+  // Find the selected option's label for display
+  const selectedOption = items.find((option) => option.value === value);
+  const selectPlaceholder = placeholder ?? "Select item...";
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger disabled={disabled} asChild>
-        <Button
-          variant="outline"
-          aria-expanded={open}
-          className="h-11 justify-between"
-          aria-roledescription="Combobox"
-        >
-          {value
-            ? items.find((item) => item.value === value)?.label
-            : `Select ${moduleName ?? "item"}...`}
-          <ChevronsUpDown className="opacity-50" />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="p-0">
-        <Command>
-          <CommandInput
-            placeholder={`Select ${moduleName ?? "item"}...`}
-            className="h-9"
-          />
-          <CommandList>
-            <CommandEmpty>No {moduleName ?? "item"} found.</CommandEmpty>
-            <CommandGroup>
-              {items.map((item) => (
-                <CommandItem
-                  key={item.value}
-                  value={item.value}
-                  onSelect={(currentValue) => {
-                    const newValue = currentValue === value ? "" : currentValue;
-                    setValue(newValue);
-                    onChange?.(newValue);
-                    setOpen(false);
-                  }}
-                >
-                  {item.label}
-                  <Check
-                    className={cn(
-                      "ml-auto",
-                      value === item.value ? "opacity-100" : "opacity-0",
-                    )}
-                  />
-                </CommandItem>
-              ))}
-            </CommandGroup>
-          </CommandList>
-        </Command>
-      </PopoverContent>
-    </Popover>
+    <div className={cn("w-full", className)}>
+      <Popover
+        modal
+        open={open}
+        onOpenChange={(openValue) => {
+          onOpenChange?.(openValue);
+          setOpen(openValue);
+        }}
+      >
+        <PopoverTrigger disabled={disabled} asChild>
+          <Button
+            variant="outline"
+            aria-expanded={open}
+            className="h-11 w-full justify-between"
+            aria-roledescription="Combobox"
+          >
+            {selectedOption?.label ?? selectPlaceholder}
+            <ChevronsUpDown className="opacity-50" />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="p-0">
+          <Command>
+            <CommandInput
+              placeholder={selectPlaceholder}
+              className="h-9"
+              onValueChange={onChange}
+            />
+            <CommandList>
+              <CommandEmpty>No {moduleName ?? "item"} found.</CommandEmpty>
+              <CommandGroup>
+                {items.map((item) => (
+                  <CommandItem
+                    key={item.value}
+                    value={item.value}
+                    onSelect={(currentValue) => {
+                      const newValue =
+                        currentValue === value ? "" : currentValue;
+                      setOpen(false);
+                      onSelected?.(newValue);
+                    }}
+                  >
+                    {item.label}
+                    <Check
+                      className={cn(
+                        "ml-auto",
+                        value === item.value ? "opacity-100" : "opacity-0",
+                      )}
+                    />
+                  </CommandItem>
+                ))}
+                {Boolean(children) && (
+                  <CommandItem
+                    onSelect={() => {
+                      setOpen(false);
+                      onSelected?.("");
+                    }}
+                  >
+                    {children}
+                  </CommandItem>
+                )}
+              </CommandGroup>
+            </CommandList>
+          </Command>
+        </PopoverContent>
+      </Popover>
+    </div>
   );
 }

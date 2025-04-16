@@ -15,7 +15,7 @@ import { settingsSidebarNavItems } from "./settings.data";
 
 export function SettingsSidebar() {
   return (
-    <nav className="flex h-full w-85 flex-col gap-y-1 rounded-2xl bg-white px-5 py-7">
+    <nav className="flex h-full w-85 flex-col gap-y-1 overflow-y-auto rounded-2xl bg-white py-7 pr-2 pl-4">
       {settingsSidebarNavItems.map((item) => {
         return <ImsNavTab key={item.href} {...item} />;
       })}

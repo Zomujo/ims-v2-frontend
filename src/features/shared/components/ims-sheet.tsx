@@ -38,7 +38,7 @@ export function ImsSheet({
   className,
 }: Readonly<ImsSheetProps>) {
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
+    <Sheet modal open={open} onOpenChange={onOpenChange}>
       {trigger && <SheetTrigger asChild>{trigger}</SheetTrigger>}
       <SheetContent
         className={cn("inset-y-2 h-[98%] rounded-2xl md:max-w-md", className)}

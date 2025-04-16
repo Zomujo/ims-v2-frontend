@@ -1,5 +1,5 @@
 "use server";
-import { API_ENDPOINTS } from "@/lib/constant";
+import { API_ENDPOINTS_OLD } from "@/lib/constant";
 import { generateQueryParams } from "@/lib/utils";
 import { revalidateTag } from "next/cache";
 import {
@@ -23,11 +23,11 @@ export const changeAccountInfoAction = async ({
 }) => {
   try {
     const res = await imsApiWithAuth<AuthApiStandardResponse>({
-      url: API_ENDPOINTS.CHANGE_ACCOUNT_INFO,
+      url: API_ENDPOINTS_OLD.CHANGE_ACCOUNT_INFO,
       method: "PATCH",
       body: JSON.stringify({ fullName, phoneNumber }),
     });
-    revalidateTag(API_ENDPOINTS.USER_PROFILE);
+    revalidateTag(API_ENDPOINTS_OLD.USER_PROFILE);
     return res;
   } catch (error) {
     return error as AuthApiStandardResponse;
@@ -37,7 +37,7 @@ export const changeAccountInfoAction = async ({
 export const changeEmailAction = async (email: string) => {
   try {
     const res = await imsApiWithAuth<AuthApiStandardResponse>({
-      url: API_ENDPOINTS.CHANGE_EMAIL.SEND_MAIL,
+      url: API_ENDPOINTS_OLD.CHANGE_EMAIL.SEND_MAIL,
       method: "POST",
       body: JSON.stringify({ email }),
     });
@@ -50,7 +50,7 @@ export const changeEmailAction = async (email: string) => {
 export const changePassword = async (newPassword: string) => {
   try {
     const res = await imsApiWithAuth<AuthApiStandardResponse>({
-      url: API_ENDPOINTS.CHANGE_PASSWORD,
+      url: API_ENDPOINTS_OLD.CHANGE_PASSWORD,
       method: "PUT",
       body: JSON.stringify({ newPassword }),
     });
@@ -69,11 +69,11 @@ export const verifyChangeMailOtpAction = async ({
 }) => {
   try {
     const res = await imsApiWithAuth<AuthApiStandardResponse>({
-      url: API_ENDPOINTS.CHANGE_EMAIL.VERIFY_OTP,
+      url: API_ENDPOINTS_OLD.CHANGE_EMAIL.VERIFY_OTP,
       method: "POST",
       body: JSON.stringify({ code: otp, email }),
     });
-    revalidateTag(API_ENDPOINTS.USER_PROFILE);
+    revalidateTag(API_ENDPOINTS_OLD.USER_PROFILE);
     return res;
   } catch (error) {
     return error as AuthApiStandardResponse;
@@ -85,12 +85,12 @@ export const uploadAvatarAction = async (file: File) => {
   formData.append("file", file);
   try {
     const res = await imsApiWithAuth<AuthApiStandardResponse>({
-      url: API_ENDPOINTS.UPLOAD_PROFILE_PICTURE,
+      url: API_ENDPOINTS_OLD.UPLOAD_PROFILE_PICTURE,
       method: "PUT",
       body: formData,
       cache: "no-store",
     });
-    revalidateTag(API_ENDPOINTS.USER_PROFILE);
+    revalidateTag(API_ENDPOINTS_OLD.USER_PROFILE);
     return res;
   } catch (error) {
     return error as AuthApiStandardResponse;
@@ -102,7 +102,7 @@ export const getDepartmentsAction = async (
 ) => {
   const queryParams = generateQueryParams(searchParams);
   const res = await imsApiWithAuth<GetDepartmentAPIResponse>({
-    url: `${API_ENDPOINTS.DEPARTMENTS}${(searchParams ?? "") && "/?" + queryParams}`,
+    url: `${API_ENDPOINTS_OLD.DEPARTMENTS}${(searchParams ?? "") && "/?" + queryParams}`,
     method: "GET",
     next: {
       tags: [queryParams],
@@ -120,11 +120,11 @@ export const updateDepartmentAction = async ({
 }) => {
   try {
     const res = await imsApiWithAuth<AuthApiStandardResponse>({
-      url: `${API_ENDPOINTS.DEPARTMENTS}/${id}`,
+      url: `${API_ENDPOINTS_OLD.DEPARTMENTS}/${id}`,
       method: "PATCH",
       body: JSON.stringify({ name }),
     });
-    revalidateTag(API_ENDPOINTS.DEPARTMENTS);
+    revalidateTag(API_ENDPOINTS_OLD.DEPARTMENTS);
     return res;
   } catch (error) {
     return error as AuthApiStandardResponse;
@@ -134,10 +134,10 @@ export const updateDepartmentAction = async ({
 export const deleteDepartmentAction = async ({ id }: { id: string }) => {
   try {
     const res = await imsApiWithAuth<AuthApiStandardResponse>({
-      url: `${API_ENDPOINTS.DEPARTMENTS}/${id}`,
+      url: `${API_ENDPOINTS_OLD.DEPARTMENTS}/${id}`,
       method: "DELETE",
     });
-    revalidateTag(API_ENDPOINTS.DEPARTMENTS);
+    revalidateTag(API_ENDPOINTS_OLD.DEPARTMENTS);
     return res;
   } catch (error) {
     return error as AuthApiStandardResponse;
@@ -147,11 +147,11 @@ export const deleteDepartmentAction = async ({ id }: { id: string }) => {
 export const createDepartmentAction = async ({ name }: { name: string }) => {
   try {
     const res = await imsApiWithAuth<AuthApiStandardResponse>({
-      url: API_ENDPOINTS.DEPARTMENTS,
+      url: API_ENDPOINTS_OLD.DEPARTMENTS,
       method: "POST",
       body: JSON.stringify({ name }),
     });
-    revalidateTag(API_ENDPOINTS.DEPARTMENTS);
+    revalidateTag(API_ENDPOINTS_OLD.DEPARTMENTS);
     return res;
   } catch (error) {
     return error as AuthApiStandardResponse;
@@ -161,7 +161,7 @@ export const createDepartmentAction = async ({ name }: { name: string }) => {
 export const getUsersAction = async (searchParams?: GenerateQueryParams) => {
   const queryParams = generateQueryParams(searchParams);
   const res = await imsApiWithAuth<GetUsersAPIResponse>({
-    url: `${API_ENDPOINTS.ADMIN.USERS}${searchParams ? "/?" + queryParams : ""}`,
+    url: `${API_ENDPOINTS_OLD.ADMIN.USERS}${searchParams ? "/?" + queryParams : ""}`,
     method: "GET",
     next: {
       tags: [queryParams],
@@ -171,7 +171,7 @@ export const getUsersAction = async (searchParams?: GenerateQueryParams) => {
 };
 export const getUserAction = async ({ id }: { id: string }) => {
   const res = await imsApiWithAuth<AuthUserProfileActionResponse>({
-    url: `${API_ENDPOINTS.ADMIN.USERS}/${id}`,
+    url: `${API_ENDPOINTS_OLD.ADMIN.USERS}/${id}`,
     method: "GET",
     next: {
       tags: [id],
@@ -183,7 +183,8 @@ export const getUserAction = async ({ id }: { id: string }) => {
 export const getRolesAction = async (searchParams?: GenerateQueryParams) => {
   const queryParams = generateQueryParams(searchParams);
   const res = await imsApiWithAuth<GetUserRolesAPIResponse>({
-    url: API_ENDPOINTS.ADMIN.ROLES + (searchParams ? "/?" + queryParams : ""),
+    url:
+      API_ENDPOINTS_OLD.ADMIN.ROLES + (searchParams ? "/?" + queryParams : ""),
     method: "GET",
   });
   return res;
@@ -192,11 +193,11 @@ export const getRolesAction = async (searchParams?: GenerateQueryParams) => {
 export const addUserAction = async <T>(newUser: T) => {
   try {
     const res = await imsApiWithAuth<AuthApiStandardResponse>({
-      url: API_ENDPOINTS.ADMIN.USER,
+      url: API_ENDPOINTS_OLD.ADMIN.USER,
       method: "POST",
       body: JSON.stringify(newUser),
     });
-    revalidateTag(API_ENDPOINTS.ADMIN.USERS);
+    revalidateTag(API_ENDPOINTS_OLD.ADMIN.USERS);
     return res;
   } catch (error) {
     return error as AuthApiStandardResponse;
@@ -212,11 +213,11 @@ export const editUserRoleAction = async ({
 }) => {
   try {
     const res = await imsApiWithAuth<AuthApiStandardResponse>({
-      url: API_ENDPOINTS.ADMIN.UPDATE_USER_ROLE.replace("[id]", id),
+      url: API_ENDPOINTS_OLD.ADMIN.UPDATE_USER_ROLE.replace("[id]", id),
       method: "PATCH",
       body: JSON.stringify(newUserRole),
     });
-    revalidateTag(API_ENDPOINTS.ADMIN.USERS);
+    revalidateTag(API_ENDPOINTS_OLD.ADMIN.USERS);
     return res;
   } catch (error) {
     return error as AuthApiStandardResponse;
@@ -226,10 +227,10 @@ export const editUserRoleAction = async ({
 export const deactivateUserAction = async ({ id }: { id: string }) => {
   try {
     const res = await imsApiWithAuth<AuthApiStandardResponse>({
-      url: API_ENDPOINTS.ADMIN.DEACTIVATE_USER.replace("[id]", id),
+      url: API_ENDPOINTS_OLD.ADMIN.DEACTIVATE_USER.replace("[id]", id),
       method: "PATCH",
     });
-    revalidateTag(API_ENDPOINTS.ADMIN.USERS);
+    revalidateTag(API_ENDPOINTS_OLD.ADMIN.USERS);
     return res;
   } catch (error) {
     return error as AuthApiStandardResponse;
@@ -239,10 +240,10 @@ export const deactivateUserAction = async ({ id }: { id: string }) => {
 export const activateUserAction = async ({ id }: { id: string }) => {
   try {
     const res = await imsApiWithAuth<AuthApiStandardResponse>({
-      url: API_ENDPOINTS.ADMIN.ACTIVATE_USER.replace("[id]", id),
+      url: API_ENDPOINTS_OLD.ADMIN.ACTIVATE_USER.replace("[id]", id),
       method: "PATCH",
     });
-    revalidateTag(API_ENDPOINTS.ADMIN.USERS);
+    revalidateTag(API_ENDPOINTS_OLD.ADMIN.USERS);
     return res;
   } catch (error) {
     return error as AuthApiStandardResponse;

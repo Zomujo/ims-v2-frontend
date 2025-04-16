@@ -8,6 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/features/ui/select";
+import { cn } from "@/lib/utils";
 
 type ImsSelectProps = {
   options: {
@@ -19,6 +20,7 @@ type ImsSelectProps = {
   defaultValue?: string;
   onChange?: (value: string) => void;
   value?: string;
+  disabled?: boolean;
 };
 
 export function ImsSelect({
@@ -26,12 +28,18 @@ export function ImsSelect({
   className,
   moduleName,
   defaultValue,
+  disabled,
   onChange,
   ...props
 }: Readonly<ImsSelectProps>) {
   return (
-    <Select defaultValue={defaultValue} onValueChange={onChange} {...props}>
-      <SelectTrigger className={className}>
+    <Select
+      disabled={disabled}
+      defaultValue={defaultValue}
+      onValueChange={onChange}
+      {...props}
+    >
+      <SelectTrigger className={cn("w-full outline-none", className)}>
         <SelectValue placeholder={`Select ${moduleName}...`} />
       </SelectTrigger>
       <SelectContent>

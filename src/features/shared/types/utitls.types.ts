@@ -20,6 +20,9 @@ export type GenerateQueryParams = Partial<{
   orderBy: string;
   orderDirection: "ASC" | "DESC";
   dateRange: DateRangeQueryOptions;
+  todaySales: boolean;
+  status: "PAID" | "UNPAID" | "LOW" | "STOCKED" | "OUT_OF_STOCK";
+  [key: string]: string | number | boolean;
 }>;
 
 export enum CRUDACTION {

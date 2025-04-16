@@ -35,7 +35,7 @@ export default function SidebarLayout() {
 
   return (
     <Sidebar
-      className="fixed z-10 h-full bg-white"
+      className="h-full bg-white pr-0"
       variant="inset"
       collapsible="icon" // Collapses to icons when closed
     >

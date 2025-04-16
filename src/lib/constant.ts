@@ -1,6 +1,6 @@
 import { PermissionModules } from "@/features/shared/types/auth-action.types";
 
-export const API_ENDPOINTS = {
+export const API_ENDPOINTS_OLD = {
   LOGIN: "/auth/login",
   CREATE_ACCOUNT: "/auth/signup",
   REFRESH_TOKEN: "/auth/refresh?token=",
@@ -26,6 +26,9 @@ export const API_ENDPOINTS = {
     UPDATE_USER_ROLE: "/admin/users/[id]/role",
     ROLES: "/admin/roles",
   },
+  SALES: "/sales",
+  SALES_ITEMS: "/sales/items",
+  PATIENTS: "/patients",
 };
 
 export const AUTH_PAGE_ROUTES = {
@@ -44,6 +47,10 @@ export const PAGE_ROUTES = {
     NOTIFICATIONS: "/settings/notifications",
     DEPARTMENTS: "/settings/departments",
     USERS: "/settings/users",
+  },
+  SALES: {
+    VIEW: "/sales",
+    RECORD: "/sales/record",
   },
 };
 

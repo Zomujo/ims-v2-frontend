@@ -6,6 +6,7 @@ import { ComponentProps, PropsWithChildren } from "react";
 export function ImsPopover({
   children,
   trigger,
+  triggerProps,
   className,
   contentAlign,
   contentClassName,
@@ -13,6 +14,7 @@ export function ImsPopover({
 }: Readonly<
   PropsWithChildren<{
     trigger: React.ReactNode;
+    triggerProps?: ComponentProps<typeof PopoverTrigger>;
     className?: string;
     contentAlign?: ComponentProps<typeof PopoverContent>["align"];
     contentClassName?: ComponentProps<typeof PopoverContent>["className"];
@@ -21,7 +23,9 @@ export function ImsPopover({
 >) {
   return (
     <Popover onOpenChange={onOpenChange}>
-      <PopoverTrigger className={className}>{trigger}</PopoverTrigger>
+      <PopoverTrigger className={className} {...triggerProps}>
+        {trigger}
+      </PopoverTrigger>
       <PopoverContent
         align={contentAlign}
         className={cn("w-max p-0", contentClassName)}
