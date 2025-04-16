@@ -17,7 +17,7 @@ export function ImsButton({
 }) {
   return (
     <Button {...props}>
-      {startIcon && <span className="mr-2">{startIcon}</span>}
+      {startIcon && <span>{startIcon}</span>}
       {isLoading ? (
         <>
           <span>{isLoadingLabel}</span>
@@ -26,7 +26,7 @@ export function ImsButton({
       ) : (
         children
       )}
-      {endIcon && <span className="ml-2">{endIcon}</span>}
+      {endIcon && <span>{endIcon}</span>}
     </Button>
   );
 }

@@ -31,6 +31,25 @@ export enum UserStatus {
   INACTIVE = "Inactive",
 }
 
+export enum PermissionModules {
+  USERS = "users",
+  ITEMS = "items",
+  SUPPLIERS = "suppliers",
+  SALES = "sales",
+  REPORTS = "reports",
+  ITEMS_CATEGORIES = "items_categories",
+  ITEMS_ORDERS = "items_orders",
+  STOCK_ADJUSTMENT = "stock_adjustment",
+  DEPARTMENTS = "departments",
+  DEPARTMENT_REQUESTS = "department_requests",
+}
+
+export enum PermissionActions {
+  READ = "READ",
+  WRITE = "WRITE",
+  DELETE = "DELETE",
+}
+
 export type AuthActionProps = {
   fullName: string;
   email: string;
@@ -42,7 +61,7 @@ export type AuthActionProps = {
   code: number;
 };
 
-export type AuthIMSUser = {
+export type AuthIMSLoginObj = {
   id: string;
   fullName: string;
   email: string;
@@ -60,7 +79,7 @@ export type AuthIMSUser = {
 };
 
 export type AuthLoginActionResponse = Pick<
-  IMSApiActionResponse<AuthIMSUser>,
+  IMSApiActionResponse<AuthIMSLoginObj>,
   "data"
 >;
 
@@ -74,3 +93,24 @@ export type AuthApiStandardResponse = {
   statusCode: number;
   error: string;
 };
+
+export type AuthIMSUserProfile = {
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+  imageUrl: string | null;
+  fullName: string;
+  email: string;
+  phoneNumber: string | null;
+  departmentId: string | null;
+  role: string;
+  permissions: string[];
+  status: UserStatus;
+  facility: {
+    id: string;
+    name: string;
+  };
+};
+
+export type AuthUserProfileActionResponse =
+  IMSApiActionResponse<AuthIMSUserProfile>;

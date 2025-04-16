@@ -1,4 +1,7 @@
-import { AuthFormHeading, AuthHeader } from "@/features/auth/auth-components";
+import {
+  AuthFormHeading,
+  AuthHeader,
+} from "@/features/auth/auth-components-server";
 import { GobackButton } from "@/features/auth/auth-components-client";
 import { ForgotPasswordForm } from "@/features/auth/auth-forgot-password";
 

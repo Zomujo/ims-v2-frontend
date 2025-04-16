@@ -1,8 +1,8 @@
-import { AuthIMSUser } from "@/features/shared/types/auth-action.types";
+import { AuthIMSLoginObj } from "@/features/shared/types/auth-action.types";
 import { NextResponse } from "next/server";
 import { AUTH_PAGE_ROUTES } from "../constant";
 
-export const getUserStatusFromToken = (token: AuthIMSUser) => {
+export const getUserStatusFromToken = (token: AuthIMSLoginObj) => {
   return token.status;
 };
 export const redirectPendingUsers = (url: string) => {

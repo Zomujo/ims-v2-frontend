@@ -1,4 +1,7 @@
-import { AuthFormHeading, AuthHeader } from "@/features/auth/auth-components";
+import {
+  AuthFormHeading,
+  AuthHeader,
+} from "@/features/auth/auth-components-server";
 import { VerifyCodeForm } from "@/features/auth/auth-verify-code";
 import { AUTH_PAGE_ROUTES } from "@/lib/constant";
 

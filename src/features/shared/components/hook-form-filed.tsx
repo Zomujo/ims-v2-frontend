@@ -10,7 +10,7 @@ import { Control, ControllerProps, FieldValues } from "react-hook-form";
 
 type HookFormFieldProps = {
   formControl: Control<FieldValues>;
-  label: string;
+  label?: string | React.ReactNode;
   name: string;
   className?: string;
   renderInput: ControllerProps<FieldValues>["render"];
@@ -29,7 +29,7 @@ export default function HookFormField({
       name={name}
       render={(field) => (
         <FormItem className={cn("gap-3", className)}>
-          <FormLabel>{label}</FormLabel>
+          {label && <FormLabel>{label}</FormLabel>}
           <FormControl>{renderInput(field)}</FormControl>
           <FormMessage />
         </FormItem>

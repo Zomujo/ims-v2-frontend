@@ -1,14 +1,23 @@
 "use server";
 // eslint-disable @typescript-eslint/no-unused-vars
 
-import { API_ENDPOINTS } from "@/lib/constant";
+import { API_ENDPOINTS_OLD } from "@/lib/constant";
 import {
   AuthActionProps,
   AuthApiStandardResponse,
   AuthCreateAccountActionApiBody,
   AuthLoginActionResponse,
+  AuthUserProfileActionResponse,
 } from "../types/auth-action.types";
 import { imsApiWithAuth, imsApiWithoutAuth } from "./ims-api.action";
+
+export const authUserProfileAction = async () => {
+  const res = await imsApiWithAuth<AuthUserProfileActionResponse>({
+    url: API_ENDPOINTS_OLD.USER_PROFILE,
+    method: "GET",
+  });
+  return res?.data;
+};
 
 export const authLoginAction = async ({
   email,
@@ -16,7 +25,7 @@ export const authLoginAction = async ({
 }: Pick<AuthActionProps, "email" | "password">) => {
   try {
     const res = await imsApiWithoutAuth<AuthLoginActionResponse>({
-      url: API_ENDPOINTS.LOGIN,
+      url: API_ENDPOINTS_OLD.LOGIN,
       method: "POST",
       body: JSON.stringify({ email, password }),
     });
@@ -38,7 +47,7 @@ export const authCreateAccountAction = async ({
 >) => {
   try {
     const res = await imsApiWithoutAuth<AuthLoginActionResponse>({
-      url: API_ENDPOINTS.CREATE_ACCOUNT,
+      url: API_ENDPOINTS_OLD.CREATE_ACCOUNT,
       method: "POST",
       body: JSON.stringify({
         email,
@@ -61,7 +70,7 @@ export const authChangePasswordAction = async ({
 }: Pick<AuthActionProps, "newPassword">) => {
   try {
     const res = await imsApiWithAuth<AuthApiStandardResponse>({
-      url: API_ENDPOINTS.CHANGE_PASSWORD,
+      url: API_ENDPOINTS_OLD.CHANGE_PASSWORD,
       method: "PUT",
       body: JSON.stringify({ newPassword }),
     });
@@ -76,7 +85,7 @@ export const authRefreshTokenAction = async (
 ) => {
   try {
     const res = await imsApiWithoutAuth<AuthLoginActionResponse>({
-      url: API_ENDPOINTS.REFRESH_TOKEN + refreshToken,
+      url: API_ENDPOINTS_OLD.REFRESH_TOKEN + refreshToken,
       method: "GET",
     });
     return res.data;
@@ -90,7 +99,7 @@ export const authForgotPasswordSendMailAction = async (
 ) => {
   try {
     const res = await imsApiWithoutAuth<AuthApiStandardResponse>({
-      url: API_ENDPOINTS.FORGOT_PASSWORD.SEND_MAIL,
+      url: API_ENDPOINTS_OLD.FORGOT_PASSWORD.SEND_MAIL,
       method: "POST",
       body: JSON.stringify({ email }),
     });
@@ -106,7 +115,7 @@ export const authForgotPasswordVerifyCodeAction = async ({
 }: Pick<AuthActionProps, "email" | "code">) => {
   try {
     const res = await imsApiWithoutAuth<AuthApiStandardResponse>({
-      url: API_ENDPOINTS.FORGOT_PASSWORD.VERIFY_TOKEN,
+      url: API_ENDPOINTS_OLD.FORGOT_PASSWORD.VERIFY_TOKEN,
       method: "POST",
       body: JSON.stringify({ email, code }),
     });
@@ -122,7 +131,7 @@ export const authForgotPasswordResetPasswordAction = async ({
 }: Pick<AuthActionProps, "email" | "newPassword">) => {
   try {
     const res = await imsApiWithoutAuth<AuthApiStandardResponse>({
-      url: API_ENDPOINTS.FORGOT_PASSWORD.RESET_PASSWORD,
+      url: API_ENDPOINTS_OLD.FORGOT_PASSWORD.RESET_PASSWORD,
       method: "PATCH",
       body: JSON.stringify({ email, newPassword }),
     });
