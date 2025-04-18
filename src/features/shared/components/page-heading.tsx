@@ -23,7 +23,7 @@ export default function PageHeading({
           "text-xl": routeLevel === 2,
         })}
       >
-        {id ? "Edit" : title}
+        {id ? "Edit" : title.replace(/-/g, " ")}
       </h2>
       {description && (
         <p className="mt-4 text-sm text-gray-500">{description}</p>

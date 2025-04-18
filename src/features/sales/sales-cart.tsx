@@ -74,7 +74,7 @@ export default function SalesCart() {
       });
       setSalesItems(mapSaleItems(res.saleItems as SaleItem[]) ?? []);
     };
-    if (!isEditMode || !salesId) return;
+    if (!isEditMode) return;
     const handleFetchSale = async () => {
       const oneSale = await getSale(salesId as string);
       return oneSale.data;

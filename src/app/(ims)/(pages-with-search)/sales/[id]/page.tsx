@@ -10,7 +10,7 @@ export default async function NewSalePage({
   const { id } = await params;
   return (
     <>
-      <PageHeading id={id} routeLevel={2} />
+      <PageHeading id={id === "record" ? "" : id} routeLevel={2} />
       <PageBreadcrumb />
       <SalesRecord />
     </>

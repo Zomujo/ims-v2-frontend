@@ -52,10 +52,6 @@ export const settingPagesDescription = {
     title: "Notifications",
     description: "Notification settings for the application",
   },
-  record: {
-    title: "Record new sale",
-    description: "",
-  },
 } as const;
 
 export const settingsAccountInfoFields = [

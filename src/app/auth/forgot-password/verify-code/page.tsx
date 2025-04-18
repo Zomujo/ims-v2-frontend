@@ -5,7 +5,7 @@ import {
 import { VerifyCodeForm } from "@/features/auth/auth-verify-code";
 import { AUTH_PAGE_ROUTES } from "@/lib/constant";
 
-export default async function VerifyCode() {
+export default function VerifyCode() {
   return (
     <section className="flex flex-col items-center overflow-y-auto pt-6">
       <div className="flex w-[90%] flex-1 flex-col sm:w-[65%]">

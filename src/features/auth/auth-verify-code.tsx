@@ -16,6 +16,7 @@ import { verifyCodeSchema } from "./auth.schemas";
 export function VerifyCodeForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const email = searchParams.get("email") ?? "";
   const form = useHookForm({
     resolver: verifyCodeSchema,
     defaultValues: {
@@ -24,7 +25,6 @@ export function VerifyCodeForm() {
   });
 
   const handleSubmitFn = async (data: unknown) => {
-    const email = searchParams.get("email") ?? "";
     const otpCode = (data as z.infer<typeof verifyCodeSchema>).otpCode;
     const res = authForgotPasswordVerifyCodeAction({
       email,

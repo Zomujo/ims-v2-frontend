@@ -36,7 +36,10 @@ export default function SalesItemList({
               {
                 label: "Add",
                 icon: "mdi:plus",
-                action: () => setSalesItem([...addedSalesItems, item]),
+                action: () => {
+                  console.log("added item>>>>>>>", item);
+                  setSalesItem([...addedSalesItems, item]);
+                },
               },
             ],
             addedSalesItems,

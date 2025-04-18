@@ -15,6 +15,9 @@ const nextConfig: NextConfig = withPWA({
     dirs: ["src"],
     ignoreDuringBuilds: true,
   },
+  experimental: {
+    missingSuspenseWithCSRBailout: false,
+  },
 } as NextConfig);
 
 export default nextConfig;
