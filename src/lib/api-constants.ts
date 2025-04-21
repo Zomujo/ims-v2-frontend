@@ -45,6 +45,32 @@ export const API_ENDPOINTS = {
   ITEM_CATEGORIES: "/item-categories",
   ITEM_CATEGORY: "/item-categories/:id",
 
+  // Items
+  ITEMS: "/items",
+  ITEM: "/items/:id",
+  ITEMS_ADD_BATCH: "/items/add-batch",
+  ITEMS_BATCHES_NO_PAGINATE: "/items/batches/:itemId/no-paginate",
+  ITEM_BATCHES: "/items/:id/batches",
+  ITEM_BATCH: "/items/batches/:id",
+  ITEM_EDIT_BATCH: "/items/edit-batch/:id",
+  ITEMS_NO_PAGINATE: "/items/no-paginate",
+  ITEM_ANALYTICS: "/items/analytics/:id",
+  ITEM_COUNTS: "/items/counts",
+  ITEM_ADJUST_PRICES: "/items/adjust-prices/:id",
+
+  // Department Item Requests Endpoints
+  ITEM_REQUESTS: "/item-requests",
+  ITEM_REQUEST: "/item-requests/:id",
+
+  // Item Orders Endpoints
+  ITEM_ORDERS: "/item-orders",
+  ITEM_ORDER: "/item-orders/:id",
+  ITEM_ORDER_STATE: "/item-orders/state/:id",
+
+  // Stock Adjustments Endpoints
+  STOCK_ADJUSTMENTS: "/stock-adjustments",
+  STOCK_ADJUSTMENT: "/stock-adjustments/:id",
+
   // Report
   REPORTS: "/reports",
   REPORT: "/reports/:id",
@@ -95,8 +121,17 @@ export const API_ENDPOINT_TAGS = {
   // Supplier
   SUPPLIERS: "api-v1-suppliers",
 
+  // Items
+  ITEMS: "api-v1-items",
+  ITEMS_BATCHES: "api-v1-items-batches",
+
   // Item Category
   ITEM_CATEGORIES: "api-v1-item-categories",
+
+  // New Tags
+  ITEM_REQUESTS: "api-v1-item-requests",
+  ITEM_ORDERS: "api-v1-item-orders",
+  STOCK_ADJUSTMENTS: "api-v1-stock-adjustments",
 
   // Report
   REPORTS: "api-v1-reports",

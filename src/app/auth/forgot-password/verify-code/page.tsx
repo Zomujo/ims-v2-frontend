@@ -4,8 +4,9 @@ import {
 } from "@/features/auth/auth-components-server";
 import { VerifyCodeForm } from "@/features/auth/auth-verify-code";
 import { AUTH_PAGE_ROUTES } from "@/lib/constant";
+import { Suspense } from "react";
 
-export default async function VerifyCode() {
+export default function VerifyCode() {
   return (
     <section className="flex flex-col items-center overflow-y-auto pt-6">
       <div className="flex w-[90%] flex-1 flex-col sm:w-[65%]">
@@ -19,7 +20,9 @@ export default async function VerifyCode() {
           description="Complete your details to get started."
           className="mt-[12%]"
         />
-        <VerifyCodeForm />
+        <Suspense fallback={<div>Loading....</div>}>
+          <VerifyCodeForm />
+        </Suspense>
       </div>
     </section>
   );

@@ -44,8 +44,10 @@ export function DepartmentManagementSettings({
     const id = getId(CRUDACTION.DELETE);
     const res = deleteDepartmentAction({ id });
     handleRequestState({ res, loadingMsg: "Deleting..." });
+    res.then(() => {
+      removeSearchParams(UI_STATE);
+    });
     await res;
-    removeSearchParams(UI_STATE);
   };
 
   const handleEdit = () => {
@@ -105,11 +107,13 @@ function DepartmentForm({ defaultValues }: Readonly<DepartmentFormProps>) {
         ? "Updating department..."
         : "Adding department...",
     });
+    res.then(() => {
+      removeSearchParams(UI_STATE);
+      if (defaultValues) {
+        router.refresh();
+      }
+    });
     await res;
-    removeSearchParams(UI_STATE);
-    if (defaultValues) {
-      router.refresh();
-    }
   };
 
   return (

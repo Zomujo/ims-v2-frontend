@@ -52,6 +52,33 @@ export const PAGE_ROUTES = {
     VIEW: "/sales",
     RECORD: "/sales/record",
   },
+  ITEMS: {
+    VIEW: "/items",
+    CREATE: "/items/create",
+    BATCHES: "/items/:itemId/batches",
+  },
+  ITEM_BATCHES: "/batches",
+  SUPPLIERS: {
+    VIEW: "/suppliers",
+    CREATE: "/suppliers/create",
+  },
+  CATEGORIES: {
+    VIEW: "/categories",
+    CREATE: "/categories/create",
+  },
+  STOCK_ADJUSTMENT: {
+    VIEW: "/stock-adjustment",
+    CREATE: "/stock-adjustment/create",
+  },
+  ITEM_ORDERS: {
+    VIEW: "/item-orders",
+    CREATE: "/item-orders/create",
+  },
+  DEPARTMENTS_REQUESTS: {
+    VIEW: "/department-requests",
+    CREATE: "/department-requests/create",
+  },
+  REPORTS: "/reports",
 };
 
 export const ACCESS_LEVELS = ["READ", "READ_WRITE", "READ_WRITE_DELETE"];

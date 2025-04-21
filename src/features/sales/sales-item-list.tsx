@@ -10,16 +10,14 @@ import { Button } from "../ui/button";
 import { salesItemLocalStorageKey, salesItemsColumns } from "./sales.data";
 import { ScrollArea } from "../ui/scroll-area";
 import { useLocalStorage } from "usehooks-ts";
+import useFetchData from "../shared/hooks/use-fetch-data";
+import { getSalesItemsAction } from "../shared/actions/sales.action";
 
-type SalesItemListProps = {
-  salesItems: SaleItem[];
-  totalPages: number;
-};
-
-export default function SalesItemList({
-  salesItems,
-  totalPages,
-}: Readonly<SalesItemListProps>) {
+export default function SalesItemList() {
+  const { data } = useFetchData({
+    fetchFn: getSalesItemsAction,
+  });
+  const salesItems = data?.rows ?? [];
   const [addedSalesItems, setSalesItem] = useLocalStorage<SaleItem[]>(
     salesItemLocalStorageKey,
     [],
@@ -29,14 +27,16 @@ export default function SalesItemList({
     <ScrollArea className="h-[87%] rounded-2xl bg-white pt-5 pr-4">
       <ImsSearchBar className="ml-4 w-full" />
       <IMSDataTable<SaleItem, unknown>
-        totalPages={totalPages}
+        totalPages={data?.totalPages ?? 0}
         columns={salesItemsColumns.concat(
           getActionColumn<SaleItem, unknown>({
             actions: (item) => [
               {
                 label: "Add",
                 icon: "mdi:plus",
-                action: () => setSalesItem([...addedSalesItems, item]),
+                action: () => {
+                  setSalesItem([...addedSalesItems, item]);
+                },
               },
             ],
             addedSalesItems,

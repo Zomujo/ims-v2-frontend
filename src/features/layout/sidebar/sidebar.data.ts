@@ -11,7 +11,7 @@ export const generalTabs = [
       {
         name: "Items",
         icon: "solar:jar-of-pills-bold-duotone",
-        link: "/drugs",
+        link: "/items",
         permission: "items",
       },
       {
@@ -33,9 +33,9 @@ export const generalTabs = [
     icon: "solar:cart-large-bold-duotone",
     subs: [
       {
-        name: "Drug orders",
+        name: "Item orders",
         icon: "solar:box-bold-duotone",
-        link: "/drug-orders",
+        link: "/item-orders",
         permission: "item_orders",
       },
       {
@@ -59,13 +59,13 @@ export const generalTabs = [
     permission: "department_requests",
     forFacility: true,
   },
-  {
-    name: "Stock Requests",
-    icon: "solar:box-bold-duotone",
-    link: "/item-requests",
-    permission: "department_requests",
-    forDepartment: true,
-  },
+  // {
+  //   name: "Stock Requests",
+  //   icon: "solar:box-bold-duotone",
+  //   link: "/item-requests",
+  //   permission: "department_requests",
+  //   forDepartment: true,
+  // },
   {
     name: "Reports",
     icon: "solar:graph-up-bold-duotone",

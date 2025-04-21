@@ -33,11 +33,11 @@ export function ResetPasswordForm() {
       ? authForgotPasswordResetPasswordAction({ email, newPassword })
       : authChangePasswordAction({ newPassword });
     handleRequestState({ res, loadingMsg: "Resetting password..." });
-    if ((await res)?.statusCode === 200) {
+    res.then(() => {
       searchParams.delete("email");
       router.push(email ? AUTH_PAGE_ROUTES.LOG_IN : PAGE_ROUTES.DASHBOARD);
-    }
-    return res;
+    });
+    await res;
   };
 
   return (
@@ -77,7 +77,7 @@ function AuthLoginActions({
   return (
     <ImsButton
       isLoading={isSubmitting}
-      isLoadingLabel="Logging in..."
+      isLoadingLabel="Resetting password..."
       variant="imsPrimary"
       className="order-last h-12 cursor-pointer justify-self-end md:order-none"
       type="submit"

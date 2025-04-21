@@ -65,6 +65,20 @@ export const generateQueryParams = (params: GenerateQueryParams = {}) => {
     .join("&");
 };
 
+export const generateUrlWithQueryParams = (
+  baseUrl: string,
+  params: GenerateQueryParams,
+) => {
+  const searchParams = new URLSearchParams();
+
+  (Object.keys(params) as Array<keyof GenerateQueryParams>)
+    .filter((key) => params[key])
+    .forEach((key) => {
+      searchParams.append(key as string, params[key] as string);
+    });
+  return baseUrl + "?" + searchParams.toString();
+};
+
 export const updateRouteHashFragment = (fragment: string | null) => {
   if (fragment) {
     window.location.hash = fragment;
@@ -89,5 +103,14 @@ export const formateCurrency = (ammount: string | number) => {
   return ammount?.toLocaleString("en-US", {
     style: "currency",
     currency: "GHC",
+  });
+};
+
+export const formateDate = (date: string | number | Date) => {
+  const newDate = new Date(date);
+  return newDate.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
   });
 };
