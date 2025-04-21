@@ -15,6 +15,11 @@ export type ApiErrorResponse = {
   error?: string;
 };
 
+export type IdData = {
+  id: string;
+  name: string;
+};
+
 export type GetNotificationDto = {
   id: string;
   createdAt: string;
@@ -210,13 +215,136 @@ export type UpdateSupplierDto = {
   mobileMoneyPhoneNumber?: string;
 };
 
+export enum ITEMS_STATUS {
+  LOW = "LOW",
+  STOCKED = "STOCKED",
+  OUT_OF_STOCK = "OUT_OF_STOCK",
+}
+
+export type ItemsDto = {
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+  name: string;
+  totalStock: number;
+  status: ITEMS_STATUS;
+  category: Pick<ItemCategoryResponse, "name" | "id">;
+};
+
+export type CreateItemDto = {
+  name: string;
+  stockQuantity: number;
+  categoryId: string;
+  price: number;
+  sellingPrice?: number;
+};
+
+export type OneItem = {
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+  name: string;
+  stockQuantity: number;
+  categoryId: string;
+  price: number;
+  sellingPrice?: number;
+  status: "LOW" | "STOCKED" | "OUT_OF_STOCK";
+};
+
+export type CreateBatchDto = {
+  itemId: string;
+  batchNumber: string;
+  quantity: number;
+  expiryDate: string;
+  manufacturingDate?: string;
+};
+
+export type OneBatch = {
+  id: string;
+  itemId: string;
+  batchNumber: string;
+  quantity: number;
+  expiryDate: string;
+  manufacturingDate?: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type BatchesNoPaginate = {
+  id: string;
+  batchNumber: string;
+  quantity: number;
+  expiryDate: string;
+};
+
+export type BatchResponseDto = {
+  id: string;
+  batchNumber: string;
+  quantity: number;
+  supplier: IdData;
+  createdAt: string;
+  updatedAt: string;
+  validity: string;
+};
+
+export type UpdateBatchDto = {
+  batchNumber?: string;
+  quantity?: number;
+  expiryDate?: string;
+  manufacturingDate?: string;
+};
+
+export type GetNoPaginateDto = {
+  id: string;
+  name: string;
+  stockQuantity: number;
+  status: "LOW" | "STOCKED" | "OUT_OF_STOCK";
+};
+
+export type ItemAnalytics = {
+  id: string;
+  totalSales: number;
+  stockMovements: number;
+  lowStockAlerts: number;
+  lastUpdated: string;
+};
+
+export type ItemCounts = {
+  totalItems: {
+    count: number;
+    changeType: "INCREASE" | "DECREASE";
+    percentageDifference: number;
+  };
+  lowStocked: number;
+  outOfStock: number;
+  highStocked: number;
+  totalStock: number;
+};
+
+export type UpdateItemDto = {
+  name?: string;
+  stockQuantity?: number;
+  categoryId?: string;
+  price?: number;
+  sellingPrice?: number;
+};
+
+export type AdjustPriceDto = {
+  price: number;
+  sellingPrice?: number;
+};
+
 export type DeleteItemsDto = {
   ids: string[];
 };
 
+export enum ITEMS_CATEGORIES_STATUS {
+  ACTIVE = "ACTIVE",
+  DEACTIVATED = "DEACTIVATED",
+}
 export type ItemCategoryResponse = {
   name: string;
-  status: "ACTIVE" | "DEACTIVATED";
+  status: ITEMS_CATEGORIES_STATUS;
   itemCount: number;
   id: string;
   createdAt: string;
@@ -366,6 +494,164 @@ export type GetSaleDto = {
   saleItems: GetSalesItemsDto[];
 };
 
+export enum ItemRequestStatus {
+  PENDING = "PENDING",
+  ACCEPTED = "ACCEPTED",
+  DELIVERED = "DELIVERED",
+  CANCELLED = "CANCELLED",
+}
+
+// Enums for Item Orders
+export enum ItemOrderStatus {
+  REQUESTED = "requested",
+  DRAFT = "draft",
+  CANCELLED = "cancelled",
+  DELIVERING = "delivering",
+  RECEIVED = "received",
+}
+
+// Enums for Stock Adjustments
+export enum StockAdjustmentType {
+  REDUCTION = "REDUCTION",
+  INCREMENT = "INCREMENT",
+}
+
+export enum StockAdjustmentStatus {
+  SUBMITTED = "SUBMITTED",
+  ADJUSTED = "ADJUSTED",
+  REJECTED = "REJECTED",
+}
+
+// Types for Department Item Requests
+export type CreateDepartmentRequestDto = {
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+  itemId: string;
+  departmentId: string;
+  quantity: number;
+  additionalNotes?: string;
+  requestNumber: string;
+  status: ItemRequestStatus;
+  facilityId: string;
+  deletedAt: string | null;
+  deletedBy: string | null;
+};
+
+export type GetItemRequestsResponseDto = {
+  id: string;
+  quantity: number;
+  requestNumber: string;
+  status: ItemRequestStatus;
+  itemId: string;
+  itemName: string;
+  dateRequested: string;
+};
+
+export type GetSpecificRequestResponseDto = {
+  id: string;
+  quantity: number;
+  additionalNotes?: string;
+  status: ItemRequestStatus;
+  item: IdData;
+};
+
+export type UpdateDepartmentRequestDto = {
+  itemId?: string;
+  quantity?: number;
+  additionalNotes?: string;
+};
+
+// Types for Item Orders
+export type CreateItemOrderDto = {
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+  supplierId: string;
+  itemId: string;
+  quantity: number;
+  orderNumber: string;
+  status: ItemOrderStatus;
+  expectedDeliveryDate?: string;
+  notes?: string;
+};
+
+export type GetItemOrdersResponseDto = {
+  id: string;
+  orderNumber: string;
+  status: ItemOrderStatus;
+  supplier: IdData;
+  item: IdData;
+  quantity: number;
+  expectedDeliveryDate?: string;
+  createdAt: string;
+  date: string;
+};
+
+export type GetItemOrderResponseDto = {
+  id: string;
+  orderNumber: string;
+  status: ItemOrderStatus;
+  supplierId: string;
+  itemId: string;
+  quantity: number;
+  expectedDeliveryDate?: string;
+  notes?: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type UpdateItemOrderDto = {
+  supplierId?: string;
+  itemId?: string;
+  quantity?: number;
+  expectedDeliveryDate?: string;
+  notes?: string;
+};
+
+export type ChangeOrderStatusDto = {
+  status: ItemOrderStatus;
+};
+
+// Types for Stock Adjustments
+export type CreateStockAdjustmentDto = {
+  itemId: string;
+  quantity: number;
+  type: StockAdjustmentType;
+  reason: string;
+  notes?: string;
+};
+
+export type CreatedAdjustmentResponseDto = {
+  id: string;
+  itemId: string;
+  quantity: number;
+  type: StockAdjustmentType;
+  reason: string;
+  status: StockAdjustmentStatus;
+  notes?: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type OneStockAdjustment = {
+  id: string;
+  item: IdData;
+  quantity: number;
+  type: StockAdjustmentType;
+  reason: string;
+  status: StockAdjustmentStatus;
+  notes?: string;
+  createdAt: string;
+  createdBy: string;
+};
+
+export type UpdateStockAdjustmentDto = {
+  quantity?: number;
+  reason?: string;
+  notes?: string;
+};
+
 export type CreatePatientResponseDto = {
   name: string;
   cardIdentificationNumber: string;
@@ -406,7 +692,12 @@ export type UpdatePatientDto = {
   dateOfBirth?: string;
 };
 
-export type RequestStatus = "PENDING" | "ACCEPTED" | "DELIVERED" | "CANCELLED";
+export enum RequestStatus {
+  PENDING = "PENDING",
+  ACCEPTED = "ACCEPTED",
+  CANCELLED = "CANCELLED",
+  DELIVERED = "DELIVERED",
+}
 
 export type GetDepartmentRequestResponseDto = {
   id: string;
@@ -422,39 +713,6 @@ export type GetDepartmentRequestResponseDto = {
 
 export type UpdateRequestStatusDto = {
   status: RequestStatus;
-};
-
-export type GetSpecificRequestResponseDto = {
-  id: string;
-  quantity: number;
-  additionalNotes: string;
-  status: RequestStatus;
-  item: {
-    id: string;
-    name: string;
-  };
-};
-
-export type CreateDepartmentRequestDto = {
-  itemId: string;
-  quantity: number;
-  additionalNotes: string;
-};
-
-export type GetItemRequestsResponseDto = {
-  id: string;
-  quantity: number;
-  requestNumber: string;
-  status: "PENDING" | "ACCEPTED" | "DELIVERED" | "CANCELLED";
-  itemId: string;
-  itemName: string;
-  dateRequested: string;
-};
-
-export type UpdateDepartmentRequestDto = {
-  itemId?: string;
-  quantity?: number;
-  additionalNotes?: string;
 };
 
 export type CreateComplaintDto = {

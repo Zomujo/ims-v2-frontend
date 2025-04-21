@@ -1,13 +1,10 @@
 import { cn } from "@/lib/utils";
 import { ColumnDef } from "@tanstack/react-table";
-import {
-  Sale,
-  SaleItem,
-  SALES_STATUS,
-} from "../shared/types/sales-action.types";
+import { GetSalesDto } from "../shared/types/action.types";
+import { SaleItem, SALES_STATUS } from "../shared/types/sales-action.types";
 import { Badge } from "../ui/badge";
 
-export const salesTableColumns: ColumnDef<Sale>[] = [
+export const salesTableColumns: ColumnDef<GetSalesDto>[] = [
   {
     accessorKey: "patient.cardIdentificationNumber",
     header: "Patient ID",

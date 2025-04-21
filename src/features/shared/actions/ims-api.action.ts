@@ -1,7 +1,7 @@
-import { ENV_VARIABLES } from "@/lib/config/env.config";
-import { FetchApi, IMSApiErrorResponse } from "../types/ims-api-action.types";
 import { imsServerSession } from "@/lib/config/auth.config";
+import { ENV_VARIABLES } from "@/lib/config/env.config";
 import { redirect } from "next/navigation";
+import { FetchApi, IMSApiErrorResponse } from "../types/ims-api-action.types";
 
 export const imsApiWithAuth = async <T>({
   url,

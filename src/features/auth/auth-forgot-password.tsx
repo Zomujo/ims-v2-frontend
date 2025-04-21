@@ -26,10 +26,10 @@ export function ForgotPasswordForm() {
     const email = (data as z.infer<typeof forgotPasswordSchema>).email;
     const res = authForgotPasswordSendMailAction(email);
     handleRequestState({ res, loadingMsg: "Sending verification code..." });
-    if ((await res).statusCode === 200) {
+    res.then(() => {
       router.push(`${AUTH_PAGE_ROUTES.FORGOT_PASSWORD_VERIFY}?email=${email}`);
-    }
-    return res;
+    });
+    await res;
   };
 
   return (

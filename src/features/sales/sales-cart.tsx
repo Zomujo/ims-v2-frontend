@@ -15,21 +15,20 @@ import { ImsForm } from "../shared/components/ims-forms";
 import { ImsSelect } from "../shared/components/ims-select";
 import useHookForm from "../shared/hooks/use-hook-form";
 import useImsSearchParams from "../shared/hooks/use-ims-search-params";
-import { Sale, SaleItem } from "../shared/types/sales-action.types";
+import { SaleItem } from "../shared/types/sales-action.types";
 import { ScrollArea } from "../ui/scroll-area";
 import { Textarea } from "../ui/textarea";
 import { paymentTypeOptions, salesItemLocalStorageKey } from "./sales.data";
 import { salesCartSchema } from "./sales.schemas";
 import { SaleCardTypes } from "./sales.types";
 import { isSalesEditMode } from "./sales.utils";
-import { GetSaleDto } from "../shared/types/action.types";
 
 type SaleCartFormData = z.infer<typeof salesCartSchema>;
-const handleSalesItem = (saleItems: SaleItem[], editMode?: boolean) => {
-  return saleItems.map((item) => ({
-    batchId: item.batchId,
-    quantity: editMode ? item.quantity : 1,
-  }));
+const handleSalesItem = (saleItems: SaleItem, isEditMode?: boolean) => {
+  return {
+    batchId: saleItems.batchId,
+    quantity: isEditMode ? saleItems.quantity : 1,
+  };
 };
 const patientIdKey = "patientId";
 export default function SalesCart() {
@@ -56,44 +55,50 @@ export default function SalesCart() {
     control: form.control,
   });
 
+  // Update form when sales items change in non-edit mode
   useEffect(() => {
-    if (!isEditMode) return;
-    form.setValue("saleItems", handleSalesItem(addedSalesItems) ?? []);
-  }, [addedSalesItems, form]);
+    const saleItem = addedSalesItems.slice(-1)[0];
+    const isItemAlreadyAdded = form
+      .getValues()
+      [
+        "saleItems"
+      ].some((item: SaleItem) => item.batchId === saleItem?.batchId);
+    if (isItemAlreadyAdded) return;
+    if (!saleItem) return;
+    form.setValue("saleItems", [
+      ...form.getValues()["saleItems"],
+      handleSalesItem(saleItem),
+    ]);
+  }, [addedSalesItems, form, isEditMode]);
+
+  // Fetch and set sale data in edit mode
 
   useEffect(() => {
-    const mapSaleItems = (items: SaleItem[]) =>
-      items.map((item) => ({ ...item }) as SaleItem);
-
-    const updateSaleData = (res?: GetSaleDto) => {
-      if (!res) return;
-      form.reset({
-        paymentType: res.paymentType,
-        notes: res.notes,
-        saleItems: handleSalesItem(res.saleItems as SaleItem[], true),
-      });
-      setSalesItems(mapSaleItems(res.saleItems as SaleItem[]) ?? []);
-    };
     if (!isEditMode) return;
-    const handleFetchSale = async () => {
-      const oneSale = await getSale(salesId as string);
-      return oneSale.data;
+    const fetchSaleData = async () => {
+      const response = await getSale(salesId as string);
+      const saleData = response.data;
+      if (!saleData) return;
+      form.setValue("notes", saleData.notes);
+      form.setValue("paymentType", saleData.paymentType);
+      setSalesItems(saleData.saleItems as SaleItem[]);
     };
-    handleFetchSale().then(updateSaleData);
-  }, [isEditMode]);
+
+    fetchSaleData();
+  }, []);
 
   const handleSubmit = async (data: unknown) => {
-    const res = isEditMode
+    const action = isEditMode
       ? updateSale(salesId as string, data as SaleCartFormData)
       : createSaleAction(data);
-    handleRequestState({ res, loadingMsg: "Saving sales..." });
-    res.then(() => {
+    handleRequestState({ res: action, loadingMsg: "Saving sales..." });
+    action.then(() => {
+      printReceipt(data as SaleCartFormData, addedSalesItems);
       removeSalesItems();
       removeSearchParams(patientIdKey);
-      printReceipt(data as SaleCartFormData, addedSalesItems);
       form.reset();
     });
-    await res;
+    await action;
   };
 
   if (!isClient) return null;
@@ -190,12 +195,12 @@ function SaleCard({
   );
 
   const handleItemDelete = () => {
+    remove(index);
     setAddedSalesItems(
       addedSalesItems.filter(
         (addedSalesItem) => addedSalesItem.batchId !== salesItem.batchId,
       ),
     );
-    remove(index);
   };
 
   const activeAddedSalesItem = addedSalesItems.find(
@@ -285,7 +290,7 @@ function SaleCartSummery({
   }, 0);
 
   return (
-    <div className="space-y-1 text-sm">
+    <div className="space-y-1 text-xs">
       <h2 className="py-2 font-bold">Summary</h2>
       <p className="flex justify-between">
         <span>Subtotal</span>

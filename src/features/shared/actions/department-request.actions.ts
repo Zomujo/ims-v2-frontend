@@ -15,6 +15,8 @@ import {
 } from "../types/action.types";
 import { FetchApi } from "../types/ims-api-action.types";
 import { imsApiWithAuth } from "./ims-api.action";
+import { GenerateQueryParams } from "../types/utitls.types";
+import { generateUrlWithQueryParams } from "@/lib/utils";
 
 export async function addDepartmentRequest(data: CreateDepartmentRequestDto) {
   const fetchOptions: FetchApi = {
@@ -33,41 +35,23 @@ export async function addDepartmentRequest(data: CreateDepartmentRequestDto) {
   return result;
 }
 
-export async function getDepartmentRequests(params: {
-  search?: string;
-  page?: number;
-  pageSize?: number;
-  orderBy?: string;
-  orderDirection?: "ASC" | "DESC";
-  dateRange?:
-    | "today"
-    | "this_week"
-    | "this_month"
-    | "last_month"
-    | "last_three_months"
-    | "this_year";
-}) {
-  const url = new URL(API_ENDPOINTS.DEPARTMENT_REQUESTS);
-  if (params.search) url.searchParams.append("search", params.search);
-  if (params.page) url.searchParams.append("page", params.page.toString());
-  if (params.pageSize)
-    url.searchParams.append("pageSize", params.pageSize.toString());
-  if (params.orderBy) url.searchParams.append("orderBy", params.orderBy);
-  if (params.orderDirection)
-    url.searchParams.append("orderDirection", params.orderDirection);
-  if (params.dateRange) url.searchParams.append("dateRange", params.dateRange);
-
+export async function getDepartmentRequests(params?: GenerateQueryParams) {
   const fetchOptions: FetchApi = {
-    url: url.toString(),
+    url: generateUrlWithQueryParams(
+      API_ENDPOINTS.DEPARTMENT_REQUESTS,
+      params ?? {},
+    ),
     method: "GET",
     headers: {},
     cache: "force-cache",
     next: { tags: [API_ENDPOINT_TAGS.DEPARTMENT_REQUESTS] },
   };
 
-  return await imsApiWithAuth<
-    PaginatedResponse<GetDepartmentRequestResponseDto>
-  >(fetchOptions);
+  return (
+    await imsApiWithAuth<PaginatedResponse<GetDepartmentRequestResponseDto>>(
+      fetchOptions,
+    )
+  ).data;
 }
 
 export async function getDepartmentRequest(id: string) {
@@ -114,32 +98,12 @@ export async function deleteDepartmentRequest(id: string) {
   return result;
 }
 
-export async function getItemRequests(params: {
-  search?: string;
-  page?: number;
-  pageSize?: number;
-  orderBy?: string;
-  orderDirection?: "ASC" | "DESC";
-  dateRange?:
-    | "today"
-    | "this_week"
-    | "this_month"
-    | "last_month"
-    | "last_three_months"
-    | "this_year";
-}) {
-  const url = new URL(API_ENDPOINTS.DEPARTMENT_REQUESTS_ITEM);
-  if (params.search) url.searchParams.append("search", params.search);
-  if (params.page) url.searchParams.append("page", params.page.toString());
-  if (params.pageSize)
-    url.searchParams.append("pageSize", params.pageSize.toString());
-  if (params.orderBy) url.searchParams.append("orderBy", params.orderBy);
-  if (params.orderDirection)
-    url.searchParams.append("orderDirection", params.orderDirection);
-  if (params.dateRange) url.searchParams.append("dateRange", params.dateRange);
-
+export async function getItemRequests(params: GenerateQueryParams) {
   const fetchOptions: FetchApi = {
-    url: url.toString(),
+    url: generateUrlWithQueryParams(
+      API_ENDPOINTS.DEPARTMENT_REQUESTS_ITEM,
+      params,
+    ),
     method: "GET",
     headers: {},
     cache: "force-cache",
