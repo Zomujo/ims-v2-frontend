@@ -31,10 +31,10 @@ export function VerifyCodeForm() {
       code: otpCode,
     });
     handleRequestState({ res, loadingMsg: "Verifying code..." });
-    if ((await res).statusCode === 200) {
+    res.then(() => {
       router.push(`${AUTH_PAGE_ROUTES.RESET_PASSWORD}?email=${email}`);
-    }
-    return res;
+    });
+    await res;
   };
 
   return (

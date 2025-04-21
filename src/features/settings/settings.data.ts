@@ -2,6 +2,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Department } from "../shared/types/settings-action.types";
 import { PERMISION_MODULES } from "@/lib/constant";
 import { PermissionModules } from "../shared/types/auth-action.types";
+import { formateDate } from "@/lib/utils";
 
 export const settingsSidebarNavItems = [
   {
@@ -85,12 +86,7 @@ export const settingsDepartmentTableColumns: ColumnDef<Department>[] = [
     accessorKey: "createdAt",
     header: "Created At",
     cell: ({ row }) => {
-      const date = new Date(row.original.createdAt);
-      return date.toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      });
+      return formateDate(row.original.createdAt);
     },
   },
 ];

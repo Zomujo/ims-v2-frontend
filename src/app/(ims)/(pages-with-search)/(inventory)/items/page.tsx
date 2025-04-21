@@ -1,5 +1,9 @@
-import React from "react";
-
+import ItemsList from "@/features/items/items-list";
 export default function page() {
-  return <div>page</div>;
+  return (
+    <>
+      <h3 className="pt-4">All items</h3>
+      <ItemsList />
+    </>
+  );
 }

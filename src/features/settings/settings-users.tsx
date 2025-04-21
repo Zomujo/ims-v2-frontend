@@ -156,8 +156,10 @@ function ManageUsersSettingsForm({
       res,
       loadingMsg: isEditMode ? "Updating user role..." : "Adding user...",
     });
+    res.then(() => {
+      removeSearchParams(UI_STATE);
+    });
     await res;
-    removeSearchParams(UI_STATE);
   };
 
   useEffect(() => {

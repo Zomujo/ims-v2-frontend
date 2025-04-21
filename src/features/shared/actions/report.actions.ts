@@ -13,6 +13,8 @@ import {
 } from "../types/action.types";
 import { FetchApi } from "../types/ims-api-action.types";
 import { imsApiWithAuth } from "./ims-api.action";
+import { generateUrlWithQueryParams } from "@/lib/utils";
+import { GenerateQueryParams } from "../types/utitls.types";
 
 export async function addReport(data: CreateReportDto) {
   const fetchOptions: FetchApi = {
@@ -28,39 +30,17 @@ export async function addReport(data: CreateReportDto) {
   return result;
 }
 
-export async function getReports(params: {
-  search?: string;
-  page?: number;
-  pageSize?: number;
-  orderBy?: string;
-  orderDirection?: "ASC" | "DESC";
-  dateRange?:
-    | "today"
-    | "this_week"
-    | "this_month"
-    | "last_month"
-    | "last_three_months"
-    | "this_year";
-}) {
-  const url = new URL(API_ENDPOINTS.REPORTS);
-  if (params.search) url.searchParams.append("search", params.search);
-  if (params.page) url.searchParams.append("page", params.page.toString());
-  if (params.pageSize)
-    url.searchParams.append("pageSize", params.pageSize.toString());
-  if (params.orderBy) url.searchParams.append("orderBy", params.orderBy);
-  if (params.orderDirection)
-    url.searchParams.append("orderDirection", params.orderDirection);
-  if (params.dateRange) url.searchParams.append("dateRange", params.dateRange);
-
+export async function getReports(params?: GenerateQueryParams) {
   const fetchOptions: FetchApi = {
-    url: url.toString(),
+    url: generateUrlWithQueryParams(API_ENDPOINTS.REPORTS, params ?? {}),
     method: "GET",
     headers: {},
     cache: "force-cache",
     next: { tags: [API_ENDPOINT_TAGS.REPORTS] },
   };
 
-  return await imsApiWithAuth<PaginatedResponse<GetReportDto>>(fetchOptions);
+  return (await imsApiWithAuth<PaginatedResponse<GetReportDto>>(fetchOptions))
+    .data;
 }
 
 export async function getReport(id: string) {
