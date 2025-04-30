@@ -67,6 +67,9 @@ export async function addBatch(data: CreateBatchDto) {
 }
 
 export async function getBatchesNoPaginate(itemId: string) {
+  if (!itemId) {
+    return [];
+  }
   const fetchOptions: FetchApi = {
     url: API_ENDPOINTS.ITEMS_BATCHES_NO_PAGINATE.replace(":itemId", itemId),
     method: "GET",
@@ -75,9 +78,11 @@ export async function getBatchesNoPaginate(itemId: string) {
     next: { tags: [API_ENDPOINT_TAGS.ITEMS_BATCHES] },
   };
 
-  return await imsApiWithAuth<ApiSuccessResponseDto<BatchesNoPaginate[]>>(
-    fetchOptions,
-  );
+  return (
+    await imsApiWithAuth<ApiSuccessResponseDto<BatchesNoPaginate[]>>(
+      fetchOptions,
+    )
+  ).data;
 }
 
 export async function getItemBatches(id: string, params?: GenerateQueryParams) {

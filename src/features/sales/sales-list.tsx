@@ -41,8 +41,9 @@ export default function SalesList() {
 
   const handleEdit = (item: GetSalesDto) => {
     const id = item.id;
+    const patientId = item?.patient?.cardIdentificationNumber;
     router.push(
-      `/sales/${id}?patientId=${item.patient.cardIdentificationNumber}`,
+      `/sales/${id}${patientId ? "?patientId=" + item.patient.cardIdentificationNumber : ""}`,
     );
   };
 

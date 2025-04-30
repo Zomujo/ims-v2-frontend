@@ -28,7 +28,7 @@ export function VerifyCodeForm() {
     const otpCode = (data as z.infer<typeof verifyCodeSchema>).otpCode;
     const res = authForgotPasswordVerifyCodeAction({
       email,
-      code: otpCode,
+      code: Number(otpCode),
     });
     handleRequestState({ res, loadingMsg: "Verifying code..." });
     res.then(() => {

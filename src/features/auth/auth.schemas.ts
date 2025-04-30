@@ -49,10 +49,7 @@ export const forgotPasswordSchema = z.object({
 });
 
 export const verifyCodeSchema = z.object({
-  otpCode: z
-    .string()
-    .min(1, { message: "Please enter the verification code" })
-    .transform((val) => parseInt(val, 10)),
+  otpCode: z.string().min(1, { message: "Please enter the verification code" }),
 });
 
 export const resetPasswordSchema = z

@@ -59,7 +59,7 @@ export function GeneralSettingsAccountForm({
       await handleEmailChangeOtp(
         {
           email: dataEmail,
-          otpCode,
+          otpCode: Number(otpCode),
         },
         setEditForm,
       );
