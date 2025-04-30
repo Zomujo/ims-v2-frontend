@@ -233,24 +233,60 @@ export type ItemsDto = {
 
 export type CreateItemDto = {
   name: string;
-  stockQuantity: number;
+  brandName: string;
+  costPrice: number;
+  sellingPrice: number;
+  dosageForm: string;
+  code: string;
+  fdaApproval: string;
+  ISO: string;
+  reorderPoint: number;
+  strength: string;
+  unitOfMeasurement: string;
+  manufacturer: string;
   categoryId: string;
-  price: number;
-  sellingPrice?: number;
+  storageReq: string;
 };
 
-export type OneItem = {
+type Batch = {
   id: string;
   createdAt: string;
   updatedAt: string;
-  name: string;
-  stockQuantity: number;
-  categoryId: string;
-  price: number;
-  sellingPrice?: number;
-  status: "LOW" | "STOCKED" | "OUT_OF_STOCK";
+  itemId: string;
+  validity: string;
+  batchNumber: string;
+  quantity: number;
+  createdBy: string;
+  supplierId: string;
+  deletedAt: string | null;
 };
 
+export type OneItem = {
+  name: string;
+  brandName: string;
+  costPrice: number;
+  sellingPrice: number;
+  dosageForm: string;
+  code: string;
+  fdaApproval: string;
+  ISO: string;
+  reorderPoint: number;
+  strength: string;
+  unitOfMeasurement: string;
+  manufacturer: string;
+  storageReq: string;
+  categoryId: string;
+  createdBy: string;
+  createdById: string;
+  facilityId: string;
+  departmentId: string;
+  status: string;
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+  totalStock: number;
+  batches: Batch[];
+};
 export type CreateBatchDto = {
   itemId: string;
   batchNumber: string;
@@ -616,8 +652,9 @@ export type ChangeOrderStatusDto = {
 // Types for Stock Adjustments
 export type CreateStockAdjustmentDto = {
   itemId: string;
+  batchId: string;
   quantity: number;
-  type: StockAdjustmentType;
+  type: keyof typeof StockAdjustmentType;
   reason: string;
   notes?: string;
 };
@@ -637,6 +674,7 @@ export type CreatedAdjustmentResponseDto = {
 export type OneStockAdjustment = {
   id: string;
   item: IdData;
+  batch: IdData;
   quantity: number;
   type: StockAdjustmentType;
   reason: string;

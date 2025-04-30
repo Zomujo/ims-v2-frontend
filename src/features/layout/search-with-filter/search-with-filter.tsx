@@ -14,6 +14,8 @@ export default function SearchWithFilter() {
   const pathName = usePathname();
   const btnData =
     actionButtonData[isSlugs ? PAGE_ROUTES.ITEM_BATCHES : pathName];
+  const { href = "", icon = "", label = "" } = btnData;
+  const [pathname, query] = href.split("?");
 
   if (params.id) return null;
   return (
@@ -26,10 +28,10 @@ export default function SearchWithFilter() {
         <ButtonLink
           variant="imsPrimary"
           className="absolute top-1.5 right-0"
-          href={{ pathname: btnData?.href }}
-          startIcon={<Icon icon={btnData?.icon} />}
+          href={{ pathname, query }}
+          startIcon={<Icon icon={icon} />}
         >
-          {btnData?.label}
+          {label}
         </ButtonLink>
       )}
     </div>

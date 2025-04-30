@@ -19,7 +19,9 @@ export function CreateAccountForm() {
   const router = useRouter();
   const form = useHookForm({
     resolver: createAccountSchema,
-    defaultValues: getFormDefaultValues(authCreateAccountInputsData),
+    defaultValues: getFormDefaultValues<z.infer<typeof createAccountSchema>>(
+      authCreateAccountInputsData,
+    ),
   });
 
   const handleSubmitFn = async (data: unknown) => {

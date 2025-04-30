@@ -54,29 +54,29 @@ export const PAGE_ROUTES = {
   },
   ITEMS: {
     VIEW: "/items",
-    CREATE: "/items/create",
+    CREATE: "?state=create",
     BATCHES: "/items/:itemId/batches",
   },
   ITEM_BATCHES: "/batches",
   SUPPLIERS: {
     VIEW: "/suppliers",
-    CREATE: "/suppliers/create",
+    CREATE: "?state=create",
   },
   CATEGORIES: {
     VIEW: "/categories",
-    CREATE: "/categories/create",
+    CREATE: "?state=create",
   },
   STOCK_ADJUSTMENT: {
     VIEW: "/stock-adjustment",
-    CREATE: "/stock-adjustment/create",
+    CREATE: "?state=create",
   },
   ITEM_ORDERS: {
     VIEW: "/item-orders",
-    CREATE: "/item-orders/create",
+    CREATE: "?state=create",
   },
   DEPARTMENTS_REQUESTS: {
     VIEW: "/department-requests",
-    CREATE: "/department-requests/create",
+    CREATE: "?state=create",
   },
   REPORTS: "/reports",
 };

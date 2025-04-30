@@ -20,6 +20,7 @@ import { Button } from "../ui/button";
 import { Combobox } from "../ui/combobox";
 import { Input } from "../ui/input";
 import { newPatientSchema } from "./sales.schemas";
+import { UI_STATE } from "@/lib/constant";
 
 const searchParamKey = "patientSearch";
 const patientIDKey = "patientId";
@@ -122,7 +123,7 @@ function NewPatientForm() {
     );
     res.then(() => {
       form.reset();
-      removeSearchParams("state");
+      removeSearchParams(UI_STATE);
     });
     handleRequestState({ res, loadingMsg: "Creating new patient..." });
     await res;

@@ -28,6 +28,7 @@ export async function addItemCategory(data: CreateItemsCategoryDto) {
       fetchOptions,
     );
   revalidateTag(API_ENDPOINT_TAGS.ITEM_CATEGORIES);
+  revalidateTag(API_ENDPOINTS.ITEM_CATEGORIES_NO_PAGINATE);
   return result;
 }
 
@@ -46,6 +47,21 @@ export async function getItemCategories(params?: GenerateQueryParams) {
   return (
     await imsApiWithAuth<PaginatedResponse<ItemCategoryResponse>>(fetchOptions)
   ).data;
+}
+export async function getItemCategoriesNoPaginate() {
+  const fetchOptions: FetchApi = {
+    url: generateUrlWithQueryParams(
+      API_ENDPOINTS.ITEM_CATEGORIES_NO_PAGINATE,
+      {},
+    ),
+    method: "GET",
+    headers: {},
+    cache: "force-cache",
+    next: { tags: [API_ENDPOINTS.ITEM_CATEGORIES_NO_PAGINATE] },
+  };
+
+  return (await imsApiWithAuth<{ data: ItemCategoryResponse[] }>(fetchOptions))
+    .data;
 }
 
 export async function getItemCategory(id: string) {
@@ -75,6 +91,7 @@ export async function updateItemCategory(
 
   const result = await imsApiWithAuth<ApiSuccessResponseNoData>(fetchOptions);
   revalidateTag(API_ENDPOINT_TAGS.ITEM_CATEGORIES);
+  revalidateTag(API_ENDPOINTS.ITEM_CATEGORIES_NO_PAGINATE);
   return result;
 }
 
@@ -87,5 +104,6 @@ export async function deleteItemCategory(id: string) {
 
   const result = await imsApiWithAuth<ApiSuccessResponseNoData>(fetchOptions);
   revalidateTag(API_ENDPOINT_TAGS.ITEM_CATEGORIES);
+  revalidateTag(API_ENDPOINTS.ITEM_CATEGORIES_NO_PAGINATE);
   return result;
 }

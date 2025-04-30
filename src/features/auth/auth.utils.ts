@@ -35,16 +35,13 @@ export const handleAuth = async ({
   }
 };
 
-export const getFormDefaultValues = (
+export const getFormDefaultValues = <T>(
   inputs: Readonly<Record<string, string>[]>,
 ) =>
-  inputs.reduce(
-    (acc, input) => {
-      acc[input.name] = "";
-      return acc;
-    },
-    {} as Record<string, string>,
-  );
+  inputs.reduce((acc, input) => {
+    acc[input.name] = "";
+    return acc;
+  }, {}) as T;
 
 export const isTokenExpired = (timeToCompare: string) => {
   const currentDate = new Date().getTime();

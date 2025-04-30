@@ -8,6 +8,7 @@ type FetchDataProps<T> = {
   onError?: (error: Error) => void;
   onLoading?: (loading: boolean) => void;
   onComplete?: () => void;
+  deps?: unknown[];
 };
 
 export default function useFetchData<T>({
@@ -16,6 +17,7 @@ export default function useFetchData<T>({
   onError,
   onLoading,
   onSuccess,
+  deps = [],
 }: FetchDataProps<T>) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
@@ -42,6 +44,6 @@ export default function useFetchData<T>({
     };
 
     fetchData();
-  }, [searchParams]);
+  }, [searchParams, ...deps]);
   return { data, loading, error };
 }

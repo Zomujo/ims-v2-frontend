@@ -1,6 +1,7 @@
+import { getItemsNoPaginate } from "@/features/shared/actions/items.actions";
 import StockAdjustmentList from "@/features/stock-adjustment/stock-adjustment-list";
-import React from "react";
 
-export default function page() {
-  return <StockAdjustmentList />;
+export default async function page() {
+  const items = await getItemsNoPaginate();
+  return <StockAdjustmentList items={items?.data ?? []} />;
 }

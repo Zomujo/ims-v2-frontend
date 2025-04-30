@@ -43,6 +43,7 @@ export const API_ENDPOINTS = {
 
   // Item Category
   ITEM_CATEGORIES: "/item-categories",
+  ITEM_CATEGORIES_NO_PAGINATE: "/item-categories/no-paginate",
   ITEM_CATEGORY: "/item-categories/:id",
 
   // Items

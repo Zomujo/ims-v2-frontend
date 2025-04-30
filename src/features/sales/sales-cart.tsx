@@ -45,7 +45,7 @@ export default function SalesCart() {
     defaultValues: {
       saleItems: [],
       patientCardId: getSearchParams(patientIdKey),
-      paymentType: "",
+      paymentType: "CASH",
       notes: "",
     },
   });
