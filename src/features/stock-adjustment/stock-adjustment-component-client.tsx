@@ -2,7 +2,9 @@
 import { use } from "react";
 import { Control, useWatch } from "react-hook-form";
 import { getBatchesNoPaginate } from "../shared/actions/items.actions";
-import HookFormField from "../shared/components/hook-form-filed";
+import HookFormField, {
+  inputTypeNumber,
+} from "../shared/components/hook-form-filed";
 import { ImsSelect } from "../shared/components/ims-select";
 import useFetchData from "../shared/hooks/use-fetch-data";
 import { Input } from "../ui/input";
@@ -76,10 +78,8 @@ export function StockAdjustmentFormInputs({
         label="Quantity"
         renderInput={({ field }) => (
           <Input
-            {...field}
+            {...inputTypeNumber(field)}
             type="number"
-            value={field.value ?? 0}
-            onChange={(e) => field.onChange(Number(e.target.value))}
             className="focus-visible:ring-ims-blue-300 bg-white"
           />
         )}

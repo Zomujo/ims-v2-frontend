@@ -9,6 +9,7 @@ import {
   CreateSupplierDto,
   GetSupplierResponse,
   GetSuppliersResponse,
+  IdData,
   PaginatedResponse,
   SupplierResponse,
   UpdateSupplierDto,
@@ -28,6 +29,7 @@ export async function addSupplier(data: CreateSupplierDto) {
   const result =
     await imsApiWithAuth<ApiSuccessResponseDto<SupplierResponse>>(fetchOptions);
   revalidateTag(API_ENDPOINT_TAGS.SUPPLIERS);
+  revalidateTag(API_ENDPOINT_TAGS.SUPPLIERS_NO_PAGINATE);
   return result;
 }
 
@@ -43,6 +45,19 @@ export async function getSuppliers(params?: GenerateQueryParams) {
   return (
     await imsApiWithAuth<PaginatedResponse<GetSuppliersResponse>>(fetchOptions)
   ).data;
+}
+
+export async function getSuppliersNoPaginate() {
+  const fetchOptions: FetchApi = {
+    url: API_ENDPOINTS.SUPPLIERS_NO_PAGINATE,
+    method: "GET",
+    headers: {},
+    cache: "force-cache",
+    next: { tags: [API_ENDPOINT_TAGS.SUPPLIERS_NO_PAGINATE] },
+  };
+
+  return (await imsApiWithAuth<ApiSuccessResponseDto<IdData[]>>(fetchOptions))
+    .data;
 }
 
 export async function getSupplier(id: string) {
@@ -69,6 +84,7 @@ export async function updateSupplier(id: string, data: UpdateSupplierDto) {
 
   const result = await imsApiWithAuth<ApiSuccessResponseNoData>(fetchOptions);
   revalidateTag(API_ENDPOINT_TAGS.SUPPLIERS);
+  revalidateTag(API_ENDPOINT_TAGS.SUPPLIERS_NO_PAGINATE);
   return result;
 }
 export async function deleteSupplier(id: string) {
@@ -80,5 +96,6 @@ export async function deleteSupplier(id: string) {
 
   const result = await imsApiWithAuth<ApiSuccessResponseNoData>(fetchOptions);
   revalidateTag(API_ENDPOINT_TAGS.SUPPLIERS);
+  revalidateTag(API_ENDPOINT_TAGS.SUPPLIERS_NO_PAGINATE);
   return result;
 }

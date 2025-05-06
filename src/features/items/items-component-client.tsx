@@ -1,11 +1,13 @@
 "use client";
 
 import { PAGE_ROUTES } from "@/lib/constant";
-import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
 import { PropsWithChildren, use } from "react";
 import { Control } from "react-hook-form";
-import HookFormField from "../shared/components/hook-form-filed";
+import HookFormField, {
+  inputTypeNumber,
+  MultiStep,
+} from "../shared/components/hook-form-filed";
 import { ImsSelect } from "../shared/components/ims-select";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
@@ -37,11 +39,7 @@ export function ItemFormInputs({
 
   return (
     <>
-      <div
-        className={cn("space-y-8", {
-          hidden: currentStep !== 1,
-        })}
-      >
+      <MultiStep currentStep={currentStep} step={1}>
         <h2 className="text-lg font-semibold">Item Details</h2>
         <HookFormField
           formControl={control}
@@ -171,12 +169,8 @@ export function ItemFormInputs({
             />
           )}
         />
-      </div>
-      <div
-        className={cn("space-y-8", {
-          hidden: currentStep !== 2,
-        })}
-      >
+      </MultiStep>
+      <MultiStep currentStep={currentStep} step={2}>
         <h2 className="text-lg font-semibold">Price and Other Details</h2>
         <HookFormField
           formControl={control}
@@ -184,10 +178,8 @@ export function ItemFormInputs({
           label="Reorder Point"
           renderInput={({ field }) => (
             <Input
-              {...field}
+              {...inputTypeNumber(field)}
               type="number"
-              value={field.value}
-              onChange={(e) => field.onChange(Number(e.target.value))}
               className="focus-visible:ring-ims-blue-300 bg-white"
               placeholder="Eg. 20000"
             />
@@ -201,10 +193,8 @@ export function ItemFormInputs({
             <div className="flex items-center gap-2">
               <span className="text-sm">GHS</span>
               <Input
-                {...field}
+                {...inputTypeNumber(field)}
                 type="number"
-                value={field.value}
-                onChange={(e) => field.onChange(Number(e.target.value))}
                 className="focus-visible:ring-ims-blue-300 bg-white"
                 placeholder="Eg. 20000.00"
               />
@@ -218,10 +208,8 @@ export function ItemFormInputs({
           renderInput={({ field }) => (
             <div className="flex items-center gap-2">
               <Input
-                {...field}
+                {...inputTypeNumber(field)}
                 type="number"
-                value={field.value}
-                onChange={(e) => field.onChange(Number(e.target.value))}
                 className="focus-visible:ring-ims-blue-300 bg-white"
                 placeholder="Eg. 20"
               />
@@ -240,7 +228,7 @@ export function ItemFormInputs({
             />
           )}
         />
-      </div>
+      </MultiStep>
     </>
   );
 }

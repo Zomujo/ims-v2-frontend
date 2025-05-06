@@ -1,6 +1,12 @@
 import ItemOrdersList from "@/features/item-orders/item-orders-list";
-import React from "react";
+import { getItemsNoPaginate } from "@/features/shared/actions/items.actions";
+import { getSuppliersNoPaginate } from "@/features/shared/actions/supplier.actions";
 
-export default function page() {
-  return <ItemOrdersList />;
+export default async function page() {
+  const [suppliers, items] = await Promise.all([
+    getSuppliersNoPaginate(),
+    getItemsNoPaginate(),
+  ]);
+
+  return <ItemOrdersList items={items ?? []} suppliers={suppliers ?? []} />;
 }

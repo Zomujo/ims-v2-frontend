@@ -30,3 +30,32 @@ export function ImsButton({
     </Button>
   );
 }
+
+export function ProgressBar({
+  totalSteps,
+  currentStep,
+}: Readonly<{
+  totalSteps: number;
+  currentStep: number;
+}>) {
+  return (
+    <div className="mb-4 flex w-full items-center gap-2">
+      {Array.from({ length: totalSteps }, (_, index) => {
+        const isCurentStep = index + 1 <= currentStep;
+        return (
+          <span
+            key={`${_}-${index}`}
+            className="flex h-2 w-full rounded-full bg-gray-200"
+          >
+            <span
+              className="bg-ims-blue-300 h-2 rounded-full"
+              style={{
+                width: isCurentStep ? "100%" : "0%",
+              }}
+            />
+          </span>
+        );
+      })}
+    </div>
+  );
+}

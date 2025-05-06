@@ -1,29 +1,29 @@
 "use server";
 
-import { API_ENDPOINTS, API_ENDPOINT_TAGS } from "@/lib/api-constants";
+import { API_ENDPOINT_TAGS, API_ENDPOINTS } from "@/lib/api-constants";
+import { generateUrlWithQueryParams } from "@/lib/utils";
 import { revalidateTag } from "next/cache";
 import {
-  ApiSuccessResponseDto,
-  PaginatedResponse,
-  ApiSuccessResponseNoData,
   AdjustPriceDto,
+  ApiSuccessResponseDto,
+  ApiSuccessResponseNoData,
   BatchesNoPaginate,
   BatchResponseDto,
   CreateBatchDto,
   CreateItemDto,
-  GetNoPaginateDto,
+  IdData,
   ItemAnalytics,
   ItemCounts,
+  ItemsDto,
   OneBatch,
   OneItem,
+  PaginatedResponse,
   UpdateBatchDto,
   UpdateItemDto,
-  ItemsDto,
 } from "../types/action.types";
 import { FetchApi } from "../types/ims-api-action.types";
-import { imsApiWithAuth } from "./ims-api.action";
-import { generateUrlWithQueryParams } from "@/lib/utils";
 import { GenerateQueryParams } from "../types/utitls.types";
+import { imsApiWithAuth } from "./ims-api.action";
 
 export async function addItem(data: CreateItemDto) {
   const fetchOptions: FetchApi = {
@@ -61,8 +61,8 @@ export async function addBatch(data: CreateBatchDto) {
 
   const result =
     await imsApiWithAuth<ApiSuccessResponseDto<OneBatch>>(fetchOptions);
-  revalidateTag(API_ENDPOINT_TAGS.ITEMS);
   revalidateTag(API_ENDPOINT_TAGS.ITEMS_BATCHES);
+  revalidateTag(API_ENDPOINT_TAGS.ITEMS);
   return result;
 }
 
@@ -138,9 +138,8 @@ export async function getItemsNoPaginate() {
     next: { tags: [API_ENDPOINT_TAGS.ITEMS] },
   };
 
-  return await imsApiWithAuth<ApiSuccessResponseDto<GetNoPaginateDto[]>>(
-    fetchOptions,
-  );
+  return (await imsApiWithAuth<ApiSuccessResponseDto<IdData[]>>(fetchOptions))
+    .data;
 }
 
 export async function getItemAnalytics(id: string) {

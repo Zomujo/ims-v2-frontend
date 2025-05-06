@@ -24,14 +24,16 @@ import {
   useSidebar,
 } from "@/features/ui/sidebar";
 import { Switch } from "@/features/ui/switch";
+import { Icon } from "@iconify/react/dist/iconify.js";
 import { ChevronDown, Menu, Moon, Pill, Sun, X } from "lucide-react";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { generalTabs, helpTabs } from "./sidebar.data";
-import { Icon } from "@iconify/react/dist/iconify.js";
 
 export default function SidebarLayout() {
   const [isPharmaOpen, setIsPharmaOpen] = useState(false);
   const { open, setOpen } = useSidebar(); // Access sidebar state
+  const pathname = usePathname();
 
   return (
     <Sidebar
@@ -72,6 +74,9 @@ export default function SidebarLayout() {
             General
           </SidebarGroupLabel>
           {generalTabs.map((tab) => {
+            const isActive = (tab.subs ?? []).some((sub) =>
+              pathname.includes(sub.link ?? ""),
+            );
             return (
               <SidebarMenu key={tab.name}>
                 {/* Overview */}
@@ -92,6 +97,7 @@ export default function SidebarLayout() {
                         <SidebarMenuButton
                           onClick={() => setIsPharmaOpen(!isPharmaOpen)}
                           className="flex items-center justify-start"
+                          isActive={isActive}
                           asChild
                         >
                           <ImsButton

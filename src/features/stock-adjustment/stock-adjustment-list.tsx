@@ -1,4 +1,5 @@
 "use client";
+import { UI_STATE } from "@/lib/constant";
 import { handleRequestState } from "@/lib/utils";
 import { useEffect } from "react";
 import { z } from "zod";
@@ -13,22 +14,18 @@ import { ImsButton } from "../shared/components/ims-button";
 import { ImsForm } from "../shared/components/ims-forms";
 import useFetchData from "../shared/hooks/use-fetch-data";
 import useHookForm from "../shared/hooks/use-hook-form";
+import useImsSearchParams from "../shared/hooks/use-ims-search-params";
 import usePageCRUD from "../shared/hooks/use-page-crud";
-import {
-  GetNoPaginateDto,
-  OneStockAdjustment,
-} from "../shared/types/action.types";
+import { IdData, OneStockAdjustment } from "../shared/types/action.types";
 import { CRUDACTION } from "../shared/types/utitls.types";
 import { ScrollArea } from "../ui/scroll-area";
 import { StockAdjustmentFormInputs } from "./stock-adjustment-component-client";
 import { StockAdjustmentProvider } from "./stock-adjustment.context";
 import { stockAdjustmentTableColumns } from "./stock-adjustment.data";
 import { stockAdjustmentSchema } from "./stock-adjustment.schemas";
-import useImsSearchParams from "../shared/hooks/use-ims-search-params";
-import { UI_STATE } from "@/lib/constant";
 
 type StockAdjustmentListProps = {
-  items: GetNoPaginateDto[];
+  items: IdData[];
 };
 export default function StockAdjustmentList({
   items,
@@ -102,7 +99,7 @@ export function StockAdjustmentForm({
     resolver: stockAdjustmentSchema,
     defaultValues: {
       itemId: "",
-      quantity: 0,
+      quantity: undefined,
       reason: "",
       notes: "",
       batchId: "",

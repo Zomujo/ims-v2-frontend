@@ -9,6 +9,7 @@ type FetchDataProps<T> = {
   onLoading?: (loading: boolean) => void;
   onComplete?: () => void;
   deps?: unknown[];
+  exercuteOnMount?: boolean;
 };
 
 export default function useFetchData<T>({
@@ -18,6 +19,7 @@ export default function useFetchData<T>({
   onLoading,
   onSuccess,
   deps = [],
+  exercuteOnMount = true,
 }: FetchDataProps<T>) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
@@ -25,6 +27,7 @@ export default function useFetchData<T>({
   const searchParams = useSearchParams();
 
   useEffect(() => {
+    if (!exercuteOnMount) return;
     const fetchData = async () => {
       const queryParams = Object.fromEntries(searchParams.entries());
       try {

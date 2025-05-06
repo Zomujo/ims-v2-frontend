@@ -146,7 +146,7 @@ export type SupplierResponse = {
   name: string;
   brandTradeName?: string;
   supplierType: string;
-  minimumOrderQuantity: number;
+  minimumOrderQuantity?: number;
   leadTime: string;
   deliveryMethod: string;
   primaryContactName: string;
@@ -168,7 +168,6 @@ export type SupplierResponse = {
   provider?: "MTN" | "Vodafone" | "Airteltigo";
   mobileMoneyPhoneNumber?: string;
   status: string;
-  city: string;
 };
 
 export type CreateSupplierDto = Omit<
@@ -234,13 +233,13 @@ export type ItemsDto = {
 export type CreateItemDto = {
   name: string;
   brandName: string;
-  costPrice: number;
-  sellingPrice: number;
+  costPrice?: number;
+  sellingPrice?: number;
   dosageForm: string;
   code: string;
   fdaApproval: string;
   ISO: string;
-  reorderPoint: number;
+  reorderPoint?: number;
   strength: string;
   unitOfMeasurement: string;
   manufacturer: string;
@@ -288,11 +287,11 @@ export type OneItem = {
   batches: Batch[];
 };
 export type CreateBatchDto = {
-  itemId: string;
   batchNumber: string;
-  quantity: number;
-  expiryDate: string;
-  manufacturingDate?: string;
+  quantity?: number;
+  supplierId: string;
+  validity: string;
+  itemId: string;
 };
 
 export type OneBatch = {
@@ -653,7 +652,7 @@ export type ChangeOrderStatusDto = {
 export type CreateStockAdjustmentDto = {
   itemId: string;
   batchId: string;
-  quantity: number;
+  quantity?: number;
   type: keyof typeof StockAdjustmentType;
   reason: string;
   notes?: string;

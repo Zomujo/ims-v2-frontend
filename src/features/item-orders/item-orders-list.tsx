@@ -1,16 +1,36 @@
 "use client";
 import { handleRequestState } from "@/lib/utils";
-import { getItemOrders } from "../shared/actions/item-orders.actions";
-import { deleteSaleAction } from "../shared/actions/sales.action";
+import {
+  changeItemOrderState,
+  deleteItemOrder,
+  getItemOrders,
+} from "../shared/actions/item-orders.actions";
 import CrudPage from "../shared/components/crud-page";
+import { ImsButton } from "../shared/components/ims-button";
+import { ImsForm } from "../shared/components/ims-forms";
 import useFetchData from "../shared/hooks/use-fetch-data";
+import useHookForm from "../shared/hooks/use-hook-form";
 import usePageCRUD from "../shared/hooks/use-page-crud";
+import { IdData, ItemOrderStatus } from "../shared/types/action.types";
 import { CRUDACTION } from "../shared/types/utitls.types";
 import { ScrollArea } from "../ui/scroll-area";
+import { ItemOrdersInputs } from "./item-orders-component-client";
+import { ItemOrdersProvider } from "./item-orders-context";
 import { itemOrdersTableColumns } from "./item-orders.data";
+import { orderFormSchema } from "./item-orders.schema";
 
-export default function ItemOrdersList() {
-  const { data } = useFetchData({ fetchFn: getItemOrders });
+type ItemOrdersListProps = {
+  items: IdData[];
+  suppliers: IdData[];
+};
+
+export default function ItemOrdersList({
+  items,
+  suppliers,
+}: Readonly<ItemOrdersListProps>) {
+  const { data } = useFetchData({
+    fetchFn: getItemOrders,
+  });
   const itemOrders = data?.rows ?? [];
   const {
     state,
@@ -25,12 +45,27 @@ export default function ItemOrdersList() {
 
   const handleDelete = async () => {
     const id = getId(CRUDACTION.DELETE);
-    const res = deleteSaleAction(id);
-    handleRequestState({ res, loadingMsg: "Deleting category...." });
+    const res = deleteItemOrder(id);
+    handleRequestState({ res, loadingMsg: "Deleting item order...." });
     res.then(() => {
       removeSearchParams(CRUDACTION.DELETE);
     });
     await res;
+  };
+
+  const handleItemOrderState = (id: string, status: ItemOrderStatus) => {
+    const res = changeItemOrderState(id, { status });
+    handleRequestState({ res, loadingMsg: "Changing item order state..." });
+    res.then(() => {
+      console.log("Item order state changed successfully");
+    });
+  };
+  const handleCurrentState = (status: string) => {
+    return {
+      [ItemOrderStatus.DRAFT]: ItemOrderStatus.REQUESTED,
+      [ItemOrderStatus.REQUESTED]: ItemOrderStatus.DELIVERING,
+      [ItemOrderStatus.DELIVERING]: ItemOrderStatus.RECEIVED,
+    }[status];
   };
 
   return (
@@ -45,20 +80,87 @@ export default function ItemOrdersList() {
         totalPages={data?.totalPages ?? 0}
         state={state}
         isEditMode={isEditMode}
-        actions={(item) => [
-          {
-            label: "edit",
-            icon: "lucide:edit-2",
-            action: () => handleEditBtnClicked(item),
-          },
-          {
-            label: "delete",
-            icon: "solar:trash-bin-trash-line-duotone",
-            type: "destructive",
-            action: () => handleDeleteBtnClicked(item),
-          },
-        ]}
-      ></CrudPage>
+        actions={(item) =>
+          [
+            {
+              label: "edit",
+              icon: "lucide:edit-2",
+              action: () => handleEditBtnClicked(item),
+            },
+            {
+              label: "print pPDF",
+              icon: "solar:printer-2-outline",
+              action: () => handleDeleteBtnClicked(item),
+            },
+            {
+              label: handleCurrentState(item.status) ?? "",
+              action: () =>
+                handleItemOrderState(
+                  item.id,
+                  handleCurrentState(item.status) as ItemOrderStatus,
+                ),
+              icon: "hugeicons:view",
+            },
+            {
+              label: "delete",
+              icon: "lucide:trash-2",
+              type: "destructive",
+              action: () => handleDeleteBtnClicked(item),
+            },
+          ].slice(
+            [ItemOrderStatus.DELIVERING, ItemOrderStatus.RECEIVED].includes(
+              item.status,
+            )
+              ? 1
+              : 0,
+          )
+        }
+      >
+        <ItemOrdersProvider value={{ items, suppliers }}>
+          <ItemOrdersForm />
+        </ItemOrdersProvider>
+      </CrudPage>
     </ScrollArea>
+  );
+}
+
+export function ItemOrdersForm() {
+  const form = useHookForm({
+    resolver: orderFormSchema,
+    defaultValues: {
+      itemId: "",
+      supplierId: "",
+      quantity: undefined,
+      expectedDeliveryDate: "",
+      paymentMethod: "",
+      deliveryMethod: "",
+      deliveryAddress: "",
+      additionalNotes: "",
+    },
+  });
+
+  const handleSubmit = async (data: unknown) => {
+    console.log("Order form submitted!", data);
+    // Add your form submission logic here (e.g., API call to create order)
+  };
+
+  return (
+    <ImsForm
+      form={form}
+      handleAuthSubmit={handleSubmit}
+      RenderInputs={<ItemOrdersInputs control={form.control} />}
+      RenderActions={
+        <ImsButton
+          type="submit"
+          variant="imsPrimary"
+          isLoading={form.formState.isSubmitting}
+          isLoadingLabel="Saving..." // Example loading label
+        >
+          Save
+        </ImsButton>
+      }
+      className="overflow-y-auto [&>*]:px-4"
+      inputSectionClassName="overflow-y-auto"
+    />
   );
 }

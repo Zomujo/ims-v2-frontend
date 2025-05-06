@@ -57,3 +57,9 @@ export const itemOrdersTableColumns: ColumnDef<GetItemOrdersResponseDto>[] = [
     },
   },
 ];
+
+export const mockPaymentTypes = [
+  { value: "Bank", label: "Bank" },
+  { value: "Mobile Money", label: "Mobile Money" },
+  { value: "Cash", label: "Cash" },
+];
