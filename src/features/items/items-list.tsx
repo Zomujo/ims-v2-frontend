@@ -13,7 +13,7 @@ import {
   updateItem,
 } from "../shared/actions/items.actions";
 import CrudPage from "../shared/components/crud-page";
-import { ImsButton } from "../shared/components/ims-button";
+import { ImsButton, ProgressBar } from "../shared/components/ims-button";
 import { ImsForm } from "../shared/components/ims-forms";
 import useFetchData from "../shared/hooks/use-fetch-data";
 import useHookForm from "../shared/hooks/use-hook-form";
@@ -115,14 +115,14 @@ export function ItemForm({
       brandName: "",
       categoryId: "",
       code: "",
-      costPrice: 0,
-      sellingPrice: 0,
+      costPrice: undefined,
+      sellingPrice: undefined,
       dosageForm: "",
       fdaApproval: "",
       ISO: "",
       manufacturer: "",
       name: "",
-      reorderPoint: 0,
+      reorderPoint: undefined,
       storageReq: "",
       strength: "",
       unitOfMeasurement: "",
@@ -232,34 +232,5 @@ export function ItemForm({
         <ItemFormInputs control={form.control} currentStep={currentStep} />
       }
     />
-  );
-}
-
-function ProgressBar({
-  totalSteps,
-  currentStep,
-}: Readonly<{
-  totalSteps: number;
-  currentStep: number;
-}>) {
-  return (
-    <div className="mb-4 flex w-full items-center gap-2">
-      {Array.from({ length: totalSteps }, (_, index) => {
-        const isCurentStep = index + 1 <= currentStep;
-        return (
-          <span
-            key={`${_}-${index}`}
-            className="flex h-2 w-full rounded-full bg-gray-200"
-          >
-            <span
-              className="bg-ims-blue-300 h-2 rounded-full"
-              style={{
-                width: isCurentStep ? "100%" : "0%",
-              }}
-            />
-          </span>
-        );
-      })}
-    </div>
   );
 }

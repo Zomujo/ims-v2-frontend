@@ -43,3 +43,35 @@ export const suppliersTableColumns: ColumnDef<GetSuppliersResponse>[] = [
     },
   },
 ];
+
+export const supplierDefaultValues = {
+  // Step 1 defaults
+  name: "",
+  brandTradeName: "",
+  supplierType: "",
+  minimumOrderQuantity: undefined,
+  leadTime: "",
+  deliveryMethod: "",
+
+  // Step 2 defaults
+  primaryContactName: "",
+  jobTitle: "",
+  department: "",
+  phoneNumber: "",
+  email: "",
+  physicalAddress: "",
+  mailingAddress: "",
+  emergencyContactName: "",
+  emergencyContactTitle: "",
+  emergencyContactNumber: "",
+
+  // Step 3 defaults
+  paymentType: "Bank",
+  currency: "",
+  paymentTerms: "",
+  bankName: "",
+  accountType: "",
+  accountNumber: "",
+  provider: undefined,
+  mobileMoneyPhoneNumber: "",
+} as const;

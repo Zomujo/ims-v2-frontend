@@ -10,15 +10,25 @@ export const itemFormSchema = z.object({
   manufacturer: z.string().min(1, "Manufacturer is required"),
   reorderPoint: z
     .number()
-    .min(1, "Reorder level must be non-negative and greater than 0"),
+    .min(1, "Reorder level must be non-negative and greater than 0")
+    .optional(),
   costPrice: z
     .number()
-    .min(1, "Cost price must be non-negative and greater than 0"),
+    .min(1, "Cost price must be non-negative and greater than 0")
+    .optional(),
   sellingPrice: z
     .number()
-    .min(1, "Selling price must be non-negative and greater than 0"),
+    .min(1, "Selling price must be non-negative and greater than 0")
+    .optional(),
   storageReq: z.string().min(1, "Storage requirement is required"),
   ISO: z.string().min(1, "ISO is required"),
   categoryId: z.string().min(1, "Category ID is required"),
   fdaApproval: z.string().min(1, "FDA approval is required"),
+});
+
+export const itemBatchFormSchema = z.object({
+  quantity: z.number().min(1, "Quantity is required").optional(),
+  validity: z.string().min(1, "Validity is required"),
+  batchNumber: z.string().min(1, "Batch number is required"),
+  supplierId: z.string().min(1, "Supplier ID is required"),
 });

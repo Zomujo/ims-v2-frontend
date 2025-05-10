@@ -6,7 +6,13 @@ import {
   FormMessage,
 } from "@/features/ui/form";
 import { cn } from "@/lib/utils";
-import { Control, ControllerProps, FieldValues } from "react-hook-form";
+import { ChangeEvent, PropsWithChildren } from "react";
+import {
+  Control,
+  ControllerProps,
+  ControllerRenderProps,
+  FieldValues,
+} from "react-hook-form";
 
 type HookFormFieldProps = {
   formControl: Control<FieldValues>;
@@ -37,3 +43,31 @@ export default function HookFormField({
     />
   );
 }
+
+export function MultiStep({
+  currentStep,
+  children,
+  step = 1,
+}: Readonly<PropsWithChildren<{ currentStep: number; step: number }>>) {
+  return (
+    <div
+      className={cn("space-y-8", {
+        hidden: currentStep !== step,
+      })}
+    >
+      {children}
+    </div>
+  );
+}
+
+export const inputTypeNumber = (
+  field: ControllerRenderProps<FieldValues, string>,
+) => {
+  return {
+    value: field.value === undefined ? "" : String(field.value),
+    onChange(e: ChangeEvent<HTMLInputElement>) {
+      const value = e.target.value;
+      field.onChange(value === "" ? undefined : Number(value));
+    },
+  };
+};

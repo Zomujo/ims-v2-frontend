@@ -39,6 +39,7 @@ export const API_ENDPOINTS = {
   // Supplier
   SUPPLIERS: "/suppliers",
   SUPPLIER: "/suppliers/:id",
+  SUPPLIERS_NO_PAGINATE: "/suppliers/no-paginate",
   SUPPLIERS_BULK_DELETE: "/suppliers/bulk-delete",
 
   // Item Category
@@ -121,6 +122,7 @@ export const API_ENDPOINT_TAGS = {
 
   // Supplier
   SUPPLIERS: "api-v1-suppliers",
+  SUPPLIERS_NO_PAGINATE: "api-v1-suppliers-no-paginate",
 
   // Items
   ITEMS: "api-v1-items",

@@ -41,6 +41,11 @@ export const actionButtonData = {
     href: PAGE_ROUTES.SUPPLIERS.CREATE,
     icon: "solar:buildings-3-bold-duotone",
   },
+  [PAGE_ROUTES.REPORTS]: {
+    label: "Generate Report",
+    href: PAGE_ROUTES.REPORTS,
+    icon: "solar:graph-up-bold-duotone",
+  },
 };
 
 export const iconsAndNames = [

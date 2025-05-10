@@ -1,8 +1,8 @@
 import { createContext } from "react";
-import { GetNoPaginateDto } from "../shared/types/action.types";
+import { IdData } from "../shared/types/action.types";
 
 export const StockAdjustmentContext = createContext<{
-  items: GetNoPaginateDto[];
+  items: IdData[];
 }>({ items: [] });
 
 export const StockAdjustmentProvider = StockAdjustmentContext.Provider;

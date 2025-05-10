@@ -21,7 +21,6 @@ export const itemsTableColumns: ColumnDef<ItemsDto>[] = [
       );
     },
   },
-  // { header: "STOCK" },
   {
     header: "Total STOCK",
     accessorKey: "totalStock",
