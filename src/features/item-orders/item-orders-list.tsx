@@ -2,6 +2,7 @@
 import { handleRequestState } from "@/lib/utils";
 import {
   changeItemOrderState,
+  createItemOrder,
   deleteItemOrder,
   getItemOrders,
 } from "../shared/actions/item-orders.actions";
@@ -18,6 +19,9 @@ import { ItemOrdersInputs } from "./item-orders-component-client";
 import { ItemOrdersProvider } from "./item-orders-context";
 import { itemOrdersTableColumns } from "./item-orders.data";
 import { orderFormSchema } from "./item-orders.schema";
+import { z } from "zod";
+import useImsSearchParams from "../shared/hooks/use-ims-search-params";
+import { UI_STATE } from "@/lib/constant";
 
 type ItemOrdersListProps = {
   items: IdData[];
@@ -88,7 +92,7 @@ export default function ItemOrdersList({
               action: () => handleEditBtnClicked(item),
             },
             {
-              label: "print pPDF",
+              label: "print PDF",
               icon: "solar:printer-2-outline",
               action: () => handleDeleteBtnClicked(item),
             },
@@ -125,6 +129,7 @@ export default function ItemOrdersList({
 }
 
 export function ItemOrdersForm() {
+  const { removeSearchParams } = useImsSearchParams();
   const form = useHookForm({
     resolver: orderFormSchema,
     defaultValues: {
@@ -140,7 +145,20 @@ export function ItemOrdersForm() {
   });
 
   const handleSubmit = async (data: unknown) => {
-    console.log("Order form submitted!", data);
+    const orderData = data as z.infer<typeof orderFormSchema>;
+    const res = createItemOrder({
+      ...orderData,
+      status: ItemOrderStatus.DRAFT,
+    });
+    handleRequestState({
+      res,
+      loadingMsg: "Creating item order...",
+    });
+    res.then(() => {
+      form.reset();
+      removeSearchParams(UI_STATE);
+    });
+
     // Add your form submission logic here (e.g., API call to create order)
   };
 

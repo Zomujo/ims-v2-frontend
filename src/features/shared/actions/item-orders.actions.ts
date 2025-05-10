@@ -18,7 +18,7 @@ import { GenerateQueryParams } from "../types/utitls.types";
 import { generateUrlWithQueryParams } from "@/lib/utils";
 
 // Server Actions for /api/v1/item-orders
-export async function createItemOrder(data: CreateItemOrderDto) {
+export async function createItemOrder<T>(data: T) {
   const fetchOptions: FetchApi = {
     url: API_ENDPOINTS.ITEM_ORDERS,
     method: "POST",
