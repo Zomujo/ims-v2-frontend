@@ -3,8 +3,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "NextJs 15",
-  description: "Nextjs 15 starter template",
+  title: "Stealth IMS",
+  description: "Inventory management system for stealth",
 };
 
 export default function RootLayout({
