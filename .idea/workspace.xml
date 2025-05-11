@@ -5,7 +5,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cdfa3d69-0a97-462d-b028-c12c1afce628" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -50,6 +49,9 @@
   &quot;associatedIndex&quot;: 8
 }</component>
   <component name="ProjectId" id="2wuVjtxfg5pKYQSM3ITX8BY5tLE" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -105,7 +107,7 @@
       <workItem from="1746891589357" duration="2824000" />
       <workItem from="1746896213049" duration="2138000" />
       <workItem from="1746901289493" duration="1642000" />
-      <workItem from="1746986856581" duration="1096000" />
+      <workItem from="1746986856581" duration="2386000" />
     </task>
     <servers />
   </component>
