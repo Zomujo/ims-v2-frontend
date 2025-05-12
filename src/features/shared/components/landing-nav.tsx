@@ -1,0 +1,84 @@
+"use client";
+import { useState } from "react";
+import { FaBars, FaTimes } from "react-icons/fa";
+
+export default function NavigationBar() {
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  return (
+    <div>
+      <nav className="bg-white shadow-md">
+        <div className="flex items-center justify-between px-8 py-4 lg:px-[100px]">
+          <div className="flex items-center space-x-2">
+            <h1 className="text-2xl font-bold">IMS</h1>
+            <span className="cursor-pointer rounded-full bg-[#FF6E66] px-[12px] py-1 text-xs font-bold text-white">
+              BETA
+            </span>
+            <ul className="hidden items-center space-x-8 pl-[80px] text-gray-700 lg:flex">
+              <li className="cursor-pointer hover:text-[#FF6E66]">Features</li>
+              <li className="cursor-pointer hover:text-[#FF6E66]">Pricing</li>
+              <li className="cursor-pointer hover:text-[#FF6E66]">Blog</li>
+              <li className="cursor-pointer hover:text-[#FF6E66]">
+                Contact us
+              </li>
+            </ul>
+          </div>
+
+          <div className="hidden items-center space-x-4 lg:flex">
+            <button className="cursor-pointer text-gray-700 hover:text-[#FF6E66] hover:underline">
+              Login
+            </button>
+            <button className="cursor-pointer rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700">
+              Book a demo
+            </button>
+          </div>
+
+          <button
+            className="text-2xl text-gray-700 lg:hidden"
+            onClick={() => setMenuOpen(!menuOpen)}
+          >
+            {menuOpen ? <FaTimes /> : <FaBars />}
+          </button>
+        </div>
+      </nav>
+
+      {menuOpen && (
+        <div className="fixed top-0 left-0 z-50 h-full w-full bg-[#415BE6] font-medium text-white lg:hidden">
+          <div className="container mx-auto flex items-center justify-between px-7 py-6 md:px-0">
+            <div className="flex items-center space-x-2">
+              <h1 className="text-2xl font-bold">IMS</h1>
+              <span className="rounded-full bg-[#FF6E66] px-2 py-1 text-xs text-white">
+                BETA
+              </span>
+            </div>
+
+            <button className="text-2xl" onClick={() => setMenuOpen(!menuOpen)}>
+              <FaTimes />
+            </button>
+          </div>
+
+          <ul className="mt-8 space-y-6 px-6 text-lg font-medium">
+            <li className="cursor-pointer border-b border-[#a7afb6] pb-2 hover:text-[#FF6E66]">
+              Features
+            </li>
+            <li className="cursor-pointer border-b border-[#a7afb6] pb-2 hover:text-[#FF6E66]">
+              Pricing
+            </li>
+            <li className="cursor-pointer border-b border-[#a7afb6] pb-2 hover:text-[#FF6E66]">
+              Blog
+            </li>
+            <li className="cursor-pointer border-b border-[#a7afb6] pb-2 hover:text-[#FF6E66]">
+              Contact us
+            </li>
+          </ul>
+
+          <div className="mt-12 px-4 text-center">
+            <button className="w-full cursor-pointer rounded-[12px] bg-white px-6 py-3 text-lg font-medium text-[#415BE6] hover:bg-gray-100">
+              Login
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
