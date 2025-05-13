@@ -1,20 +1,38 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaBars, FaTimes } from "react-icons/fa";
 
 export default function NavigationBar() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 50) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
     <div>
-      <nav className="bg-white shadow-md">
+      <nav
+        className={`fixed top-0 left-0 z-50 w-full overflow-hidden bg-white py-2 transition-all duration-300 ${
+          isScrolled ? "shadow-md" : "shadow"
+        }`}
+      >
         <div className="flex items-center justify-between px-8 py-4 lg:px-[100px]">
           <div className="flex items-center space-x-2">
-            <h1 className="text-2xl font-bold">IMS</h1>
+            <h1 className="text-2xl font-bold text-[#111111]">IMS</h1>
             <span className="cursor-pointer rounded-full bg-[#FF6E66] px-[12px] py-1 text-xs font-bold text-white">
               BETA
             </span>
-            <ul className="hidden items-center space-x-8 pl-[80px] text-gray-700 lg:flex">
+            <ul className="hidden items-center space-x-8 pl-[80px] text-[#111111] lg:flex">
               <li className="cursor-pointer hover:text-[#FF6E66]">Features</li>
               <li className="cursor-pointer hover:text-[#FF6E66]">Pricing</li>
               <li className="cursor-pointer hover:text-[#FF6E66]">Blog</li>
