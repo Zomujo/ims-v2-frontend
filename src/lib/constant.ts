@@ -96,6 +96,17 @@ export const PERMISION_MODULES: (keyof typeof PermissionModules)[] = [
 ];
 export const UI_STATE = "state";
 
-export const heroImage = "/images/home.png";
-export const partnerImage = "/images/trusted.png";
-export const hospitalImage = "/images/korle-bu.png";
+export const LANDING_PAGE_IMAGES = {
+  heroImage: "/images/home.png",
+  partnerImage: "/images/trusted.png",
+  hospitalImage: "/images/korle-bu.png",
+  optimizeImage: "/images/hospital.jpg",
+  localPharmaciesImage: "/images/local-pharmacies.jpg",
+  realTimeDrugsImage: "/images/drugs.png",
+  stockImage: "/images/stock.png",
+  notificationsImage: "/images/notifications.png",
+  heartImage: "/images/heart.svg",
+  faqImage: "/images/faq.jpg",
+  accessImage: "/images/access.png",
+  imsImage: "/images/ims.jpg",
+};
