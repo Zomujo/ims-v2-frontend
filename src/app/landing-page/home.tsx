@@ -1,13 +1,13 @@
 "use client";
 import Image from "next/image";
-import { heroImage, partnerImage, hospitalImage } from "@/lib/constant";
+import { LANDING_PAGE_IMAGES } from "@/lib/constant";
 import NavigationBar from "@features/shared/components/landing-nav";
 
 export default function Home() {
   return (
     <div className="flex h-auto w-full flex-col overflow-hidden bg-white lg:h-screen lg:max-w-full">
       <NavigationBar />
-      <section className="flex w-full flex-col gap-2 px-6 py-12 md:px-8 lg:px-[100px] lg:py-20">
+      <section className="flex w-full flex-col gap-2 px-6 py-12 md:px-8 lg:px-[120px] lg:py-20">
         <div className="container grid grid-cols-1 gap-10 py-16 lg:grid-cols-2">
           <div className="w-full">
             <div className="mb-6 flex items-center space-x-2 rounded-lg bg-[#FDF8E5] px-4 py-[10px] text-[#6A5E34] lg:w-[85%]">
@@ -36,7 +36,7 @@ export default function Home() {
 
           <div className="w-full">
             <Image
-              src={heroImage}
+              src={LANDING_PAGE_IMAGES.heroImage}
               alt="Pharmacist"
               className="h-full w-full lg:rounded-2xl"
               width={492}
@@ -48,7 +48,7 @@ export default function Home() {
         <div className="text-center">
           <div className="mb-6">
             <Image
-              src={partnerImage}
+              src={LANDING_PAGE_IMAGES.partnerImage}
               alt="Trusted partner"
               className="mx-auto"
               width={80}
@@ -60,28 +60,28 @@ export default function Home() {
           </h3>
           <div className="flex justify-center space-x-4">
             <Image
-              src={hospitalImage}
+              src={LANDING_PAGE_IMAGES.hospitalImage}
               alt="korlebu"
               className="h-auto w-20"
               width={80}
               height={80}
             />
             <Image
-              src={hospitalImage}
+              src={LANDING_PAGE_IMAGES.hospitalImage}
               alt="korlebu"
               className="h-auto w-20"
               width={80}
               height={80}
             />
             <Image
-              src={hospitalImage}
+              src={LANDING_PAGE_IMAGES.hospitalImage}
               alt="korlebu"
               className="h-auto w-20"
               width={80}
               height={80}
             />
             <Image
-              src={hospitalImage}
+              src={LANDING_PAGE_IMAGES.hospitalImage}
               alt="korlebu"
               className="h-auto w-20"
               width={80}
