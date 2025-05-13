@@ -95,3 +95,7 @@ export const PERMISION_MODULES: (keyof typeof PermissionModules)[] = [
   "USERS",
 ];
 export const UI_STATE = "state";
+
+export const heroImage = "/images/home.png";
+export const partnerImage = "/images/trusted.png";
+export const hospitalImage = "/images/korle-bu.png";
