@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaBars, FaTimes } from "react-icons/fa";
 
 export default function NavigationBar() {
@@ -19,6 +19,18 @@ export default function NavigationBar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const handleLinkClick = (
+    e: React.MouseEvent<HTMLLIElement, MouseEvent>,
+    targetId: string,
+  ) => {
+    e.preventDefault();
+    setMenuOpen(false);
+    const targetElement = document.getElementById(targetId);
+    if (targetElement) {
+      targetElement.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <div>
       <nav
@@ -28,16 +40,24 @@ export default function NavigationBar() {
       >
         <div className="flex items-center justify-between px-8 py-4 lg:px-[120px]">
           <div className="flex items-center space-x-2">
-            <h1 className="text-2xl font-bold text-[#111111]">IMS</h1>
+            <h1 className="cursor-pointer text-2xl font-bold text-[#111111]">
+              IMS
+            </h1>
             <span className="cursor-pointer rounded-full bg-[#FF6E66] px-[12px] py-1 text-xs font-bold text-white">
               BETA
             </span>
-            <ul className="hidden items-center space-x-8 pl-[80px] text-[#111111] lg:flex">
-              <li className="cursor-pointer hover:text-[#FF6E66]">Features</li>
-              <li className="cursor-pointer hover:text-[#FF6E66]">Pricing</li>
-              <li className="cursor-pointer hover:text-[#FF6E66]">Blog</li>
+            <ul className="hidden items-center space-x-8 pl-[120px] text-[#111111] lg:flex">
               <li className="cursor-pointer hover:text-[#FF6E66]">
-                Contact us
+                <a href="#features">Features</a>
+              </li>
+              <li className="cursor-pointer hover:text-[#FF6E66]">
+                <a href="#pricing">Pricing</a>
+              </li>
+              <li className="cursor-pointer hover:text-[#FF6E66]">
+                <a href="#blog">Blog</a>
+              </li>
+              <li className="cursor-pointer hover:text-[#FF6E66]">
+                <a href="#contact">Contact us</a>
               </li>
             </ul>
           </div>
@@ -76,16 +96,28 @@ export default function NavigationBar() {
           </div>
 
           <ul className="mt-8 space-y-6 px-6 text-lg font-medium">
-            <li className="cursor-pointer border-b border-[#a7afb6] pb-2 hover:text-[#FF6E66]">
+            <li
+              className="cursor-pointer border-b border-[#a7afb6] pb-2 hover:text-[#FF6E66]"
+              onClick={(e) => handleLinkClick(e, "features")}
+            >
               Features
             </li>
-            <li className="cursor-pointer border-b border-[#a7afb6] pb-2 hover:text-[#FF6E66]">
+            <li
+              className="cursor-pointer border-b border-[#a7afb6] pb-2 hover:text-[#FF6E66]"
+              onClick={(e) => handleLinkClick(e, "pricing")}
+            >
               Pricing
             </li>
-            <li className="cursor-pointer border-b border-[#a7afb6] pb-2 hover:text-[#FF6E66]">
+            <li
+              className="cursor-pointer border-b border-[#a7afb6] pb-2 hover:text-[#FF6E66]"
+              onClick={(e) => handleLinkClick(e, "blog")}
+            >
               Blog
             </li>
-            <li className="cursor-pointer border-b border-[#a7afb6] pb-2 hover:text-[#FF6E66]">
+            <li
+              className="cursor-pointer border-b border-[#a7afb6] pb-2 hover:text-[#FF6E66]"
+              onClick={(e) => handleLinkClick(e, "contact")}
+            >
               Contact us
             </li>
           </ul>
