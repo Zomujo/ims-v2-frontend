@@ -139,3 +139,31 @@ export const TESTIMONIALS = [
       "The integration and onboarding process with IMS was seamless. The support team is outstanding, and the product delivers everything it promises.",
   },
 ];
+
+export const FAQs = [
+  {
+    question: "What is IMS and who is it for?",
+    answer:
+      "IMS (Intelligent Medical System) is a software platform designed to streamline operations for healthcare providers, including hospitals, clinics, and pharmacies. It helps with patient management, records, billing, and inventory tracking.",
+  },
+  {
+    question: "Can I access IMS from multiple devices?",
+    answer:
+      "Yes, IMS is cloud-based and can be accessed from any internet-enabled device. This allows doctors, nurses, and administrators to collaborate in real time.",
+  },
+  {
+    question: "Is my data secure with IMS?",
+    answer:
+      "Absolutely. IMS uses industry-standard encryption protocols and regular backups to ensure all patient and facility data remains secure and compliant with healthcare regulations.",
+  },
+  {
+    question: "Can I upgrade or downgrade my plan at any time?",
+    answer:
+      "Yes, you can switch between Standard and Premium plans at any time. Just contact our support team or use the billing dashboard in your admin panel.",
+  },
+  {
+    question: "Does IMS provide support and training?",
+    answer:
+      "Yes, we offer onboarding sessions, tutorials, and 24/7 support to ensure your team is fully equipped to use the platform effectively.",
+  },
+];
