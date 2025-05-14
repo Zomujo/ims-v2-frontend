@@ -4,6 +4,7 @@ import Features from "@/app/landing-page/features";
 import Pricing from "@/app/landing-page/pricing";
 import Reviews from "@/app/landing-page/reviews";
 import Faq from "@/app/landing-page/faq";
+import Contact from "@/app/landing-page/contact";
 
 export default function LandingPage() {
   return (
@@ -14,6 +15,7 @@ export default function LandingPage() {
       <Pricing />
       <Reviews />
       <Faq />
+      <Contact />
     </div>
   );
 }

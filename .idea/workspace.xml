@@ -5,10 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cdfa3d69-0a97-462d-b028-c12c1afce628" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/app/landing-page/faq.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/landing-page/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/landing-page/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/constant.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/constant.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -27,6 +25,10 @@
               <option name="branches">
                 <list>
                   <RecentBranch>
+                    <option name="branchName" value="feat-contact" />
+                    <option name="lastUsedInstant" value="1747240224" />
+                  </RecentBranch>
+                  <RecentBranch>
                     <option name="branchName" value="feat-faq" />
                     <option name="lastUsedInstant" value="1747237614" />
                   </RecentBranch>
@@ -41,10 +43,6 @@
                   <RecentBranch>
                     <option name="branchName" value="feat-home" />
                     <option name="lastUsedInstant" value="1747056639" />
-                  </RecentBranch>
-                  <RecentBranch>
-                    <option name="branchName" value="feat-navigation" />
-                    <option name="lastUsedInstant" value="1746902654" />
                   </RecentBranch>
                 </list>
               </option>
@@ -73,7 +71,7 @@
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "feat-faq",
+    "git-widget-placeholder": "feat-contact",
     "js.debugger.nextJs.config.created.client": "true",
     "js.debugger.nextJs.config.created.server": "true",
     "last_opened_file_path": "/home/george-asiedu/Documents/GitHub/nextjs-dashboard",
@@ -136,7 +134,7 @@
       <workItem from="1747212429167" duration="692000" />
       <workItem from="1747213152743" duration="4334000" />
       <workItem from="1747217985938" duration="9606000" />
-      <workItem from="1747236759659" duration="3176000" />
+      <workItem from="1747236759659" duration="6843000" />
     </task>
     <servers />
   </component>
