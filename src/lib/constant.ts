@@ -111,4 +111,6 @@ export const LANDING_PAGE_IMAGES = {
   faqImage: "/images/faq.jpg",
   accessImage: "/images/access.png",
   imsImage: "/images/ims.jpg",
+  whiteCheckedImage: "/images/checked.svg",
+  blueCheckedImage: "/images/checkmark.svg",
 };
