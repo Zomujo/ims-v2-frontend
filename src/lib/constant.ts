@@ -144,7 +144,7 @@ export const FAQs = [
   {
     question: "What is IMS and who is it for?",
     answer:
-      "IMS (Intelligent Medical System) is a software platform designed to streamline operations for healthcare providers, including hospitals, clinics, and pharmacies. It helps with patient management, records, billing, and inventory tracking.",
+      "IMS (Inventory Medical System) is a software platform designed to streamline operations for healthcare providers, including hospitals, clinics, and pharmacies. It helps with patient management, records, billing, and inventory tracking.",
   },
   {
     question: "Can I access IMS from multiple devices?",
