@@ -1,6 +1,7 @@
 import Home from "@/app/landing-page/home";
 import OptimizeInventory from "@/app/landing-page/optimize";
 import Features from "@/app/landing-page/features";
+import Pricing from "@/app/landing-page/pricing";
 
 export default function LandingPage() {
   return (
@@ -8,6 +9,7 @@ export default function LandingPage() {
       <Home />
       <OptimizeInventory />
       <Features />
+      <Pricing />
     </div>
   );
 }
