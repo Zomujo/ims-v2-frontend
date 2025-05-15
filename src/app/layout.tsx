@@ -1,22 +1,26 @@
 import { Toaster } from "@/features/ui/sonner";
 import type { Metadata } from "next";
 import "./globals.css";
+import NextAuthSessionProvider from "@/lib/providers/next-auth-session-provider";
+import { ReactNode } from "react";
 
 export const metadata: Metadata = {
-  title: "NextJs 15",
-  description: "Nextjs 15 starter template",
+  title: "Stealth",
+  description: "Stealth is a medicine inventory management system.",
 };
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: ReactNode;
 }>) {
   return (
     <html lang="en">
       <body>
-        {children}
-        <Toaster position="top-right" />
+        <NextAuthSessionProvider>
+          {children}
+          <Toaster position="top-right" />
+        </NextAuthSessionProvider>
       </body>
     </html>
   );

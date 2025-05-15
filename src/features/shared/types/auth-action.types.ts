@@ -68,6 +68,10 @@ export type AuthIMSLoginObj = {
   status: UserStatus;
   phoneNumber: string;
   facilityId: string;
+  facility: {
+    id: string;
+    name: string;
+  };
   departmentId: string;
   role: string;
   permissions: string[];
