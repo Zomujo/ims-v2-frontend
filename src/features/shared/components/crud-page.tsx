@@ -26,6 +26,7 @@ export default function CrudPage<T>({
   moduleName,
   modalAction,
   handleRemoveQueryparam,
+  isLoading,
 }: Readonly<PropsWithChildren<CrudPageProps<T>>>) {
   const allColumns = tableColumns.concat(getActionColumn({ actions }));
   return (
@@ -44,6 +45,7 @@ export default function CrudPage<T>({
         columns={allColumns}
         data={data}
         totalPages={totalPages}
+        isLoading={isLoading}
       />
       <ImsAlertModal
         open={openModal || state?.includes("delete")}

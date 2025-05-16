@@ -34,6 +34,7 @@ export type CrudPageProps<T> = {
   } | null)[];
   handleRemoveQueryparam: (e: boolean) => void;
   modalAction: () => void;
+  isLoading?: boolean;
 };
 
 export type ManageUsersSettingsProps = {

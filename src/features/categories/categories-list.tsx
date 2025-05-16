@@ -23,7 +23,7 @@ import { itemCategoriesTableColumns } from "./categories.data";
 import { categoryFormSchema } from "./categories.schemas";
 
 export default function CategoriesList() {
-  const { data } = useFetchData({ fetchFn: getItemCategories });
+  const { data, loading } = useFetchData({ fetchFn: getItemCategories });
   const itemCategories = data?.rows ?? [];
   const {
     state,
@@ -58,6 +58,7 @@ export default function CategoriesList() {
         totalPages={data?.totalPages ?? 0}
         state={state}
         isEditMode={isEditMode}
+        isLoading={loading}
         actions={(item) => [
           {
             label: "edit",
