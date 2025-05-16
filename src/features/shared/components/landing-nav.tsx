@@ -57,6 +57,12 @@ export default function NavigationBar() {
                 <a href="#blog">Blog</a>
               </li>
               <li className="cursor-pointer hover:text-[#FF6E66]">
+                <a href="#reviews">Reviews</a>
+              </li>
+              <li className="cursor-pointer hover:text-[#FF6E66]">
+                <a href="#faq">Faq</a>
+              </li>
+              <li className="cursor-pointer hover:text-[#FF6E66]">
                 <a href="#contact">Contact us</a>
               </li>
             </ul>
@@ -72,7 +78,7 @@ export default function NavigationBar() {
           </div>
 
           <button
-            className="text-2xl text-gray-700 lg:hidden"
+            className="cursor-pointer text-2xl text-gray-700 hover:text-[#FF6E66] lg:hidden"
             onClick={() => setMenuOpen(!menuOpen)}
           >
             {menuOpen ? <FaTimes /> : <FaBars />}
@@ -90,7 +96,10 @@ export default function NavigationBar() {
               </span>
             </div>
 
-            <button className="text-2xl" onClick={() => setMenuOpen(!menuOpen)}>
+            <button
+              className="cursor-pointer text-2xl hover:text-[#FF6E66]"
+              onClick={() => setMenuOpen(!menuOpen)}
+            >
               <FaTimes />
             </button>
           </div>
@@ -113,6 +122,18 @@ export default function NavigationBar() {
               onClick={(e) => handleLinkClick(e, "blog")}
             >
               Blog
+            </li>
+            <li
+              className="cursor-pointer border-b border-[#a7afb6] pb-2 hover:text-[#FF6E66]"
+              onClick={(e) => handleLinkClick(e, "reviews")}
+            >
+              Reviews
+            </li>
+            <li
+              className="cursor-pointer border-b border-[#a7afb6] pb-2 hover:text-[#FF6E66]"
+              onClick={(e) => handleLinkClick(e, "faq")}
+            >
+              Faq
             </li>
             <li
               className="cursor-pointer border-b border-[#a7afb6] pb-2 hover:text-[#FF6E66]"
