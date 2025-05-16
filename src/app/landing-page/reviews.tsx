@@ -3,7 +3,10 @@ import Image from "next/image";
 
 export default function Reviews() {
   return (
-    <section className="grid grid-cols-1 gap-0 bg-[#FFFAEB] pt-20 pb-8 md:gap-8 lg:grid-cols-2 lg:gap-0 lg:pb-0">
+    <section
+      id="reviews"
+      className="grid grid-cols-1 gap-0 bg-[#FFFAEB] pt-20 pb-8 md:gap-8 lg:grid-cols-2 lg:gap-0 lg:pb-0"
+    >
       <div className="mb-16 text-left">
         <div className="mb-4 px-6 md:px-8 lg:px-[120px]">
           <h2 className="text-3xl font-bold text-[#111111] md:text-5xl">
