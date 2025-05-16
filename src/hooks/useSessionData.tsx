@@ -3,12 +3,18 @@ import { useSession } from "next-auth/react";
 export const useSessionData = () => {
   const { data: session, status } = useSession();
 
+  const user = session?.user;
+
   const isLoading = status === "loading";
   const isAuthenticated = !!session;
 
-  const facilityName = session?.user?.facility?.name;
+  const fullName = user?.fullName;
 
-  const role = session?.user?.role;
+  const facilityName = user?.facility?.name;
+
+  const role = user?.role;
+
+  const profileImage = user?.imageUrl;
 
   return {
     session,
@@ -16,5 +22,7 @@ export const useSessionData = () => {
     isAuthenticated,
     facilityName,
     role,
+    profileImage,
+    fullName,
   };
 };

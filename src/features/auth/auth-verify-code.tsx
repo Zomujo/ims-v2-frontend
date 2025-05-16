@@ -67,7 +67,6 @@ function AuthLoginActions({
     <ImsButton
       isLoading={isSubmitting}
       isLoadingLabel="Logging in..."
-      variant="ghost"
       className="order-last h-12 cursor-pointer justify-self-end md:order-none"
       type="submit"
     >

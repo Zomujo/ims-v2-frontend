@@ -66,13 +66,14 @@ export type AuthIMSLoginObj = {
   fullName: string;
   email: string;
   status: UserStatus;
-  phoneNumber: string;
+  phoneNumber: string | null;
   facilityId: string;
   facility: {
     id: string;
     name: string;
   };
-  departmentId: string;
+  imageUrl: string | null;
+  departmentId: string | null;
   role: string;
   permissions: string[];
   tokens: {

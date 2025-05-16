@@ -1,5 +1,5 @@
+"use client";
 import { LogOutButton } from "@/features/auth/auth-components-client";
-import { authUserProfileAction } from "@/features/shared/actions/auth.action";
 import { ButtonLink } from "@/features/shared/components/button-link";
 import { ImsAvatar } from "@/features/shared/components/ims-avatar";
 import ImsDropdownMenu from "@/features/shared/components/ims-drop-down-menu";
@@ -7,6 +7,7 @@ import { ImsPopover } from "@/features/shared/components/ims-popover";
 import { PAGE_ROUTES } from "@/lib/constant";
 import { getInitials } from "@/lib/utils";
 import { BellIcon, EllipsisIcon, SettingsIcon } from "lucide-react";
+import { useSessionData } from "@/hooks/useSessionData";
 
 export function NotificationButton() {
   return (
@@ -22,19 +23,19 @@ export function NotificationButton() {
   );
 }
 
-export async function UserProfileButton() {
-  const imsUserProfile = await authUserProfileAction();
+export function UserProfileButton() {
+  const { profileImage, fullName } = useSessionData();
 
   return (
     <ImsDropdownMenu
       trigger={
         <div className="flex cursor-pointer items-center gap-x-2">
           <ImsAvatar
-            src={imsUserProfile.imageUrl ?? ""}
-            alt={imsUserProfile.fullName}
-            fallback={getInitials(imsUserProfile.fullName)}
+            src={profileImage ?? ""}
+            alt={fullName ?? "Profile Image"}
+            fallback={getInitials(fullName ?? "")}
           />
-          <span className="ml-2">{imsUserProfile.fullName}</span>
+          <span className="ml-2">{fullName}</span>
           <EllipsisIcon className="rotate-90" size={20} />
         </div>
       }

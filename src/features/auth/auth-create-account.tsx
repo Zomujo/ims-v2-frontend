@@ -29,7 +29,7 @@ export function CreateAccountForm() {
       credentials: data as z.infer<typeof loginSchema>,
       routeFn: router.push,
       options: {
-        authId: AUTH_OPTIONS_CONSTANTS.EMAIL_PASSWORD,
+        authId: AUTH_OPTIONS_CONSTANTS.CREATE_ACCOUNT,
         routeTo: PAGE_ROUTES.DASHBOARD,
         loadingMsg: "Creating account...",
         successMsg: "Account created successfully",
