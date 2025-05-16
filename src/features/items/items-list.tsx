@@ -130,7 +130,7 @@ export function ItemForm({
   });
 
   const isStepFilled = useCallback(
-    (step: number) => {
+    (step = 1) => {
       const stepOneFields = [
         "name",
         "categoryId",
@@ -146,7 +146,6 @@ export function ItemForm({
       if (step === 1) {
         const formValues = form.watch();
         return stepOneFields.every((field) => {
-          console.log("Field", field);
           const value = formValues[field as keyof typeof formValues];
           return value !== undefined && value !== null && value !== "";
         });
@@ -236,9 +235,7 @@ export function ItemForm({
                 className="flex-1"
                 variant="imsPrimary"
                 onClick={handleNext}
-                disabled={
-                  form.formState.isSubmitting || !isStepFilled(currentStep)
-                }
+                disabled={form.formState.isSubmitting || !isStepFilled()}
                 type="button"
               >
                 Next
