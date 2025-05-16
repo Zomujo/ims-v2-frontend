@@ -5,6 +5,7 @@ import Pricing from "@/app/landing-page/pricing";
 import Reviews from "@/app/landing-page/reviews";
 import Faq from "@/app/landing-page/faq";
 import Contact from "@/app/landing-page/contact";
+import Footer from "@features/shared/components/footer";
 
 export default function LandingPage() {
   return (
@@ -16,6 +17,7 @@ export default function LandingPage() {
       <Reviews />
       <Faq />
       <Contact />
+      <Footer />
     </div>
   );
 }
