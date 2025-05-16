@@ -3,7 +3,7 @@
 import { PAGE_ROUTES, UI_STATE } from "@/lib/constant";
 import { handleRequestState } from "@/lib/utils";
 import { useRouter } from "next/navigation";
-import { MouseEvent, useEffect, useState } from "react";
+import { MouseEvent, useCallback, useEffect, useState } from "react";
 import { z } from "zod";
 import {
   addItem,
@@ -129,6 +129,33 @@ export function ItemForm({
     },
   });
 
+  const isStepFilled = useCallback(
+    (step: number) => {
+      const stepOneFields = [
+        "name",
+        "categoryId",
+        "code",
+        "brandName",
+        "manufacturer",
+        "dosageForm",
+        "strength",
+        "unitOfMeasurement",
+        "fdaApproval",
+        "ISO",
+      ];
+      if (step === 1) {
+        const formValues = form.watch();
+        return stepOneFields.every((field) => {
+          console.log("Field", field);
+          const value = formValues[field as keyof typeof formValues];
+          return value !== undefined && value !== null && value !== "";
+        });
+      }
+      return true;
+    },
+    [form],
+  );
+
   const handleSubmit = async (data: unknown) => {
     const onItemData = data as z.infer<typeof itemFormSchema>;
     const res = isEditMode
@@ -209,7 +236,9 @@ export function ItemForm({
                 className="flex-1"
                 variant="imsPrimary"
                 onClick={handleNext}
-                disabled={form.formState.isSubmitting}
+                disabled={
+                  form.formState.isSubmitting || !isStepFilled(currentStep)
+                }
                 type="button"
               >
                 Next

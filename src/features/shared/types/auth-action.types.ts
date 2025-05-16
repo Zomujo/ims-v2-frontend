@@ -63,25 +63,14 @@ export type AuthActionProps = {
 
 export type AuthIMSLoginObj = {
   id: string;
-  fullName: string;
-  email: string;
   status: UserStatus;
-  phoneNumber: string | null;
   facilityId: string;
-  facility: {
-    id: string;
-    name: string;
-  };
-  imageUrl: string | null;
-  departmentId: string | null;
-  role: string;
-  permissions: string[];
   tokens: {
     accessToken: string;
     refreshToken: string;
   };
   expiresAt: string;
-};
+} & AuthIMSUserProfile;
 
 export type AuthLoginActionResponse = Pick<
   IMSApiActionResponse<AuthIMSLoginObj>,
