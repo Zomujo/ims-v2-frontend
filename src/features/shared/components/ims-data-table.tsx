@@ -17,18 +17,21 @@ import {
   TableRow,
 } from "@/features/ui/table";
 import { DynamicPagination } from "./pagination";
+import { Skeleton } from "@/features/ui/skeleton";
 
 // Define props for the DataTable component
 type DataTableProps<TData, TValue> = {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   totalPages?: number;
+  isLoading?: boolean;
 };
 
 export function IMSDataTable<TData, TValue>({
   columns,
   data,
   totalPages,
+  isLoading,
 }: Readonly<DataTableProps<TData, TValue>>) {
   const table = useReactTable({
     data,
@@ -50,19 +53,33 @@ export function IMSDataTable<TData, TValue>({
                   className="border-y text-xs font-semibold uppercase first:rounded-l-2xl first:border-l first:pl-4 last:rounded-r-2xl last:border-r"
                   key={header.id}
                 >
-                  {header.isPlaceholder
-                    ? null
-                    : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext(),
-                      ) || <span className="invisible">Action</span>}
+                  {isLoading ? (
+                    <Skeleton className="h-4 bg-gray-300" />
+                  ) : header.isPlaceholder ? null : (
+                    flexRender(
+                      header.column.columnDef.header,
+                      header.getContext(),
+                    ) || <span className="invisible">Action</span>
+                  )}
                 </TableHead>
               ))}
             </TableRow>
           ))}
         </TableHeader>
         <TableBody className="space-y-3 text-xs">
-          {table.getRowModel().rows?.length ? (
+          {isLoading ? (
+            Array.from({ length: columns.length }).map((_, rowIndex) => (
+              <TableRow key={rowIndex}>
+                {Array.from({ length: columns.length }).map(
+                  (_column, colIndex) => (
+                    <TableCell key={colIndex}>
+                      <Skeleton className="h-4 bg-gray-300" />
+                    </TableCell>
+                  ),
+                )}
+              </TableRow>
+            ))
+          ) : table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
               <TableRow
                 key={row.id}
