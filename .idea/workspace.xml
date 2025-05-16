@@ -5,8 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cdfa3d69-0a97-462d-b028-c12c1afce628" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/features/shared/components/footer.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/landing-page/contact.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/landing-page/contact.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/landing-page/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/landing-page/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/shared/components/landing-nav.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/shared/components/landing-nav.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -25,6 +28,10 @@
               <option name="branches">
                 <list>
                   <RecentBranch>
+                    <option name="branchName" value="feat-footer" />
+                    <option name="lastUsedInstant" value="1747244103" />
+                  </RecentBranch>
+                  <RecentBranch>
                     <option name="branchName" value="feat-contact" />
                     <option name="lastUsedInstant" value="1747240224" />
                   </RecentBranch>
@@ -39,10 +46,6 @@
                   <RecentBranch>
                     <option name="branchName" value="feat-pricing" />
                     <option name="lastUsedInstant" value="1747218481" />
-                  </RecentBranch>
-                  <RecentBranch>
-                    <option name="branchName" value="feat-home" />
-                    <option name="lastUsedInstant" value="1747056639" />
                   </RecentBranch>
                 </list>
               </option>
@@ -65,26 +68,26 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "feat-contact",
-    "js.debugger.nextJs.config.created.client": "true",
-    "js.debugger.nextJs.config.created.server": "true",
-    "last_opened_file_path": "/home/george-asiedu/Documents/GitHub/nextjs-dashboard",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "yarn",
-    "prettierjs.PrettierConfiguration.Package": "/home/george-asiedu/Documents/GitHub/ims-v2-frontend/node_modules/prettier",
-    "ts.external.directory.path": "/home/george-asiedu/Documents/GitHub/ims-v2-frontend/node_modules/typescript/lib",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;feat-footer&quot;,
+    &quot;js.debugger.nextJs.config.created.client&quot;: &quot;true&quot;,
+    &quot;js.debugger.nextJs.config.created.server&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/george-asiedu/Documents/GitHub/nextjs-dashboard&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;yarn&quot;,
+    &quot;prettierjs.PrettierConfiguration.Package&quot;: &quot;/home/george-asiedu/Documents/GitHub/ims-v2-frontend/node_modules/prettier&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;/home/george-asiedu/Documents/GitHub/ims-v2-frontend/node_modules/typescript/lib&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="ReactDesignerToolWindowState">
     <option name="myId2Visible">
       <map>
@@ -134,7 +137,9 @@
       <workItem from="1747212429167" duration="692000" />
       <workItem from="1747213152743" duration="4334000" />
       <workItem from="1747217985938" duration="9606000" />
-      <workItem from="1747236759659" duration="6843000" />
+      <workItem from="1747236759659" duration="8530000" />
+      <workItem from="1747253212461" duration="624000" />
+      <workItem from="1747400810536" duration="3088000" />
     </task>
     <servers />
   </component>
