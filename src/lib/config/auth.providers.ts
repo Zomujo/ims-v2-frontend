@@ -29,7 +29,7 @@ export const LoginCredentialsProvider = () =>
 export const CreateAccountCredentialsProvider = () =>
   CredentialsProvider({
     name: "Credentials",
-    id: AUTH_OPTIONS_CONSTANTS.EMAIL_PASSWORD,
+    id: AUTH_OPTIONS_CONSTANTS.CREATE_ACCOUNT,
     credentials: {
       email: {
         type: "email",
@@ -49,12 +49,6 @@ export const CreateAccountCredentialsProvider = () =>
     },
     async authorize(credentials) {
       if (!credentials) return null;
-      return await authCreateAccountAction({
-        email: credentials.email,
-        password: credentials.password,
-        fullName: credentials.fullName,
-        facilityName: credentials.facilityName,
-        facilityPassword: credentials.facilityPassword,
-      });
+      return await authCreateAccountAction(credentials);
     },
   });

@@ -6,6 +6,7 @@ import {
   AuthActionProps,
   AuthApiStandardResponse,
   AuthCreateAccountActionApiBody,
+  AuthIMSLoginObj,
   AuthLoginActionResponse,
   AuthUserProfileActionResponse,
 } from "../types/auth-action.types";
@@ -43,7 +44,7 @@ export const authLoginAction = async ({
     return {
       ...loginData,
       ...profileData,
-    };
+    } satisfies AuthIMSLoginObj;
   } catch {
     return null;
   }
@@ -60,20 +61,32 @@ export const authCreateAccountAction = async ({
   "email" | "password" | "facilityName" | "facilityPassword" | "fullName"
 >) => {
   try {
-    const res = await imsApiWithoutAuth<AuthLoginActionResponse>({
-      url: API_ENDPOINTS_OLD.CREATE_ACCOUNT,
-      method: "POST",
-      body: JSON.stringify({
-        email,
-        password,
-        facility: {
-          name: facilityName,
-          password: facilityPassword,
+    const { data: loginData } =
+      await imsApiWithoutAuth<AuthLoginActionResponse>({
+        url: API_ENDPOINTS_OLD.CREATE_ACCOUNT,
+        method: "POST",
+        body: JSON.stringify({
+          email,
+          password,
+          facility: {
+            name: facilityName,
+            password: facilityPassword,
+          },
+          fullName,
+        } as AuthCreateAccountActionApiBody),
+      });
+    const { data: profileData } =
+      await imsApiWithoutAuth<AuthUserProfileActionResponse>({
+        url: API_ENDPOINTS_OLD.USER_PROFILE,
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${loginData.tokens.accessToken}`,
         },
-        fullName,
-      } as AuthCreateAccountActionApiBody),
-    });
-    return res.data;
+      });
+    return {
+      ...loginData,
+      ...profileData,
+    };
   } catch {
     return null;
   }
