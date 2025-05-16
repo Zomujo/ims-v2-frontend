@@ -48,13 +48,15 @@ export default function Contact() {
           </div>
         </div>
       </div>
-      <Image
-        src={LANDING_PAGE_IMAGES.accessImage}
-        alt="pharmacist"
-        width={734}
-        height={562}
-        className="absolute top-[28%] -right-8 w-[80%] md:top-[4.5%] md:-right-14 md:w-[734px] lg:top-[35%] lg:right-0 lg:left-[16%] 2xl:left-[22%]"
-      />
+      <div className="lg:h-[12vh] lg:w-full">
+        <Image
+          src={LANDING_PAGE_IMAGES.accessImage}
+          alt="pharmacist"
+          width={734}
+          height={562}
+          className="absolute top-[28%] -right-8 w-[80%] md:top-[4.5%] md:-right-14 md:w-[734px] lg:top-[35%] lg:right-0 lg:left-[18%]"
+        />
+      </div>
     </section>
   );
 }
