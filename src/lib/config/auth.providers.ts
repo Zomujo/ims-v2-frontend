@@ -19,10 +19,7 @@ export const LoginCredentialsProvider = () =>
     },
     async authorize(credentials) {
       if (!credentials) return null;
-      return await authLoginAction({
-        email: credentials.email,
-        password: credentials.password,
-      });
+      return await authLoginAction(credentials);
     },
   });
 
