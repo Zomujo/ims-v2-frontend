@@ -68,6 +68,7 @@ export const generateQueryParams = (params: GenerateQueryParams = {}) => {
 export const generateUrlWithQueryParams = (
   baseUrl: string,
   params: GenerateQueryParams,
+  arrayParams?: string,
 ) => {
   const searchParams = new URLSearchParams();
 
@@ -76,6 +77,12 @@ export const generateUrlWithQueryParams = (
     .forEach((key) => {
       searchParams.append(key as string, params[key] as string);
     });
+  if (arrayParams) {
+    const arraySearchParams = new URLSearchParams(arrayParams);
+    arraySearchParams.forEach((value, key) => {
+      searchParams.append(key, value);
+    });
+  }
   return baseUrl + "?" + searchParams.toString();
 };
 
