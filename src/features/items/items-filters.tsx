@@ -66,7 +66,10 @@ export function ItemsFilters() {
             Status
             {statusFilter !== "" && (
               <Badge variant="secondary" className="ml-2">
-                {STATUS_OPTIONS.find((s) => s.value === statusFilter)?.label}
+                {
+                  STATUS_OPTIONS.find(({ value }) => value === statusFilter)
+                    ?.label
+                }
               </Badge>
             )}
             <ChevronDown className="h-4 w-4 opacity-50" />
@@ -77,13 +80,13 @@ export function ItemsFilters() {
             value={statusFilter}
             onValueChange={handleStatusChange}
           >
-            {STATUS_OPTIONS.map((option) => (
+            {STATUS_OPTIONS.map(({ value, label }) => (
               <DropdownMenuRadioItem
-                key={option.value}
-                value={option.value}
+                key={value}
+                value={value}
                 className="cursor-pointer"
               >
-                {option.label}
+                {label}
               </DropdownMenuRadioItem>
             ))}
           </DropdownMenuRadioGroup>
@@ -108,14 +111,14 @@ export function ItemsFilters() {
             </DropdownMenuItem>
           ) : (
             <>
-              {categories?.map((category) => (
+              {categories?.map(({ id, name }) => (
                 <DropdownMenuCheckboxItem
-                  key={category.id}
-                  checked={selectedCategories.includes(category.id)}
-                  onCheckedChange={() => handleCategoryToggle(category.id)}
+                  key={id}
+                  checked={selectedCategories.includes(id)}
+                  onCheckedChange={() => handleCategoryToggle(id)}
                   className="cursor-pointer"
                 >
-                  {category.name}
+                  {name}
                 </DropdownMenuCheckboxItem>
               ))}
               {selectedCategories.length > 0 && (
