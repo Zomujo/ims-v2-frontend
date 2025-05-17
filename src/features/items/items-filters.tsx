@@ -50,12 +50,6 @@ export function ItemsFilters() {
       const newSelectedCategories = prev.includes(categoryId)
         ? prev.filter((id) => id !== categoryId)
         : [...prev, categoryId];
-      newSelectedCategories.forEach((id) => {
-        setSearchParams({
-          key: "categories",
-          value: id,
-        });
-      });
       setArraySearchParams({
         key: "categories",
         values: newSelectedCategories,
