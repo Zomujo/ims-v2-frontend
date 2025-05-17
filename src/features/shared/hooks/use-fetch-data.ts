@@ -3,13 +3,17 @@ import { useEffect, useState } from "react";
 import { GenerateQueryParams } from "../types/utitls.types";
 
 type FetchDataProps<T> = {
-  fetchFn: (searchParams?: GenerateQueryParams) => Promise<T>;
+  fetchFn: (
+    searchParams?: GenerateQueryParams,
+    arraySearch?: string,
+  ) => Promise<T>;
   onSuccess?: (data: T) => void;
   onError?: (error: Error) => void;
   onLoading?: (loading: boolean) => void;
   onComplete?: () => void;
   deps?: unknown[];
   exercuteOnMount?: boolean;
+  arrayQueries?: string[];
 };
 
 export default function useFetchData<T>({
@@ -20,6 +24,7 @@ export default function useFetchData<T>({
   onSuccess,
   deps = [],
   exercuteOnMount = true,
+  arrayQueries = [],
 }: FetchDataProps<T>) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
@@ -30,10 +35,24 @@ export default function useFetchData<T>({
     if (!exercuteOnMount) return;
     const fetchData = async () => {
       const queryParams = Object.fromEntries(searchParams.entries());
+      const filteredQueryParams = Object.fromEntries(
+        Object.entries(queryParams).filter(
+          ([key]) => !arrayQueries.includes(key),
+        ),
+      );
+      const arraySearchParams = new URLSearchParams();
+      arrayQueries.forEach((key) => {
+        searchParams.getAll(key).forEach((value) => {
+          arraySearchParams.append(key, value);
+        });
+      });
       try {
         setLoading(true);
         onLoading?.(true);
-        const response = await fetchFn(queryParams);
+        const response = await fetchFn(
+          filteredQueryParams,
+          arraySearchParams.toString(),
+        );
         setData(response);
         onSuccess?.(response);
       } catch (err) {

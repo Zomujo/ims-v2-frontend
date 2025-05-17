@@ -19,20 +19,22 @@ import useFetchData from "../shared/hooks/use-fetch-data";
 import useHookForm from "../shared/hooks/use-hook-form";
 import useImsSearchParams from "../shared/hooks/use-ims-search-params";
 import usePageCRUD from "../shared/hooks/use-page-crud";
-import { ItemCategoryResponse } from "../shared/types/action.types";
 import { CRUDACTION } from "../shared/types/utitls.types";
 import { ScrollArea } from "../ui/scroll-area";
 import { ItemFormInputs } from "./items-component-client";
 import { ItemsContextProvider } from "./items.context";
 import { itemsTableColumns } from "./items.data";
 import { itemFormSchema } from "./items.schemas";
+import LoadingOverlay from "@features/ui/loadingOverlay";
+import { useCategories } from "@/hooks/useCategories";
 
-type ItemsListProps = {
-  categories?: ItemCategoryResponse[];
-};
-export default function ItemsList({ categories }: Readonly<ItemsListProps>) {
+export default function ItemsList() {
+  const { categories } = useCategories();
   const router = useRouter();
-  const { data } = useFetchData({ fetchFn: getItems });
+  const { data, loading } = useFetchData({
+    fetchFn: getItems,
+    arrayQueries: ["categories"],
+  });
   const items = data?.rows ?? [];
   const {
     state,
@@ -64,6 +66,7 @@ export default function ItemsList({ categories }: Readonly<ItemsListProps>) {
       <CrudPage
         moduleName="items"
         data={items}
+        isLoading={loading}
         modalAction={handleDelete}
         handleRemoveQueryparam={handleRemoveQueryparam}
         currentDataDisplayName={getData(CRUDACTION.DELETE)?.name ?? ""}
@@ -105,6 +108,7 @@ export function ItemForm({
   isEditMode?: boolean;
   itemId?: string;
 }>) {
+  const [isLoading, setIsLoading] = useState(false);
   const { removeSearchParams } = useImsSearchParams();
   const [currentStep, setCurrentStep] = useState(1);
   const totalSteps = 2;
@@ -185,6 +189,7 @@ export function ItemForm({
   useEffect(() => {
     if (!isEditMode) return;
     const fetchItem = async () => {
+      setIsLoading(true);
       const res = await getItem(itemId ?? "");
       const item = res.data;
       if (item) {
@@ -205,58 +210,62 @@ export function ItemForm({
           unitOfMeasurement: item.unitOfMeasurement,
         });
       }
+      setIsLoading(false);
     };
-    fetchItem();
+    void fetchItem();
   }, []);
 
   return (
-    <ImsForm
-      className="overflow-y-auto [&>*]:px-4"
-      inputSectionClassName="overflow-y-auto"
-      form={form}
-      handleAuthSubmit={handleSubmit}
-      RenderActions={
-        <>
-          <ProgressBar currentStep={currentStep} totalSteps={totalSteps} />
-          <div className="flex w-full gap-4">
-            {currentStep > 1 && (
-              <ImsButton
-                className="flex-1"
-                variant="outline"
-                onClick={handlePrevious}
-                disabled={form.formState.isSubmitting}
-                type="button"
-              >
-                Go Back
-              </ImsButton>
-            )}
-            {currentStep < totalSteps ? (
-              <ImsButton
-                className="flex-1"
-                variant="imsPrimary"
-                onClick={handleNext}
-                disabled={form.formState.isSubmitting || !isStepFilled()}
-                type="button"
-              >
-                Next
-              </ImsButton>
-            ) : (
-              <ImsButton
-                className="flex-1"
-                isLoading={form.formState.isSubmitting}
-                isLoadingLabel="Adding Item..."
-                variant="imsPrimary"
-                type="submit"
-              >
-                Add Item
-              </ImsButton>
-            )}
-          </div>
-        </>
-      }
-      RenderInputs={
-        <ItemFormInputs control={form.control} currentStep={currentStep} />
-      }
-    />
+    <>
+      {isLoading && <LoadingOverlay />}
+      <ImsForm
+        className="overflow-y-auto [&>*]:px-4"
+        inputSectionClassName="overflow-y-auto"
+        form={form}
+        handleAuthSubmit={handleSubmit}
+        RenderActions={
+          <>
+            <ProgressBar currentStep={currentStep} totalSteps={totalSteps} />
+            <div className="flex w-full gap-4">
+              {currentStep > 1 && (
+                <ImsButton
+                  className="flex-1"
+                  variant="outline"
+                  onClick={handlePrevious}
+                  disabled={form.formState.isSubmitting}
+                  type="button"
+                >
+                  Go Back
+                </ImsButton>
+              )}
+              {currentStep < totalSteps ? (
+                <ImsButton
+                  className="flex-1"
+                  variant="imsPrimary"
+                  onClick={handleNext}
+                  disabled={form.formState.isSubmitting || !isStepFilled()}
+                  type="button"
+                >
+                  Next
+                </ImsButton>
+              ) : (
+                <ImsButton
+                  className="flex-1"
+                  isLoading={form.formState.isSubmitting}
+                  isLoadingLabel="Adding Item..."
+                  variant="imsPrimary"
+                  type="submit"
+                >
+                  Add Item
+                </ImsButton>
+              )}
+            </div>
+          </>
+        }
+        RenderInputs={
+          <ItemFormInputs control={form.control} currentStep={currentStep} />
+        }
+      />
+    </>
   );
 }
