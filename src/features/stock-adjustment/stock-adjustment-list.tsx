@@ -147,6 +147,7 @@ export function StockAdjustmentForm({
         <ImsButton
           isLoading={form.formState.isSubmitting}
           isLoadingLabel="Submitting..."
+          disabled={form.formState.isSubmitting}
           variant="imsPrimary"
           type="submit"
         >
