@@ -1,9 +1,7 @@
 "use client";
-import { settingPagesDescription } from "@/features/settings/settings.data";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
-
-type TitleFromPath = keyof typeof settingPagesDescription;
+import { usePageHeading } from "@/hooks/usePageHeading";
 
 export default function PageHeading({
   routeLevel = 1,
@@ -11,11 +9,11 @@ export default function PageHeading({
 }: Readonly<{ routeLevel?: number; id?: string }>) {
   const pathname = usePathname();
   const titleFromPath = pathname.split("/")[routeLevel];
-  const title =
-    settingPagesDescription[titleFromPath as TitleFromPath]?.title ??
-    titleFromPath;
-  const description =
-    settingPagesDescription[titleFromPath as TitleFromPath]?.description ?? "";
+  const { title, description } = usePageHeading(
+    titleFromPath.replace(/-/g, " "),
+    "",
+  );
+
   return (
     <>
       <h2
@@ -23,7 +21,7 @@ export default function PageHeading({
           "text-xl": routeLevel === 2,
         })}
       >
-        {id ? "Edit" : title.replace(/-/g, " ")}
+        {id ? "Edit" : title}
       </h2>
       {description && (
         <p className="mt-4 text-sm text-gray-500">{description}</p>

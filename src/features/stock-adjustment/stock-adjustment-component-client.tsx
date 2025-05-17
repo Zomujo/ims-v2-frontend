@@ -10,6 +10,7 @@ import useFetchData from "../shared/hooks/use-fetch-data";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import { StockAdjustmentContext } from "./stock-adjustment.context";
+import LoadingOverlay from "@features/ui/loadingOverlay";
 
 type StockAdjustmentFormInputsProps = {
   control: Control;
@@ -39,7 +40,7 @@ export function StockAdjustmentFormInputs({
   }));
 
   if (loading) {
-    return <div>Loading.....</div>;
+    return <LoadingOverlay />;
   }
 
   return (

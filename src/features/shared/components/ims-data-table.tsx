@@ -105,7 +105,7 @@ export function IMSDataTable<TData, TValue>({
           )}
         </TableBody>
       </Table>
-      {!!totalPages && totalPages > 1 && (
+      {!!totalPages && (
         <DynamicPagination className="pb-5" totalPages={totalPages} />
       )}
     </div>

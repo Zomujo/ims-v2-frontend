@@ -7,6 +7,7 @@ import {
 import { clsx, type ClassValue } from "clsx";
 import { toast } from "sonner";
 import { twMerge } from "tailwind-merge";
+import { FieldValues, UseFormWatch } from "react-hook-form";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -119,5 +120,15 @@ export const formateDate = (date: string | number | Date) => {
     year: "numeric",
     month: "long",
     day: "numeric",
+  });
+};
+
+export const isStepValid = (
+  stepFields: string[],
+  formValues: UseFormWatch<FieldValues>,
+): boolean => {
+  return stepFields.every((field) => {
+    const value = formValues[field as keyof typeof formValues];
+    return value !== undefined && value !== null && value !== "";
   });
 };

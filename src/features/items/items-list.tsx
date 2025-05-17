@@ -1,7 +1,7 @@
 "use client";
 
 import { PAGE_ROUTES, UI_STATE } from "@/lib/constant";
-import { handleRequestState } from "@/lib/utils";
+import { handleRequestState, isStepValid } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { MouseEvent, useCallback, useEffect, useState } from "react";
 import { z } from "zod";
@@ -31,7 +31,7 @@ import { useCategories } from "@/hooks/useCategories";
 export default function ItemsList() {
   const { categories } = useCategories();
   const router = useRouter();
-  const { data, loading } = useFetchData({
+  const { data, loading, refetch } = useFetchData({
     fetchFn: getItems,
     arrayQueries: ["categories"],
   });
@@ -53,6 +53,7 @@ export default function ItemsList() {
     handleRequestState({ res, loadingMsg: "Deleting item...." });
     res.then(() => {
       removeSearchParams(CRUDACTION.DELETE);
+      refetch();
     });
     await res;
   };
@@ -133,31 +134,21 @@ export function ItemForm({
     },
   });
 
-  const isStepFilled = useCallback(
-    (step = 1) => {
-      const stepOneFields = [
-        "name",
-        "categoryId",
-        "code",
-        "brandName",
-        "manufacturer",
-        "dosageForm",
-        "strength",
-        "unitOfMeasurement",
-        "fdaApproval",
-        "ISO",
-      ];
-      if (step === 1) {
-        const formValues = form.watch();
-        return stepOneFields.every((field) => {
-          const value = formValues[field as keyof typeof formValues];
-          return value !== undefined && value !== null && value !== "";
-        });
-      }
-      return true;
-    },
-    [form],
-  );
+  const isStepFilled = useCallback(() => {
+    const stepOneFields = [
+      "name",
+      "categoryId",
+      "code",
+      "brandName",
+      "manufacturer",
+      "dosageForm",
+      "strength",
+      "unitOfMeasurement",
+      "fdaApproval",
+      "ISO",
+    ];
+    return isStepValid(stepOneFields, form.watch());
+  }, [form]);
 
   const handleSubmit = async (data: unknown) => {
     const onItemData = data as z.infer<typeof itemFormSchema>;
