@@ -31,41 +31,45 @@ export default function useFetchData<T>({
   const [data, setData] = useState<T | null>(null);
   const searchParams = useSearchParams();
 
+  const fetchData = async () => {
+    const queryParams = Object.fromEntries(searchParams.entries());
+    const filteredQueryParams = Object.fromEntries(
+      Object.entries(queryParams).filter(
+        ([key]) => !arrayQueries.includes(key),
+      ),
+    );
+    const arraySearchParams = new URLSearchParams();
+    arrayQueries.forEach((key) => {
+      searchParams.getAll(key).forEach((value) => {
+        arraySearchParams.append(key, value);
+      });
+    });
+    try {
+      setLoading(true);
+      onLoading?.(true);
+      const response = await fetchFn(
+        filteredQueryParams,
+        arraySearchParams.toString(),
+      );
+      setData(response);
+      onSuccess?.(response);
+    } catch (err) {
+      setError(err as Error);
+      onError?.(err as Error);
+    } finally {
+      setLoading(false);
+      onLoading?.(false);
+      onComplete?.();
+    }
+  };
+
   useEffect(() => {
     if (!exercuteOnMount) return;
-    const fetchData = async () => {
-      const queryParams = Object.fromEntries(searchParams.entries());
-      const filteredQueryParams = Object.fromEntries(
-        Object.entries(queryParams).filter(
-          ([key]) => !arrayQueries.includes(key),
-        ),
-      );
-      const arraySearchParams = new URLSearchParams();
-      arrayQueries.forEach((key) => {
-        searchParams.getAll(key).forEach((value) => {
-          arraySearchParams.append(key, value);
-        });
-      });
-      try {
-        setLoading(true);
-        onLoading?.(true);
-        const response = await fetchFn(
-          filteredQueryParams,
-          arraySearchParams.toString(),
-        );
-        setData(response);
-        onSuccess?.(response);
-      } catch (err) {
-        setError(err as Error);
-        onError?.(err as Error);
-      } finally {
-        setLoading(false);
-        onLoading?.(false);
-        onComplete?.();
-      }
-    };
-
-    fetchData();
+    void fetchData();
   }, [searchParams, ...deps]);
-  return { data, loading, error };
+
+  const refetch = () => {
+    void fetchData();
+  };
+  return { data, loading, error, refetch };
 }

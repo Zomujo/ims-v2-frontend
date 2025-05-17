@@ -1,6 +1,6 @@
 "use client";
-import { handleRequestState } from "@/lib/utils";
-import { useState } from "react";
+import { handleRequestState, isStepValid } from "@/lib/utils";
+import { useCallback, useState } from "react";
 import { z } from "zod";
 import { deleteSaleAction } from "../shared/actions/sales.action";
 import {
@@ -22,9 +22,10 @@ import { supplierDefaultValues, suppliersTableColumns } from "./suppliers.data";
 import { supplierSchema } from "./suppliers.schemas";
 import useImsSearchParams from "../shared/hooks/use-ims-search-params";
 import { UI_STATE } from "@/lib/constant";
+import LoadingOverlay from "@features/ui/loadingOverlay";
 
 export default function SuppliersList() {
-  const { data } = useFetchData({ fetchFn: getSuppliers });
+  const { data, loading } = useFetchData({ fetchFn: getSuppliers });
   const suppliers = data?.rows ?? [];
 
   const {
@@ -53,6 +54,7 @@ export default function SuppliersList() {
       <CrudPage
         moduleName="item categories"
         data={suppliers}
+        isLoading={loading}
         modalAction={handleDelete}
         handleRemoveQueryparam={handleRemoveQueryparam}
         currentDataDisplayName={getData(CRUDACTION.DELETE)?.name ?? ""}
@@ -88,6 +90,7 @@ function SupplierForm({ supplierId }: Readonly<SupplierFormProps>) {
   const [currentStep, setCurrentStep] = useState(1);
   const { removeSearchParams } = useImsSearchParams();
   const isEditMode = !!supplierId;
+  const [isLoading, setIsLoading] = useState(false);
 
   const form = useHookForm({
     resolver: supplierSchema,
@@ -116,9 +119,36 @@ function SupplierForm({ supplierId }: Readonly<SupplierFormProps>) {
     }
   };
 
+  const isStepFilled = useCallback(() => {
+    const stepFieldMap: Record<number, string[]> = {
+      1: [
+        "name",
+        "brandTradeName",
+        "supplierType",
+        "minimumOrderQuantity",
+        "leadTime",
+        "deliveryMethod",
+      ],
+      2: [
+        "primaryContactName",
+        "jobTitle",
+        "department",
+        "phoneNumber",
+        "email",
+        "physicalAddress",
+        "mailingAddress",
+        "emergencyContactName",
+        "emergencyContactTitle",
+        "emergencyContactNumber",
+      ],
+    };
+    const fields = stepFieldMap[currentStep];
+    return fields ? isStepValid(fields, form.watch()) : true;
+  }, [currentStep, form]);
+
   const handleSubmit = async (data: unknown) => {
+    setIsLoading(true);
     const oneSupplier = data as z.infer<typeof supplierSchema>;
-    console.log("Form submitted!>>>>>>>>>>>>>>", data);
     const res = isEditMode
       ? updateSupplier(supplierId, oneSupplier)
       : addSupplier(oneSupplier);
@@ -133,12 +163,12 @@ function SupplierForm({ supplierId }: Readonly<SupplierFormProps>) {
     res.then(() => {
       form.reset();
       removeSearchParams(UI_STATE);
+      setIsLoading(false);
     });
   };
 
-  console.log(">>>>>>>>", loading, isEditMode);
   if (isEditMode && loading) {
-    return <span className="pl-4">Loading....</span>;
+    return <LoadingOverlay />;
   }
   return (
     <ImsForm
@@ -171,6 +201,7 @@ function SupplierForm({ supplierId }: Readonly<SupplierFormProps>) {
                 type="button"
                 variant="imsPrimary"
                 onClick={handleNext}
+                disabled={!isStepFilled()}
               >
                 Next
               </ImsButton>
@@ -180,8 +211,11 @@ function SupplierForm({ supplierId }: Readonly<SupplierFormProps>) {
                 className="flex-1"
                 type="submit"
                 variant="imsPrimary"
-                isLoading={form.formState.isSubmitting}
-                isLoadingLabel="Adding supplier..."
+                disabled={isLoading}
+                isLoading={isLoading}
+                isLoadingLabel={
+                  supplierId ? "Updating Supplier..." : "Adding Supplier..."
+                }
               >
                 {supplierId ? "Update Supplier" : "Add Supplier"}
               </ImsButton>

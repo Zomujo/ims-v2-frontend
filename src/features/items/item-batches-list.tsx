@@ -19,22 +19,27 @@ import useFetchData from "../shared/hooks/use-fetch-data";
 import useHookForm from "../shared/hooks/use-hook-form";
 import useImsSearchParams from "../shared/hooks/use-ims-search-params";
 import usePageCRUD from "../shared/hooks/use-page-crud";
-import { IdData } from "../shared/types/action.types";
+import { IdData, OneItem } from "../shared/types/action.types";
 import { CRUDACTION } from "../shared/types/utitls.types";
 import { Input } from "../ui/input";
 import { itemBatchesTableColumns } from "./items.data";
 import { itemBatchFormSchema } from "./items.schemas";
+import { usePageHeading } from "@/hooks/usePageHeading";
+import { useEffect } from "react";
 
 type ItemBatchesListProps = {
   itemId?: string;
   batch?: z.infer<typeof itemBatchFormSchema>;
   batchId?: string;
   suppliers: IdData[];
+  oneItem?: OneItem;
 };
 export default function ItemBatchesList({
   itemId,
   suppliers,
+  oneItem,
 }: Readonly<ItemBatchesListProps>) {
+  const { updateCustomHeading } = usePageHeading();
   const { data } = useFetchData({
     fetchFn: (params) => getItemBatches(itemId ?? "", params),
   });
@@ -47,6 +52,13 @@ export default function ItemBatchesList({
     handleRemoveQueryparam,
   } = usePageCRUD({ data: itemBatches });
   const batch = getData(CRUDACTION.EDIT);
+
+  useEffect(() => {
+    updateCustomHeading({
+      title: `${oneItem?.name} batches`,
+      description: `Manage ${oneItem?.name} batches`,
+    });
+  }, []);
 
   return (
     <ScrollArea className="mt-2 h-[calc(100%-5rem)] rounded-2xl bg-white pr-4">
