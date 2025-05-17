@@ -16,7 +16,9 @@ import { Button } from "@features/ui/button";
 import { Badge } from "@features/ui/badge";
 import { ChevronDown } from "lucide-react";
 
-const STATUS_OPTIONS = [
+type StatusOption = ITEMS_STATUS | "";
+
+const STATUS_OPTIONS: { label: string; value: StatusOption }[] = [
   { label: "All", value: "" },
   { label: "Stocked", value: ITEMS_STATUS.STOCKED },
   { label: "Low Stock", value: ITEMS_STATUS.LOW },
@@ -33,15 +35,15 @@ export function ItemsFilters() {
   } = useImsSearchParams();
 
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [statusFilter, setStatusFilter] = useState<ITEMS_STATUS | "">("");
+  const [statusFilter, setStatusFilter] = useState<StatusOption>("");
 
   const handleStatusChange = (value: string) => {
-    setStatusFilter(value as ITEMS_STATUS | "");
+    setStatusFilter(value as StatusOption);
     setSearchParams({ key: "status", value });
   };
 
   useEffect(() => {
-    setStatusFilter(getSearchParams("status") as ITEMS_STATUS | "");
+    setStatusFilter(getSearchParams("status") as StatusOption);
     setSelectedCategories(getArraySearchParams("categories") ?? []);
   }, []);
 
