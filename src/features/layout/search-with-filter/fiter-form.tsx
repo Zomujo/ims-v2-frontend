@@ -8,13 +8,13 @@ import { ItemsBatchesFilters } from "@features/items/items-batches-filters";
 export default function FilterForms() {
   const pathName = usePathname();
   const params = useParams();
-  const itemId = params.slugs[0];
+  const itemId = params.slugs?.[0];
 
   const renderFilterForm = () => {
     return {
       [PAGE_ROUTES.SALES.VIEW]: <div>Sales</div>,
       [PAGE_ROUTES.ITEMS.VIEW]: <ItemsFilters />,
-      [PAGE_ROUTES.ITEMS.BATCHES.replace(":itemId", itemId)]: (
+      [PAGE_ROUTES.ITEMS.BATCHES.replace(":itemId", itemId ?? "")]: (
         <ItemsBatchesFilters />
       ),
     };
