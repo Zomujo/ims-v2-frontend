@@ -7,6 +7,7 @@ import {
 import { clsx, type ClassValue } from "clsx";
 import { toast } from "sonner";
 import { twMerge } from "tailwind-merge";
+import { FieldValues, UseFormWatch } from "react-hook-form";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -68,6 +69,7 @@ export const generateQueryParams = (params: GenerateQueryParams = {}) => {
 export const generateUrlWithQueryParams = (
   baseUrl: string,
   params: GenerateQueryParams,
+  arrayParams?: string,
 ) => {
   const searchParams = new URLSearchParams();
 
@@ -76,6 +78,12 @@ export const generateUrlWithQueryParams = (
     .forEach((key) => {
       searchParams.append(key as string, params[key] as string);
     });
+  if (arrayParams) {
+    const arraySearchParams = new URLSearchParams(arrayParams);
+    arraySearchParams.forEach((value, key) => {
+      searchParams.append(key, value);
+    });
+  }
   return baseUrl + "?" + searchParams.toString();
 };
 
@@ -112,5 +120,15 @@ export const formateDate = (date: string | number | Date) => {
     year: "numeric",
     month: "long",
     day: "numeric",
+  });
+};
+
+export const isStepValid = (
+  stepFields: string[],
+  formValues: UseFormWatch<FieldValues>,
+): boolean => {
+  return stepFields.every((field) => {
+    const value = formValues[field as keyof typeof formValues];
+    return value !== undefined && value !== null && value !== "";
   });
 };

@@ -631,7 +631,9 @@ export type GetItemOrderResponseDto = {
   itemId: string;
   quantity: number;
   expectedDeliveryDate?: string;
-  notes?: string;
+  deliveryMethod: string;
+  deliveryAddress: string;
+  additionalNotes?: string;
   createdAt: string;
   updatedAt: string;
 };

@@ -30,7 +30,7 @@ type StockAdjustmentListProps = {
 export default function StockAdjustmentList({
   items,
 }: Readonly<StockAdjustmentListProps>) {
-  const { data } = useFetchData({ fetchFn: getStockAdjustments });
+  const { data, loading } = useFetchData({ fetchFn: getStockAdjustments });
   const stockAdjustments = data?.rows ?? [];
   const {
     state,
@@ -56,6 +56,7 @@ export default function StockAdjustmentList({
   return (
     <ScrollArea className="mt-2 h-[calc(100%-5rem)] rounded-2xl bg-white pr-4">
       <CrudPage
+        isLoading={loading}
         moduleName="Stock Adjustments"
         data={stockAdjustments}
         modalAction={handleDelete}
@@ -146,6 +147,7 @@ export function StockAdjustmentForm({
         <ImsButton
           isLoading={form.formState.isSubmitting}
           isLoadingLabel="Submitting..."
+          disabled={form.formState.isSubmitting}
           variant="imsPrimary"
           type="submit"
         >

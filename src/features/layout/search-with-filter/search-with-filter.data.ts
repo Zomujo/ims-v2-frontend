@@ -1,4 +1,10 @@
 import { PAGE_ROUTES } from "@/lib/constant";
+import {
+  ItemOrderStatus,
+  ITEMS_STATUS,
+  StockAdjustmentStatus,
+  StockAdjustmentType,
+} from "@features/shared/types/action.types";
 
 export const actionButtonData = {
   [PAGE_ROUTES.SALES.VIEW]: {
@@ -60,3 +66,90 @@ export const iconsAndNames = [
   { name: "Stock Requests", icon: "solar:box-bold-duotone" },
   { name: "Reports", icon: "solar:graph-up-bold-duotone" },
 ];
+
+export const itemStatusFilter = {
+  key: "status",
+  label: "Status",
+  type: "radio" as const,
+  options: [
+    { label: "All", value: "" },
+    { label: "Stocked", value: ITEMS_STATUS.STOCKED },
+    { label: "Low Stock", value: ITEMS_STATUS.LOW },
+    { label: "Out of Stock", value: ITEMS_STATUS.OUT_OF_STOCK },
+  ],
+  defaultValue: "",
+};
+
+export const categoriesFilter = {
+  key: "categories",
+  label: "Categories",
+  type: "checkbox" as const,
+  options: [],
+  defaultValue: [],
+};
+
+enum DATE_RANGE {
+  ALL = "",
+  TODAY = "today",
+  THIS_WEEK = "this_week",
+  THIS_MONTH = "this_month",
+  LAST_MONTH = "last_month",
+  LAST_THREE_MONTHS = "last_three_months",
+  THIS_YEAR = "this_year",
+}
+
+export const dateRangeFilter = {
+  key: "dateRange",
+  label: "Date Range",
+  type: "radio" as const,
+  options: [
+    { label: "All", value: DATE_RANGE.ALL },
+    { label: "Today", value: DATE_RANGE.TODAY },
+    { label: "This Week", value: DATE_RANGE.THIS_WEEK },
+    { label: "This Month", value: DATE_RANGE.THIS_MONTH },
+    { label: "Last Month", value: DATE_RANGE.LAST_MONTH },
+    { label: "Last Three Months", value: DATE_RANGE.LAST_THREE_MONTHS },
+    { label: "This Year", value: DATE_RANGE.THIS_YEAR },
+  ],
+  defaultValue: "",
+};
+
+export const adjustmentTypeFilter = {
+  key: "type",
+  label: "Adjustment Type",
+  type: "radio" as const,
+  options: [
+    { label: "All", value: "" },
+    { label: "Increment", value: StockAdjustmentType.INCREMENT },
+    { label: "Reduction", value: StockAdjustmentType.REDUCTION },
+  ],
+  defaultValue: "",
+};
+
+export const adjustmentStatusFilter = {
+  key: "status",
+  label: "Adjustment Status",
+  type: "radio" as const,
+  options: [
+    { label: "All", value: "" },
+    { label: "Submitted", value: StockAdjustmentStatus.SUBMITTED },
+    { label: "Adjusted", value: StockAdjustmentStatus.ADJUSTED },
+    { label: "Rejected", value: StockAdjustmentStatus.REJECTED },
+  ],
+  defaultValue: "",
+};
+
+export const orderStatusFilter = {
+  key: "status",
+  label: "Status",
+  type: "radio" as const,
+  options: [
+    { label: "All", value: "" },
+    { label: "Requested", value: ItemOrderStatus.REQUESTED },
+    { label: "Draft", value: ItemOrderStatus.DRAFT },
+    { label: "Cancelled", value: ItemOrderStatus.CANCELLED },
+    { label: "Delivering", value: ItemOrderStatus.DELIVERING },
+    { label: "Received", value: ItemOrderStatus.RECEIVED },
+  ],
+  defaultValue: "",
+};
