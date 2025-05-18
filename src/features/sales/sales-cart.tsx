@@ -2,7 +2,7 @@
 import { formateCurrency, handleRequestState } from "@/lib/utils";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { useParams } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useFieldArray } from "react-hook-form";
 import { useIsClient, useLocalStorage, useReadLocalStorage } from "usehooks-ts";
 import { z } from "zod";
@@ -22,6 +22,7 @@ import { paymentTypeOptions, salesItemLocalStorageKey } from "./sales.data";
 import { salesCartSchema } from "./sales.schemas";
 import { SaleCardTypes } from "./sales.types";
 import { isSalesEditMode } from "./sales.utils";
+import LoadingOverlay from "@features/ui/loadingOverlay";
 
 type SaleCartFormData = z.infer<typeof salesCartSchema>;
 const handleSalesItem = (saleItems: SaleItem, isEditMode?: boolean) => {
@@ -39,6 +40,8 @@ export default function SalesCart() {
   const [addedSalesItems, setSalesItems, removeSalesItems] = useLocalStorage<
     SaleItem[]
   >(salesItemLocalStorageKey, []);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const form = useHookForm({
     resolver: salesCartSchema,
@@ -76,18 +79,21 @@ export default function SalesCart() {
   useEffect(() => {
     if (!isEditMode) return;
     const fetchSaleData = async () => {
+      setIsLoading(true);
       const response = await getSale(salesId as string);
       const saleData = response.data;
       if (!saleData) return;
       form.setValue("notes", saleData.notes);
       form.setValue("paymentType", saleData.paymentType);
       setSalesItems(saleData.saleItems as SaleItem[]);
+      setIsLoading(false);
     };
 
-    fetchSaleData();
+    void fetchSaleData();
   }, []);
 
   const handleSubmit = async (data: unknown) => {
+    setIsSubmitting(true);
     const action = isEditMode
       ? updateSale(salesId as string, data as SaleCartFormData)
       : createSaleAction(data);
@@ -97,6 +103,7 @@ export default function SalesCart() {
       removeSalesItems();
       removeSearchParams(patientIdKey);
       form.reset();
+      setIsSubmitting(false);
     });
     await action;
   };
@@ -105,6 +112,7 @@ export default function SalesCart() {
 
   return (
     <ScrollArea className="relative h-[99%] w-full flex-[0.4] rounded-xl border bg-white">
+      {isLoading && <LoadingOverlay />}
       <ImsForm
         className="gap-y-0 px-4 py-2 pb-2"
         form={form}
@@ -168,8 +176,9 @@ export default function SalesCart() {
         }
         RenderActions={
           <ImsButton
-            isLoading={form.formState.isSubmitting}
+            isLoading={isSubmitting}
             isLoadingLabel={"Adding user..."}
+            disabled={isSubmitting}
             variant="imsPrimary"
             type="submit"
             className=" "
@@ -310,7 +319,7 @@ function SaleCartSummery({
 
 const printReceipt = (data: SaleCartFormData, addedSalesItems: SaleItem[]) => {
   const receiptContent = `
-    <html>
+    <html lang="en">
       <head>
         <title>Receipt</title>
         <style>

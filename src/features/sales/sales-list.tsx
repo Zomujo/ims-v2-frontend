@@ -15,7 +15,7 @@ import { salesItemLocalStorageKey, salesTableColumns } from "./sales.data";
 
 export default function SalesList() {
   const router = useRouter();
-  const { data } = useFetchData({ fetchFn: getSales });
+  const { data, loading, refetch } = useFetchData({ fetchFn: getSales });
   const [, , removeSalesItems] = useLocalStorage(salesItemLocalStorageKey, []);
   const sales = data?.rows ?? [];
   const {
@@ -25,7 +25,6 @@ export default function SalesList() {
     getId,
     removeSearchParams,
     handleDeleteBtnClicked,
-    handleEditBtnClicked,
     handleRemoveQueryparam,
   } = usePageCRUD({ data: sales });
 
@@ -35,6 +34,7 @@ export default function SalesList() {
     handleRequestState({ res, loadingMsg: "Deleting sale...." });
     res.then(() => {
       removeSearchParams(CRUDACTION.DELETE);
+      refetch();
     });
     await res;
   };
@@ -57,6 +57,7 @@ export default function SalesList() {
         moduleName="sales"
         data={sales}
         modalAction={handleDelete}
+        isLoading={loading}
         handleRemoveQueryparam={handleRemoveQueryparam}
         currentDataDisplayName={getData(CRUDACTION.DELETE)?.saleNumber ?? ""}
         tableColumns={salesTableColumns}
@@ -64,11 +65,6 @@ export default function SalesList() {
         state={state}
         isEditMode={isEditMode}
         actions={(item) => [
-          {
-            label: "view",
-            icon: "hugeicons:view",
-            action: () => handleEditBtnClicked(item),
-          },
           {
             label: "edit",
             icon: "lucide:edit-2",
