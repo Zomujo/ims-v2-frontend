@@ -1,5 +1,6 @@
 import { PAGE_ROUTES } from "@/lib/constant";
 import {
+  ItemOrderStatus,
   ITEMS_STATUS,
   StockAdjustmentStatus,
   StockAdjustmentType,
@@ -134,6 +135,21 @@ export const adjustmentStatusFilter = {
     { label: "Submitted", value: StockAdjustmentStatus.SUBMITTED },
     { label: "Adjusted", value: StockAdjustmentStatus.ADJUSTED },
     { label: "Rejected", value: StockAdjustmentStatus.REJECTED },
+  ],
+  defaultValue: "",
+};
+
+export const orderStatusFilter = {
+  key: "status",
+  label: "Status",
+  type: "radio" as const,
+  options: [
+    { label: "All", value: "" },
+    { label: "Requested", value: ItemOrderStatus.REQUESTED },
+    { label: "Draft", value: ItemOrderStatus.DRAFT },
+    { label: "Cancelled", value: ItemOrderStatus.CANCELLED },
+    { label: "Delivering", value: ItemOrderStatus.DELIVERING },
+    { label: "Received", value: ItemOrderStatus.RECEIVED },
   ],
   defaultValue: "",
 };

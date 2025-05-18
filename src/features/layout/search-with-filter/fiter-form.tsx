@@ -9,6 +9,7 @@ import {
   categoriesFilter,
   dateRangeFilter,
   itemStatusFilter,
+  orderStatusFilter,
 } from "@features/layout/search-with-filter/search-with-filter.data";
 import { useCategories } from "@/hooks/useCategories";
 
@@ -49,6 +50,9 @@ export default function FilterForms() {
             adjustmentStatusFilter,
           ]}
         />
+      ),
+      [PAGE_ROUTES.ITEM_ORDERS.VIEW]: (
+        <Filters filters={[dateRangeFilter, orderStatusFilter]} />
       ),
     };
   };

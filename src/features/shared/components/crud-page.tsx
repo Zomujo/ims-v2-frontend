@@ -80,13 +80,18 @@ const getActionColumn = <TData, TValue>({
     header: "",
     cell: ({ row }) => {
       const item = row.original;
+      const actualActions = (actions(item) ?? []).filter(Boolean);
       return (
         <ImsDropdownMenu
           trigger={
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
+            actualActions.length ? (
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <span className="sr-only">Open menu</span>
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            ) : (
+              <div></div>
+            )
           }
           align="start"
           menuItems={(actions(item) ?? [])
