@@ -145,6 +145,7 @@ export function ItemOrdersForm({
   itemOrderId?: string;
 }>) {
   const [isLoading, setIsLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { removeSearchParams } = useImsSearchParams();
   const form = useHookForm({
     resolver: orderFormSchema,
@@ -161,6 +162,7 @@ export function ItemOrdersForm({
   });
 
   const handleSubmit = async (data: unknown) => {
+    setIsSubmitting(true);
     const orderData = data as z.infer<typeof orderFormSchema>;
     const res = isEditMode
       ? updateItemOrder(itemOrderId, orderData)
@@ -175,6 +177,7 @@ export function ItemOrdersForm({
         : "Creating item order...",
     });
     res.then(() => {
+      setIsSubmitting(false);
       form.reset();
       removeSearchParams(UI_STATE);
     });
@@ -208,8 +211,8 @@ export function ItemOrdersForm({
           <ImsButton
             type="submit"
             variant="imsPrimary"
-            disabled={form.formState.isSubmitting}
-            isLoading={form.formState.isSubmitting}
+            disabled={isSubmitting}
+            isLoading={isSubmitting}
             isLoadingLabel="Saving..."
           >
             Save
