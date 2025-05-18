@@ -1,6 +1,6 @@
+import { USER_STATUS } from "@/features/shared/types/settings-action.types";
 import { PAGE_ROUTES } from "@/lib/constant";
 import {
-  ActiveInactiveStatus,
   ItemOrderStatus,
   ITEMS_STATUS,
   StockAdjustmentStatus,
@@ -160,8 +160,8 @@ export const categoriesStatusFilter = {
   type: "radio" as const,
   options: [
     { label: "All", value: "" },
-    { label: "Active", value: ActiveInactiveStatus.ACTIVE },
-    { label: "Inactive", value: ActiveInactiveStatus.INACTIVE },
+    { label: "Active", value: USER_STATUS.ACTIVE },
+    { label: "Inactive", value: USER_STATUS.INACTIVE },
   ],
   defaultValue: "",
 };

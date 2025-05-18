@@ -557,11 +557,6 @@ export enum StockAdjustmentStatus {
   REJECTED = "REJECTED",
 }
 
-export enum ActiveInactiveStatus {
-  ACTIVE = "ACTIVE",
-  INACTIVE = "INACTIVE",
-}
-
 // Types for Department Item Requests
 export type CreateDepartmentRequestDto = {
   id: string;
