@@ -2,9 +2,10 @@
 import { handleRequestState, isStepValid } from "@/lib/utils";
 import { useCallback, useState } from "react";
 import { z } from "zod";
-import { deleteSaleAction } from "../shared/actions/sales.action";
 import {
+  activateDeactivateSuppliersAction,
   addSupplier,
+  deleteSupplier,
   getSupplier,
   getSuppliers,
   updateSupplier,
@@ -23,10 +24,17 @@ import { supplierSchema } from "./suppliers.schemas";
 import useImsSearchParams from "../shared/hooks/use-ims-search-params";
 import { UI_STATE } from "@/lib/constant";
 import LoadingOverlay from "@features/ui/loadingOverlay";
+import { UserStatus } from "../shared/types/auth-action.types";
+import { GetSuppliersResponse } from "../shared/types/action.types";
 
 export default function SuppliersList() {
   const { data, loading } = useFetchData({ fetchFn: getSuppliers });
   const suppliers = data?.rows ?? [];
+  const [modalActionProperties, setModalActionProperties] = useState({
+    label: "Delete",
+    crudAction: CRUDACTION.DELETE,
+  });
+  const [openModal, setOpenModal] = useState(false);
 
   const {
     state,
@@ -35,44 +43,106 @@ export default function SuppliersList() {
     getId,
     removeSearchParams,
     handleDeleteBtnClicked,
+    handleActionBtnClicked,
     handleEditBtnClicked,
     handleRemoveQueryparam,
   } = usePageCRUD({ data: suppliers });
 
-  const handleDelete = async () => {
-    const id = getId(CRUDACTION.DELETE);
-    const res = deleteSaleAction(id);
-    handleRequestState({ res, loadingMsg: "Deleting category...." });
-    res.then(() => {
-      removeSearchParams(CRUDACTION.DELETE);
-    });
-    await res;
-  };
+  function handleAction(action: string, item: GetSuppliersResponse) {
+    setOpenModal(true);
 
+    switch (action) {
+      case CRUDACTION.DEACTIVATE:
+        handleActionBtnClicked({ action: CRUDACTION.DEACTIVATE, id: item.id });
+        setModalActionProperties({
+          label: "Deactivate",
+          crudAction: CRUDACTION.DEACTIVATE,
+        });
+        break;
+      case CRUDACTION.ACTIVATE:
+        handleActionBtnClicked({ action: CRUDACTION.ACTIVATE, id: item.id });
+        setModalActionProperties({
+          label: "Activate",
+          crudAction: CRUDACTION.ACTIVATE,
+        });
+        break;
+      default:
+        handleDeleteBtnClicked(item);
+        setModalActionProperties({
+          label: "Delete",
+          crudAction: CRUDACTION.DELETE,
+        });
+    }
+  }
+
+  const handleModalAction = async (action: CRUDACTION) => {
+    const id = getId(action);
+
+    const res =
+      action === CRUDACTION.DELETE
+        ? deleteSupplier(id)
+        : activateDeactivateSuppliersAction(id, action);
+
+    const loadingVerb =
+      action === CRUDACTION.DELETE
+        ? "Deleting"
+        : action === CRUDACTION.ACTIVATE
+          ? "Activating"
+          : "Deactivating";
+
+    handleRequestState({ res, loadingMsg: `${loadingVerb} category....` });
+
+    res.then(() => {
+      removeSearchParams(action);
+    });
+
+    await res;
+    setOpenModal(false);
+    handleRemoveQueryparam(false);
+  };
   return (
     <ScrollArea className="mt-2 h-[calc(100%-5rem)] rounded-2xl bg-white pr-4">
       <CrudPage
         moduleName="item categories"
         data={suppliers}
         isLoading={loading}
-        modalAction={handleDelete}
-        handleRemoveQueryparam={handleRemoveQueryparam}
-        currentDataDisplayName={getData(CRUDACTION.DELETE)?.name ?? ""}
+        modalAction={() => handleModalAction(modalActionProperties.crudAction)}
+        modalActionLabel={modalActionProperties.label}
+        currentDataDisplayName={
+          getData(modalActionProperties.crudAction)?.name ?? ""
+        }
         tableColumns={suppliersTableColumns}
         totalPages={data?.totalPages ?? 0}
+        handleRemoveQueryparam={handleRemoveQueryparam}
         state={state}
         isEditMode={isEditMode}
+        openModal={openModal}
+        closeModal={() => setOpenModal(false)}
+        alertModalOnChange={false}
         actions={(item) => [
           {
             label: "edit",
             icon: "lucide:edit-2",
             action: () => handleEditBtnClicked(item),
           },
+          item.status === UserStatus.ACTIVE
+            ? {
+                label: "Deactivate",
+                icon: "solar:forbidden-circle-line-duotone",
+                action: () => handleAction(CRUDACTION.DEACTIVATE, item),
+              }
+            : {
+                label: "Activate",
+                icon: "solar:power-bold-duotone",
+                action: () => handleAction(CRUDACTION.ACTIVATE, item),
+              },
           {
             label: "delete",
             icon: "solar:trash-bin-trash-line-duotone",
             type: "destructive",
-            action: () => handleDeleteBtnClicked(item),
+            action: () => {
+              handleAction(CRUDACTION.DELETE, item);
+            },
           },
         ]}
       >
@@ -190,7 +260,7 @@ function SupplierForm({ supplierId }: Readonly<SupplierFormProps>) {
                 className="flex-1"
                 variant="outline"
                 onClick={handleBack}
-                type="button" // Prevent form submission
+                type="button"
               >
                 Go back
               </ImsButton>

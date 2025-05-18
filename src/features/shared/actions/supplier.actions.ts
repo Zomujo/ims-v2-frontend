@@ -15,8 +15,9 @@ import {
   UpdateSupplierDto,
 } from "../types/action.types";
 import { FetchApi } from "../types/ims-api-action.types";
-import { GenerateQueryParams } from "../types/utitls.types";
+import { CRUDACTION, GenerateQueryParams } from "../types/utitls.types";
 import { imsApiWithAuth } from "./ims-api.action";
+import { AuthApiStandardResponse } from "../types/auth-action.types";
 
 export async function addSupplier(data: CreateSupplierDto) {
   const fetchOptions: FetchApi = {
@@ -99,3 +100,19 @@ export async function deleteSupplier(id: string) {
   revalidateTag(API_ENDPOINT_TAGS.SUPPLIERS_NO_PAGINATE);
   return result;
 }
+
+export const activateDeactivateSuppliersAction = async (
+  supplyId: string,
+  action: CRUDACTION,
+) => {
+  try {
+    const res = await imsApiWithAuth<AuthApiStandardResponse>({
+      url: `${API_ENDPOINTS.SUPPLIERS}/${supplyId}/${action}`,
+      method: "PATCH",
+    });
+    revalidateTag(API_ENDPOINTS.SUPPLIERS);
+    return res;
+  } catch (error) {
+    return error as AuthApiStandardResponse;
+  }
+};
