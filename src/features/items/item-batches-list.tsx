@@ -40,7 +40,7 @@ export default function ItemBatchesList({
   oneItem,
 }: Readonly<ItemBatchesListProps>) {
   const { updateCustomHeading } = usePageHeading();
-  const { data } = useFetchData({
+  const { data, loading } = useFetchData({
     fetchFn: (params) => getItemBatches(itemId ?? "", params),
   });
   const itemBatches = data?.rows ?? [];
@@ -71,6 +71,7 @@ export default function ItemBatchesList({
         tableColumns={itemBatchesTableColumns}
         totalPages={data?.totalPages ?? 0}
         state={state}
+        isLoading={loading}
         isEditMode={isEditMode}
         actions={(item) => [
           {
