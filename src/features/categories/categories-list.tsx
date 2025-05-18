@@ -98,7 +98,7 @@ function CategoriesForm({
     resolver: categoryFormSchema,
     defaultValues: {
       name: categoryName ?? "",
-      status: status ?? "active",
+      status: status ?? ITEMS_CATEGORIES_STATUS.ACTIVE,
     },
   });
   const isEditMode = !!categoryName;
