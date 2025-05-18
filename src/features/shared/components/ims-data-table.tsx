@@ -66,6 +66,7 @@ export function IMSDataTable<TData, TValue>({
             </TableRow>
           ))}
         </TableHeader>
+
         <TableBody className="space-y-3 text-xs">
           {isLoading ? (
             Array.from({ length: columns.length }).map((_, rowIndex) => (

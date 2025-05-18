@@ -1,6 +1,7 @@
 import { PAGE_ROUTES } from "@/lib/constant";
 import {
   ItemOrderStatus,
+  ITEMS_CATEGORIES_STATUS,
   ITEMS_STATUS,
   StockAdjustmentStatus,
   StockAdjustmentType,
@@ -150,6 +151,17 @@ export const orderStatusFilter = {
     { label: "Cancelled", value: ItemOrderStatus.CANCELLED },
     { label: "Delivering", value: ItemOrderStatus.DELIVERING },
     { label: "Received", value: ItemOrderStatus.RECEIVED },
+  ],
+  defaultValue: "",
+};
+export const categoriesStatusFilter = {
+  key: "status",
+  label: "Status",
+  type: "radio" as const,
+  options: [
+    { label: "All", value: "" },
+    { label: "Active", value: ITEMS_CATEGORIES_STATUS.ACTIVE },
+    { label: "Deactivated", value: ITEMS_CATEGORIES_STATUS.DEACTIVATED },
   ],
   defaultValue: "",
 };

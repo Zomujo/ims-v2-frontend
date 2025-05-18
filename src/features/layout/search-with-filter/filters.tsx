@@ -97,7 +97,7 @@ export const Filters: React.FC<FiltersProps> = ({
   };
 
   return (
-    <div className={`flex items-center gap-2 ${className}`}>
+    <div className={`flex items-center gap-2 p-1 ${className}`}>
       {filters.map(({ key, label, type, options }) => (
         <DropdownMenu key={key}>
           <DropdownMenuTrigger asChild>

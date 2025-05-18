@@ -7,6 +7,7 @@ import {
   adjustmentStatusFilter,
   adjustmentTypeFilter,
   categoriesFilter,
+  categoriesStatusFilter,
   dateRangeFilter,
   itemStatusFilter,
   orderStatusFilter,
@@ -53,6 +54,10 @@ export default function FilterForms() {
       ),
       [PAGE_ROUTES.ITEM_ORDERS.VIEW]: (
         <Filters filters={[dateRangeFilter, orderStatusFilter]} />
+      ),
+
+      [PAGE_ROUTES.CATEGORIES.VIEW]: (
+        <Filters filters={[dateRangeFilter, categoriesStatusFilter]} />
       ),
     };
   };
