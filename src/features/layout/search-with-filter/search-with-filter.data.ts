@@ -183,6 +183,6 @@ export const todaySalesFilters = {
   key: "todaySales",
   label: "Enable",
   type: "boolean" as const,
-  options: [], // Not used for boolean type, but required by the interface
+  options: [],
   defaultValue: false,
 };
