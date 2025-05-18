@@ -150,6 +150,7 @@ function ItemBatchesForm({
           isLoading={form.formState.isSubmitting}
           isLoadingLabel={batch ? "Updating batch..." : "Adding new batch..."}
           variant="imsPrimary"
+          disabled={form.formState.isSubmitting}
           type="submit"
         >
           {batch ? "Update Batch" : "Add Batch"}
