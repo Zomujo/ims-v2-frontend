@@ -102,28 +102,34 @@ export default function ItemOrdersList({
             //   icon: "solar:printer-2-outline",
             //   action: () => handleDeleteBtnClicked(item),
             // },
-            item.status !== ItemOrderStatus.RECEIVED && {
-              label: handleCurrentState(item.status) ?? "",
-              action: () =>
-                handleItemOrderState(
-                  item.id,
-                  handleCurrentState(item.status) as ItemOrderStatus,
-                ),
-              icon: "hugeicons:view",
-            },
-            item.status !== ItemOrderStatus.RECEIVED && {
-              label: "delete",
-              icon: "lucide:trash-2",
-              type: "destructive",
-              action: () => handleDeleteBtnClicked(item),
-            },
-          ].slice(
-            [ItemOrderStatus.DELIVERING, ItemOrderStatus.RECEIVED].includes(
-              item.status,
+            item.status !== ItemOrderStatus.RECEIVED
+              ? {
+                  label: handleCurrentState(item.status) ?? "",
+                  action: () =>
+                    handleItemOrderState(
+                      item.id,
+                      handleCurrentState(item.status) as ItemOrderStatus,
+                    ),
+                  icon: "hugeicons:view",
+                }
+              : null,
+            item.status !== ItemOrderStatus.RECEIVED
+              ? {
+                  label: "delete",
+                  icon: "lucide:trash-2",
+                  type: "destructive",
+                  action: () => handleDeleteBtnClicked(item),
+                }
+              : null,
+          ]
+            .filter(Boolean)
+            .slice(
+              [ItemOrderStatus.DELIVERING, ItemOrderStatus.RECEIVED].includes(
+                item.status,
+              )
+                ? 1
+                : 0,
             )
-              ? 1
-              : 0,
-          )
         }
       >
         <ItemOrdersProvider value={{ items, suppliers }}>
@@ -164,12 +170,13 @@ export function ItemOrdersForm({
   const handleSubmit = async (data: unknown) => {
     setIsSubmitting(true);
     const orderData = data as z.infer<typeof orderFormSchema>;
-    const res = isEditMode
-      ? updateItemOrder(itemOrderId, orderData)
-      : createItemOrder({
-          ...orderData,
-          status: ItemOrderStatus.DRAFT,
-        });
+    const res =
+      isEditMode && itemOrderId
+        ? updateItemOrder(itemOrderId, orderData)
+        : createItemOrder({
+            ...orderData,
+            status: ItemOrderStatus.DRAFT,
+          });
     handleRequestState({
       res,
       loadingMsg: isEditMode
@@ -192,7 +199,7 @@ export function ItemOrdersForm({
         const { expectedDeliveryDate } = data;
         form.reset({
           ...data,
-          expectedDeliveryDate: expectedDeliveryDate.split("T")[0],
+          expectedDeliveryDate: expectedDeliveryDate?.split("T")[0],
         });
         setIsLoading(false);
       }

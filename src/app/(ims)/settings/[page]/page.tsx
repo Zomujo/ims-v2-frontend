@@ -10,7 +10,7 @@ import {
   getRolesAction,
   getUsersAction,
 } from "@/features/shared/actions/settings.actions";
-import PageHeading from "@/features/shared/components/page-heading";
+import SettingsSearchWithFilter from "@features/settings/settings-search-with-filter";
 
 type SettingPages = {
   params: Promise<{ page: string }>;
@@ -30,7 +30,7 @@ export default async function SettingsPages({
     (() => <></>);
   return (
     <section className="relative w-full overflow-y-auto rounded-2xl bg-white p-8">
-      <PageHeading routeLevel={2} />
+      <SettingsSearchWithFilter />
       {pageWithDrawerUI.includes(page) && (
         <SettingsCreateButton
           state="create"
@@ -81,13 +81,11 @@ async function SecuritySettings() {
   return <SettingsSecurityForm />;
 }
 
-async function DepartmentSettings({ page }: Readonly<{ page: string }>) {
-  const allDepartments = await getDepartmentsAction({ page, pageSize: "7" });
+async function DepartmentSettings() {
   return (
-    <DepartmentManagementSettings
-      departments={allDepartments.data.rows}
-      {...allDepartments.data}
-    />
+    <>
+      <DepartmentManagementSettings />
+    </>
   );
 }
 
