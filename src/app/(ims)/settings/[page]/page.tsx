@@ -82,11 +82,7 @@ async function SecuritySettings() {
 }
 
 async function DepartmentSettings() {
-  return (
-    <>
-      <DepartmentManagementSettings />
-    </>
-  );
+  return <DepartmentManagementSettings />;
 }
 
 async function UsersSettings({ page }: Readonly<{ page: string }>) {
