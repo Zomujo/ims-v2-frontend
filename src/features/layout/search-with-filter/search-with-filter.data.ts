@@ -1,4 +1,4 @@
-import { UserStatus } from "@/features/shared/types/auth-action.types";
+import { ActiveDeactivedStatus } from "@/features/shared/types/utitls.types";
 import { PAGE_ROUTES } from "@/lib/constant";
 import {
   ItemOrderStatus,
@@ -160,8 +160,8 @@ export const categoriesStatusFilter = {
   type: "radio" as const,
   options: [
     { label: "All", value: "" },
-    { label: "Active", value: UserStatus.ACTIVE },
-    { label: "Deactivated", value: "Deactivated" },
+    { label: "Active", value: ActiveDeactivedStatus.ACTIVE },
+    { label: "Deactivated", value: ActiveDeactivedStatus.DEACTIVATE },
   ],
   defaultValue: "",
 };
