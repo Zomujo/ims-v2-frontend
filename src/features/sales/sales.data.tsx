@@ -38,11 +38,10 @@ export const salesTableColumns: ColumnDef<GetSalesDto>[] = [
     header: "Total Amount",
     accessorKey: "total",
     cell: ({ row }) => {
-      const total = row.original.total.toLocaleString("en-US", {
+      return row.original.total.toLocaleString("en-US", {
         style: "currency",
         currency: "GHC",
       });
-      return total;
     },
   },
   {
@@ -61,7 +60,7 @@ export const salesTableColumns: ColumnDef<GetSalesDto>[] = [
     header: "Status",
     accessorKey: "status",
     cell: ({ row }) => {
-      const status = row.original.status.toLowerCase();
+      const status = row.original.status;
       return (
         <Badge
           className={cn("capitalize", {
@@ -100,11 +99,10 @@ export const salesItemsColumns: ColumnDef<SaleItem>[] = [
     accessorKey: "item.sellingPrice",
     header: "Selling Price (unit)",
     cell: ({ row }) => {
-      const total = row.original.item.sellingPrice.toLocaleString("en-US", {
+      return row.original.item.sellingPrice.toLocaleString("en-US", {
         style: "currency",
         currency: "GHC",
       });
-      return total;
     },
   },
   {

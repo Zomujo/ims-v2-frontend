@@ -11,6 +11,8 @@ import {
   dateRangeFilter,
   itemStatusFilter,
   orderStatusFilter,
+  salesStatusFilter,
+  todaySalesFilters,
 } from "@features/layout/search-with-filter/search-with-filter.data";
 import { useCategories } from "@/hooks/useCategories";
 
@@ -58,6 +60,11 @@ export default function FilterForms() {
 
       [PAGE_ROUTES.CATEGORIES.VIEW]: (
         <Filters filters={[dateRangeFilter, categoriesStatusFilter]} />
+      ),
+      [PAGE_ROUTES.SALES.VIEW]: (
+        <Filters
+          filters={[salesStatusFilter, dateRangeFilter, todaySalesFilters]}
+        />
       ),
       [PAGE_ROUTES.SUPPLIERS.VIEW]: (
         <Filters filters={[dateRangeFilter, categoriesStatusFilter]} />

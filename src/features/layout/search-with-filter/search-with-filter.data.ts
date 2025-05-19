@@ -6,6 +6,7 @@ import {
   StockAdjustmentStatus,
   StockAdjustmentType,
 } from "@features/shared/types/action.types";
+import { SALES_STATUS } from "@features/shared/types/sales-action.types";
 
 export const actionButtonData = {
   [PAGE_ROUTES.SALES.VIEW]: {
@@ -164,4 +165,24 @@ export const categoriesStatusFilter = {
     { label: "Deactivated", value: ActiveDeactivedStatus.DEACTIVATE },
   ],
   defaultValue: "",
+};
+
+export const salesStatusFilter = {
+  key: "status",
+  label: "Status",
+  type: "radio" as const,
+  options: [
+    { label: "All", value: "" },
+    { label: "Paid", value: SALES_STATUS.PAID },
+    { label: "Unpaid", value: SALES_STATUS.UNPAID },
+  ],
+  defaultValue: "",
+};
+
+export const todaySalesFilters = {
+  key: "todaySales",
+  label: "Enable",
+  type: "boolean" as const,
+  options: [],
+  defaultValue: false,
 };

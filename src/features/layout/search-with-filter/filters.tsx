@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, FC } from "react";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -13,6 +13,8 @@ import { Button } from "@features/ui/button";
 import { Badge } from "@features/ui/badge";
 import { ChevronDown } from "lucide-react";
 import useImsSearchParams from "@features/shared/hooks/use-ims-search-params";
+import { Switch } from "@features/ui/switch";
+import { Label } from "@features/ui/label";
 
 interface FilterOption {
   label: string;
@@ -22,9 +24,9 @@ interface FilterOption {
 export interface Filter {
   key: string;
   label: string;
-  type: "radio" | "checkbox";
-  options: FilterOption[];
-  defaultValue?: string | string[];
+  type: "radio" | "checkbox" | "boolean";
+  options: FilterOption[]; // Not used for boolean type, but required by the interface
+  defaultValue?: string | string[] | boolean;
 }
 
 export type FiltersProps = {
@@ -32,10 +34,7 @@ export type FiltersProps = {
   className?: string;
 };
 
-export const Filters: React.FC<FiltersProps> = ({
-  filters,
-  className = "",
-}) => {
+export const Filters: FC<FiltersProps> = ({ filters, className = "" }) => {
   const {
     setSearchParams,
     setArraySearchParams,
@@ -44,21 +43,27 @@ export const Filters: React.FC<FiltersProps> = ({
   } = useImsSearchParams();
 
   const [selectedValues, setSelectedValues] = useState<
-    Record<string, string | string[]>
+    Record<string, string | string[] | boolean>
   >({});
 
   useEffect(() => {
-    const initialValues: Record<string, string | string[]> = {};
-
+    const initialValues: Record<string, string | string[] | boolean> = {};
     filters.forEach((filter) => {
       if (filter.type === "radio") {
         initialValues[filter.key] =
           getSearchParams(filter.key) || (filter.defaultValue as string) || "";
-      } else {
+      } else if (filter.type === "checkbox") {
         initialValues[filter.key] =
           getArraySearchParams(filter.key) ||
           (filter.defaultValue as string[]) ||
           [];
+      } else if (filter.type === "boolean") {
+        const paramValue = getSearchParams(filter.key);
+        initialValues[filter.key] = paramValue
+          ? paramValue === "true"
+          : filter.defaultValue === undefined
+            ? false
+            : !!filter.defaultValue;
       }
     });
 
@@ -83,6 +88,13 @@ export const Filters: React.FC<FiltersProps> = ({
       });
 
       return { ...prev, [key]: newValues };
+    });
+  };
+
+  const handleBooleanToggle = (key: string, checked: boolean) => {
+    setSelectedValues((prev) => {
+      setSearchParams({ key, value: String(checked) });
+      return { ...prev, [key]: checked };
     });
   };
 
@@ -134,6 +146,19 @@ export const Filters: React.FC<FiltersProps> = ({
                   </DropdownMenuRadioItem>
                 ))}
               </DropdownMenuRadioGroup>
+            ) : type === "boolean" ? (
+              <div className="flex items-center justify-between px-2 py-1.5">
+                <Label htmlFor={`toggle-${key}`} className="cursor-pointer">
+                  {label}
+                </Label>
+                <Switch
+                  id={`toggle-${key}`}
+                  checked={selectedValues[key] as boolean}
+                  onCheckedChange={(checked) =>
+                    handleBooleanToggle(key, checked)
+                  }
+                />
+              </div>
             ) : (
               <>
                 {options.length === 0 ? (
