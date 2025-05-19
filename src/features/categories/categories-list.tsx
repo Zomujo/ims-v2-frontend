@@ -21,6 +21,7 @@ import { Input } from "../ui/input";
 import { ScrollArea } from "../ui/scroll-area";
 import { itemCategoriesTableColumns } from "./categories.data";
 import { categoryFormSchema } from "./categories.schemas";
+import { ITEMS_CATEGORIES_STATUS } from "@features/shared/types/action.types";
 
 export default function CategoriesList() {
   const { data, loading } = useFetchData({ fetchFn: getItemCategories });

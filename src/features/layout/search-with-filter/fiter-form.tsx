@@ -62,6 +62,9 @@ export default function FilterForms() {
       [PAGE_ROUTES.SUPPLIERS.VIEW]: (
         <Filters filters={[dateRangeFilter, categoriesStatusFilter]} />
       ),
+      [PAGE_ROUTES.SETTINGS.DEPARTMENTS]: (
+        <Filters filters={[dateRangeFilter]} />
+      ),
     };
   };
 

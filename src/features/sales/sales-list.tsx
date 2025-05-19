@@ -15,7 +15,7 @@ import { salesItemLocalStorageKey, salesTableColumns } from "./sales.data";
 
 export default function SalesList() {
   const router = useRouter();
-  const { data } = useFetchData({ fetchFn: getSales });
+  const { data, loading } = useFetchData({ fetchFn: getSales });
   const [, , removeSalesItems] = useLocalStorage(salesItemLocalStorageKey, []);
   const sales = data?.rows ?? [];
   const {
@@ -56,6 +56,7 @@ export default function SalesList() {
       <CrudPage
         moduleName="sales"
         data={sales}
+        isLoading={loading}
         modalAction={handleDelete}
         handleRemoveQueryparam={handleRemoveQueryparam}
         currentDataDisplayName={getData(CRUDACTION.DELETE)?.saleNumber ?? ""}
