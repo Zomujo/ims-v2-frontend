@@ -66,6 +66,12 @@ export default function FilterForms() {
           filters={[salesStatusFilter, dateRangeFilter, todaySalesFilters]}
         />
       ),
+      [PAGE_ROUTES.SUPPLIERS.VIEW]: (
+        <Filters filters={[dateRangeFilter, categoriesStatusFilter]} />
+      ),
+      [PAGE_ROUTES.SETTINGS.DEPARTMENTS]: (
+        <Filters filters={[dateRangeFilter]} />
+      ),
     };
   };
 

@@ -56,8 +56,8 @@ export default function SalesList() {
       <CrudPage
         moduleName="sales"
         data={sales}
-        modalAction={handleDelete}
         isLoading={loading}
+        modalAction={handleDelete}
         handleRemoveQueryparam={handleRemoveQueryparam}
         currentDataDisplayName={getData(CRUDACTION.DELETE)?.saleNumber ?? ""}
         tableColumns={salesTableColumns}

@@ -43,3 +43,8 @@ export type CrudAction =
   | "deactivate"
   | "activate"
   | "status";
+
+export enum ActiveDeactivedStatus {
+  ACTIVE = "Active",
+  DEACTIVATE = "Deactivated",
+}

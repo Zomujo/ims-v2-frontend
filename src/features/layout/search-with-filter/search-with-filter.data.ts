@@ -1,7 +1,7 @@
+import { ActiveDeactivedStatus } from "@/features/shared/types/utitls.types";
 import { PAGE_ROUTES } from "@/lib/constant";
 import {
   ItemOrderStatus,
-  ITEMS_CATEGORIES_STATUS,
   ITEMS_STATUS,
   StockAdjustmentStatus,
   StockAdjustmentType,
@@ -161,8 +161,8 @@ export const categoriesStatusFilter = {
   type: "radio" as const,
   options: [
     { label: "All", value: "" },
-    { label: "Active", value: ITEMS_CATEGORIES_STATUS.ACTIVE },
-    { label: "Deactivated", value: ITEMS_CATEGORIES_STATUS.DEACTIVATED },
+    { label: "Active", value: ActiveDeactivedStatus.ACTIVE },
+    { label: "Deactivated", value: ActiveDeactivedStatus.DEACTIVATE },
   ],
   defaultValue: "",
 };
