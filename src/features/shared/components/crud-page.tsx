@@ -27,6 +27,8 @@ export default function CrudPage<T>({
   modalAction,
   handleRemoveQueryparam,
   isLoading,
+  closeModal,
+  alertModalOnChange = true,
 }: Readonly<PropsWithChildren<CrudPageProps<T>>>) {
   const allColumns = tableColumns.concat(getActionColumn({ actions }));
   return (
@@ -49,7 +51,7 @@ export default function CrudPage<T>({
       />
       <ImsAlertModal
         open={openModal || state?.includes("delete")}
-        onOpenChange={handleRemoveQueryparam}
+        onOpenChange={alertModalOnChange ? handleRemoveQueryparam : undefined}
         title={modalActionLabel ?? "Delete"}
         description={
           <>
@@ -64,7 +66,7 @@ export default function CrudPage<T>({
             {modalActionLabel ?? "Delete"}
           </ImsButton>
         }
-        cancelNode={<button>Cancel</button>}
+        cancelNode={<button onClick={closeModal}>Cancel</button>}
       />
     </>
   );
