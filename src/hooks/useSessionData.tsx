@@ -16,6 +16,16 @@ export const useSessionData = () => {
 
   const profileImage = user?.imageUrl;
 
+  const permissions = user?.permissions;
+
+  const hasPermission = (permission: string) => {
+    if (!permissions) {
+      return false;
+    }
+    const permissionKeys = user.permissions.map((item) => item.split(":")[0]);
+    return permissionKeys.includes(permission);
+  };
+
   return {
     session,
     isLoading,
@@ -24,5 +34,7 @@ export const useSessionData = () => {
     role,
     profileImage,
     fullName,
+    permissions,
+    hasPermission,
   };
 };
