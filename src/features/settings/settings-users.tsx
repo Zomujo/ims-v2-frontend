@@ -89,7 +89,7 @@ export default function ManageUsersSettings({
         const isDeclined = status === USER_STATUS.DECLINED;
         return [
           {
-            label: "change role",
+            label: "Edit Role",
             icon: "lucide:edit-2",
             action: () => handleEditBtnClicked(item),
           },
@@ -140,6 +140,12 @@ function ManageUsersSettingsForm({
 
   const handleSubmit = async (data: unknown) => {
     const newUser = data as ManageUsersSettingsFormProps["defaultValues"];
+    if (newUser) {
+      newUser.permissions = newUser?.permissions.filter((permission) => {
+        const [, access] = permission.split(":");
+        return access && ACCESS_LEVELS.includes(access);
+      });
+    }
     const res = isEditMode
       ? editUserRoleAction({
           id: newUser?.id ?? "",
@@ -176,13 +182,17 @@ function ManageUsersSettingsForm({
       ({ role }) => role === form.getValues("role"),
     );
 
-    if (selectedRole?.permissions) {
-      const mergedPermissions = getUpdatedPermissions(selectedRole.permissions);
-      form.setValue("permissions", mergedPermissions);
-    } else {
-      setDefaultPermissions();
+    if (!defaultValues) {
+      if (selectedRole?.permissions) {
+        const mergedPermissions = getUpdatedPermissions(
+          selectedRole.permissions,
+        );
+        form.setValue("permissions", mergedPermissions);
+      } else {
+        setDefaultPermissions();
+      }
     }
-  }, [form.watch("role")]);
+  }, [form.watch("role"), defaultValues]);
 
   return (
     <ImsForm
