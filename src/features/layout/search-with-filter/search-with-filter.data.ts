@@ -7,6 +7,7 @@ import {
   StockAdjustmentType,
 } from "@features/shared/types/action.types";
 import { SALES_STATUS } from "@features/shared/types/sales-action.types";
+import { UserRole, UserStatus } from "@features/shared/types/auth-action.types";
 
 export const actionButtonData = {
   [PAGE_ROUTES.SALES.VIEW]: {
@@ -175,6 +176,34 @@ export const salesStatusFilter = {
     { label: "All", value: "" },
     { label: "Paid", value: SALES_STATUS.PAID },
     { label: "Unpaid", value: SALES_STATUS.UNPAID },
+  ],
+  defaultValue: "",
+};
+
+export const userStatusFilter = {
+  key: "status",
+  label: "Status",
+  type: "radio" as const,
+  options: [
+    { label: "All", value: "" },
+    { label: "Active", value: UserStatus.ACTIVE },
+    { label: "Inactive", value: UserStatus.INACTIVE },
+    { label: "Pending", value: UserStatus.PENDING },
+    { label: "Accepted", value: UserStatus.ACCEPTED },
+    { label: "Declined", value: UserStatus.DECLINED },
+  ],
+  defaultValue: "",
+};
+
+export const userRoleFilter = {
+  key: "role",
+  label: "Role",
+  type: "radio" as const,
+  options: [
+    { label: "All", value: "" },
+    { label: "Central Admin", value: UserRole.CentralAdmin },
+    { label: "Department Admin", value: UserRole.DepartmentAdmin },
+    { label: "Pharmacist", value: UserRole.Pharmacist },
   ],
   defaultValue: "",
 };

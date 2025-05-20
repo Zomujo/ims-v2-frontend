@@ -36,12 +36,11 @@ export const changeAccountInfoAction = async ({
 
 export const changeEmailAction = async (email: string) => {
   try {
-    const res = await imsApiWithAuth<AuthApiStandardResponse>({
+    return await imsApiWithAuth<AuthApiStandardResponse>({
       url: API_ENDPOINTS_OLD.CHANGE_EMAIL.SEND_MAIL,
       method: "POST",
       body: JSON.stringify({ email }),
     });
-    return res;
   } catch (error) {
     return error as AuthApiStandardResponse;
   }
@@ -49,12 +48,11 @@ export const changeEmailAction = async (email: string) => {
 
 export const changePassword = async (newPassword: string) => {
   try {
-    const res = await imsApiWithAuth<AuthApiStandardResponse>({
+    return await imsApiWithAuth<AuthApiStandardResponse>({
       url: API_ENDPOINTS_OLD.CHANGE_PASSWORD,
       method: "PUT",
       body: JSON.stringify({ newPassword }),
     });
-    return res;
   } catch (error) {
     return error as AuthApiStandardResponse;
   }
@@ -101,14 +99,13 @@ export const getDepartmentsAction = async (
   searchParams?: GenerateQueryParams,
 ) => {
   const queryParams = generateQueryParams(searchParams);
-  const res = await imsApiWithAuth<GetDepartmentAPIResponse>({
+  return await imsApiWithAuth<GetDepartmentAPIResponse>({
     url: `${API_ENDPOINTS_OLD.DEPARTMENTS}${(searchParams ?? "") && "/?" + queryParams}`,
     method: "GET",
     next: {
       tags: [queryParams],
     },
   });
-  return res;
 };
 
 export const updateDepartmentAction = async ({
@@ -160,14 +157,13 @@ export const createDepartmentAction = async ({ name }: { name: string }) => {
 
 export const getUsersAction = async (searchParams?: GenerateQueryParams) => {
   const queryParams = generateQueryParams(searchParams);
-  const res = await imsApiWithAuth<GetUsersAPIResponse>({
+  return await imsApiWithAuth<GetUsersAPIResponse>({
     url: `${API_ENDPOINTS_OLD.ADMIN.USERS}${searchParams ? "/?" + queryParams : ""}`,
     method: "GET",
     next: {
       tags: [queryParams],
     },
   });
-  return res;
 };
 export const getUserAction = async ({ id }: { id: string }) => {
   const res = await imsApiWithAuth<AuthUserProfileActionResponse>({
@@ -182,12 +178,11 @@ export const getUserAction = async ({ id }: { id: string }) => {
 
 export const getRolesAction = async (searchParams?: GenerateQueryParams) => {
   const queryParams = generateQueryParams(searchParams);
-  const res = await imsApiWithAuth<GetUserRolesAPIResponse>({
+  return await imsApiWithAuth<GetUserRolesAPIResponse>({
     url:
       API_ENDPOINTS_OLD.ADMIN.ROLES + (searchParams ? "/?" + queryParams : ""),
     method: "GET",
   });
-  return res;
 };
 
 export const addUserAction = async <T>(newUser: T) => {
@@ -224,7 +219,7 @@ export const editUserRoleAction = async ({
   }
 };
 
-export const deactivateUserAction = async ({ id }: { id: string }) => {
+export const deactivateUserAction = async (id: string) => {
   try {
     const res = await imsApiWithAuth<AuthApiStandardResponse>({
       url: API_ENDPOINTS_OLD.ADMIN.DEACTIVATE_USER.replace("[id]", id),
@@ -233,11 +228,12 @@ export const deactivateUserAction = async ({ id }: { id: string }) => {
     revalidateTag(API_ENDPOINTS_OLD.ADMIN.USERS);
     return res;
   } catch (error) {
+    console.log("Error", error);
     return error as AuthApiStandardResponse;
   }
 };
 
-export const activateUserAction = async ({ id }: { id: string }) => {
+export const activateUserAction = async (id: string) => {
   try {
     const res = await imsApiWithAuth<AuthApiStandardResponse>({
       url: API_ENDPOINTS_OLD.ADMIN.ACTIVATE_USER.replace("[id]", id),

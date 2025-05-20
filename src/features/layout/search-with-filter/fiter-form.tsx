@@ -13,6 +13,8 @@ import {
   orderStatusFilter,
   salesStatusFilter,
   todaySalesFilters,
+  userRoleFilter,
+  userStatusFilter,
 } from "@features/layout/search-with-filter/search-with-filter.data";
 import { useCategories } from "@/hooks/useCategories";
 
@@ -71,6 +73,11 @@ export default function FilterForms() {
       ),
       [PAGE_ROUTES.SETTINGS.DEPARTMENTS]: (
         <Filters filters={[dateRangeFilter]} />
+      ),
+      [PAGE_ROUTES.SETTINGS.USERS]: (
+        <Filters
+          filters={[dateRangeFilter, userStatusFilter, userRoleFilter]}
+        />
       ),
     };
   };
