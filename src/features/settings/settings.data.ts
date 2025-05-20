@@ -19,11 +19,13 @@ export const settingsSidebarNavItems = [
     label: "Manage Departments",
     icon: "solar:buildings-bold-duotone",
     href: "departments",
+    permission: "departments",
   },
   {
     label: "Manage Users & Roles",
     icon: "solar:users-group-rounded-bold-duotone",
     href: "users",
+    permission: "users",
   },
   {
     label: "Notifications",
