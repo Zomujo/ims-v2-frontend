@@ -44,7 +44,6 @@ type ManageUsersSettingsFormProps = {
 export default function ManageUsersSettings({
   departments,
   roles,
-  totalPages,
 }: Readonly<ManageUsersSettingsProps>) {
   const { data, loading, refetch } = useFetchData({ fetchFn: getUsersAction });
   const users = data?.data.rows ?? [];
@@ -129,7 +128,7 @@ export default function ManageUsersSettings({
       state={state}
       isLoading={loading}
       isEditMode={singleData ? isEditMode : false}
-      totalPages={totalPages}
+      totalPages={data?.data.totalPages ?? 0}
       modalAction={handleModalAction}
       modalActionLabel={modalActionProperties.label}
       tableColumns={settingsUserTableColumns}
