@@ -37,6 +37,16 @@ export default function SidebarLayout() {
   const { open, setOpen } = useSidebar(); // Access sidebar state
   const pathname = usePathname();
   const { isLoading, facilityName, role } = useSessionData();
+  const { hasPermission } = useSessionData();
+
+  const canShowCollapsible = (sub: { permission: string }[]) => {
+    return sub.some(({ permission }) => {
+      if (permission) {
+        return hasPermission(permission);
+      }
+      return true;
+    });
+  };
 
   return (
     <>
@@ -87,56 +97,62 @@ export default function SidebarLayout() {
               return (
                 <SidebarMenu key={tab.name}>
                   {/* Overview */}
-                  {!tab.subs ? (
-                    <SidebarMenuItem>
-                      <SidebarMenuButton asChild>
-                        <ImsNavTab
-                          href={tab.link ?? ""}
-                          icon={tab.icon}
-                          label={tab.name}
-                        />
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                  ) : (
-                    <SidebarMenuItem>
-                      <Collapsible>
-                        <CollapsibleTrigger asChild>
-                          <SidebarMenuButton
-                            onClick={() => setIsPharmaOpen(!isPharmaOpen)}
-                            className="flex items-center justify-start"
-                            isActive={isActive}
-                            asChild
-                          >
-                            <ImsButton
-                              className="relative flex py-6 text-gray-500"
-                              variant="ghost"
-                              endIcon={
-                                <ChevronDown className="absolute top-[40%] right-2 h-4 w-4" />
-                              }
-                              startIcon={<Icon icon={tab.icon} />}
-                            >
-                              {tab.name}
-                            </ImsButton>
+                  {!tab.subs
+                    ? (!tab.permission || hasPermission(tab.permission)) && (
+                        <SidebarMenuItem>
+                          <SidebarMenuButton asChild>
+                            <ImsNavTab
+                              href={tab.link ?? ""}
+                              icon={tab.icon}
+                              label={tab.name}
+                            />
                           </SidebarMenuButton>
-                        </CollapsibleTrigger>
-                        <CollapsibleContent>
-                          <SidebarMenuSub className="mr-0 space-y-1 pr-0">
-                            {tab.subs.map((sub) => (
-                              <SidebarMenuSubItem key={sub.name}>
-                                <SidebarMenuSubButton asChild>
-                                  <ImsNavTab
-                                    href={sub.link ?? ""}
-                                    icon={sub.icon}
-                                    label={sub.name}
-                                  />
-                                </SidebarMenuSubButton>
-                              </SidebarMenuSubItem>
-                            ))}
-                          </SidebarMenuSub>
-                        </CollapsibleContent>
-                      </Collapsible>
-                    </SidebarMenuItem>
-                  )}
+                        </SidebarMenuItem>
+                      )
+                    : canShowCollapsible(tab.subs) && (
+                        <SidebarMenuItem>
+                          <Collapsible>
+                            <CollapsibleTrigger asChild>
+                              <SidebarMenuButton
+                                onClick={() => setIsPharmaOpen(!isPharmaOpen)}
+                                className="flex items-center justify-start"
+                                isActive={isActive}
+                                asChild
+                              >
+                                <ImsButton
+                                  className="relative flex py-6 text-gray-500"
+                                  variant="ghost"
+                                  endIcon={
+                                    <ChevronDown className="absolute top-[40%] right-2 h-4 w-4" />
+                                  }
+                                  startIcon={<Icon icon={tab.icon} />}
+                                >
+                                  {tab.name}
+                                </ImsButton>
+                              </SidebarMenuButton>
+                            </CollapsibleTrigger>
+                            <CollapsibleContent>
+                              <SidebarMenuSub className="mr-0 space-y-1 pr-0">
+                                {tab.subs.map(
+                                  (sub) =>
+                                    (!sub.permission ||
+                                      hasPermission(sub.permission)) && (
+                                      <SidebarMenuSubItem key={sub.name}>
+                                        <SidebarMenuSubButton asChild>
+                                          <ImsNavTab
+                                            href={sub.link ?? ""}
+                                            icon={sub.icon}
+                                            label={sub.name}
+                                          />
+                                        </SidebarMenuSubButton>
+                                      </SidebarMenuSubItem>
+                                    ),
+                                )}
+                              </SidebarMenuSub>
+                            </CollapsibleContent>
+                          </Collapsible>
+                        </SidebarMenuItem>
+                      )}
                 </SidebarMenu>
               );
             })}
