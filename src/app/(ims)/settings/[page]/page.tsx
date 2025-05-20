@@ -8,9 +8,11 @@ import { authUserProfileAction } from "@/features/shared/actions/auth.action";
 import {
   getDepartmentsAction,
   getRolesAction,
-  getUsersAction,
 } from "@/features/shared/actions/settings.actions";
 import SettingsSearchWithFilter from "@features/settings/settings-search-with-filter";
+import { checkServerPermission } from "@/lib/providers/server-permission-provider";
+import { PermissionModules } from "@features/shared/types/auth-action.types";
+import { PermissionProvider } from "@/lib/providers/permission-provider";
 
 type SettingPages = {
   params: Promise<{ page: string }>;
@@ -21,23 +23,23 @@ const pageWithDrawerUI = ["departments", "users"];
 
 export default async function SettingsPages({
   params,
-  searchParams,
 }: Readonly<SettingPages>) {
   const { page } = await params;
-  const { page: searchPage } = await searchParams;
   const SettingsPage =
     renderSettingsPage[page as keyof typeof renderSettingsPage] ??
     (() => <></>);
   return (
     <section className="relative w-full overflow-y-auto rounded-2xl bg-white p-8">
-      <SettingsSearchWithFilter />
-      {pageWithDrawerUI.includes(page) && (
-        <SettingsCreateButton
-          state="create"
-          label={createBtnLabel[page as keyof typeof createBtnLabel]}
-        />
-      )}
-      <SettingsPage page={searchPage} />
+      <PermissionProvider permission={page}>
+        <SettingsSearchWithFilter />
+        {pageWithDrawerUI.includes(page) && (
+          <SettingsCreateButton
+            state="create"
+            label={createBtnLabel[page as keyof typeof createBtnLabel]}
+          />
+        )}
+        <SettingsPage />
+      </PermissionProvider>
     </section>
   );
 }
@@ -85,18 +87,25 @@ async function DepartmentSettings() {
   return <DepartmentManagementSettings />;
 }
 
-async function UsersSettings({ page }: Readonly<{ page: string }>) {
-  const [allFacilityUsers, allDepartments, allRoles] = await Promise.all([
-    getUsersAction({ page }),
+async function UsersSettings() {
+  const hasPermission = await checkServerPermission(PermissionModules.USERS);
+
+  if (!hasPermission) {
+    return (
+      <PermissionProvider permission={PermissionModules.STOCK_ADJUSTMENT}>
+        <div>This content will never be shown</div>
+      </PermissionProvider>
+    );
+  }
+
+  const [allDepartments, allRoles] = await Promise.all([
     getDepartmentsAction({ pageSize: "0" }),
     getRolesAction({ pageSize: "0" }),
   ]);
   return (
     <ManageUsersSettings
-      users={allFacilityUsers.data.rows}
       departments={allDepartments.data.rows}
       roles={allRoles.data}
-      {...allFacilityUsers.data}
     />
   );
 }

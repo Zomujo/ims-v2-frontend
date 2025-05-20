@@ -1,11 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { z } from "zod";
 import { IMSPaginationData } from "../shared/types/ims-api-action.types";
-import {
-  Department,
-  FacilityUsers,
-  UserRoles,
-} from "../shared/types/settings-action.types";
+import { Department, UserRoles } from "../shared/types/settings-action.types";
 import { departmentSettingsSchema } from "./settigns.schemas";
 
 export type DepartmentManagementSettingsProps = {
@@ -40,7 +36,6 @@ export type CrudPageProps<T> = {
 };
 
 export type ManageUsersSettingsProps = {
-  users: FacilityUsers[];
   departments: Department[];
   roles: UserRoles[];
-} & IMSPaginationData;
+};
