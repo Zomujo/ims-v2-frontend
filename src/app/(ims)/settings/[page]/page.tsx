@@ -30,7 +30,10 @@ export default async function SettingsPages({
     (() => <></>);
   return (
     <section className="relative w-full overflow-y-auto rounded-2xl bg-white p-8">
-      <PermissionProvider permission={page}>
+      <PermissionProvider
+        permission={page}
+        freePass={["general", "security", "notifications"]}
+      >
         <SettingsSearchWithFilter />
         {pageWithDrawerUI.includes(page) && (
           <SettingsCreateButton

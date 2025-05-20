@@ -9,6 +9,7 @@ import { ImsButton } from "@features/shared/components/ims-button";
 
 interface PermissionProviderProps {
   permission: PermissionModules | string;
+  freePass?: string[];
   children: React.ReactNode;
 }
 
@@ -37,6 +38,7 @@ const ForbiddenPage = () => {
 export const PermissionProvider: React.FC<PermissionProviderProps> = ({
   permission,
   children,
+  freePass,
 }) => {
   const { hasPermission, isLoading } = useSessionData();
 
@@ -47,7 +49,7 @@ export const PermissionProvider: React.FC<PermissionProviderProps> = ({
       </div>
     );
   }
-  if (!hasPermission(permission)) {
+  if (!freePass?.includes(permission) && !hasPermission(permission)) {
     return <ForbiddenPage />;
   }
 
