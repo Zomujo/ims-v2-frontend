@@ -228,7 +228,6 @@ export const deactivateUserAction = async (id: string) => {
     revalidateTag(API_ENDPOINTS_OLD.ADMIN.USERS);
     return res;
   } catch (error) {
-    console.log("Error", error);
     return error as AuthApiStandardResponse;
   }
 };
