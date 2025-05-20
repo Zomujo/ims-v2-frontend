@@ -31,6 +31,12 @@ export enum UserStatus {
   INACTIVE = "Inactive",
 }
 
+export enum UserRole {
+  Pharmacist = "Pharmacist",
+  CentralAdmin = "Central Admin",
+  DepartmentAdmin = "Department Admin",
+}
+
 export enum PermissionModules {
   USERS = "users",
   ITEMS = "items",
