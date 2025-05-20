@@ -19,11 +19,8 @@ export const useSessionData = () => {
   const permissions = user?.permissions;
 
   const hasPermission = (permission: string) => {
-    if (!permissions) {
-      return false;
-    }
-    const permissionKeys = user.permissions.map((item) => item.split(":")[0]);
-    return permissionKeys.includes(permission);
+    const permissionKeys = permissions?.map((item) => item.split(":")[0]);
+    return !!permissionKeys?.includes(permission);
   };
 
   return {
