@@ -26,6 +26,8 @@ import useImsSearchParams from "../shared/hooks/use-ims-search-params";
 import { UI_STATE } from "@/lib/constant";
 import { useEffect, useState } from "react";
 import LoadingOverlay from "@features/ui/loadingOverlay";
+import { useSessionData } from "@/hooks/useSessionData";
+import { PermissionModules } from "@features/shared/types/auth-action.types";
 
 type ItemOrdersListProps = {
   items: IdData[];
@@ -36,6 +38,7 @@ export default function ItemOrdersList({
   items,
   suppliers,
 }: Readonly<ItemOrdersListProps>) {
+  const { canWrite, canDelete } = useSessionData();
   const { data, loading, refetch } = useFetchData({
     fetchFn: getItemOrders,
   });
@@ -95,6 +98,7 @@ export default function ItemOrdersList({
               label: "edit",
               icon: "lucide:edit-2",
               action: () => handleEditBtnClicked(item),
+              hide: !canWrite(PermissionModules.ITEMS_ORDERS),
             },
             // TODO: Will probably be added but at the moment, no functionality for this
             // {
@@ -102,25 +106,27 @@ export default function ItemOrdersList({
             //   icon: "solar:printer-2-outline",
             //   action: () => handleDeleteBtnClicked(item),
             // },
-            item.status !== ItemOrderStatus.RECEIVED
-              ? {
-                  label: handleCurrentState(item.status) ?? "",
-                  action: () =>
-                    handleItemOrderState(
-                      item.id,
-                      handleCurrentState(item.status) as ItemOrderStatus,
-                    ),
-                  icon: "hugeicons:view",
-                }
-              : null,
-            item.status !== ItemOrderStatus.RECEIVED
-              ? {
-                  label: "delete",
-                  icon: "lucide:trash-2",
-                  type: "destructive",
-                  action: () => handleDeleteBtnClicked(item),
-                }
-              : null,
+            {
+              label: handleCurrentState(item.status) ?? "",
+              action: () =>
+                handleItemOrderState(
+                  item.id,
+                  handleCurrentState(item.status) as ItemOrderStatus,
+                ),
+              icon: "hugeicons:view",
+              hide:
+                !canWrite(PermissionModules.ITEMS_ORDERS) ||
+                item.status === ItemOrderStatus.RECEIVED,
+            },
+            {
+              label: "delete",
+              icon: "lucide:trash-2",
+              type: "destructive",
+              action: () => handleDeleteBtnClicked(item),
+              hide:
+                !canDelete(PermissionModules.ITEMS_ORDERS) ||
+                item.status === ItemOrderStatus.RECEIVED,
+            },
           ]
             .filter(Boolean)
             .slice(

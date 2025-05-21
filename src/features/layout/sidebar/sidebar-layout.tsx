@@ -23,9 +23,8 @@ import {
   SidebarMenuSubItem,
   useSidebar,
 } from "@/features/ui/sidebar";
-import { Switch } from "@/features/ui/switch";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import { ChevronDown, Menu, Moon, Pill, Sun, X } from "lucide-react";
+import { ChevronDown, Menu, Pill, X } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { generalTabs, helpTabs } from "./sidebar.data";
@@ -181,14 +180,17 @@ export default function SidebarLayout() {
 
         {/* Footer */}
         <SidebarFooter className="bg-white p-4">
-          <div className="mb-2 flex items-center justify-between">
-            <Sun className="h-5 w-5" />
-            <Switch
-            // checked={theme === "dark"}
-            // onCheckedChange={(checked) => setTheme(checked ? "dark" : "light")}
-            />
-            <Moon className="h-5 w-5" />
-          </div>
+          {/*TODO: We will implement the theme switcher later*/}
+          {/*<div className="mb-2 flex items-center justify-between">*/}
+          {/*  <Sun className="h-5 w-5" />*/}
+          {/*  <Switch*/}
+          {/*    checked={theme === "dark"}*/}
+          {/*    onCheckedChange={(checked) =>*/}
+          {/*      setTheme(checked ? "dark" : "light")*/}
+          {/*    }*/}
+          {/*  />*/}
+          {/*  <Moon className="h-5 w-5" />*/}
+          {/*</div>*/}
           <p className="text-xs text-gray-500">
             Stealth 2024 - ALL rights reserved
           </p>

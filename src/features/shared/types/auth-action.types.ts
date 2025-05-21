@@ -44,7 +44,7 @@ export enum PermissionModules {
   SALES = "sales",
   REPORTS = "reports",
   ITEMS_CATEGORIES = "item_categories",
-  ITEMS_ORDERS = "items_orders",
+  ITEMS_ORDERS = "item_orders",
   STOCK_ADJUSTMENT = "stock_adjustment",
   DEPARTMENTS = "departments",
   DEPARTMENT_REQUESTS = "department_requests",
