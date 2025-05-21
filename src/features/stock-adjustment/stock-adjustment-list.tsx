@@ -23,6 +23,8 @@ import { StockAdjustmentFormInputs } from "./stock-adjustment-component-client";
 import { StockAdjustmentProvider } from "./stock-adjustment.context";
 import { stockAdjustmentTableColumns } from "./stock-adjustment.data";
 import { stockAdjustmentSchema } from "./stock-adjustment.schemas";
+import { useSessionData } from "@/hooks/useSessionData";
+import { PermissionModules } from "@features/shared/types/auth-action.types";
 
 type StockAdjustmentListProps = {
   items: IdData[];
@@ -30,6 +32,7 @@ type StockAdjustmentListProps = {
 export default function StockAdjustmentList({
   items,
 }: Readonly<StockAdjustmentListProps>) {
+  const { canWrite, canDelete } = useSessionData();
   const { data, loading } = useFetchData({ fetchFn: getStockAdjustments });
   const stockAdjustments = data?.rows ?? [];
   const {
@@ -71,12 +74,14 @@ export default function StockAdjustmentList({
             label: "edit",
             icon: "lucide:edit-2",
             action: () => handleEditBtnClicked(item),
+            hide: !canWrite(PermissionModules.STOCK_ADJUSTMENT),
           },
           {
             label: "delete",
             icon: "solar:trash-bin-trash-line-duotone",
             type: "destructive",
             action: () => handleDeleteBtnClicked(item),
+            hide: !canDelete(PermissionModules.STOCK_ADJUSTMENT),
           },
         ]}
       >
