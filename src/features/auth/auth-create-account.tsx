@@ -95,6 +95,7 @@ function AuthCreateAccountActions({
     <>
       <ImsButton
         isLoading={isSubmitting}
+        disabled={isSubmitting}
         isLoadingLabel="Logging in..."
         variant="imsPrimary"
         className="h-12 cursor-pointer justify-self-end md:order-none"

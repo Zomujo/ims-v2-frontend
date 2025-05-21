@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { ItemCategoryResponse } from "@features/shared/types/action.types";
 import { getItemCategoriesNoPaginate } from "@features/shared/actions/item-categories.actions";
+import { useSessionData } from "@/hooks/useSessionData";
+import { PermissionModules } from "@features/shared/types/auth-action.types";
 
 /**
  * Hook to fetch and manage categories.
@@ -10,8 +12,10 @@ export function useCategories() {
   const [categories, setCategories] = useState<ItemCategoryResponse[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
+  const { hasPermission } = useSessionData();
 
   useEffect(() => {
+    if (!hasPermission(PermissionModules.ITEMS_CATEGORIES)) return;
     if (!useCategories.cache) {
       setLoading(true);
       getItemCategoriesNoPaginate()
@@ -32,6 +36,7 @@ export function useCategories() {
   }, []);
 
   const refetch = async () => {
+    if (!hasPermission(PermissionModules.ITEMS_CATEGORIES)) return;
     setLoading(true);
     try {
       const categoriesData = await getItemCategoriesNoPaginate();

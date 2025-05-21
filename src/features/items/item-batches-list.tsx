@@ -26,6 +26,8 @@ import { itemBatchesTableColumns } from "./items.data";
 import { itemBatchFormSchema } from "./items.schemas";
 import { usePageHeading } from "@/hooks/usePageHeading";
 import { useEffect } from "react";
+import { useSessionData } from "@/hooks/useSessionData";
+import { PermissionModules } from "@features/shared/types/auth-action.types";
 
 type ItemBatchesListProps = {
   itemId?: string;
@@ -39,6 +41,7 @@ export default function ItemBatchesList({
   suppliers,
   oneItem,
 }: Readonly<ItemBatchesListProps>) {
+  const { canWrite } = useSessionData();
   const { updateCustomHeading } = usePageHeading();
   const { data, loading } = useFetchData({
     fetchFn: (params) => getItemBatches(itemId ?? "", params),
@@ -76,6 +79,7 @@ export default function ItemBatchesList({
         actions={(item) => [
           {
             label: "edit",
+            hide: !canWrite(PermissionModules.ITEMS),
             icon: "lucide:edit-2",
             action: () => handleEditBtnClicked(item),
           },

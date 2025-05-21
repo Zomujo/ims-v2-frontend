@@ -7,11 +7,13 @@ import { useParams, usePathname } from "next/navigation";
 import FilterForms from "./fiter-form";
 import { actionButtonData } from "./search-with-filter.data";
 import { PAGE_ROUTES } from "@/lib/constant";
+import { useSessionData } from "@/hooks/useSessionData";
 
 export default function SearchWithFilter() {
   const params = useParams();
   const isSlugs = !!params.slugs;
   const pathName = usePathname();
+  const { hasActionPermission } = useSessionData();
   const btnData =
     actionButtonData[isSlugs ? PAGE_ROUTES.ITEM_BATCHES : pathName];
 
@@ -25,16 +27,17 @@ export default function SearchWithFilter() {
       <ImsFilters>
         <FilterForms />
       </ImsFilters>
-      {!pathName.includes(PAGE_ROUTES.REPORTS) && (
-        <ButtonLink
-          variant="imsPrimary"
-          className="absolute top-1.5 right-0"
-          href={{ pathname, query }}
-          startIcon={<Icon icon={btnData.icon} />}
-        >
-          {btnData.label}
-        </ButtonLink>
-      )}
+      {!pathName.includes(PAGE_ROUTES.REPORTS) &&
+        hasActionPermission(btnData.permission ?? "") && (
+          <ButtonLink
+            variant="imsPrimary"
+            className="absolute top-1.5 right-0"
+            href={{ pathname, query }}
+            startIcon={<Icon icon={btnData.icon} />}
+          >
+            {btnData.label}
+          </ButtonLink>
+        )}
     </div>
   );
 }
