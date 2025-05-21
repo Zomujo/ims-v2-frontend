@@ -98,6 +98,7 @@ const getActionColumn = <TData, TValue>({
           align="start"
           menuItems={(actions(item) ?? [])
             .filter((obj) => obj)
+            .filter((actionItem) => !actionItem?.hide)
             .map((actionItem) => {
               return {
                 id: actionItem?.label ?? "",

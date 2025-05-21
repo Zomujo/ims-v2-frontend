@@ -27,8 +27,11 @@ import { itemsTableColumns } from "./items.data";
 import { itemFormSchema } from "./items.schemas";
 import LoadingOverlay from "@features/ui/loadingOverlay";
 import { useCategories } from "@/hooks/useCategories";
+import { useSessionData } from "@/hooks/useSessionData";
+import { PermissionModules } from "@features/shared/types/auth-action.types";
 
 export default function ItemsList() {
+  const { canWrite, canDelete } = useSessionData();
   const { categories } = useCategories();
   const router = useRouter();
   const { data, loading, refetch } = useFetchData({
@@ -80,6 +83,7 @@ export default function ItemsList() {
             label: "edit",
             icon: "lucide:edit-2",
             action: () => handleEditBtnClicked(item),
+            hide: !canWrite(PermissionModules.ITEMS),
           },
           {
             label: "view batches",
@@ -91,6 +95,7 @@ export default function ItemsList() {
             icon: "solar:trash-bin-trash-line-duotone",
             type: "destructive",
             action: () => handleDeleteBtnClicked(item),
+            hide: !canDelete(PermissionModules.ITEMS),
           },
         ]}
       >

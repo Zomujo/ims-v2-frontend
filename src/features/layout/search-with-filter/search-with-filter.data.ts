@@ -7,7 +7,12 @@ import {
   StockAdjustmentType,
 } from "@features/shared/types/action.types";
 import { SALES_STATUS } from "@features/shared/types/sales-action.types";
-import { UserRole, UserStatus } from "@features/shared/types/auth-action.types";
+import {
+  PermissionActions,
+  PermissionModules,
+  UserRole,
+  UserStatus,
+} from "@features/shared/types/auth-action.types";
 
 export const actionButtonData = {
   [PAGE_ROUTES.SALES.VIEW]: {
@@ -19,6 +24,7 @@ export const actionButtonData = {
     label: "Add New Item",
     href: PAGE_ROUTES.ITEMS.CREATE,
     icon: "solar:jar-of-pills-bold-duotone",
+    permission: `${PermissionModules.ITEMS}:${PermissionActions.WRITE}`,
   },
   [PAGE_ROUTES.ITEM_BATCHES]: {
     label: "Add New Batch",
@@ -44,6 +50,7 @@ export const actionButtonData = {
     label: "Add New Request",
     href: PAGE_ROUTES.DEPARTMENTS_REQUESTS.CREATE,
     icon: "solar:box-bold-duotone",
+    permission: `${PermissionModules.DEPARTMENT_REQUESTS}:${PermissionActions.WRITE}`,
   },
   [PAGE_ROUTES.SUPPLIERS.VIEW]: {
     label: "Add New Supplier",

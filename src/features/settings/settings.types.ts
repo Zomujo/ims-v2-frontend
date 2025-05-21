@@ -27,6 +27,7 @@ export type CrudPageProps<T> = {
     icon: string;
     type?: string;
     action: () => void;
+    hide?: boolean;
   } | null)[];
   handleRemoveQueryparam?: (e: boolean) => void;
   modalAction: () => void;
