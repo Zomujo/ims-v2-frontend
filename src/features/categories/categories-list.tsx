@@ -44,10 +44,8 @@ export default function CategoriesList() {
     const id = getId(CRUDACTION.DELETE);
     const res = deleteItemCategory(id);
     handleRequestState({ res, loadingMsg: "Deleting category...." });
-    res.then(() => {
-      removeSearchParams(CRUDACTION.DELETE);
-    });
     await res;
+    removeSearchParams(CRUDACTION.DELETE);
   };
 
   return (
