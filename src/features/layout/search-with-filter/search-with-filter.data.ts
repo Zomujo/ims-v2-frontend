@@ -42,6 +42,7 @@ export const actionButtonData = {
     label: "Add New Adjustment",
     href: PAGE_ROUTES.STOCK_ADJUSTMENT.CREATE,
     icon: "solar:delivery-bold-duotone",
+    permission: `${PermissionModules.STOCK_ADJUSTMENT}:${PermissionActions.WRITE}`,
   },
   [PAGE_ROUTES.ITEM_ORDERS.VIEW]: {
     label: "Add New Order",
