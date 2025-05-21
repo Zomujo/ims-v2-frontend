@@ -22,8 +22,11 @@ import { ScrollArea } from "../ui/scroll-area";
 import { itemCategoriesTableColumns } from "./categories.data";
 import { categoryFormSchema } from "./categories.schemas";
 import { ITEMS_CATEGORIES_STATUS } from "@features/shared/types/action.types";
+import { useSessionData } from "@/hooks/useSessionData";
+import { PermissionModules } from "@features/shared/types/auth-action.types";
 
 export default function CategoriesList() {
+  const { canWrite, canDelete } = useSessionData();
   const { data, loading } = useFetchData({ fetchFn: getItemCategories });
   const itemCategories = data?.rows ?? [];
   const {
@@ -65,12 +68,14 @@ export default function CategoriesList() {
             label: "edit",
             icon: "lucide:edit-2",
             action: () => handleEditBtnClicked(item),
+            hide: !canWrite(PermissionModules.ITEMS_CATEGORIES),
           },
           {
             label: "delete",
             icon: "solar:trash-bin-trash-line-duotone",
             type: "destructive",
             action: () => handleDeleteBtnClicked(item),
+            hide: !canDelete(PermissionModules.ITEMS_CATEGORIES),
           },
         ]}
       >

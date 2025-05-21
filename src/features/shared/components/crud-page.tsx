@@ -82,7 +82,9 @@ const getActionColumn = <TData, TValue>({
     header: "",
     cell: ({ row }) => {
       const item = row.original;
-      const actualActions = (actions(item) ?? []).filter(Boolean);
+      const actualActions = (actions(item) ?? [])
+        .filter(Boolean)
+        .filter((actionItem) => !actionItem?.hide);
       return (
         <ImsDropdownMenu
           trigger={

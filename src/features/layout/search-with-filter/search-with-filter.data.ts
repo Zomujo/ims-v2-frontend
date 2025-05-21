@@ -36,6 +36,7 @@ export const actionButtonData = {
     label: "Add New Category",
     href: PAGE_ROUTES.CATEGORIES.CREATE,
     icon: "solar:pills-bold-duotone",
+    permission: `${PermissionModules.ITEMS_CATEGORIES}:${PermissionActions.WRITE}`,
   },
   [PAGE_ROUTES.STOCK_ADJUSTMENT.VIEW]: {
     label: "Add New Adjustment",
