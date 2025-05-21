@@ -192,7 +192,7 @@ export default function SidebarLayout() {
           {/*  <Moon className="h-5 w-5" />*/}
           {/*</div>*/}
           <p className="text-xs text-gray-500">
-            Stealth 2024 - ALL rights reserved
+            Stealth {new Date().getFullYear()} - ALL rights reserved
           </p>
         </SidebarFooter>
       </Sidebar>
