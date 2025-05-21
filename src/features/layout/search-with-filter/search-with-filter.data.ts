@@ -48,6 +48,7 @@ export const actionButtonData = {
     label: "Add New Order",
     href: PAGE_ROUTES.ITEM_ORDERS.CREATE,
     icon: "solar:box-bold-duotone",
+    permission: `${PermissionModules.ITEMS_ORDERS}:${PermissionActions.WRITE}`,
   },
   [PAGE_ROUTES.DEPARTMENTS_REQUESTS.VIEW]: {
     label: "Add New Request",
@@ -59,6 +60,7 @@ export const actionButtonData = {
     label: "Add New Supplier",
     href: PAGE_ROUTES.SUPPLIERS.CREATE,
     icon: "solar:buildings-3-bold-duotone",
+    permission: `${PermissionModules.SUPPLIERS}:${PermissionActions.WRITE}`,
   },
   [PAGE_ROUTES.REPORTS]: {
     label: "Generate Report",

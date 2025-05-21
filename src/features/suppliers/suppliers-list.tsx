@@ -24,10 +24,15 @@ import { supplierSchema } from "./suppliers.schemas";
 import useImsSearchParams from "../shared/hooks/use-ims-search-params";
 import { UI_STATE } from "@/lib/constant";
 import LoadingOverlay from "@features/ui/loadingOverlay";
-import { UserStatus } from "../shared/types/auth-action.types";
+import {
+  PermissionModules,
+  UserStatus,
+} from "../shared/types/auth-action.types";
 import { GetSuppliersResponse } from "../shared/types/action.types";
+import { useSessionData } from "@/hooks/useSessionData";
 
 export default function SuppliersList() {
+  const { canWrite, canDelete } = useSessionData();
   const { data, loading } = useFetchData({ fetchFn: getSuppliers });
   const suppliers = data?.rows ?? [];
   const [modalActionProperties, setModalActionProperties] = useState({
@@ -124,17 +129,20 @@ export default function SuppliersList() {
             label: "edit",
             icon: "lucide:edit-2",
             action: () => handleEditBtnClicked(item),
+            hide: !canWrite(PermissionModules.SUPPLIERS),
           },
           item.status === UserStatus.ACTIVE
             ? {
                 label: "Deactivate",
                 icon: "solar:forbidden-circle-line-duotone",
                 action: () => handleAction(CRUDACTION.DEACTIVATE, item),
+                hide: !canWrite(PermissionModules.SUPPLIERS),
               }
             : {
                 label: "Activate",
                 icon: "solar:power-bold-duotone",
                 action: () => handleAction(CRUDACTION.ACTIVATE, item),
+                hide: !canWrite(PermissionModules.SUPPLIERS),
               },
           {
             label: "delete",
@@ -143,6 +151,7 @@ export default function SuppliersList() {
             action: () => {
               handleAction(CRUDACTION.DELETE, item);
             },
+            hide: !canDelete(PermissionModules.SUPPLIERS),
           },
         ]}
       >
