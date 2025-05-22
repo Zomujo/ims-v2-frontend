@@ -13,8 +13,10 @@ import { authCreateAccountInputsData } from "./auth.data";
 import { createAccountSchema } from "./auth.schemas";
 import { getFormDefaultValues, handleAccountCreation } from "./auth.utils";
 import { AuthAccountCreationProps } from "@features/shared/types/auth-action.types";
+import { useState } from "react";
 
 export function CreateAccountForm() {
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const form = useHookForm({
     resolver: createAccountSchema,
     defaultValues: getFormDefaultValues<z.infer<typeof createAccountSchema>>(
@@ -23,18 +25,17 @@ export function CreateAccountForm() {
   });
 
   const handleSubmitFn = async (data: unknown) => {
-    return handleAccountCreation(data as AuthAccountCreationProps).then(() =>
-      form.reset(),
-    );
+    setIsSubmitting(true);
+    await handleAccountCreation(data as AuthAccountCreationProps);
+    form.reset();
+    setIsSubmitting(false);
   };
 
   return (
     <AuthForm
       form={form}
       handleAuthSubmit={handleSubmitFn}
-      RenderActions={
-        <AuthCreateAccountActions isSubmitting={form.formState.isSubmitting} />
-      }
+      RenderActions={<AuthCreateAccountActions isSubmitting={isSubmitting} />}
       RenderInputs={<AuthCreateAccountInputs control={form.control} />}
     />
   );
