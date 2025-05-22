@@ -12,8 +12,11 @@ import { GetSalesDto } from "../shared/types/action.types";
 import { CRUDACTION } from "../shared/types/utitls.types";
 import { ScrollArea } from "../ui/scroll-area";
 import { salesItemLocalStorageKey, salesTableColumns } from "./sales.data";
+import { useSessionData } from "@/hooks/useSessionData";
+import { PermissionModules } from "@features/shared/types/auth-action.types";
 
 export default function SalesList() {
+  const { canWrite, canDelete } = useSessionData();
   const router = useRouter();
   const { data, loading, refetch } = useFetchData({ fetchFn: getSales });
   const [, , removeSalesItems] = useLocalStorage(salesItemLocalStorageKey, []);
@@ -69,12 +72,14 @@ export default function SalesList() {
             label: "edit",
             icon: "lucide:edit-2",
             action: () => handleEdit(item),
+            hide: !canWrite(PermissionModules.SALES),
           },
           {
             label: "delete",
             icon: "solar:trash-bin-trash-line-duotone",
             type: "destructive",
             action: () => handleDeleteBtnClicked(item),
+            hide: !canDelete(PermissionModules.SALES),
           },
         ]}
       ></CrudPage>

@@ -178,7 +178,7 @@ export default function SalesCart() {
           <ImsButton
             isLoading={isSubmitting}
             isLoadingLabel={"Adding user..."}
-            disabled={isSubmitting}
+            disabled={isSubmitting || !form.formState.isValid}
             variant="imsPrimary"
             type="submit"
             className=" "
