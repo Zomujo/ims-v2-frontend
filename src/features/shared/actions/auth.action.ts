@@ -3,6 +3,7 @@
 
 import { API_ENDPOINTS_OLD } from "@/lib/constant";
 import {
+  AuthAccountCreationProps,
   AuthActionProps,
   AuthApiStandardResponse,
   AuthCreateAccountActionApiBody,
@@ -56,40 +57,20 @@ export const authCreateAccountAction = async ({
   facilityName,
   facilityPassword,
   fullName,
-}: Pick<
-  AuthActionProps,
-  "email" | "password" | "facilityName" | "facilityPassword" | "fullName"
->) => {
-  try {
-    const { data: loginData } =
-      await imsApiWithoutAuth<AuthLoginActionResponse>({
-        url: API_ENDPOINTS_OLD.CREATE_ACCOUNT,
-        method: "POST",
-        body: JSON.stringify({
-          email,
-          password,
-          facility: {
-            name: facilityName,
-            password: facilityPassword,
-          },
-          fullName,
-        } as AuthCreateAccountActionApiBody),
-      });
-    const { data: profileData } =
-      await imsApiWithoutAuth<AuthUserProfileActionResponse>({
-        url: API_ENDPOINTS_OLD.USER_PROFILE,
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${loginData.tokens.accessToken}`,
-        },
-      });
-    return {
-      ...loginData,
-      ...profileData,
-    };
-  } catch {
-    return null;
-  }
+}: AuthAccountCreationProps) => {
+  await imsApiWithoutAuth<AuthLoginActionResponse>({
+    url: API_ENDPOINTS_OLD.CREATE_ACCOUNT,
+    method: "POST",
+    body: JSON.stringify({
+      email,
+      password,
+      facility: {
+        name: facilityName,
+        password: facilityPassword,
+      },
+      fullName,
+    } as AuthCreateAccountActionApiBody),
+  });
 };
 
 export const authChangePasswordAction = async ({

@@ -1,9 +1,7 @@
 "use client";
 
-import { AUTH_OPTIONS_CONSTANTS } from "@/lib/config/auth.config";
-import { AUTH_PAGE_ROUTES, PAGE_ROUTES } from "@/lib/constant";
+import { AUTH_PAGE_ROUTES } from "@/lib/constant";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { Control } from "react-hook-form";
 import { z } from "zod";
 import HookFormField from "../shared/components/hook-form-filed";
@@ -12,11 +10,11 @@ import useHookForm from "../shared/hooks/use-hook-form";
 import { Input } from "../ui/input";
 import { AuthForm, RenderPasswordInput } from "./auth-components-client";
 import { authCreateAccountInputsData } from "./auth.data";
-import { createAccountSchema, loginSchema } from "./auth.schemas";
-import { getFormDefaultValues, handleAuth } from "./auth.utils";
+import { createAccountSchema } from "./auth.schemas";
+import { getFormDefaultValues, handleAccountCreation } from "./auth.utils";
+import { AuthAccountCreationProps } from "@features/shared/types/auth-action.types";
 
 export function CreateAccountForm() {
-  const router = useRouter();
   const form = useHookForm({
     resolver: createAccountSchema,
     defaultValues: getFormDefaultValues<z.infer<typeof createAccountSchema>>(
@@ -25,17 +23,9 @@ export function CreateAccountForm() {
   });
 
   const handleSubmitFn = async (data: unknown) => {
-    return handleAuth({
-      credentials: data as z.infer<typeof loginSchema>,
-      routeFn: router.push,
-      options: {
-        authId: AUTH_OPTIONS_CONSTANTS.CREATE_ACCOUNT,
-        routeTo: PAGE_ROUTES.DASHBOARD,
-        loadingMsg: "Creating account...",
-        successMsg: "Account created successfully",
-        errorMsg: "Failed to create account with provided credentials",
-      },
-    });
+    return handleAccountCreation(data as AuthAccountCreationProps).then(() =>
+      form.reset(),
+    );
   };
 
   return (
