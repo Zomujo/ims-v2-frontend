@@ -19,6 +19,7 @@ export const actionButtonData = {
     label: "Record New Sale",
     href: PAGE_ROUTES.SALES.RECORD,
     icon: "solar:bill-list-bold-duotone",
+    permission: `${PermissionModules.SALES}:${PermissionActions.WRITE}`,
   },
   [PAGE_ROUTES.ITEMS.VIEW]: {
     label: "Add New Item",
