@@ -67,6 +67,11 @@ export type AuthActionProps = {
   code: number;
 };
 
+export type AuthAccountCreationProps = Omit<
+  AuthActionProps,
+  "code" | "refreshToken" | "newPassword"
+>;
+
 export type AuthIMSLoginObj = {
   id: string;
   status: UserStatus;
