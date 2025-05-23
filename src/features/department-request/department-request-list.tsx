@@ -302,7 +302,7 @@ export function DepartmentRequestForm({
               className="flex-1"
               isLoading={form.formState.isSubmitting}
               isLoadingLabel={
-                isEditMode ? "Updating category" : "Adding category..."
+                isEditMode ? "Updating Request" : "Adding Request..."
               }
               variant="imsPrimary"
               type="submit"
