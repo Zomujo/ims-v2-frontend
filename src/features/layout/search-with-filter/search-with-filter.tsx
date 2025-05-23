@@ -8,19 +8,31 @@ import FilterForms from "./fiter-form";
 import { actionButtonData } from "./search-with-filter.data";
 import { PAGE_ROUTES } from "@/lib/constant";
 import { useSessionData } from "@/hooks/useSessionData";
+import { UserRole } from "@features/shared/types/auth-action.types";
+import { useCallback } from "react";
 
 export default function SearchWithFilter() {
   const params = useParams();
   const isSlugs = !!params.slugs;
   const pathName = usePathname();
-  const { hasActionPermission } = useSessionData();
+  const { hasActionPermission, role } = useSessionData();
   const btnData =
     actionButtonData[isSlugs ? PAGE_ROUTES.ITEM_BATCHES : pathName];
+
+  const checkRole = useCallback(
+    (roles: UserRole[] | undefined) => {
+      if (!role) return false;
+      if (!roles?.length) return true;
+      return roles.includes(role);
+    },
+    [role],
+  );
 
   if (!btnData?.href) return null;
   const [pathname, query] = (btnData?.href ?? "").split("?");
 
   if (params.id) return null;
+
   return (
     <div className="relative flex w-full items-center gap-x-4 px-4 pt-1.5">
       <ImsSearchBar />
@@ -28,7 +40,8 @@ export default function SearchWithFilter() {
         <FilterForms />
       </ImsFilters>
       {!pathName.includes(PAGE_ROUTES.REPORTS) &&
-        hasActionPermission(btnData.permission ?? "") && (
+        hasActionPermission(btnData.permission ?? "") &&
+        checkRole(btnData.roles) && (
           <ButtonLink
             variant="imsPrimary"
             className="absolute top-1.5 right-0"

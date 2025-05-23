@@ -11,6 +11,7 @@ import {
   dateRangeFilter,
   itemStatusFilter,
   orderStatusFilter,
+  requestStatusFilter,
   salesStatusFilter,
   todaySalesFilters,
   userRoleFilter,
@@ -78,6 +79,9 @@ export default function FilterForms() {
         <Filters
           filters={[dateRangeFilter, userStatusFilter, userRoleFilter]}
         />
+      ),
+      [PAGE_ROUTES.DEPARTMENTS_REQUESTS.VIEW]: (
+        <Filters filters={[dateRangeFilter, requestStatusFilter]} />
       ),
     };
   };

@@ -24,7 +24,7 @@ export const ReportAccordion = ({
           <p> {title}</p>{" "}
           <span className="ml-1 flex h-[18px] w-[18px] items-center justify-center rounded-full bg-[#Fef3c7] text-xs font-medium">
             {" "}
-            6
+            {reportReference.length}
           </span>
         </div>
         <div className="ml-auto" onClick={() => setShowDropdown(!showDropdown)}>
