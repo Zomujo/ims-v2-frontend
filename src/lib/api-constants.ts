@@ -77,6 +77,7 @@ export const API_ENDPOINTS = {
   REPORTS: "/reports",
   REPORT: "/reports/:id",
   REPORT_DATA: "/reports/:id/data",
+  REPORT_SALES: "/reports/periodic_sales_report/data",
 
   // Sales
   SALES: "/sales",
