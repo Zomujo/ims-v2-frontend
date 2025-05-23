@@ -94,6 +94,8 @@ export const API_ENDPOINTS = {
   DEPARTMENT_REQUEST: "/department-requests/:id",
   DEPARTMENT_REQUESTS_ITEM: "/department-requests/item",
   DEPARTMENT_REQUEST_STATUS: "/department-requests/:id/status",
+  DEPARTMENT_ITEM_REQUESTS: "/item-requests",
+  DEPARTMENT_ITEM_REQUEST: "/item-requests/:id",
 
   // Complaint
   COMPLAINTS: "/complaints",
@@ -149,4 +151,5 @@ export const API_ENDPOINT_TAGS = {
   // Department Request
   DEPARTMENT_REQUESTS: "api-v1-department-requests",
   DEPARTMENT_REQUESTS_ITEM: "api-v1-department-requests-item",
+  DEPARTMENT_ITEM_REQUESTS: "api-v1-item-requests",
 } as const;

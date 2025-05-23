@@ -260,6 +260,7 @@ function ManageUsersSettingsForm({
       handleAuthSubmit={handleSubmit}
       RenderActions={
         <ImsButton
+          disabled={!form.formState.isValid || form.formState.isSubmitting}
           isLoading={form.formState.isSubmitting}
           isLoadingLabel={
             isEditMode ? "Updating user role..." : "Adding user..."

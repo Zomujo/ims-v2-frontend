@@ -108,7 +108,7 @@ export type AuthIMSUserProfile = {
   email: string;
   phoneNumber: string | null;
   departmentId: string | null;
-  role: string;
+  role: UserRole;
   permissions: string[];
   status: UserStatus;
   facility: {

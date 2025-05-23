@@ -3,6 +3,7 @@ import { PAGE_ROUTES } from "@/lib/constant";
 import {
   ItemOrderStatus,
   ITEMS_STATUS,
+  RequestStatus,
   StockAdjustmentStatus,
   StockAdjustmentType,
 } from "@features/shared/types/action.types";
@@ -56,6 +57,7 @@ export const actionButtonData = {
     href: PAGE_ROUTES.DEPARTMENTS_REQUESTS.CREATE,
     icon: "solar:box-bold-duotone",
     permission: `${PermissionModules.DEPARTMENT_REQUESTS}:${PermissionActions.WRITE}`,
+    roles: [UserRole.Pharmacist, UserRole.DepartmentAdmin],
   },
   [PAGE_ROUTES.SUPPLIERS.VIEW]: {
     label: "Add New Supplier",
@@ -227,4 +229,18 @@ export const todaySalesFilters = {
   type: "boolean" as const,
   options: [],
   defaultValue: false,
+};
+
+export const requestStatusFilter = {
+  key: "status",
+  label: "Status",
+  type: "radio" as const,
+  options: [
+    { label: "All", value: "" },
+    { label: "Accepted", value: RequestStatus.ACCEPTED },
+    { label: "Delivered", value: RequestStatus.DELIVERED },
+    { label: "Pending", value: RequestStatus.PENDING },
+    { label: "Cancelled", value: RequestStatus.CANCELLED },
+  ],
+  defaultValue: "",
 };

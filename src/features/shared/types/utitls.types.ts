@@ -33,6 +33,9 @@ export enum CRUDACTION {
   DEACTIVATE = "deactivate",
   ACTIVATE = "activate",
   STATUS = "status",
+  ACCEPT = "accept",
+  DECLINE = "cancel",
+  DELIVERED = "delivered",
 }
 
 export type CrudAction =
@@ -42,7 +45,10 @@ export type CrudAction =
   | "view"
   | "deactivate"
   | "activate"
-  | "status";
+  | "status"
+  | "accept"
+  | "cancel"
+  | "delivered";
 
 export enum ActiveDeactivedStatus {
   ACTIVE = "Active",
