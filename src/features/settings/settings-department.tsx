@@ -23,8 +23,11 @@ import { departmentSettingsSchema } from "./settigns.schemas";
 import { settingsDepartmentTableColumns } from "./settings.data";
 import { DepartmentFormProps } from "./settings.types";
 import useFetchData from "@features/shared/hooks/use-fetch-data";
+import { useSessionData } from "@/hooks/useSessionData";
+import { PermissionModules } from "@features/shared/types/auth-action.types";
 
 export function DepartmentManagementSettings() {
+  const { canWrite, canDelete } = useSessionData();
   const { data, loading } = useFetchData({ fetchFn: getDepartmentsAction });
   const departments = data?.data.rows ?? [];
   const {
@@ -73,11 +76,13 @@ export function DepartmentManagementSettings() {
             label: "edit",
             icon: "lucide:edit-2",
             action: () => handleEditBtnClicked(item),
+            hide: !canWrite(PermissionModules.DEPARTMENTS),
           },
           {
             label: "delete",
             icon: "solar:trash-bin-trash-line-duotone",
             action: () => handleDeleteBtnClicked(item),
+            hide: !canDelete(PermissionModules.DEPARTMENTS),
           },
         ]}
       >
@@ -139,6 +144,7 @@ function DepartmentForm({ defaultValues }: Readonly<DepartmentFormProps>) {
       }
       RenderActions={
         <ImsButton
+          disabled={!form.formState.isValid || form.formState.isSubmitting}
           isLoading={form.formState.isSubmitting}
           isLoadingLabel={
             defaultValues ? "Updating department..." : "Adding department..."

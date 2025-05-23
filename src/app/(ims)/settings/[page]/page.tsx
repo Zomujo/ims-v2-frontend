@@ -10,7 +10,10 @@ import {
   getRolesAction,
 } from "@/features/shared/actions/settings.actions";
 import SettingsSearchWithFilter from "@features/settings/settings-search-with-filter";
-import { checkServerPermission } from "@/lib/providers/server-permission-provider";
+import {
+  checkServerPermission,
+  checkServerWritePermission,
+} from "@/lib/providers/server-permission-provider";
 import { PermissionModules } from "@features/shared/types/auth-action.types";
 import { PermissionProvider } from "@/lib/providers/permission-provider";
 
@@ -25,6 +28,9 @@ export default async function SettingsPages({
   params,
 }: Readonly<SettingPages>) {
   const { page } = await params;
+  const hasPermission = await checkServerWritePermission(
+    page as PermissionModules,
+  );
   const SettingsPage =
     renderSettingsPage[page as keyof typeof renderSettingsPage] ??
     (() => <></>);
@@ -35,7 +41,7 @@ export default async function SettingsPages({
         freePass={["general", "security", "notifications"]}
       >
         <SettingsSearchWithFilter />
-        {pageWithDrawerUI.includes(page) && (
+        {pageWithDrawerUI.includes(page) && hasPermission && (
           <SettingsCreateButton
             state="create"
             label={createBtnLabel[page as keyof typeof createBtnLabel]}

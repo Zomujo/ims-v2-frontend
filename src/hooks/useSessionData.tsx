@@ -3,6 +3,7 @@ import {
   PermissionActions,
   PermissionModules,
 } from "@features/shared/types/auth-action.types";
+import { hasActionPermissionHelper } from "@/lib/utils/permissions.utils";
 
 export const useSessionData = () => {
   const { data: session, status } = useSession();
@@ -27,21 +28,8 @@ export const useSessionData = () => {
     return !!permissionKeys?.includes(permission);
   };
 
-  const hasActionPermission = (permissionToCheck: string) => {
-    if (!permissions) return false;
-
-    const [resource, actionToCheck] = permissionToCheck.split(":");
-
-    const matchingPermission = permissions.find((p) =>
-      p.startsWith(`${resource}:`),
-    );
-
-    if (!matchingPermission) return false;
-
-    const [, actions] = matchingPermission.split(":");
-
-    return actions.includes(actionToCheck);
-  };
+  const hasActionPermission = (permissionToCheck: string) =>
+    hasActionPermissionHelper(permissions, permissionToCheck);
 
   const canWrite = (module: PermissionModules) =>
     hasActionPermission(`${module}:${PermissionActions.WRITE}`);
