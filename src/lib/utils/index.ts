@@ -78,6 +78,7 @@ export const generateUrlWithQueryParams = (
     .forEach((key) => {
       searchParams.append(key as string, params[key] as string);
     });
+  console.log("Generated URL:", baseUrl + "?" + searchParams.toString());
   if (arrayParams) {
     const arraySearchParams = new URLSearchParams(arrayParams);
     arraySearchParams.forEach((value, key) => {

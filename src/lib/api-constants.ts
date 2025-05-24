@@ -2,6 +2,9 @@ export const API_ENDPOINTS = {
   // API Health Checks
   HEALTH: "/health",
 
+  // Dashboard
+  DASHBOARD_GENERAL: "/dashboard/general",
+
   // Notifications
   NOTIFICATIONS_STREAM: "/notifications/stream",
   NOTIFICATIONS: "/notifications",
@@ -104,6 +107,9 @@ export const API_ENDPOINTS = {
 export const API_ENDPOINT_TAGS = {
   // API Health Checks
   HEALTH: "api-v1-health",
+
+  // Dashboard
+  DASHBOARD_GENERAL: "api-v1-dashboard-general",
 
   // Notifications
   NOTIFICATIONS_STREAM: "api-v1-notifications-stream",

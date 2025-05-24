@@ -22,6 +22,8 @@ export type GenerateQueryParams = Partial<{
   dateRange: DateRangeQueryOptions;
   todaySales: boolean;
   status: "PAID" | "UNPAID" | "LOW" | "STOCKED" | "OUT_OF_STOCK";
+  startDate: string;
+  endDate: string;
   [key: string]: string | number | boolean;
 }>;
 
