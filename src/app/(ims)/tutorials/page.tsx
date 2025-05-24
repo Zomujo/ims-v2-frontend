@@ -131,7 +131,7 @@ const Tutorials = () => {
         </div>
 
         {isModalOpen && selectedVideo && (
-          <div className="fixed inset-0 z-[50] ml-64 flex items-center justify-center bg-black/75 p-4">
+          <div className="fixed inset-0 z-[50] mt-10 ml-64 flex items-center justify-center bg-black/75 p-4">
             <div className="relative w-full max-w-4xl rounded-lg bg-white">
               <button
                 onClick={closeVideoModal}

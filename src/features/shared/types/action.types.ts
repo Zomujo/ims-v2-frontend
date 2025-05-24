@@ -774,3 +774,10 @@ export type PaginatedResponse<T> = {
   statusCode: number;
   message: string;
 };
+
+export type LogComplainDto = {
+  feature: string;
+  complaint: string;
+  dateTimeIssueOccured: string;
+  errorMessage?: string;
+};
