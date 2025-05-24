@@ -64,6 +64,11 @@ const fetchApi = async <T>({
 
   if (!response.ok) {
     const errorData = await response.json();
+
+    if (errorData.message === "TOKEN_EXPIRED" && errorData.statusCode === 401) {
+      redirect(AUTH_PAGE_ROUTES.LOG_IN);
+    }
+
     throw new Error(JSON.stringify(errorData as IMSApiErrorResponse));
   }
 

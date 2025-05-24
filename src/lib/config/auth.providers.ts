@@ -1,9 +1,6 @@
 import CredentialsProvider from "next-auth/providers/credentials";
 import { AUTH_OPTIONS_CONSTANTS } from "./auth.config";
-import {
-  authCreateAccountAction,
-  authLoginAction,
-} from "@/features/shared/actions/auth.action";
+import { authLoginAction } from "@/features/shared/actions/auth.action";
 
 export const LoginCredentialsProvider = () =>
   CredentialsProvider({
@@ -23,29 +20,29 @@ export const LoginCredentialsProvider = () =>
     },
   });
 
-export const CreateAccountCredentialsProvider = () =>
-  CredentialsProvider({
-    name: "Credentials",
-    id: AUTH_OPTIONS_CONSTANTS.CREATE_ACCOUNT,
-    credentials: {
-      email: {
-        type: "email",
-      },
-      password: {
-        type: "password",
-      },
-      fullName: {
-        type: "text",
-      },
-      facilityName: {
-        type: "text",
-      },
-      facilityPassword: {
-        type: "text",
-      },
-    },
-    async authorize(credentials) {
-      if (!credentials) return null;
-      return await authCreateAccountAction(credentials);
-    },
-  });
+// export const CreateAccountCredentialsProvider = () =>
+//   CredentialsProvider({
+//     name: "Credentials",
+//     id: AUTH_OPTIONS_CONSTANTS.CREATE_ACCOUNT,
+//     credentials: {
+//       email: {
+//         type: "email",
+//       },
+//       password: {
+//         type: "password",
+//       },
+//       fullName: {
+//         type: "text",
+//       },
+//       facilityName: {
+//         type: "text",
+//       },
+//       facilityPassword: {
+//         type: "text",
+//       },
+//     },
+//     async authorize(credentials) {
+//       if (!credentials) return null;
+//       return await authCreateAccountAction(credentials);
+//     },
+//   });
