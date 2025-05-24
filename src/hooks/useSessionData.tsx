@@ -15,6 +15,8 @@ export const useSessionData = () => {
 
   const fullName = user?.fullName;
 
+  const firstName = fullName ? fullName.split(" ")[0] : "";
+
   const facilityName = user?.facility?.name;
 
   const role = user?.role;
@@ -50,5 +52,6 @@ export const useSessionData = () => {
     hasActionPermission,
     canWrite,
     canDelete,
+    firstName,
   };
 };
