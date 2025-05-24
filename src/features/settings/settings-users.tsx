@@ -20,7 +20,10 @@ import { ImsSelect } from "../shared/components/ims-select";
 import useHookForm from "../shared/hooks/use-hook-form";
 import useImsSearchParams from "../shared/hooks/use-ims-search-params";
 import usePageCRUD from "../shared/hooks/use-page-crud";
-import { AuthIMSUserProfile } from "../shared/types/auth-action.types";
+import {
+  AuthIMSUserProfile,
+  PermissionModules,
+} from "../shared/types/auth-action.types";
 import {
   FacilityUsers,
   USER_STATUS,
@@ -36,6 +39,7 @@ import {
 import { defaultPermissions } from "./settings.data";
 import { ManageUsersSettingsProps } from "./settings.types";
 import useFetchData from "@features/shared/hooks/use-fetch-data";
+import { useSessionData } from "@/hooks/useSessionData";
 
 type ManageUsersSettingsFormProps = {
   defaultValues?: z.infer<typeof newUserSettingsSchema> | null;
@@ -45,6 +49,7 @@ export default function ManageUsersSettings({
   departments,
   roles,
 }: Readonly<ManageUsersSettingsProps>) {
+  const { canWrite } = useSessionData();
   const { data, loading, refetch } = useFetchData({ fetchFn: getUsersAction });
   const users = data?.data.rows ?? [];
   const [modalActionProperties, setModalActionProperties] = useState({
@@ -146,6 +151,7 @@ export default function ManageUsersSettings({
             label: "Edit Role",
             icon: "lucide:edit-2",
             action: () => handleEditBtnClicked(item),
+            hide: !canWrite(PermissionModules.USERS),
           },
           isActive || isDeclined
             ? {
@@ -153,6 +159,7 @@ export default function ManageUsersSettings({
                 icon: "material-symbols:delete-outline",
                 type: "destructive",
                 action: () => handleAction(CRUDACTION.DEACTIVATE, item.id),
+                hide: !canWrite(PermissionModules.USERS),
               }
             : null,
           isDeactivated
@@ -161,6 +168,7 @@ export default function ManageUsersSettings({
                 icon: "solar:power-bold-duotone",
                 type: "",
                 action: () => handleAction(CRUDACTION.ACTIVATE, item.id),
+                hide: !canWrite(PermissionModules.USERS),
               }
             : null,
         ];

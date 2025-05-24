@@ -10,9 +10,16 @@ import {
   getRolesAction,
 } from "@/features/shared/actions/settings.actions";
 import SettingsSearchWithFilter from "@features/settings/settings-search-with-filter";
-import { checkServerPermission } from "@/lib/providers/server-permission-provider";
+import {
+  checkServerPermission,
+  checkServerWritePermission,
+} from "@/lib/providers/server-permission-provider";
 import { PermissionModules } from "@features/shared/types/auth-action.types";
 import { PermissionProvider } from "@/lib/providers/permission-provider";
+import {
+  Department,
+  UserRoles,
+} from "@features/shared/types/settings-action.types";
 
 type SettingPages = {
   params: Promise<{ page: string }>;
@@ -25,6 +32,9 @@ export default async function SettingsPages({
   params,
 }: Readonly<SettingPages>) {
   const { page } = await params;
+  const hasPermission = await checkServerWritePermission(
+    page as PermissionModules,
+  );
   const SettingsPage =
     renderSettingsPage[page as keyof typeof renderSettingsPage] ??
     (() => <></>);
@@ -35,7 +45,7 @@ export default async function SettingsPages({
         freePass={["general", "security", "notifications"]}
       >
         <SettingsSearchWithFilter />
-        {pageWithDrawerUI.includes(page) && (
+        {pageWithDrawerUI.includes(page) && hasPermission && (
           <SettingsCreateButton
             state="create"
             label={createBtnLabel[page as keyof typeof createBtnLabel]}
@@ -92,6 +102,9 @@ async function DepartmentSettings() {
 
 async function UsersSettings() {
   const hasPermission = await checkServerPermission(PermissionModules.USERS);
+  const hasWritePermission = await checkServerWritePermission(
+    PermissionModules.USERS,
+  );
 
   if (!hasPermission) {
     return (
@@ -101,14 +114,17 @@ async function UsersSettings() {
     );
   }
 
-  const [allDepartments, allRoles] = await Promise.all([
-    getDepartmentsAction({ pageSize: "0" }),
-    getRolesAction({ pageSize: "0" }),
-  ]);
-  return (
-    <ManageUsersSettings
-      departments={allDepartments.data.rows}
-      roles={allRoles.data}
-    />
-  );
+  let departments: Department[] = [];
+  let roles: UserRoles[] = [];
+
+  if (hasWritePermission) {
+    const [allDepartments, allRoles] = await Promise.all([
+      getDepartmentsAction({ pageSize: "0" }),
+      getRolesAction({ pageSize: "0" }),
+    ]);
+    departments = allDepartments.data.rows;
+    roles = allRoles.data;
+  }
+
+  return <ManageUsersSettings departments={departments} roles={roles} />;
 }
