@@ -10,10 +10,6 @@ export default async function page() {
     PermissionModules.DEPARTMENT_REQUESTS,
   );
 
-  const hasItemsPermission = await checkServerPermission(
-    PermissionModules.ITEMS,
-  );
-
   if (!hasPermission) {
     return (
       <PermissionProvider permission={PermissionModules.DEPARTMENT_REQUESTS}>
@@ -22,6 +18,6 @@ export default async function page() {
     );
   }
 
-  const items = hasItemsPermission ? await getItemsNoPaginate() : [];
+  const items = await getItemsNoPaginate();
   return <DepartmentRequestList items={items ?? []} />;
 }

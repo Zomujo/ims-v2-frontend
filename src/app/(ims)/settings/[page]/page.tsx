@@ -16,6 +16,10 @@ import {
 } from "@/lib/providers/server-permission-provider";
 import { PermissionModules } from "@features/shared/types/auth-action.types";
 import { PermissionProvider } from "@/lib/providers/permission-provider";
+import {
+  Department,
+  UserRoles,
+} from "@features/shared/types/settings-action.types";
 
 type SettingPages = {
   params: Promise<{ page: string }>;
@@ -98,6 +102,9 @@ async function DepartmentSettings() {
 
 async function UsersSettings() {
   const hasPermission = await checkServerPermission(PermissionModules.USERS);
+  const hasWritePermission = await checkServerWritePermission(
+    PermissionModules.USERS,
+  );
 
   if (!hasPermission) {
     return (
@@ -107,14 +114,17 @@ async function UsersSettings() {
     );
   }
 
-  const [allDepartments, allRoles] = await Promise.all([
-    getDepartmentsAction({ pageSize: "0" }),
-    getRolesAction({ pageSize: "0" }),
-  ]);
-  return (
-    <ManageUsersSettings
-      departments={allDepartments.data.rows}
-      roles={allRoles.data}
-    />
-  );
+  let departments: Department[] = [];
+  let roles: UserRoles[] = [];
+
+  if (hasWritePermission) {
+    const [allDepartments, allRoles] = await Promise.all([
+      getDepartmentsAction({ pageSize: "0" }),
+      getRolesAction({ pageSize: "0" }),
+    ]);
+    departments = allDepartments.data.rows;
+    roles = allRoles.data;
+  }
+
+  return <ManageUsersSettings departments={departments} roles={roles} />;
 }
