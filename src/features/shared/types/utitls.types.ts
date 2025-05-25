@@ -5,7 +5,7 @@ export type HandleRequestState = {
   res: Promise<Record<string, unknown>>;
 };
 
-type DateRangeQueryOptions =
+export type DateRangeQueryOptions =
   | "today"
   | "this_week"
   | "this_month"

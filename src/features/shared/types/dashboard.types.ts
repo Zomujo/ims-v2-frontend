@@ -32,3 +32,11 @@ export interface GeneralResponse {
   soonToExpireItems: MetricData;
   itemsReturned: MetricData;
 }
+
+export interface TopLeastSellingItemsResponse {
+  average: number;
+  items: {
+    names: string[];
+    quantities: number[];
+  };
+}
