@@ -21,6 +21,7 @@ type ImsSelectProps = {
   onChange?: (value: string) => void;
   value?: string;
   disabled?: boolean;
+  showNone?: boolean;
 };
 
 export function ImsSelect({
@@ -30,6 +31,7 @@ export function ImsSelect({
   defaultValue,
   disabled,
   onChange,
+  showNone = true,
   ...props
 }: Readonly<ImsSelectProps>) {
   return (
@@ -44,7 +46,7 @@ export function ImsSelect({
       </SelectTrigger>
       <SelectContent>
         <SelectGroup>
-          <SelectItem value="none">None</SelectItem>
+          {showNone && <SelectItem value="none">None</SelectItem>}
           {options.map((option) => (
             <SelectItem key={option.value} value={option.value}>
               {option.label}
