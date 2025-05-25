@@ -60,7 +60,7 @@ const DashboardDailySales = () => {
       >
         <ChartContainer
           config={dailySalesConfig}
-          className="aspect-auto h-[250px] w-full"
+          className="aspect-auto h-[400px] w-full"
         >
           {!isSalesLoading ? (
             <AreaChart data={chartData}>
@@ -109,7 +109,7 @@ const DashboardDailySales = () => {
               />
             </AreaChart>
           ) : (
-            <Skeleton className="h-52 w-[70vw]" />
+            <Skeleton className="h-96 w-[70vw]" />
           )}
         </ChartContainer>
       </DashboardBaseCard>
