@@ -137,7 +137,7 @@ export default function DashboardSellingItems() {
             ) : (
               <div className="flex h-[20vw] items-center justify-center">
                 <p className="flex gap-2">
-                  <Loader2  className="animate-spin"/> loading....
+                  <Loader2 className="animate-spin" /> loading....
                 </p>
               </div>
             )}
@@ -198,7 +198,7 @@ export default function DashboardSellingItems() {
             ) : (
               <div className="flex h-[20vw] items-center justify-center">
                 <p className="flex gap-2">
-                  <Loader2 className="animate-spin"/> loading....
+                  <Loader2 className="animate-spin" /> loading....
                 </p>
               </div>
             )}

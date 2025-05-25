@@ -5,14 +5,15 @@ import { API_ENDPOINT_TAGS, API_ENDPOINTS } from "@/lib/api-constants";
 import { imsApiWithAuth } from "@features/shared/actions/ims-api.action";
 import { ApiSuccessResponseDto } from "@features/shared/types/action.types";
 import {
-  GeneralRequest,
   GeneralResponse,
   TopLeastSellingItemsResponse,
 } from "@features/shared/types/dashboard.types";
 import { generateUrlWithQueryParams } from "@/lib/utils";
-import { GenerateQueryParams } from "../types/utitls.types";
+import { GenerateQueryParams } from "@features/shared/types/utitls.types";
 
-export async function getGeneralOverview(params: GeneralRequest) {
+export async function getGeneralOverview(
+  params: Pick<GenerateQueryParams, "startDate" | "endDate">,
+) {
   const fetchOptions: FetchApi = {
     url: generateUrlWithQueryParams(API_ENDPOINTS.DASHBOARD_GENERAL, params),
     method: "GET",

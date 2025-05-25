@@ -4,7 +4,7 @@ import DashboardSellingItems from "./dashboardSellingItems";
 
 const DashboardOverview = () => {
   return (
-    <div>
+    <div className="overflow-scroll">
       <DashboardGeneral />
       <DashboardSellingItems />
     </div>
