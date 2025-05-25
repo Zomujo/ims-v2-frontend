@@ -35,3 +35,12 @@ export interface GeneralResponse {
   soonToExpireItems: MetricData;
   itemsReturned: MetricData;
 }
+
+export interface Trend {
+  dates: string[]; // ISO format date strings
+  quantities: number[];
+}
+
+export interface SalesTrend {
+  trend: Trend;
+}

@@ -5,13 +5,14 @@ export type HandleRequestState = {
   res: Promise<Record<string, unknown>>;
 };
 
-type DateRangeQueryOptions =
+export type DateRangeQueryOptions =
   | "today"
   | "this_week"
   | "this_month"
   | "last_month"
   | "this_year"
   | "last_three_month";
+
 export type GenerateQueryParams = Partial<{
   id: string;
   search: string;
