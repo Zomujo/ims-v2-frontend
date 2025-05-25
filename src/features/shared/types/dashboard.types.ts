@@ -3,7 +3,9 @@ export interface GeneralRequest {
   endDate: string;
 }
 
-export type ChangeType = "INCREASE" | "DECREASE" | "NO_CHANGE";
+export type ChangeType = "INCREASE" | "DECREASE" | "NONE";
+
+export type StockLevel = "LOW_STOCK" | "OUT_OF_STOCK" | "HIGH_STOCK";
 
 export interface MetricData {
   total: number;
@@ -14,6 +16,7 @@ export interface MetricData {
 export interface StockItem {
   itemName: string;
   quantity: number;
+  stockLevel: StockLevel;
 }
 
 export interface ItemStockLevel extends MetricData {

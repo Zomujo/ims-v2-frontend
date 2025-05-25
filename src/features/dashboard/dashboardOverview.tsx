@@ -3,7 +3,7 @@ import DashboardGeneral from "@features/dashboard/dashboardGeneral";
 
 const DashboardOverview = () => {
   return (
-    <div>
+    <div className="overflow-scroll">
       <DashboardGeneral />
     </div>
   );

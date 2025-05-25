@@ -8,7 +8,9 @@ export default function ErrorPage({
 }>) {
   return (
     <section className="relative w-full rounded-2xl bg-white p-8">
-      <h1 className="text-4xl font-bold text-red-600">Error</h1>
+      <h1 className="text-4xl font-bold text-red-600">
+        Error - {error.message}
+      </h1>
       <p className="mt-4 text-lg text-gray-700">
         An error occurred while loading the page.
       </p>

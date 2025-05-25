@@ -78,7 +78,6 @@ export const generateUrlWithQueryParams = (
     .forEach((key) => {
       searchParams.append(key as string, params[key] as string);
     });
-  console.log("Generated URL:", baseUrl + "?" + searchParams.toString());
   if (arrayParams) {
     const arraySearchParams = new URLSearchParams(arrayParams);
     arraySearchParams.forEach((value, key) => {
@@ -133,3 +132,51 @@ export const isStepValid = (
     return value !== undefined && value !== null && value !== "";
   });
 };
+
+/**
+ * Formats a value based on the specified type
+ * @param value - The value to format (string or number)
+ * @param type - The type of formatting to apply: 'number', 'percentage', or 'money'
+ * @returns Formatted string representation of the value
+ */
+export function formatValue(
+  value: string | number,
+  type: "number" | "percentage" | "money",
+): string {
+  const numValue = typeof value === "string" ? parseFloat(value) : value;
+
+  if (isNaN(numValue)) {
+    return "—";
+  }
+
+  switch (type) {
+    case "number":
+      return formatNumberWithAbbreviation(numValue);
+
+    case "percentage":
+      return `${numValue}%`;
+
+    case "money":
+      return `GHC ${formatNumberWithAbbreviation(numValue)}`;
+
+    default:
+      return String(numValue);
+  }
+}
+
+/**
+ * Helper function to format numbers with k (thousands) and M (millions) abbreviations
+ * @param value - The number to format
+ * @returns Formatted string with appropriate abbreviation
+ */
+function formatNumberWithAbbreviation(value: number): string {
+  const absValue = Math.abs(value);
+
+  if (absValue >= 1000000) {
+    return `${(value / 1000000).toFixed(1)}M`;
+  } else if (absValue >= 1000) {
+    return `${(value / 1000).toFixed(1)}k`;
+  } else {
+    return value.toString();
+  }
+}
