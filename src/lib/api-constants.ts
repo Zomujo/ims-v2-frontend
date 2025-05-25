@@ -4,6 +4,7 @@ export const API_ENDPOINTS = {
 
   // Dashboard
   DASHBOARD_GENERAL: "/dashboard/general",
+  DASHBOARD_SALES_TREND: "/dashboard/sales/trend",
 
   // Notifications
   NOTIFICATIONS_STREAM: "/notifications/stream",
@@ -110,6 +111,7 @@ export const API_ENDPOINT_TAGS = {
 
   // Dashboard
   DASHBOARD_GENERAL: "api-v1-dashboard-general",
+  DASHBOARD_SALES_TREND: "api-v1-dashboard-sales-trend",
 
   // Notifications
   NOTIFICATIONS_STREAM: "api-v1-notifications-stream",

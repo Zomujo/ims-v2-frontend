@@ -106,7 +106,7 @@ export const categoriesFilter = {
   defaultValue: [],
 };
 
-enum DATE_RANGE {
+export enum DATE_RANGE {
   ALL = "",
   TODAY = "today",
   THIS_WEEK = "this_week",
