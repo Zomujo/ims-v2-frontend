@@ -1,30 +1,18 @@
 "use client";
 
-import { ChevronDown } from "lucide-react";
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts";
-import { Card, CardContent, CardHeader, CardTitle } from "@/features/ui/card";
 import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
 } from "@/features/ui/chart";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuTrigger,
-} from "@features/ui/dropdown-menu";
 import React, { useEffect, useState } from "react";
-import { Button } from "@features/ui/button";
-import {
-  DATE_RANGE,
-  dateRangeFilter,
-} from "@features/layout/search-with-filter/search-with-filter.data";
+import { DATE_RANGE } from "@features/layout/search-with-filter/search-with-filter.data";
 import { getSalesTrend } from "@features/shared/actions/dashboard.actions";
 import { DateRangeQueryOptions } from "@features/shared/types/utitls.types";
 import { Skeleton } from "../ui/skeleton";
+import DashboardBaseCard from "@features/dashboard/dashboardBaseCard";
 
 const chartConfig = {
   desktop: {
@@ -72,94 +60,59 @@ export default function DashboardSalesTrend() {
   }, [selectedDateRange]);
 
   return (
-    <Card className="mt-8">
-      <CardHeader>
-        <CardTitle className="flex justify-between">
-          <span className="text-2xl font-bold">Sales Trend</span>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="flex items-center gap-2">
-                <span>
-                  {dateRangeFilter.options.find(
-                    ({ value }) => value === selectedDateRange,
-                  )?.label || ""}
-                </span>
-                <ChevronDown className="h-4 w-4 opacity-50" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="w-48">
-              <DropdownMenuRadioGroup
-                value={selectedDateRange}
-                onValueChange={(value) =>
-                  setSelectedDateRange(value as DATE_RANGE)
-                }
-              >
-                {dateRangeFilter.options
-                  .slice(1)
-                  .map(({ value, label: radioLabel }) => (
-                    <DropdownMenuRadioItem
-                      key={value}
-                      value={value}
-                      className="cursor-pointer"
-                    >
-                      {radioLabel}
-                    </DropdownMenuRadioItem>
-                  ))}
-              </DropdownMenuRadioGroup>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        {isLoading ? (
-          <div className="space-y-3">
-            <Skeleton className="h-[450px] w-full rounded-lg" />
-            <div className="flex justify-between">
-              <Skeleton className="h-4 w-20" />
-              <Skeleton className="h-4 w-20" />
-              <Skeleton className="h-4 w-20" />
-              <Skeleton className="h-4 w-20" />
-              <Skeleton className="h-4 w-20" />
-            </div>
+    <DashboardBaseCard
+      title={"Sales Trend"}
+      selectedValue={selectedDateRange}
+      setSelectedValue={setSelectedDateRange}
+    >
+      {isLoading ? (
+        <div className="space-y-3">
+          <Skeleton className="h-[450px] w-full rounded-lg" />
+          <div className="flex justify-between">
+            <Skeleton className="h-4 w-20" />
+            <Skeleton className="h-4 w-20" />
+            <Skeleton className="h-4 w-20" />
+            <Skeleton className="h-4 w-20" />
+            <Skeleton className="h-4 w-20" />
           </div>
-        ) : (
-          <ChartContainer className="max-h-[450px] w-full" config={chartConfig}>
-            <AreaChart
-              accessibilityLayer
-              data={chartData}
-              margin={{
-                left: 12,
-                right: 12,
-              }}
-            >
-              <CartesianGrid
-                vertical={false}
-                strokeDasharray="3 3"
-                style={{ stroke: "#c2c9cf", strokeWidth: 1 }}
-              />
+        </div>
+      ) : (
+        <ChartContainer className="max-h-[450px] w-full" config={chartConfig}>
+          <AreaChart
+            accessibilityLayer
+            data={chartData}
+            margin={{
+              left: 12,
+              right: 12,
+            }}
+          >
+            <CartesianGrid
+              vertical={false}
+              strokeDasharray="3 3"
+              style={{ stroke: "#c2c9cf", strokeWidth: 1 }}
+            />
 
-              <YAxis tickLine={false} axisLine={false} />
-              <XAxis
-                dataKey="date"
-                tickLine={false}
-                axisLine={false}
-                tickMargin={8}
-              />
-              <ChartTooltip
-                cursor={false}
-                content={<ChartTooltipContent indicator="dot" hideLabel />}
-              />
-              <Area
-                dataKey="quantity"
-                type="linear"
-                fill="#CCECFF"
-                fillOpacity={0.4}
-                stroke="#42B8FF"
-              />
-            </AreaChart>
-          </ChartContainer>
-        )}
-      </CardContent>
-    </Card>
+            <YAxis tickLine={false} axisLine={false} />
+            <XAxis
+              dataKey="date"
+              tickLine={false}
+              axisLine={false}
+              tickMargin={8}
+            />
+            <ChartTooltip
+              cursor={false}
+              content={<ChartTooltipContent indicator="dot" hideLabel />}
+            />
+            <Area
+              dataKey="quantity"
+              type="linear"
+              fill="#CCECFF"
+              fillOpacity={0.4}
+              stroke="#42B8FF"
+            />
+          </AreaChart>
+        </ChartContainer>
+      )}
+    </DashboardBaseCard>
   );
 }
