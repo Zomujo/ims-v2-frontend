@@ -36,6 +36,15 @@ export interface GeneralResponse {
   itemsReturned: MetricData;
 }
 
+export interface Trend {
+  dates: string[]; // ISO format date strings
+  quantities: number[];
+}
+
+export interface SalesTrend {
+  trend: Trend;
+}
+
 export interface TopLeastSellingItemsResponse {
   average: number;
   items: {

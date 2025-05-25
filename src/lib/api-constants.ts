@@ -6,6 +6,7 @@ export const API_ENDPOINTS = {
   DASHBOARD_GENERAL: "/dashboard/general",
   DASHBOARD_TOP_SELLING_ITEMS: "/dashboard/items/top-selling",
   DASHBOARD_LEAST_SELLING_ITEMS: "/dashboard/items/least-selling",
+  DASHBOARD_SALES_TREND: "/dashboard/sales/trend",
 
   // Notifications
   NOTIFICATIONS_STREAM: "/notifications/stream",
@@ -114,6 +115,7 @@ export const API_ENDPOINT_TAGS = {
   DASHBOARD_GENERAL: "api-v1-dashboard-general",
   DASHBOARD_TOP_SELLING_ITEMS: "api-v1-dashboard-items-top-selling",
   DASHBOARD_LEAST_SELLING_ITEMS: "api-v1-dashboard-items-least-selling",
+  DASHBOARD_SALES_TREND: "api-v1-dashboard-sales-trend",
 
   // Notifications
   NOTIFICATIONS_STREAM: "api-v1-notifications-stream",

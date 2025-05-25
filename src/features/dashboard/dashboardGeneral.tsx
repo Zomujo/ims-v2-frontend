@@ -33,6 +33,7 @@ import {
   ChartTooltipContent,
 } from "@features/ui/chart";
 import { CartesianGrid, Line, LineChart, ResponsiveContainer } from "recharts";
+import { Skeleton } from "@features/ui/skeleton";
 
 const stockLevelCategories = [
   {
@@ -99,8 +100,11 @@ const DashboardGeneral = () => {
     from: threeMonthsAgo,
     to: today,
   });
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
   useEffect(() => {
     const fetchGeneralOverview = async () => {
+      setIsLoading(true);
       const generalResponse = await getGeneralOverview({
         endDate: date.to.toISOString(),
         startDate: date.from?.toISOString(),
@@ -108,6 +112,7 @@ const DashboardGeneral = () => {
       if (generalResponse) {
         setData(generalResponse);
       }
+      setIsLoading(false);
     };
     void fetchGeneralOverview();
   }, [date]);
@@ -164,78 +169,87 @@ const DashboardGeneral = () => {
             type: data?.itemStockLevel.changeType ?? "NONE",
             value: data?.itemStockLevel.percentageChange ?? 0,
           }}
+          isLoading={isLoading}
         >
-          <span className="font-medium text-gray-500">Total Stock</span>
-          <div className="mt-6">
-            <div className="flex w-full">
-              {stockLevelCategories.map(({ bgColor, label, value }) => (
-                <Progress
-                  key={label}
-                  value={stockLevelPercentage(value as StockLevel)}
-                  filler={true}
-                  className={cn(bgColor)}
-                  style={{
-                    width: `${stockLevelPercentage(value as StockLevel)}%`,
-                  }}
-                />
-              ))}
-            </div>
-            <div className="mt-4 flex justify-between">
-              {stockLevelCategories.map(({ bgColor, label }) => (
-                <div key={label} className="flex items-center gap-x-0.5">
-                  <div className={cn("h-3 w-3 rounded-lg", bgColor)}></div>
-                  <span>{label}</span>
+          {isLoading ? (
+            <StockLevelCardSkeleton />
+          ) : (
+            <>
+              <span className="font-medium text-gray-500">Total Stock</span>
+              <div className="mt-6">
+                <div className="flex w-full">
+                  {stockLevelCategories.map(({ bgColor, label, value }) => (
+                    <Progress
+                      key={label}
+                      value={stockLevelPercentage(value as StockLevel)}
+                      filler={true}
+                      className={cn(bgColor)}
+                      style={{
+                        width: `${stockLevelPercentage(value as StockLevel)}%`,
+                      }}
+                    />
+                  ))}
                 </div>
-              ))}
-            </div>
-            <div className="text-info-blue bg-info-blue-light mt-4 w-fit rounded-2xl px-3 py-2 text-sm">
-              Stock DOH: 15 days
-            </div>
-            <div className="mt-6">
-              <Tabs defaultValue="account">
-                <TabsList className="grid grid-cols-2">
-                  <TabsTrigger value="LOW_STOCK">Low stock</TabsTrigger>
-                  <TabsTrigger value="OUT_OF_STOCK">Out of stock</TabsTrigger>
-                </TabsList>
-                <TabsContent value="LOW_STOCK">
-                  <div className="space-y-3">
-                    {lowStockItems.map(({ quantity, itemName }) => (
-                      <div
-                        key={`${itemName}-${quantity}`}
-                        className="flex items-center justify-between"
-                      >
-                        <div className="flex items-center gap-x-0.5">
-                          <span className="h-3.5 w-1.5 rounded-md bg-[#E36D6A]"></span>
-                          <span className="text-gray-600">{itemName}</span>
-                        </div>
-                        <span className="font-medium text-[#111111]">
-                          {quantity}
-                        </span>
+                <div className="mt-4 flex justify-between">
+                  {stockLevelCategories.map(({ bgColor, label }) => (
+                    <div key={label} className="flex items-center gap-x-0.5">
+                      <div className={cn("h-3 w-3 rounded-lg", bgColor)}></div>
+                      <span>{label}</span>
+                    </div>
+                  ))}
+                </div>
+                <div className="text-info-blue bg-info-blue-light mt-4 w-fit rounded-2xl px-3 py-2 text-sm">
+                  Stock DOH: 15 days
+                </div>
+                <div className="mt-6">
+                  <Tabs defaultValue="account">
+                    <TabsList className="grid grid-cols-2">
+                      <TabsTrigger value="LOW_STOCK">Low stock</TabsTrigger>
+                      <TabsTrigger value="OUT_OF_STOCK">
+                        Out of stock
+                      </TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="LOW_STOCK">
+                      <div className="space-y-3">
+                        {lowStockItems.map(({ quantity, itemName }) => (
+                          <div
+                            key={`${itemName}-${quantity}`}
+                            className="flex items-center justify-between"
+                          >
+                            <div className="flex items-center gap-x-0.5">
+                              <span className="h-3.5 w-1.5 rounded-md bg-[#E36D6A]"></span>
+                              <span className="text-gray-600">{itemName}</span>
+                            </div>
+                            <span className="font-medium text-[#111111]">
+                              {quantity}
+                            </span>
+                          </div>
+                        ))}
                       </div>
-                    ))}
-                  </div>
-                </TabsContent>
-                <TabsContent value="OUT_OF_STOCK">
-                  <div className="space-y-3">
-                    {outOfStockItems.map(({ quantity, itemName }) => (
-                      <div
-                        key={`${itemName}-${quantity}`}
-                        className="flex items-center justify-between"
-                      >
-                        <div className="flex items-center gap-x-0.5">
-                          <span className="h-3.5 w-1.5 rounded-md bg-[#E36D6A]"></span>
-                          <span className="text-gray-600">{itemName}</span>
-                        </div>
-                        <span className="font-medium text-[#111111]">
-                          {quantity}
-                        </span>
+                    </TabsContent>
+                    <TabsContent value="OUT_OF_STOCK">
+                      <div className="space-y-3">
+                        {outOfStockItems.map(({ quantity, itemName }) => (
+                          <div
+                            key={`${itemName}-${quantity}`}
+                            className="flex items-center justify-between"
+                          >
+                            <div className="flex items-center gap-x-0.5">
+                              <span className="h-3.5 w-1.5 rounded-md bg-[#E36D6A]"></span>
+                              <span className="text-gray-600">{itemName}</span>
+                            </div>
+                            <span className="font-medium text-[#111111]">
+                              {quantity}
+                            </span>
+                          </div>
+                        ))}
                       </div>
-                    ))}
-                  </div>
-                </TabsContent>
-              </Tabs>
-            </div>
-          </div>
+                    </TabsContent>
+                  </Tabs>
+                </div>
+              </div>
+            </>
+          )}
         </BaseCard>
         {chartCardsData.map(({ title, key, chartLabel }) => (
           <BaseCard
@@ -250,15 +264,20 @@ const DashboardGeneral = () => {
               value: data?.[key as keyof GeneralResponse].percentageChange ?? 0,
             }}
             className="pb-0"
+            isLoading={isLoading}
           >
-            <div className="mt-5">
-              <Chart
-                label={chartLabel}
-                color={getChartColor(
-                  data?.[key as keyof GeneralResponse].changeType ?? "NONE",
-                )}
-              />
-            </div>
+            {isLoading ? (
+              <ChartSkeleton />
+            ) : (
+              <div className="mt-5">
+                <Chart
+                  label={chartLabel}
+                  color={getChartColor(
+                    data?.[key as keyof GeneralResponse].changeType ?? "NONE",
+                  )}
+                />
+              </div>
+            )}
           </BaseCard>
         ))}
         <BaseCard
@@ -273,7 +292,15 @@ const DashboardGeneral = () => {
           }}
           className="pb-0"
         >
-          <div className="mt-5">List here</div>
+          {isLoading ? (
+            <div className="mt-5 space-y-2">
+              <Skeleton className="h-6 w-full" />
+              <Skeleton className="h-6 w-full" />
+              <Skeleton className="h-6 w-full" />
+            </div>
+          ) : (
+            <div className="mt-5">List here</div>
+          )}
         </BaseCard>
       </div>
     </div>
@@ -352,6 +379,7 @@ type BaseCardProps = {
     value: number;
   };
   className?: string;
+  isLoading?: boolean;
 };
 
 export const BaseCard = ({
@@ -360,6 +388,7 @@ export const BaseCard = ({
   totalData,
   change,
   className,
+  isLoading = false,
 }: BaseCardProps) => {
   return (
     <Card className={cn("w-full gap-0", className)}>
@@ -369,35 +398,45 @@ export const BaseCard = ({
         </CardTitle>
       </CardHeader>
       <CardContent className="mt-1">
-        <div className="flex gap-1">
-          <span className="text-4xl font-bold">
-            {formatValue(totalData.total, totalData.type)}
-          </span>
-          {change && (
-            <div
-              className={cn(
-                "flex items-center gap-x-1 self-center rounded-4xl px-[6px] py-[3px] text-sm",
-                change.type === "INCREASE" && "bg-success-50 text-success-700",
-                change.type === "DECREASE" && "bg-error-50 text-error-600",
+        {isLoading ? (
+          <div className="space-y-4">
+            <Skeleton className="h-10 w-[150px]" />
+            <Skeleton className="h-[100px] w-full" />
+          </div>
+        ) : (
+          <>
+            <div className="flex gap-1">
+              <span className="text-4xl font-bold">
+                {formatValue(totalData.total, totalData.type)}
+              </span>
+              {change && (
+                <div
+                  className={cn(
+                    "flex items-center gap-x-1 self-center rounded-4xl px-[6px] py-[3px] text-sm",
+                    change.type === "INCREASE" &&
+                      "bg-success-50 text-success-700",
+                    change.type === "DECREASE" && "bg-error-50 text-error-600",
+                  )}
+                >
+                  {change.type === "INCREASE" && (
+                    <MoveUpRight
+                      size="15"
+                      className="bg-success-700 rounded-full p-1 text-white"
+                    />
+                  )}
+                  {change.type === "DECREASE" && (
+                    <MoveDownRight
+                      size="15"
+                      className="bg-error-600 rounded-full p-1 text-white"
+                    />
+                  )}
+                  <span>{formatValue(change.value, "percentage")}</span>
+                </div>
               )}
-            >
-              {change.type === "INCREASE" && (
-                <MoveUpRight
-                  size="15"
-                  className="bg-success-700 rounded-full p-1 text-white"
-                />
-              )}
-              {change.type === "DECREASE" && (
-                <MoveDownRight
-                  size="15"
-                  className="bg-error-600 rounded-full p-1 text-white"
-                />
-              )}
-              <span>{formatValue(change.value, "percentage")}</span>
             </div>
-          )}
-        </div>
-        {children}
+            {children}
+          </>
+        )}
       </CardContent>
     </Card>
   );
@@ -437,14 +476,6 @@ export function Chart({ color, label }: ChartProps) {
             right: 12,
           }}
         >
-          <defs>
-            <linearGradient id="colorDesktop" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%" stopColor="rgba(255, 161, 161, 0.8)" />
-              <stop offset="60%" stopColor="rgba(163, 22, 22, 0.8)" />
-              <stop offset="100%" stopColor="rgba(253, 237, 237, 0.8)" />
-            </linearGradient>
-          </defs>
-
           <CartesianGrid height={30} vertical={false} strokeDasharray="3 3" />
           <ChartTooltip
             cursor={false}
@@ -463,3 +494,31 @@ export function Chart({ color, label }: ChartProps) {
     </ChartContainer>
   );
 }
+
+const StockLevelCardSkeleton = () => (
+  <div className="space-y-4">
+    <Skeleton className="h-10 w-[150px]" />
+    <Skeleton className="h-4 w-[100px]" />
+    <Skeleton className="h-6 w-full" />
+    <div className="mt-4 flex justify-between">
+      <Skeleton className="h-4 w-20" />
+      <Skeleton className="h-4 w-20" />
+      <Skeleton className="h-4 w-20" />
+    </div>
+    <Skeleton className="h-8 w-32" />
+    <div className="space-y-2 pt-4">
+      <Skeleton className="h-8 w-full" />
+      <div className="space-y-2 pt-2">
+        <Skeleton className="h-6 w-full" />
+        <Skeleton className="h-6 w-full" />
+        <Skeleton className="h-6 w-full" />
+      </div>
+    </div>
+  </div>
+);
+
+const ChartSkeleton = () => (
+  <div className="mt-5">
+    <Skeleton className="h-[100px] w-full" />
+  </div>
+);

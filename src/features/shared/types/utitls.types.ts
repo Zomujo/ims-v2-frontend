@@ -12,6 +12,7 @@ export type DateRangeQueryOptions =
   | "last_month"
   | "this_year"
   | "last_three_month";
+
 export type GenerateQueryParams = Partial<{
   id: string;
   search: string;
