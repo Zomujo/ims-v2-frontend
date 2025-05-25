@@ -15,8 +15,8 @@ import {
 } from "../shared/actions/dashboard.actions";
 import { DateRangeQueryOptions } from "../shared/types/utitls.types";
 import { TopLeastSellingItemsResponse } from "../shared/types/dashboard.types";
-import { Loader2 } from "lucide-react";
 import DashboardBaseCard from "@features/dashboard/dashboardBaseCard";
+import { Skeleton } from "../ui/skeleton";
 
 type TopLeastChart = {
   items: string;
@@ -25,7 +25,7 @@ type TopLeastChart = {
 const topChartData: TopLeastChart[] = [];
 const leastChartData: TopLeastChart[] = [];
 
-const topSellingchartConfig = {
+const topSellingChartConfig = {
   desktop: {
     label: "Quantity sold",
     color: "hsl(var(--chart-1))",
@@ -33,12 +33,12 @@ const topSellingchartConfig = {
 } satisfies ChartConfig;
 
 export default function DashboardSellingItems() {
-  const [selectedTopSellingDateRange, setselectedTopSellingDateRange] =
-    useState<DATE_RANGE>(DATE_RANGE.THIS_YEAR);
+  const [selectedTopSellingDateRange, setSelectedTopSellingDateRange] =
+    useState<DATE_RANGE>(DATE_RANGE.THIS_MONTH);
   const [isLoading, setIsLoading] = useState(false);
 
-  const [selectedLeastSellingDateRange, setselectedLeastSellingDateRange] =
-    useState<DATE_RANGE>(DATE_RANGE.THIS_YEAR);
+  const [selectedLeastSellingDateRange, setSelectedLeastSellingDateRange] =
+    useState<DATE_RANGE>(DATE_RANGE.THIS_MONTH);
   const [isLeastItemsChartLoading, setIsLeastItemsChartLoading] =
     useState(false);
 
@@ -82,10 +82,10 @@ export default function DashboardSellingItems() {
         <DashboardBaseCard
           title="Top - selling items"
           selectedValue={selectedTopSellingDateRange}
-          setSelectedValue={setselectedTopSellingDateRange}
+          setSelectedValue={setSelectedTopSellingDateRange}
         >
           {!isLoading ? (
-            <ChartContainer config={topSellingchartConfig}>
+            <ChartContainer config={topSellingChartConfig}>
               <BarChart
                 accessibilityLayer
                 data={topChartData}
@@ -117,8 +117,13 @@ export default function DashboardSellingItems() {
             </ChartContainer>
           ) : (
             <div className="flex h-[20vw] items-center justify-center">
-              <p className="flex gap-2">
-                <Loader2 className="animate-spin" /> loading....
+              <p className="flex rotate-180 gap-2">
+                {Array.from({ length: 5 }).map((_, index) => (
+                  <Skeleton
+                    key={index}
+                    className={`h-[15vw] w-[100px] animate-pulse`}
+                  />
+                ))}
               </p>
             </div>
           )}
@@ -128,10 +133,10 @@ export default function DashboardSellingItems() {
         <DashboardBaseCard
           title="Low - selling items"
           selectedValue={selectedLeastSellingDateRange}
-          setSelectedValue={setselectedLeastSellingDateRange}
+          setSelectedValue={setSelectedLeastSellingDateRange}
         >
           {!isLeastItemsChartLoading ? (
-            <ChartContainer config={topSellingchartConfig}>
+            <ChartContainer config={topSellingChartConfig}>
               <BarChart
                 accessibilityLayer
                 data={leastChartData}
@@ -164,7 +169,12 @@ export default function DashboardSellingItems() {
           ) : (
             <div className="flex h-[20vw] items-center justify-center">
               <p className="flex gap-2">
-                <Loader2 className="animate-spin" /> loading....
+                {Array.from({ length: 5 }).map((_, index) => (
+                  <Skeleton
+                    key={index}
+                    className={`h-[15vw] w-[100px] animate-pulse`}
+                  />
+                ))}
               </p>
             </div>
           )}

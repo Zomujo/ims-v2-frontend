@@ -8,6 +8,7 @@ import {
   GeneralResponse,
   TopLeastSellingItemsResponse,
   SalesTrend,
+  DailySalesResponse,
 } from "@features/shared/types/dashboard.types";
 import { generateUrlWithQueryParams } from "@/lib/utils";
 import { GenerateQueryParams } from "@features/shared/types/utitls.types";
@@ -80,6 +81,26 @@ export async function getLeastSellingItems(
 
   return (
     await imsApiWithAuth<ApiSuccessResponseDto<TopLeastSellingItemsResponse>>(
+      fetchOptions,
+    )
+  ).data;
+}
+export async function getDailySales(
+  params: Pick<GenerateQueryParams, "dateRange">,
+) {
+  const fetchOptions: FetchApi = {
+    url: generateUrlWithQueryParams(
+      API_ENDPOINTS.DASHBOARD_SALES_DAILY,
+      params,
+    ),
+    method: "GET",
+    headers: {},
+    cache: "force-cache",
+    next: { tags: [API_ENDPOINT_TAGS.DASHBOARD_SALES_DAILY] },
+  };
+
+  return (
+    await imsApiWithAuth<ApiSuccessResponseDto<DailySalesResponse>>(
       fetchOptions,
     )
   ).data;
