@@ -154,12 +154,12 @@
   --color-neutral-100: oklch(96.83% 0.0069 247.9);
   --color-ims-blue-300: oklch(53.75% 0.2114 269.63);
   --color-ims-blue-200: oklch(50.75% 0.2114 269.63);
-  --color-success-50: #F0FDF4;
-  --color-success-700: #15803D;
-  --color-error-50: #FEF2F2;
-  --color-error-600: #DC2626;
-  --color-info-blue: #0052EA;
-  --color-info-blue-light: #F1F6FD;
+  --color-success-50: #f0fdf4;
+  --color-success-700: #15803d;
+  --color-error-50: #fef2f2;
+  --color-error-600: #dc2626;
+  --color-info-blue: #0052ea;
+  --color-info-blue-light: #f1f6fd;
 }
 
 @layer base {

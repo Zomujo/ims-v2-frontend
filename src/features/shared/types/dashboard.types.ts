@@ -44,3 +44,11 @@ export interface Trend {
 export interface SalesTrend {
   trend: Trend;
 }
+
+export interface TopLeastSellingItemsResponse {
+  average: number;
+  items: {
+    names: string[];
+    quantities: number[];
+  };
+}

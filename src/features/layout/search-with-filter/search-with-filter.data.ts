@@ -116,19 +116,21 @@ export enum DATE_RANGE {
   THIS_YEAR = "this_year",
 }
 
+export const dateRangeOptions = [
+  { label: "All", value: DATE_RANGE.ALL },
+  { label: "Today", value: DATE_RANGE.TODAY },
+  { label: "This Week", value: DATE_RANGE.THIS_WEEK },
+  { label: "This Month", value: DATE_RANGE.THIS_MONTH },
+  { label: "Last Month", value: DATE_RANGE.LAST_MONTH },
+  { label: "Last Three Months", value: DATE_RANGE.LAST_THREE_MONTHS },
+  { label: "This Year", value: DATE_RANGE.THIS_YEAR },
+];
+
 export const dateRangeFilter = {
   key: "dateRange",
   label: "Date Range",
   type: "radio" as const,
-  options: [
-    { label: "All", value: DATE_RANGE.ALL },
-    { label: "Today", value: DATE_RANGE.TODAY },
-    { label: "This Week", value: DATE_RANGE.THIS_WEEK },
-    { label: "This Month", value: DATE_RANGE.THIS_MONTH },
-    { label: "Last Month", value: DATE_RANGE.LAST_MONTH },
-    { label: "Last Three Months", value: DATE_RANGE.LAST_THREE_MONTHS },
-    { label: "This Year", value: DATE_RANGE.THIS_YEAR },
-  ],
+  options: dateRangeOptions,
   defaultValue: "",
 };
 

@@ -6,6 +6,7 @@ import { imsApiWithAuth } from "@features/shared/actions/ims-api.action";
 import { ApiSuccessResponseDto } from "@features/shared/types/action.types";
 import {
   GeneralResponse,
+  TopLeastSellingItemsResponse,
   SalesTrend,
 } from "@features/shared/types/dashboard.types";
 import { generateUrlWithQueryParams } from "@/lib/utils";
@@ -42,4 +43,44 @@ export async function getSalesTrend(
 
   return (await imsApiWithAuth<ApiSuccessResponseDto<SalesTrend>>(fetchOptions))
     .data;
+}
+export async function getTopSellingItems(
+  params: Pick<GenerateQueryParams, "dateRange">,
+) {
+  const fetchOptions: FetchApi = {
+    url: generateUrlWithQueryParams(
+      API_ENDPOINTS.DASHBOARD_TOP_SELLING_ITEMS,
+      params,
+    ),
+    method: "GET",
+    headers: {},
+    cache: "force-cache",
+    next: { tags: [API_ENDPOINT_TAGS.DASHBOARD_TOP_SELLING_ITEMS] },
+  };
+
+  return (
+    await imsApiWithAuth<ApiSuccessResponseDto<TopLeastSellingItemsResponse>>(
+      fetchOptions,
+    )
+  ).data;
+}
+export async function getLeastSellingItems(
+  params: Pick<GenerateQueryParams, "dateRange">,
+) {
+  const fetchOptions: FetchApi = {
+    url: generateUrlWithQueryParams(
+      API_ENDPOINTS.DASHBOARD_LEAST_SELLING_ITEMS,
+      params,
+    ),
+    method: "GET",
+    headers: {},
+    cache: "force-cache",
+    next: { tags: [API_ENDPOINT_TAGS.DASHBOARD_LEAST_SELLING_ITEMS] },
+  };
+
+  return (
+    await imsApiWithAuth<ApiSuccessResponseDto<TopLeastSellingItemsResponse>>(
+      fetchOptions,
+    )
+  ).data;
 }
