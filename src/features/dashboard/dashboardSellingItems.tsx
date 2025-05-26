@@ -14,7 +14,7 @@ import {
   getTopSellingItems,
 } from "../shared/actions/dashboard.actions";
 import { DateRangeQueryOptions } from "../shared/types/utitls.types";
-import { TopLeastSellingItemsResponse } from "../shared/types/dashboard.types";
+import { SellingItemsResponse } from "../shared/types/dashboard.types";
 import DashboardBaseCard from "@features/dashboard/dashboardBaseCard";
 import { Skeleton } from "../ui/skeleton";
 
@@ -49,7 +49,7 @@ export default function DashboardSellingItems() {
         items: { names, quantities },
       } = (await getTopSellingItems({
         dateRange: selectedTopSellingDateRange as DateRangeQueryOptions,
-      })) as TopLeastSellingItemsResponse;
+      })) as SellingItemsResponse;
       topChartData.length = 0;
       names.forEach((name, index) =>
         topChartData.push({ items: name, desktop: quantities[index] }),
@@ -66,7 +66,7 @@ export default function DashboardSellingItems() {
         items: { names, quantities },
       } = (await getLeastSellingItems({
         dateRange: selectedLeastSellingDateRange as DateRangeQueryOptions,
-      })) as TopLeastSellingItemsResponse;
+      })) as SellingItemsResponse;
       leastChartData.length = 0;
       names.forEach((name, index) =>
         leastChartData.push({ items: name, desktop: quantities[index] }),
