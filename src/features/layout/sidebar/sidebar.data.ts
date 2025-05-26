@@ -82,10 +82,10 @@ export const helpTabs = [
     icon: "solar:video-frame-bold-duotone",
     link: "/tutorials",
   },
-
-  {
-    name: "Support",
-    icon: "solar:help-bold-duotone",
-    link: "/support",
-  },
+  // Not sure if we will be implementing this
+  // {
+  //   name: "Support",
+  //   icon: "solar:help-bold-duotone",
+  //   link: "/support",
+  // },
 ];

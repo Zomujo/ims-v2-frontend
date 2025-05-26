@@ -56,3 +56,10 @@ export interface SellingItemsResponse {
 export interface DailySalesResponse {
   sales: { dates: string[]; quantities: number[] }[];
 }
+
+export interface PaymentMethodResponse {
+  topSelling: {
+    categories: string[];
+    quantities: number[];
+  };
+}
