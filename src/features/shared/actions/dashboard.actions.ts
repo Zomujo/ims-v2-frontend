@@ -6,7 +6,7 @@ import { imsApiWithAuth } from "@features/shared/actions/ims-api.action";
 import { ApiSuccessResponseDto } from "@features/shared/types/action.types";
 import {
   GeneralResponse,
-  TopLeastSellingItemsResponse,
+  SellingItemsResponse,
   SalesTrend,
   DailySalesResponse,
 } from "@features/shared/types/dashboard.types";
@@ -60,7 +60,7 @@ export async function getTopSellingItems(
   };
 
   return (
-    await imsApiWithAuth<ApiSuccessResponseDto<TopLeastSellingItemsResponse>>(
+    await imsApiWithAuth<ApiSuccessResponseDto<SellingItemsResponse>>(
       fetchOptions,
     )
   ).data;
@@ -80,11 +80,12 @@ export async function getLeastSellingItems(
   };
 
   return (
-    await imsApiWithAuth<ApiSuccessResponseDto<TopLeastSellingItemsResponse>>(
+    await imsApiWithAuth<ApiSuccessResponseDto<SellingItemsResponse>>(
       fetchOptions,
     )
   ).data;
 }
+
 export async function getDailySales(
   params: Pick<GenerateQueryParams, "dateRange">,
 ) {
@@ -101,6 +102,27 @@ export async function getDailySales(
 
   return (
     await imsApiWithAuth<ApiSuccessResponseDto<DailySalesResponse>>(
+      fetchOptions,
+    )
+  ).data;
+}
+
+export async function getSellingCategories(
+  params: Pick<GenerateQueryParams, "dateRange">,
+) {
+  const fetchOptions: FetchApi = {
+    url: generateUrlWithQueryParams(
+      API_ENDPOINTS.DASHBOARD_TOP_SELLING,
+      params,
+    ),
+    method: "GET",
+    headers: {},
+    cache: "force-cache",
+    next: { tags: [API_ENDPOINT_TAGS.DASHBOARD_TOP_SELLING] },
+  };
+
+  return (
+    await imsApiWithAuth<ApiSuccessResponseDto<SellingItemsResponse>>(
       fetchOptions,
     )
   ).data;

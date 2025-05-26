@@ -45,7 +45,7 @@ export interface SalesTrend {
   trend: Trend;
 }
 
-export interface TopLeastSellingItemsResponse {
+export interface SellingItemsResponse {
   average: number;
   items: {
     names: string[];
