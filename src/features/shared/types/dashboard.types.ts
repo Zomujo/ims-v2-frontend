@@ -52,3 +52,7 @@ export interface TopLeastSellingItemsResponse {
     quantities: number[];
   };
 }
+
+export interface DailySalesResponse {
+  sales: { dates: string[]; quantities: number[] }[];
+}
