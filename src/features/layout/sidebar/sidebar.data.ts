@@ -1,3 +1,5 @@
+import { PermissionModules } from "@features/shared/types/auth-action.types";
+
 export const generalTabs = [
   {
     name: "Dashboard",
@@ -12,19 +14,19 @@ export const generalTabs = [
         name: "Items",
         icon: "solar:jar-of-pills-bold-duotone",
         link: "/items",
-        permission: "items",
+        permission: PermissionModules.ITEMS,
       },
       {
         name: "Categories",
         icon: "solar:pills-bold-duotone",
         link: "/categories",
-        permission: "item_categories",
+        permission: PermissionModules.ITEMS_CATEGORIES,
       },
       {
         name: "Stock Adjustment",
         icon: "solar:delivery-bold-duotone",
         link: "/stock-adjustment",
-        permission: "stock_adjustment",
+        permission: PermissionModules.STOCK_ADJUSTMENT,
       },
     ],
   },
@@ -36,13 +38,13 @@ export const generalTabs = [
         name: "Item orders",
         icon: "solar:box-bold-duotone",
         link: "/item-orders",
-        permission: "item_orders",
+        permission: PermissionModules.ITEMS_ORDERS,
       },
       {
         name: "Suppliers",
         icon: "solar:buildings-3-bold-duotone",
         link: "/suppliers",
-        permission: "suppliers",
+        permission: PermissionModules.SUPPLIERS,
       },
     ],
   },
@@ -50,13 +52,13 @@ export const generalTabs = [
     name: "Sales",
     icon: "solar:bill-list-bold-duotone",
     link: "/sales",
-    permission: "sales",
+    permission: PermissionModules.SALES,
   },
   {
     name: "Department Requests",
     icon: "solar:box-bold-duotone",
     link: "/department-requests",
-    permission: "department_requests",
+    permission: PermissionModules.DEPARTMENT_REQUESTS,
     forFacility: true,
   },
   // {
@@ -70,7 +72,7 @@ export const generalTabs = [
     name: "Reports",
     icon: "solar:graph-up-bold-duotone",
     link: "/reports",
-    permission: "reports",
+    permission: PermissionModules.REPORTS,
   },
 ];
 

@@ -2,6 +2,14 @@ export const API_ENDPOINTS = {
   // API Health Checks
   HEALTH: "/health",
 
+  // Dashboard
+  DASHBOARD_GENERAL: "/dashboard/general",
+  DASHBOARD_TOP_SELLING_ITEMS: "/dashboard/items/top-selling",
+  DASHBOARD_LEAST_SELLING_ITEMS: "/dashboard/items/least-selling",
+  DASHBOARD_SALES_TREND: "/dashboard/sales/trend",
+  DASHBOARD_SALES_DAILY: "/dashboard/sales/daily",
+  DASHBOARD_TOP_SELLING: "/dashboard/items/top-selling",
+
   // Notifications
   NOTIFICATIONS_STREAM: "/notifications/stream",
   NOTIFICATIONS: "/notifications",
@@ -77,6 +85,7 @@ export const API_ENDPOINTS = {
   REPORTS: "/reports",
   REPORT: "/reports/:id",
   REPORT_DATA: "/reports/:id/data",
+  REPORT_SALES: "/reports/periodic_sales_report/data",
 
   // Sales
   SALES: "/sales",
@@ -93,6 +102,8 @@ export const API_ENDPOINTS = {
   DEPARTMENT_REQUEST: "/department-requests/:id",
   DEPARTMENT_REQUESTS_ITEM: "/department-requests/item",
   DEPARTMENT_REQUEST_STATUS: "/department-requests/:id/status",
+  DEPARTMENT_ITEM_REQUESTS: "/item-requests",
+  DEPARTMENT_ITEM_REQUEST: "/item-requests/:id",
 
   // Complaint
   COMPLAINTS: "/complaints",
@@ -101,6 +112,14 @@ export const API_ENDPOINTS = {
 export const API_ENDPOINT_TAGS = {
   // API Health Checks
   HEALTH: "api-v1-health",
+
+  // Dashboard
+  DASHBOARD_GENERAL: "api-v1-dashboard-general",
+  DASHBOARD_TOP_SELLING_ITEMS: "api-v1-dashboard-items-top-selling",
+  DASHBOARD_LEAST_SELLING_ITEMS: "api-v1-dashboard-items-least-selling",
+  DASHBOARD_SALES_TREND: "api-v1-dashboard-sales-trend",
+  DASHBOARD_SALES_DAILY: "api-v1-dashboard-sales-daily",
+  DASHBOARD_TOP_SELLING: "api-v1-dashboard-items-top-selling",
 
   // Notifications
   NOTIFICATIONS_STREAM: "api-v1-notifications-stream",
@@ -148,4 +167,5 @@ export const API_ENDPOINT_TAGS = {
   // Department Request
   DEPARTMENT_REQUESTS: "api-v1-department-requests",
   DEPARTMENT_REQUESTS_ITEM: "api-v1-department-requests-item",
+  DEPARTMENT_ITEM_REQUESTS: "api-v1-item-requests",
 } as const;
