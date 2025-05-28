@@ -1,6 +1,5 @@
-import { PAGE_ROUTES } from "@/lib/constant";
-import { redirect } from "next/navigation";
+import Home from "@features/home/home";
 
-export default function Home() {
-  redirect(PAGE_ROUTES.DASHBOARD);
+export default function HomePage() {
+  return <Home />;
 }
