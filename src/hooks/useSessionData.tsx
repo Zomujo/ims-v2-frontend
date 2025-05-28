@@ -10,6 +10,8 @@ export const useSessionData = () => {
 
   const user = session?.user;
 
+  const token = session?.user.tokens.accessToken;
+
   const isLoading = status === "loading";
   const isAuthenticated = !!session;
 
@@ -53,5 +55,6 @@ export const useSessionData = () => {
     canWrite,
     canDelete,
     firstName,
+    token,
   };
 };
