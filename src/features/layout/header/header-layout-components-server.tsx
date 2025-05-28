@@ -8,17 +8,16 @@ import { PAGE_ROUTES } from "@/lib/constant";
 import { getInitials } from "@/lib/utils";
 import { BellIcon, EllipsisIcon, SettingsIcon } from "lucide-react";
 import { useSessionData } from "@/hooks/useSessionData";
+import RealtimeNotifications from "@features/notifications/notifications";
 
 export function NotificationButton() {
   return (
     <ImsPopover
       className="cursor-pointer rounded-full bg-gray-100 p-2 text-gray-500 hover:bg-gray-200"
+      contentClassName="w-full max-w-[470px]"
       trigger={<BellIcon size={20} />}
     >
-      <div className="p-4">
-        <h3 className="text-lg font-semibold">Notifications</h3>
-        <p className="text-sm text-gray-500">No new notifications</p>
-      </div>
+      <RealtimeNotifications />
     </ImsPopover>
   );
 }

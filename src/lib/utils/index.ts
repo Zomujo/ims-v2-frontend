@@ -236,3 +236,34 @@ export function generateColor(
 
   return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
 }
+
+/**
+ * Converts a date to a human-readable relative time string
+ * @param date The date to convert
+ * @returns A string representation of the relative time (e.g., "Now", "5 mins ago", "an hour ago")
+ */
+export function getRelativeTime(date: Date | string): string {
+  const currentDate = new Date(date);
+  const now = new Date();
+  const diffInMs = now.getTime() - currentDate.getTime();
+  const diffInSeconds = Math.floor(diffInMs / 1000);
+  const diffInMinutes = Math.floor(diffInSeconds / 60);
+  const diffInHours = Math.floor(diffInMinutes / 60);
+  const diffInDays = Math.floor(diffInHours / 24);
+
+  if (diffInSeconds < 60) {
+    return "Now";
+  }
+  if (diffInMinutes < 60) {
+    return `${diffInMinutes} ${diffInMinutes === 1 ? "min" : "mins"} ago`;
+  }
+
+  if (diffInHours < 24) {
+    return diffInHours === 1 ? "an hour ago" : `${diffInHours} hours ago`;
+  }
+
+  if (diffInDays < 7) {
+    return diffInDays === 1 ? "a day ago" : `${diffInDays} days ago`;
+  }
+  return currentDate.toLocaleDateString();
+}

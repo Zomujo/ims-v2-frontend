@@ -13,7 +13,7 @@ import { ImsSelect } from "@/features/shared/components/ims-select";
 import { Textarea } from "@/features/ui/textarea";
 import { handleRequestState } from "@/lib/utils";
 import { addComplaint } from "@/features/shared/actions/complaint.actions";
-import { PermissionModules } from "@/features/shared/types/auth-action.types";
+import { featureOptions } from "@/lib/constant";
 
 const incidentSchema = z.object({
   feature: z.string().min(1, "Feature is required"),
@@ -24,38 +24,6 @@ const incidentSchema = z.object({
 
 export function ReportIncidentButton() {
   const [open, setOpen] = useState(false);
-
-  const featureOptions = [
-    {
-      label: "Items",
-      value: PermissionModules.ITEMS,
-    },
-    {
-      label: "Items Categories",
-      value: PermissionModules.ITEMS_CATEGORIES,
-    },
-    {
-      label: "Suppliers",
-      value: PermissionModules.SUPPLIERS,
-    },
-    {
-      label: "Reports",
-      value: PermissionModules.REPORTS,
-    },
-
-    {
-      label: "Stock Adjustments",
-      value: PermissionModules.STOCK_ADJUSTMENT,
-    },
-    {
-      label: "Departments",
-      value: PermissionModules.DEPARTMENTS,
-    },
-    {
-      label: "Departments Requests",
-      value: PermissionModules.DEPARTMENT_REQUESTS,
-    },
-  ];
 
   const form = useHookForm({
     resolver: incidentSchema,
