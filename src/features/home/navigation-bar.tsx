@@ -16,6 +16,13 @@ export default function NavigationBar() {
     }
   };
 
+  const navigations = [
+    { label: "Features", id: "features" },
+    { label: "Pricing", id: "pricing" },
+    { label: "Blog", id: "blog" },
+    { label: "Contact us", id: "contact" },
+  ];
+
   return (
     <div>
       <nav className="bg-white shadow-md">
@@ -26,30 +33,15 @@ export default function NavigationBar() {
               BETA
             </span>
             <ul className="hidden items-center space-x-8 pl-[80px] text-gray-700 lg:flex">
-              <li
-                className="cursor-pointer hover:text-[#FF6E66]"
-                onClick={() => scrollToSection("features")}
-              >
-                Features
-              </li>
-              <li
-                className="cursor-pointer hover:text-[#FF6E66]"
-                onClick={() => scrollToSection("pricing")}
-              >
-                Pricing
-              </li>
-              <li
-                className="cursor-pointer hover:text-[#FF6E66]"
-                onClick={() => scrollToSection("blog")}
-              >
-                Blog
-              </li>
-              <li
-                className="cursor-pointer hover:text-[#FF6E66]"
-                onClick={() => scrollToSection("contact")}
-              >
-                Contact us
-              </li>
+              {navigations.map((nav) => (
+                <li
+                  key={nav.id}
+                  className="cursor-pointer hover:text-[#FF6E66]"
+                  onClick={() => scrollToSection(nav.id)}
+                >
+                  {nav.label}
+                </li>
+              ))}
             </ul>
           </div>
 
@@ -88,42 +80,18 @@ export default function NavigationBar() {
             </button>
           </div>
           <ul className="mt-8 space-y-6 px-6 text-lg font-medium">
-            <li
-              className="cursor-pointer border-b border-[#a7afb6] pb-2 hover:text-[#FF6E66]"
-              onClick={() => {
-                scrollToSection("features");
-                setMenuOpen(false);
-              }}
-            >
-              Features
-            </li>
-            <li
-              onClick={() => {
-                scrollToSection("features");
-                setMenuOpen(false);
-              }}
-              className="cursor-pointer border-b border-[#a7afb6] pb-2 hover:text-[#FF6E66]"
-            >
-              Pricing
-            </li>
-            <li
-              onClick={() => {
-                scrollToSection("features");
-                setMenuOpen(false);
-              }}
-              className="cursor-pointer border-b border-[#a7afb6] pb-2 hover:text-[#FF6E66]"
-            >
-              Blog
-            </li>
-            <li
-              onClick={() => {
-                scrollToSection("features");
-                setMenuOpen(false);
-              }}
-              className="cursor-pointer border-b border-[#a7afb6] pb-2 hover:text-[#FF6E66]"
-            >
-              Contact us
-            </li>
+            {navigations.map((nav) => (
+              <li
+                key={nav.id}
+                className="cursor-pointer border-b border-[#a7afb6] pb-2 hover:text-[#FF6E66]"
+                onClick={() => {
+                  scrollToSection(nav.id);
+                  setMenuOpen(false);
+                }}
+              >
+                {nav.label}
+              </li>
+            ))}
           </ul>
           <div className="mt-12 px-4 text-center">
             <Link href="/auth/login">
