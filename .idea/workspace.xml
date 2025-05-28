@@ -4,12 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cdfa3d69-0a97-462d-b028-c12c1afce628" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/git_toolbox_blame.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/ims-v2-frontend.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/features/shared/components/landing-nav.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/home/navigation-bar.tsx" afterDir="false" />
+    <list default="true" id="cdfa3d69-0a97-462d-b028-c12c1afce628" name="Changes" comment="feat: rename landing-nav to navigation-bar and implement smooth scrolling for navigation links">
+      <change afterPath="$PROJECT_DIR$/src/features/home/home.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -139,11 +135,16 @@
       <workItem from="1746986856581" duration="4839000" />
       <workItem from="1747047328481" duration="5744000" />
       <workItem from="1747053611445" duration="2119000" />
-      <workItem from="1748448656995" duration="913000" />
+      <workItem from="1748448656995" duration="1158000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Merge branch 'develop' into feat-navigation" />
+    <MESSAGE value="feat: rename landing-nav to navigation-bar and implement smooth scrolling for navigation links" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: rename landing-nav to navigation-bar and implement smooth scrolling for navigation links" />
   </component>
 </project>
