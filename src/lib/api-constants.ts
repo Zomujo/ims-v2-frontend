@@ -9,6 +9,7 @@ export const API_ENDPOINTS = {
   DASHBOARD_SALES_TREND: "/dashboard/sales/trend",
   DASHBOARD_SALES_DAILY: "/dashboard/sales/daily",
   DASHBOARD_TOP_SELLING: "/dashboard/items/top-selling",
+  DASHBOARD_PAYMENT_METHODS: "/dashboard/sales/payment-methods",
 
   // Notifications
   NOTIFICATIONS_STREAM: "/notifications/stream",
@@ -120,6 +121,7 @@ export const API_ENDPOINT_TAGS = {
   DASHBOARD_SALES_TREND: "api-v1-dashboard-sales-trend",
   DASHBOARD_SALES_DAILY: "api-v1-dashboard-sales-daily",
   DASHBOARD_TOP_SELLING: "api-v1-dashboard-items-top-selling",
+  DASHBOARD_PAYMENT_METHODS: "api-v1-dashboard-sales-payment-methods",
 
   // Notifications
   NOTIFICATIONS_STREAM: "api-v1-notifications-stream",

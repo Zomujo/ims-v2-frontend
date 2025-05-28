@@ -4,6 +4,7 @@ import DashboardSellingItems from "./dashboardSellingItems";
 import DashboardSalesTend from "@features/dashboard/dashboardSalesTend";
 import DashboardDailySales from "./dashboardDailySales";
 import DashboardSellingCategories from "@features/dashboard/dashboardSellingCategories";
+import DashboardSalePaymentMethod from "@features/dashboard/dashboardSalePaymentMethod";
 
 const DashboardOverview = () => {
   return (
@@ -13,6 +14,7 @@ const DashboardOverview = () => {
       <DashboardSalesTend />
       <DashboardSellingCategories />
       <DashboardDailySales />
+      <DashboardSalePaymentMethod />
     </div>
   );
 };

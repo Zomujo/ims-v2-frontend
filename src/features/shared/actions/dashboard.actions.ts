@@ -9,6 +9,7 @@ import {
   SellingItemsResponse,
   SalesTrend,
   DailySalesResponse,
+  PaymentMethodResponse,
 } from "@features/shared/types/dashboard.types";
 import { generateUrlWithQueryParams } from "@/lib/utils";
 import { GenerateQueryParams } from "@features/shared/types/utitls.types";
@@ -126,4 +127,25 @@ export async function getSellingCategories(
       fetchOptions,
     )
   ).data;
+}
+
+export async function getSalePaymentMethod(
+  params: Pick<GenerateQueryParams, "dateRange">,
+) {
+  const fetchOptions: FetchApi = {
+    url: generateUrlWithQueryParams(
+      API_ENDPOINTS.DASHBOARD_PAYMENT_METHODS,
+      params,
+    ),
+    method: "GET",
+    headers: {},
+    cache: "force-cache",
+    next: { tags: [API_ENDPOINT_TAGS.DASHBOARD_PAYMENT_METHODS] },
+  };
+
+  return (
+    await imsApiWithAuth<ApiSuccessResponseDto<PaymentMethodResponse>>(
+      fetchOptions,
+    )
+  ).data?.topSelling;
 }
