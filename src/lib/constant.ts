@@ -127,7 +127,3 @@ export const featureOptions = [
     value: PermissionModules.DEPARTMENT_REQUESTS,
   },
 ];
-
-export const heroImage = "/images/home.png";
-export const partnerImage = "/images/trusted.png";
-export const hospitalImage = "/images/korle-bu.png";
