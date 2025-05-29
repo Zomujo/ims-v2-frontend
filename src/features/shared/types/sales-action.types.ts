@@ -58,8 +58,8 @@ export type Item = {
 };
 
 export enum SALES_STATUS {
-  PAID = "paid",
-  UNPAID = "unpaid",
+  PAID = "PAID",
+  UNPAID = "UNPAID",
 }
 export type GetSalesAPIResponse = IMSApiActionPaginationResponse<Sale>;
 

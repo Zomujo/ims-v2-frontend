@@ -12,12 +12,18 @@ import {
 } from "../shared/types/settings-action.types";
 import { Badge } from "../ui/badge";
 import { settingsSidebarNavItems } from "./settings.data";
+import { useSessionData } from "@/hooks/useSessionData";
 
 export function SettingsSidebar() {
+  const { hasPermission } = useSessionData();
   return (
     <nav className="flex h-full w-85 flex-col gap-y-1 overflow-y-auto rounded-2xl bg-white py-7 pr-2 pl-4">
       {settingsSidebarNavItems.map((item) => {
-        return <ImsNavTab key={item.href} {...item} />;
+        return (
+          (!item.permission || hasPermission(item.permission)) && (
+            <ImsNavTab key={item.href} {...item} />
+          )
+        );
       })}
     </nav>
   );

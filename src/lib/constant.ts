@@ -96,6 +96,38 @@ export const PERMISION_MODULES: (keyof typeof PermissionModules)[] = [
 ];
 export const UI_STATE = "state";
 
+export const featureOptions = [
+  {
+    label: "Items",
+    value: PermissionModules.ITEMS,
+  },
+  {
+    label: "Items Categories",
+    value: PermissionModules.ITEMS_CATEGORIES,
+  },
+  {
+    label: "Suppliers",
+    value: PermissionModules.SUPPLIERS,
+  },
+  {
+    label: "Reports",
+    value: PermissionModules.REPORTS,
+  },
+
+  {
+    label: "Stock Adjustments",
+    value: PermissionModules.STOCK_ADJUSTMENT,
+  },
+  {
+    label: "Departments",
+    value: PermissionModules.DEPARTMENTS,
+  },
+  {
+    label: "Departments Requests",
+    value: PermissionModules.DEPARTMENT_REQUESTS,
+  },
+];
+
 export const heroImage = "/images/home.png";
 export const partnerImage = "/images/trusted.png";
 export const hospitalImage = "/images/korle-bu.png";

@@ -1,6 +1,8 @@
 import { signIn } from "next-auth/react";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import { toast } from "sonner";
+import { authCreateAccountAction } from "@features/shared/actions/auth.action";
+import { AuthAccountCreationProps } from "@features/shared/types/auth-action.types";
 
 type HandleAuthFnProps = {
   credentials: Record<string, unknown>;
@@ -33,6 +35,17 @@ export const handleAuth = async ({
   if (authRes?.ok && authRes.url) {
     routeFn(authRes.url);
   }
+};
+
+export const handleAccountCreation = async (
+  credentials: AuthAccountCreationProps,
+) => {
+  const response = authCreateAccountAction(credentials);
+  toast.promise(response, {
+    loading: "Creating account...",
+    success: "We have sent you a verification email. Please check your inbox.",
+    error: "Failed to create account with provided information",
+  });
 };
 
 export const getFormDefaultValues = <T>(

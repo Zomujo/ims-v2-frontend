@@ -4,7 +4,9 @@ import {
   changeItemOrderState,
   createItemOrder,
   deleteItemOrder,
+  getItemOrder,
   getItemOrders,
+  updateItemOrder,
 } from "../shared/actions/item-orders.actions";
 import CrudPage from "../shared/components/crud-page";
 import { ImsButton } from "../shared/components/ims-button";
@@ -22,6 +24,10 @@ import { orderFormSchema } from "./item-orders.schema";
 import { z } from "zod";
 import useImsSearchParams from "../shared/hooks/use-ims-search-params";
 import { UI_STATE } from "@/lib/constant";
+import { useEffect, useState } from "react";
+import LoadingOverlay from "@features/ui/loadingOverlay";
+import { useSessionData } from "@/hooks/useSessionData";
+import { PermissionModules } from "@features/shared/types/auth-action.types";
 
 type ItemOrdersListProps = {
   items: IdData[];
@@ -32,7 +38,8 @@ export default function ItemOrdersList({
   items,
   suppliers,
 }: Readonly<ItemOrdersListProps>) {
-  const { data } = useFetchData({
+  const { canWrite, canDelete } = useSessionData();
+  const { data, loading, refetch } = useFetchData({
     fetchFn: getItemOrders,
   });
   const itemOrders = data?.rows ?? [];
@@ -61,7 +68,7 @@ export default function ItemOrdersList({
     const res = changeItemOrderState(id, { status });
     handleRequestState({ res, loadingMsg: "Changing item order state..." });
     res.then(() => {
-      console.log("Item order state changed successfully");
+      refetch();
     });
   };
   const handleCurrentState = (status: string) => {
@@ -77,6 +84,7 @@ export default function ItemOrdersList({
       <CrudPage
         moduleName="item categories"
         data={itemOrders}
+        isLoading={loading}
         modalAction={handleDelete}
         handleRemoveQueryparam={handleRemoveQueryparam}
         currentDataDisplayName={getData(CRUDACTION.DELETE)?.orderNumber ?? ""}
@@ -90,12 +98,14 @@ export default function ItemOrdersList({
               label: "edit",
               icon: "lucide:edit-2",
               action: () => handleEditBtnClicked(item),
+              hide: !canWrite(PermissionModules.ITEMS_ORDERS),
             },
-            {
-              label: "print PDF",
-              icon: "solar:printer-2-outline",
-              action: () => handleDeleteBtnClicked(item),
-            },
+            // TODO: Will probably be added but at the moment, no functionality for this
+            // {
+            //   label: "print PDF",
+            //   icon: "solar:printer-2-outline",
+            //   action: () => handleDeleteBtnClicked(item),
+            // },
             {
               label: handleCurrentState(item.status) ?? "",
               action: () =>
@@ -104,31 +114,50 @@ export default function ItemOrdersList({
                   handleCurrentState(item.status) as ItemOrderStatus,
                 ),
               icon: "hugeicons:view",
+              hide:
+                !canWrite(PermissionModules.ITEMS_ORDERS) ||
+                item.status === ItemOrderStatus.RECEIVED,
             },
             {
               label: "delete",
               icon: "lucide:trash-2",
               type: "destructive",
               action: () => handleDeleteBtnClicked(item),
+              hide:
+                !canDelete(PermissionModules.ITEMS_ORDERS) ||
+                item.status === ItemOrderStatus.RECEIVED,
             },
-          ].slice(
-            [ItemOrderStatus.DELIVERING, ItemOrderStatus.RECEIVED].includes(
-              item.status,
+          ]
+            .filter(Boolean)
+            .slice(
+              [ItemOrderStatus.DELIVERING, ItemOrderStatus.RECEIVED].includes(
+                item.status,
+              )
+                ? 1
+                : 0,
             )
-              ? 1
-              : 0,
-          )
         }
       >
         <ItemOrdersProvider value={{ items, suppliers }}>
-          <ItemOrdersForm />
+          <ItemOrdersForm
+            itemOrderId={getId(CRUDACTION.EDIT)}
+            isEditMode={isEditMode}
+          />
         </ItemOrdersProvider>
       </CrudPage>
     </ScrollArea>
   );
 }
 
-export function ItemOrdersForm() {
+export function ItemOrdersForm({
+  isEditMode,
+  itemOrderId,
+}: Readonly<{
+  isEditMode?: boolean;
+  itemOrderId?: string;
+}>) {
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { removeSearchParams } = useImsSearchParams();
   const form = useHookForm({
     resolver: orderFormSchema,
@@ -145,40 +174,66 @@ export function ItemOrdersForm() {
   });
 
   const handleSubmit = async (data: unknown) => {
+    setIsSubmitting(true);
     const orderData = data as z.infer<typeof orderFormSchema>;
-    const res = createItemOrder({
-      ...orderData,
-      status: ItemOrderStatus.DRAFT,
-    });
+    const res =
+      isEditMode && itemOrderId
+        ? updateItemOrder(itemOrderId, orderData)
+        : createItemOrder({
+            ...orderData,
+            status: ItemOrderStatus.DRAFT,
+          });
     handleRequestState({
       res,
-      loadingMsg: "Creating item order...",
+      loadingMsg: isEditMode
+        ? "Updating item order..."
+        : "Creating item order...",
     });
     res.then(() => {
+      setIsSubmitting(false);
       form.reset();
       removeSearchParams(UI_STATE);
     });
-
-    // Add your form submission logic here (e.g., API call to create order)
   };
 
-  return (
-    <ImsForm
-      form={form}
-      handleAuthSubmit={handleSubmit}
-      RenderInputs={<ItemOrdersInputs control={form.control} />}
-      RenderActions={
-        <ImsButton
-          type="submit"
-          variant="imsPrimary"
-          isLoading={form.formState.isSubmitting}
-          isLoadingLabel="Saving..." // Example loading label
-        >
-          Save
-        </ImsButton>
+  useEffect(() => {
+    if (!isEditMode) return;
+    const fetchItemOrder = async () => {
+      setIsLoading(true);
+      const { data } = await getItemOrder(itemOrderId ?? "");
+      if (data) {
+        const { expectedDeliveryDate } = data;
+        form.reset({
+          ...data,
+          expectedDeliveryDate: expectedDeliveryDate?.split("T")[0],
+        });
+        setIsLoading(false);
       }
-      className="overflow-y-auto [&>*]:px-4"
-      inputSectionClassName="overflow-y-auto"
-    />
+    };
+    void fetchItemOrder();
+  }, []);
+
+  return (
+    <>
+      {isLoading && <LoadingOverlay />}
+      <ImsForm
+        form={form}
+        handleAuthSubmit={handleSubmit}
+        RenderInputs={<ItemOrdersInputs control={form.control} />}
+        RenderActions={
+          <ImsButton
+            type="submit"
+            variant="imsPrimary"
+            disabled={isSubmitting}
+            isLoading={isSubmitting}
+            isLoadingLabel="Saving..."
+          >
+            Save
+          </ImsButton>
+        }
+        className="overflow-y-auto [&>*]:px-4"
+        inputSectionClassName="overflow-y-auto"
+      />
+    </>
   );
 }

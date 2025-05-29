@@ -1,10 +1,11 @@
 "use client";
-import { handleRequestState } from "@/lib/utils";
-import { useState } from "react";
+import { handleRequestState, isStepValid } from "@/lib/utils";
+import { useCallback, useState } from "react";
 import { z } from "zod";
-import { deleteSaleAction } from "../shared/actions/sales.action";
 import {
+  activateDeactivateSuppliersAction,
   addSupplier,
+  deleteSupplier,
   getSupplier,
   getSuppliers,
   updateSupplier,
@@ -22,10 +23,23 @@ import { supplierDefaultValues, suppliersTableColumns } from "./suppliers.data";
 import { supplierSchema } from "./suppliers.schemas";
 import useImsSearchParams from "../shared/hooks/use-ims-search-params";
 import { UI_STATE } from "@/lib/constant";
+import LoadingOverlay from "@features/ui/loadingOverlay";
+import {
+  PermissionModules,
+  UserStatus,
+} from "../shared/types/auth-action.types";
+import { GetSuppliersResponse } from "../shared/types/action.types";
+import { useSessionData } from "@/hooks/useSessionData";
 
 export default function SuppliersList() {
-  const { data } = useFetchData({ fetchFn: getSuppliers });
+  const { canWrite, canDelete } = useSessionData();
+  const { data, loading } = useFetchData({ fetchFn: getSuppliers });
   const suppliers = data?.rows ?? [];
+  const [modalActionProperties, setModalActionProperties] = useState({
+    label: "Delete",
+    crudAction: CRUDACTION.DELETE,
+  });
+  const [openModal, setOpenModal] = useState(false);
 
   const {
     state,
@@ -34,43 +48,110 @@ export default function SuppliersList() {
     getId,
     removeSearchParams,
     handleDeleteBtnClicked,
+    handleActionBtnClicked,
     handleEditBtnClicked,
     handleRemoveQueryparam,
   } = usePageCRUD({ data: suppliers });
 
-  const handleDelete = async () => {
-    const id = getId(CRUDACTION.DELETE);
-    const res = deleteSaleAction(id);
-    handleRequestState({ res, loadingMsg: "Deleting category...." });
-    res.then(() => {
-      removeSearchParams(CRUDACTION.DELETE);
-    });
-    await res;
-  };
+  function handleAction(action: string, item: GetSuppliersResponse) {
+    setOpenModal(true);
 
+    switch (action) {
+      case CRUDACTION.DEACTIVATE:
+        handleActionBtnClicked({ action: CRUDACTION.DEACTIVATE, id: item.id });
+        setModalActionProperties({
+          label: "Deactivate",
+          crudAction: CRUDACTION.DEACTIVATE,
+        });
+        break;
+      case CRUDACTION.ACTIVATE:
+        handleActionBtnClicked({ action: CRUDACTION.ACTIVATE, id: item.id });
+        setModalActionProperties({
+          label: "Activate",
+          crudAction: CRUDACTION.ACTIVATE,
+        });
+        break;
+      default:
+        handleDeleteBtnClicked(item);
+        setModalActionProperties({
+          label: "Delete",
+          crudAction: CRUDACTION.DELETE,
+        });
+    }
+  }
+
+  const handleModalAction = async (action: CRUDACTION) => {
+    const id = getId(action);
+
+    const res =
+      action === CRUDACTION.DELETE
+        ? deleteSupplier(id)
+        : activateDeactivateSuppliersAction(id, action);
+
+    const loadingVerb =
+      action === CRUDACTION.DELETE
+        ? "Deleting"
+        : action === CRUDACTION.ACTIVATE
+          ? "Activating"
+          : "Deactivating";
+
+    handleRequestState({ res, loadingMsg: `${loadingVerb} category....` });
+
+    res.then(() => {
+      removeSearchParams(action);
+    });
+
+    await res;
+    setOpenModal(false);
+    handleRemoveQueryparam(false);
+  };
   return (
     <ScrollArea className="mt-2 h-[calc(100%-5rem)] rounded-2xl bg-white pr-4">
       <CrudPage
         moduleName="item categories"
         data={suppliers}
-        modalAction={handleDelete}
-        handleRemoveQueryparam={handleRemoveQueryparam}
-        currentDataDisplayName={getData(CRUDACTION.DELETE)?.name ?? ""}
+        isLoading={loading}
+        modalAction={() => handleModalAction(modalActionProperties.crudAction)}
+        modalActionLabel={modalActionProperties.label}
+        currentDataDisplayName={
+          getData(modalActionProperties.crudAction)?.name ?? ""
+        }
         tableColumns={suppliersTableColumns}
         totalPages={data?.totalPages ?? 0}
+        handleRemoveQueryparam={handleRemoveQueryparam}
         state={state}
         isEditMode={isEditMode}
+        openModal={openModal}
+        closeModal={() => setOpenModal(false)}
+        alertModalOnChange={false}
         actions={(item) => [
           {
             label: "edit",
             icon: "lucide:edit-2",
             action: () => handleEditBtnClicked(item),
+            hide: !canWrite(PermissionModules.SUPPLIERS),
           },
+          item.status === UserStatus.ACTIVE
+            ? {
+                label: "Deactivate",
+                icon: "solar:forbidden-circle-line-duotone",
+                action: () => handleAction(CRUDACTION.DEACTIVATE, item),
+                hide: !canWrite(PermissionModules.SUPPLIERS),
+              }
+            : {
+                label: "Activate",
+                icon: "solar:power-bold-duotone",
+                action: () => handleAction(CRUDACTION.ACTIVATE, item),
+                hide: !canWrite(PermissionModules.SUPPLIERS),
+              },
           {
             label: "delete",
             icon: "solar:trash-bin-trash-line-duotone",
             type: "destructive",
-            action: () => handleDeleteBtnClicked(item),
+            action: () => {
+              handleAction(CRUDACTION.DELETE, item);
+            },
+            hide: !canDelete(PermissionModules.SUPPLIERS),
           },
         ]}
       >
@@ -88,6 +169,7 @@ function SupplierForm({ supplierId }: Readonly<SupplierFormProps>) {
   const [currentStep, setCurrentStep] = useState(1);
   const { removeSearchParams } = useImsSearchParams();
   const isEditMode = !!supplierId;
+  const [isLoading, setIsLoading] = useState(false);
 
   const form = useHookForm({
     resolver: supplierSchema,
@@ -116,9 +198,36 @@ function SupplierForm({ supplierId }: Readonly<SupplierFormProps>) {
     }
   };
 
+  const isStepFilled = useCallback(() => {
+    const stepFieldMap: Record<number, string[]> = {
+      1: [
+        "name",
+        "brandTradeName",
+        "supplierType",
+        "minimumOrderQuantity",
+        "leadTime",
+        "deliveryMethod",
+      ],
+      2: [
+        "primaryContactName",
+        "jobTitle",
+        "department",
+        "phoneNumber",
+        "email",
+        "physicalAddress",
+        "mailingAddress",
+        "emergencyContactName",
+        "emergencyContactTitle",
+        "emergencyContactNumber",
+      ],
+    };
+    const fields = stepFieldMap[currentStep];
+    return fields ? isStepValid(fields, form.watch()) : true;
+  }, [currentStep, form]);
+
   const handleSubmit = async (data: unknown) => {
+    setIsLoading(true);
     const oneSupplier = data as z.infer<typeof supplierSchema>;
-    console.log("Form submitted!>>>>>>>>>>>>>>", data);
     const res = isEditMode
       ? updateSupplier(supplierId, oneSupplier)
       : addSupplier(oneSupplier);
@@ -133,12 +242,12 @@ function SupplierForm({ supplierId }: Readonly<SupplierFormProps>) {
     res.then(() => {
       form.reset();
       removeSearchParams(UI_STATE);
+      setIsLoading(false);
     });
   };
 
-  console.log(">>>>>>>>", loading, isEditMode);
   if (isEditMode && loading) {
-    return <span className="pl-4">Loading....</span>;
+    return <LoadingOverlay />;
   }
   return (
     <ImsForm
@@ -160,7 +269,7 @@ function SupplierForm({ supplierId }: Readonly<SupplierFormProps>) {
                 className="flex-1"
                 variant="outline"
                 onClick={handleBack}
-                type="button" // Prevent form submission
+                type="button"
               >
                 Go back
               </ImsButton>
@@ -171,6 +280,7 @@ function SupplierForm({ supplierId }: Readonly<SupplierFormProps>) {
                 type="button"
                 variant="imsPrimary"
                 onClick={handleNext}
+                disabled={!isStepFilled()}
               >
                 Next
               </ImsButton>
@@ -180,8 +290,11 @@ function SupplierForm({ supplierId }: Readonly<SupplierFormProps>) {
                 className="flex-1"
                 type="submit"
                 variant="imsPrimary"
-                isLoading={form.formState.isSubmitting}
-                isLoadingLabel="Adding supplier..."
+                disabled={isLoading}
+                isLoading={isLoading}
+                isLoadingLabel={
+                  supplierId ? "Updating Supplier..." : "Adding Supplier..."
+                }
               >
                 {supplierId ? "Update Supplier" : "Add Supplier"}
               </ImsButton>

@@ -10,7 +10,7 @@ export default function Login() {
     <section className="flex flex-col items-center pt-6">
       <div className="flex w-[90%] flex-1 flex-col sm:w-[65%]">
         <AuthHeader
-          btnLabel="Super admin? Login"
+          btnLabel="New Facility? Create Account"
           btnHrf={AUTH_PAGE_ROUTES.CREATE_ACCOUNT}
           className="flex"
         />

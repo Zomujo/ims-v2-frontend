@@ -7,12 +7,9 @@ import {
   NextApiRequest,
   NextApiResponse,
 } from "next";
-import { NextAuthOptions, getServerSession } from "next-auth";
+import { getServerSession, NextAuthOptions } from "next-auth";
 import { JWT } from "next-auth/jwt";
-import {
-  CreateAccountCredentialsProvider,
-  LoginCredentialsProvider,
-} from "./auth.providers";
+import { LoginCredentialsProvider } from "./auth.providers";
 
 export const AUTH_OPTIONS_CONSTANTS = {
   EMAIL_PASSWORD: "email-password",
@@ -24,7 +21,7 @@ export const authOptions = {
   pages: {
     signIn: "/auth/login",
   },
-  providers: [LoginCredentialsProvider(), CreateAccountCredentialsProvider()],
+  providers: [LoginCredentialsProvider()],
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
@@ -32,7 +29,7 @@ export const authOptions = {
       }
 
       if (!user && isTokenExpired(token.expiresAt)) {
-        token = await refresToken(token);
+        token = await refreshToken(token);
       }
       return token;
     },
@@ -57,18 +54,16 @@ export function imsServerSession(
   return getServerSession(...args, authOptions);
 }
 
-async function refresToken(tokenObj: JWT) {
-  const refreshToken = await authRefreshTokenAction(
+async function refreshToken(tokenObj: JWT) {
+  const refreshTokenResponse = await authRefreshTokenAction(
     tokenObj.tokens.refreshToken,
   );
 
-  const newToken = refreshToken
+  return refreshToken
     ? {
         ...tokenObj,
-        expiresAt: refreshToken.expiresAt,
+        expiresAt: refreshTokenResponse?.expiresAt ?? "",
         tokens: { ...tokenObj.tokens, ...refreshToken },
       }
     : ({} as JWT);
-
-  return newToken;
 }
