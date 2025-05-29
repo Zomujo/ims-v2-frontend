@@ -1,65 +1,32 @@
 "use client";
-import { handleRequestState } from "@/lib/utils";
-import { getReports } from "../shared/actions/report.actions";
-import { deleteSaleAction } from "../shared/actions/sales.action";
-import CrudPage from "../shared/components/crud-page";
+import { getSalesReport } from "../shared/actions/report.actions";
 import useFetchData from "../shared/hooks/use-fetch-data";
-import usePageCRUD from "../shared/hooks/use-page-crud";
-import { CRUDACTION } from "../shared/types/utitls.types";
 import { ScrollArea } from "../ui/scroll-area";
-import { reportsTableColumns } from "./reports.data";
+import { ReportAccordion } from "./report-accordion";
 
 export default function ReportsList() {
-  const { data } = useFetchData({ fetchFn: getReports });
-  const itemCategories = data?.rows ?? [];
+  const { data } = useFetchData({ fetchFn: getSalesReport });
+  const itemCategories = data?.data.rows ?? [];
 
-  const {
-    state,
-    isEditMode,
-    getData,
-    getId,
-    removeSearchParams,
-    handleDeleteBtnClicked,
-    handleEditBtnClicked,
-    handleRemoveQueryparam,
-  } = usePageCRUD({ data: itemCategories });
-
-  const handleDelete = async () => {
-    const id = getId(CRUDACTION.DELETE);
-    const res = deleteSaleAction(id);
-    handleRequestState({ res, loadingMsg: "Deleting category...." });
-    res.then(() => {
-      removeSearchParams(CRUDACTION.DELETE);
-    });
-    await res;
-  };
-
+  const saleNameId = itemCategories.flatMap(({ saleItems }) =>
+    saleItems.map(({ batchId, item: { name } }) => ({
+      id: batchId,
+      name,
+    })),
+  );
   return (
     <ScrollArea className="mt-2 h-[calc(100%-5rem)] rounded-2xl bg-white pr-4">
-      <CrudPage
-        moduleName="item categories"
-        data={itemCategories}
-        modalAction={handleDelete}
-        handleRemoveQueryparam={handleRemoveQueryparam}
-        currentDataDisplayName={getData(CRUDACTION.DELETE)?.name ?? ""}
-        tableColumns={reportsTableColumns}
-        totalPages={data?.totalPages ?? 0}
-        state={state}
-        isEditMode={isEditMode}
-        actions={(item) => [
-          {
-            label: "edit",
-            icon: "lucide:edit-2",
-            action: () => handleEditBtnClicked(item),
-          },
-          {
-            label: "delete",
-            icon: "solar:trash-bin-trash-line-duotone",
-            type: "destructive",
-            action: () => handleDeleteBtnClicked(item),
-          },
-        ]}
-      ></CrudPage>
+      <div className="mt-[26px] flex w-full gap-5 rounded-xl border-1 border-gray-200 bg-[#FAFAFA] px-3.5 py-[12.5px] text-[14px] font-medium text-gray-500">
+        <div className="w-[35%]">
+          <p>REPORT NAME</p>
+        </div>
+        <p>TYPE</p>
+      </div>
+      <ReportAccordion
+        title="SALES AND FINANCIAL REPORTS"
+        type="Sales and Financial Reports"
+        reportReference={saleNameId}
+      />
     </ScrollArea>
   );
 }

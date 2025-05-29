@@ -6,6 +6,7 @@ import { z } from "zod";
 import {
   createDepartmentAction,
   deleteDepartmentAction,
+  getDepartmentsAction,
   updateDepartmentAction,
 } from "../shared/actions/settings.actions";
 import CrudPage from "../shared/components/crud-page";
@@ -20,15 +21,15 @@ import { CRUDACTION } from "../shared/types/utitls.types";
 import { Input } from "../ui/input";
 import { departmentSettingsSchema } from "./settigns.schemas";
 import { settingsDepartmentTableColumns } from "./settings.data";
-import {
-  DepartmentFormProps,
-  DepartmentManagementSettingsProps,
-} from "./settings.types";
+import { DepartmentFormProps } from "./settings.types";
+import useFetchData from "@features/shared/hooks/use-fetch-data";
+import { useSessionData } from "@/hooks/useSessionData";
+import { PermissionModules } from "@features/shared/types/auth-action.types";
 
-export function DepartmentManagementSettings({
-  departments,
-  totalPages,
-}: DepartmentManagementSettingsProps) {
+export function DepartmentManagementSettings() {
+  const { canWrite, canDelete } = useSessionData();
+  const { data, loading } = useFetchData({ fetchFn: getDepartmentsAction });
+  const departments = data?.data.rows ?? [];
   const {
     state,
     isEditMode,
@@ -58,31 +59,36 @@ export function DepartmentManagementSettings({
   };
 
   return (
-    <CrudPage
-      moduleName="department"
-      data={departments}
-      modalAction={handleDelete}
-      handleRemoveQueryparam={handleRemoveQueryparam}
-      currentDataDisplayName={getData(CRUDACTION.DELETE)?.name ?? ""}
-      tableColumns={settingsDepartmentTableColumns}
-      totalPages={totalPages}
-      state={state}
-      isEditMode={isEditMode}
-      actions={(item) => [
-        {
-          label: "edit",
-          icon: "lucide:edit-2",
-          action: () => handleEditBtnClicked(item),
-        },
-        {
-          label: "delete",
-          icon: "solar:trash-bin-trash-line-duotone",
-          action: () => handleDeleteBtnClicked(item),
-        },
-      ]}
-    >
-      <DepartmentForm defaultValues={handleEdit()} />
-    </CrudPage>
+    <>
+      <CrudPage
+        moduleName="department"
+        data={departments}
+        modalAction={handleDelete}
+        handleRemoveQueryparam={handleRemoveQueryparam}
+        currentDataDisplayName={getData(CRUDACTION.DELETE)?.name ?? ""}
+        tableColumns={settingsDepartmentTableColumns}
+        totalPages={data?.data.totalPages ?? 0}
+        isLoading={loading}
+        state={state}
+        isEditMode={isEditMode}
+        actions={(item) => [
+          {
+            label: "edit",
+            icon: "lucide:edit-2",
+            action: () => handleEditBtnClicked(item),
+            hide: !canWrite(PermissionModules.DEPARTMENTS),
+          },
+          {
+            label: "delete",
+            icon: "solar:trash-bin-trash-line-duotone",
+            action: () => handleDeleteBtnClicked(item),
+            hide: !canDelete(PermissionModules.DEPARTMENTS),
+          },
+        ]}
+      >
+        <DepartmentForm defaultValues={handleEdit()} />
+      </CrudPage>
+    </>
   );
 }
 
@@ -138,6 +144,7 @@ function DepartmentForm({ defaultValues }: Readonly<DepartmentFormProps>) {
       }
       RenderActions={
         <ImsButton
+          disabled={!form.formState.isValid || form.formState.isSubmitting}
           isLoading={form.formState.isSubmitting}
           isLoadingLabel={
             defaultValues ? "Updating department..." : "Adding department..."

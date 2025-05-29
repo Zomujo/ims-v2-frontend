@@ -26,6 +26,9 @@ export default function CrudPage<T>({
   moduleName,
   modalAction,
   handleRemoveQueryparam,
+  isLoading,
+  closeModal,
+  alertModalOnChange = true,
 }: Readonly<PropsWithChildren<CrudPageProps<T>>>) {
   const allColumns = tableColumns.concat(getActionColumn({ actions }));
   return (
@@ -44,10 +47,11 @@ export default function CrudPage<T>({
         columns={allColumns}
         data={data}
         totalPages={totalPages}
+        isLoading={isLoading}
       />
       <ImsAlertModal
         open={openModal || state?.includes("delete")}
-        onOpenChange={handleRemoveQueryparam}
+        onOpenChange={alertModalOnChange ? handleRemoveQueryparam : undefined}
         title={modalActionLabel ?? "Delete"}
         description={
           <>
@@ -62,7 +66,7 @@ export default function CrudPage<T>({
             {modalActionLabel ?? "Delete"}
           </ImsButton>
         }
-        cancelNode={<button>Cancel</button>}
+        cancelNode={<button onClick={closeModal}>Cancel</button>}
       />
     </>
   );
@@ -78,17 +82,25 @@ const getActionColumn = <TData, TValue>({
     header: "",
     cell: ({ row }) => {
       const item = row.original;
+      const actualActions = (actions(item) ?? [])
+        .filter(Boolean)
+        .filter((actionItem) => !actionItem?.hide);
       return (
         <ImsDropdownMenu
           trigger={
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
+            actualActions.length ? (
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <span className="sr-only">Open menu</span>
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            ) : (
+              <div></div>
+            )
           }
           align="start"
           menuItems={(actions(item) ?? [])
             .filter((obj) => obj)
+            .filter((actionItem) => !actionItem?.hide)
             .map((actionItem) => {
               return {
                 id: actionItem?.label ?? "",

@@ -1,0 +1,15 @@
+.homeBackground {
+    /* Remove background image by default (for screens smaller than 768px) */
+    background-image: none;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    box-sizing: content-box;
+}
+
+/* Apply background image only for screens wider than 768px */
+@media (min-width: 768px) {
+    .homeBackground {
+        background-image: url('public/images/hero-section.png');
+    }
+}
