@@ -1,10 +1,11 @@
 import Image from "next/image";
-import { LANDING_PAGE_IMAGES } from "@/lib/constant";
+import OptimizeInventoryImage from "@public/images/hospital.jpg";
+import LocalPharmacyImage from "@public/images/local-pharmacies.jpg";
 
 export default function OptimizeInventory() {
   return (
-    <section className="flex h-auto w-full flex-col gap-8 bg-[#111111] px-6 py-14 md:px-8 lg:h-screen lg:gap-20 lg:px-[120px] lg:pt-20">
-      <div className="grid w-full grid-cols-1 gap-4 text-white lg:grid-cols-2 lg:gap-16">
+    <section className="flex h-auto w-full flex-col gap-8 bg-[#111111] py-14 lg:h-screen lg:gap-20 lg:pt-20 xl:px-[150px]">
+      <div className="grid w-full grid-cols-1 gap-4 px-8 text-white lg:grid-cols-2 lg:gap-16">
         <h3 className="text-3xl font-bold tracking-wide md:text-[42px]">
           Optimizing Inventory for Healthcare Providers
         </h3>
@@ -14,10 +15,10 @@ export default function OptimizeInventory() {
           compliance—helping you deliver exceptional care to your community.
         </p>
       </div>
-      <div className="grid w-full grid-cols-1 gap-5 lg:grid-cols-2">
+      <div className="grid w-full grid-cols-1 gap-5 px-8 lg:grid-cols-2">
         <div className="relative w-full">
           <Image
-            src={LANDING_PAGE_IMAGES.optimizeImage}
+            src={OptimizeInventoryImage}
             alt="Optimize Inventory"
             className="h-full w-full rounded-2xl lg:w-[95%]"
             width={492}
@@ -35,7 +36,7 @@ export default function OptimizeInventory() {
         </div>
         <div className="relative w-full">
           <Image
-            src={LANDING_PAGE_IMAGES.localPharmaciesImage}
+            src={LocalPharmacyImage}
             alt="local and ruralpahrmacy"
             className="h-full w-full rounded-2xl lg:w-[95%]"
             width={492}
