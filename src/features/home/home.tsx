@@ -4,6 +4,7 @@ import styles from "./home.module.css";
 import { cn } from "@/lib/utils";
 import OptimizeInventory from "@features/home/optimize";
 import Features from "@features/home/features";
+import Pricing from "@/app/landing-page/pricing";
 
 const Home = () => {
   return (
@@ -14,6 +15,7 @@ const Home = () => {
       </div>
       <OptimizeInventory />
       <Features />
+      <Pricing />
     </div>
   );
 };
