@@ -1,5 +1,4 @@
 .homeBackground {
-    /* Remove background image by default (for screens smaller than 768px) */
     background-image: none;
     background-size: cover;
     background-position: center;
@@ -7,11 +6,44 @@
     box-sizing: content-box;
 }
 
-/* Apply background image only for screens wider than 768px */
 @media (min-width: 768px) {
     .homeBackground {
         background-image: url('public/images/hero-section.png');
         background-position: center top 0;
+    }
+}
+
+.reviewBackground {
+    background-image: url('public/images/reviews-bg-mobile.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+@media (min-width: 768px) {
+    .reviewBackground {
+        background-image: url('public/images/reviews-bg.png');
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
 
     }
 }
+
+
+.carouselGradientOverlay {
+    position: relative;
+}
+
+.carouselGradientOverlay::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 80px;
+    background: linear-gradient(180deg, rgba(255, 253, 245, 0.7) 40%, rgba(255, 253, 245, 0) 100%);
+    z-index: 10;
+    pointer-events: none;
+}
+

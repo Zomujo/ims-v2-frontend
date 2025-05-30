@@ -127,3 +127,27 @@ export const featureOptions = [
     value: PermissionModules.DEPARTMENT_REQUESTS,
   },
 ];
+
+export const TESTIMONIALS = [
+  {
+    name: "Michael Mensah",
+    position: "Chief Medical Officer / Korle-Bu",
+    image: "/images/micheal.svg",
+    message:
+      "IMS has completely transformed how we manage our patient records. It’s user-friendly, reliable, and has made our operations more efficient than ever before.",
+  },
+  {
+    name: "Elsie Osei",
+    position: "Chief Financial Officer / Justab Hospital",
+    image: "/images/elsie.svg",
+    message:
+      "Since adopting IMS, our clinic workflow has improved drastically. We can now focus more on patient care rather than paperwork. Highly recommended!",
+  },
+  {
+    name: "Layla Keitting",
+    position: "Chief Executive Officer / St. Joseph's Hospital",
+    image: "/images/layla.svg",
+    message:
+      "The integration and onboarding process with IMS was seamless. The support team is outstanding, and the product delivers everything it promises.",
+  },
+];
