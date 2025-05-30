@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="211f9edb-871e-4983-bd75-b99ff96b3564" name="Changes" comment="feat: add carousel component and integrate reviews section with responsive backgrounds">
+      <change afterPath="$PROJECT_DIR$/public/images/reviews-bg-mobile.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/images/reviews-bg.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/features/ui/carousel.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/landing-page/page.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/landing-page/pricing.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/home/pricing.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/landing-page/reviews.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/home/reviews.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/home/home.module.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/home/home.module.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/home/home.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/home/home.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/yarn.lock" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GithubProjectSettings">
+    <option name="branchProtectionPatterns">
+      <list>
+        <option value="develop" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "git-widget-placeholder": "#21 on feat-reviews",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "ts.external.directory.path": "C:\\Users\\BilalAbubakari\\Desktop\\projects\\ims-v2-frontend\\node_modules\\typescript\\lib"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\BilalAbubakari\Desktop\projects\ims-v2-frontend\src\features\home" />
+    </key>
+  </component>
+  <component name="TaskManager">
+    <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="feat: add carousel component and integrate reviews section with responsive backgrounds" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: add carousel component and integrate reviews section with responsive backgrounds" />
+  </component>
+</project>
