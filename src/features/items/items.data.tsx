@@ -7,6 +7,12 @@ import {
 import { cn, formateDate } from "@/lib/utils";
 import { Badge } from "../ui/badge";
 
+const statusText = {
+  [ITEMS_STATUS.STOCKED]: "In Stock",
+  [ITEMS_STATUS.LOW]: "Low Stock",
+  [ITEMS_STATUS.OUT_OF_STOCK]: "Out of Stock",
+};
+
 export const itemsTableColumns: ColumnDef<ItemsDto>[] = [
   { header: "ITEM NAME", accessorKey: "name" },
   {
@@ -42,7 +48,7 @@ export const itemsTableColumns: ColumnDef<ItemsDto>[] = [
           })}
         >
           <span className="h-1.5 w-1.5 rounded-full"></span>
-          {status}
+          {statusText[status] ?? "N/A"}
         </Badge>
       );
     },

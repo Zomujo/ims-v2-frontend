@@ -21,9 +21,13 @@ import { Input } from "../ui/input";
 import { ScrollArea } from "../ui/scroll-area";
 import { itemCategoriesTableColumns } from "./categories.data";
 import { categoryFormSchema } from "./categories.schemas";
+import { ITEMS_CATEGORIES_STATUS } from "@features/shared/types/action.types";
+import { useSessionData } from "@/hooks/useSessionData";
+import { PermissionModules } from "@features/shared/types/auth-action.types";
 
 export default function CategoriesList() {
-  const { data } = useFetchData({ fetchFn: getItemCategories });
+  const { canWrite, canDelete } = useSessionData();
+  const { data, loading } = useFetchData({ fetchFn: getItemCategories });
   const itemCategories = data?.rows ?? [];
   const {
     state,
@@ -40,10 +44,8 @@ export default function CategoriesList() {
     const id = getId(CRUDACTION.DELETE);
     const res = deleteItemCategory(id);
     handleRequestState({ res, loadingMsg: "Deleting category...." });
-    res.then(() => {
-      removeSearchParams(CRUDACTION.DELETE);
-    });
     await res;
+    removeSearchParams(CRUDACTION.DELETE);
   };
 
   return (
@@ -58,47 +60,58 @@ export default function CategoriesList() {
         totalPages={data?.totalPages ?? 0}
         state={state}
         isEditMode={isEditMode}
+        isLoading={loading}
         actions={(item) => [
           {
             label: "edit",
             icon: "lucide:edit-2",
             action: () => handleEditBtnClicked(item),
+            hide: !canWrite(PermissionModules.ITEMS_CATEGORIES),
           },
           {
             label: "delete",
             icon: "solar:trash-bin-trash-line-duotone",
             type: "destructive",
             action: () => handleDeleteBtnClicked(item),
+            hide: !canDelete(PermissionModules.ITEMS_CATEGORIES),
           },
         ]}
       >
         <CategoriesForm
           categoryId={getId(CRUDACTION.EDIT)}
-          categroryName={getData("edit")?.name}
+          categoryName={getData("edit")?.name}
+          status={getData("edit")?.status}
         />
       </CrudPage>
     </ScrollArea>
   );
 }
 
+type CategoryFormProps = {
+  categoryName: string;
+  categoryId: string;
+  status: string;
+};
 function CategoriesForm({
-  categroryName,
+  categoryName,
   categoryId,
-}: Readonly<{ categroryName?: string; categoryId?: string }>) {
+  status,
+}: Readonly<Partial<CategoryFormProps>>) {
   const { removeSearchParams } = useImsSearchParams();
   const form = useHookForm({
     resolver: categoryFormSchema,
     defaultValues: {
-      name: categroryName ?? "",
+      name: categoryName ?? "",
+      status: status ?? ITEMS_CATEGORIES_STATUS.ACTIVE,
     },
   });
-  const isEditMode = !!categroryName;
+  const isEditMode = !!categoryName;
 
   const handleSubmit = async (data: unknown) => {
-    const oneCategoryData = data as z.infer<typeof categoryFormSchema>;
+    const categoryData = data as z.infer<typeof categoryFormSchema>;
     const res = isEditMode
-      ? updateItemCategory(categoryId ?? "", oneCategoryData)
-      : addItemCategory(oneCategoryData);
+      ? updateItemCategory(categoryId ?? "", categoryData)
+      : addItemCategory(categoryData);
     handleRequestState({
       res,
       loadingMsg: isEditMode ? "Updating category..." : "Adding category...",
@@ -128,19 +141,38 @@ function CategoriesForm({
         </ImsButton>
       }
       RenderInputs={
-        <HookFormField
-          formControl={form.control}
-          name="name"
-          label="Category Name"
-          renderInput={({ field }) => (
-            <Input
-              {...field}
-              className="focus-visible:ring-ims-blue-300 bg-white"
-              type="text"
-              placeholder="Eg. Paracetamol"
+        <>
+          <HookFormField
+            formControl={form.control}
+            name="name"
+            label="Category Name"
+            renderInput={({ field }) => (
+              <Input
+                {...field}
+                className="focus-visible:ring-ims-blue-300 bg-white"
+                type="text"
+                placeholder="Eg. Paracetamol"
+              />
+            )}
+          />
+
+          {isEditMode && (
+            <HookFormField
+              formControl={form.control}
+              name="status"
+              label="Status"
+              renderInput={({ field }) => (
+                <select
+                  {...field}
+                  className="focus:ring-ims-blue-300 mt-1 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none"
+                >
+                  <option value="ACTIVE">Active</option>
+                  <option value="DEACTIVATED">Deactivate</option>
+                </select>
+              )}
             />
           )}
-        />
+        </>
       }
     />
   );

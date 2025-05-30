@@ -31,14 +31,20 @@ export enum UserStatus {
   INACTIVE = "Inactive",
 }
 
+export enum UserRole {
+  Pharmacist = "Pharmacist",
+  CentralAdmin = "Central Admin",
+  DepartmentAdmin = "Department Admin",
+}
+
 export enum PermissionModules {
   USERS = "users",
   ITEMS = "items",
   SUPPLIERS = "suppliers",
   SALES = "sales",
   REPORTS = "reports",
-  ITEMS_CATEGORIES = "items_categories",
-  ITEMS_ORDERS = "items_orders",
+  ITEMS_CATEGORIES = "item_categories",
+  ITEMS_ORDERS = "item_orders",
   STOCK_ADJUSTMENT = "stock_adjustment",
   DEPARTMENTS = "departments",
   DEPARTMENT_REQUESTS = "department_requests",
@@ -61,22 +67,21 @@ export type AuthActionProps = {
   code: number;
 };
 
+export type AuthAccountCreationProps = Omit<
+  AuthActionProps,
+  "code" | "refreshToken" | "newPassword"
+>;
+
 export type AuthIMSLoginObj = {
   id: string;
-  fullName: string;
-  email: string;
   status: UserStatus;
-  phoneNumber: string;
   facilityId: string;
-  departmentId: string;
-  role: string;
-  permissions: string[];
   tokens: {
     accessToken: string;
     refreshToken: string;
   };
   expiresAt: string;
-};
+} & AuthIMSUserProfile;
 
 export type AuthLoginActionResponse = Pick<
   IMSApiActionResponse<AuthIMSLoginObj>,
@@ -103,7 +108,7 @@ export type AuthIMSUserProfile = {
   email: string;
   phoneNumber: string | null;
   departmentId: string | null;
-  role: string;
+  role: UserRole;
   permissions: string[];
   status: UserStatus;
   facility: {

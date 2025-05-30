@@ -10,6 +10,7 @@ import {
   UpdateReportDto,
   ApiSuccessResponseNoData,
   GetReportDataDto,
+  GetSaleDto,
 } from "../types/action.types";
 import { FetchApi } from "../types/ims-api-action.types";
 import { imsApiWithAuth } from "./ims-api.action";
@@ -94,4 +95,16 @@ export async function getReportData(id: string) {
   return await imsApiWithAuth<ApiSuccessResponseDto<GetReportDataDto>>(
     fetchOptions,
   );
+}
+
+export async function getSalesReport() {
+  const fetchOptions: FetchApi = {
+    url: API_ENDPOINTS.REPORT_SALES,
+    method: "GET",
+    headers: {},
+    cache: "force-cache",
+    next: { tags: [API_ENDPOINT_TAGS.REPORTS] },
+  };
+
+  return await imsApiWithAuth<PaginatedResponse<GetSaleDto>>(fetchOptions);
 }

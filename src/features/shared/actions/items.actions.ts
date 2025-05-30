@@ -39,9 +39,16 @@ export async function addItem(data: CreateItemDto) {
   return result;
 }
 
-export async function getItems(params?: GenerateQueryParams) {
+export async function getItems(
+  params?: GenerateQueryParams,
+  arraySearch?: string,
+) {
   const fetchOptions: FetchApi = {
-    url: generateUrlWithQueryParams(API_ENDPOINTS.ITEMS, params ?? {}),
+    url: generateUrlWithQueryParams(
+      API_ENDPOINTS.ITEMS,
+      params ?? {},
+      arraySearch,
+    ),
     method: "GET",
     headers: {},
     cache: "force-cache",

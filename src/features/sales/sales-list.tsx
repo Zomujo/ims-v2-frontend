@@ -12,10 +12,13 @@ import { GetSalesDto } from "../shared/types/action.types";
 import { CRUDACTION } from "../shared/types/utitls.types";
 import { ScrollArea } from "../ui/scroll-area";
 import { salesItemLocalStorageKey, salesTableColumns } from "./sales.data";
+import { useSessionData } from "@/hooks/useSessionData";
+import { PermissionModules } from "@features/shared/types/auth-action.types";
 
 export default function SalesList() {
+  const { canWrite, canDelete } = useSessionData();
   const router = useRouter();
-  const { data } = useFetchData({ fetchFn: getSales });
+  const { data, loading, refetch } = useFetchData({ fetchFn: getSales });
   const [, , removeSalesItems] = useLocalStorage(salesItemLocalStorageKey, []);
   const sales = data?.rows ?? [];
   const {
@@ -25,7 +28,6 @@ export default function SalesList() {
     getId,
     removeSearchParams,
     handleDeleteBtnClicked,
-    handleEditBtnClicked,
     handleRemoveQueryparam,
   } = usePageCRUD({ data: sales });
 
@@ -35,6 +37,7 @@ export default function SalesList() {
     handleRequestState({ res, loadingMsg: "Deleting sale...." });
     res.then(() => {
       removeSearchParams(CRUDACTION.DELETE);
+      refetch();
     });
     await res;
   };
@@ -56,6 +59,7 @@ export default function SalesList() {
       <CrudPage
         moduleName="sales"
         data={sales}
+        isLoading={loading}
         modalAction={handleDelete}
         handleRemoveQueryparam={handleRemoveQueryparam}
         currentDataDisplayName={getData(CRUDACTION.DELETE)?.saleNumber ?? ""}
@@ -65,20 +69,17 @@ export default function SalesList() {
         isEditMode={isEditMode}
         actions={(item) => [
           {
-            label: "view",
-            icon: "hugeicons:view",
-            action: () => handleEditBtnClicked(item),
-          },
-          {
             label: "edit",
             icon: "lucide:edit-2",
             action: () => handleEdit(item),
+            hide: !canWrite(PermissionModules.SALES),
           },
           {
             label: "delete",
             icon: "solar:trash-bin-trash-line-duotone",
             type: "destructive",
             action: () => handleDeleteBtnClicked(item),
+            hide: !canDelete(PermissionModules.SALES),
           },
         ]}
       ></CrudPage>
