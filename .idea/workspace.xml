@@ -5,17 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="211f9edb-871e-4983-bd75-b99ff96b3564" name="Changes" comment="feat: add carousel component and integrate reviews section with responsive backgrounds">
-      <change afterPath="$PROJECT_DIR$/public/images/reviews-bg-mobile.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/images/reviews-bg.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/features/ui/carousel.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/landing-page/page.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/landing-page/pricing.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/home/pricing.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/landing-page/reviews.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/home/reviews.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/features/home/home.module.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/home/home.module.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/features/home/home.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/home/home.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/yarn.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/home/reviews.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/home/reviews.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -48,6 +38,15 @@
     </key>
   </component>
   <component name="TaskManager">
+    <task id="LOCAL-00001" summary="feat: add carousel component and integrate reviews section with responsive backgrounds">
+      <option name="closed" value="true" />
+      <created>1748619444590</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1748619444590</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
