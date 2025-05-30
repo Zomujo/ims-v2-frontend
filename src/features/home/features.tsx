@@ -1,34 +1,48 @@
 import Image from "next/image";
-import { LANDING_PAGE_IMAGES } from "@/lib/constant";
+import realTimeDrugsImage from "@public/images/tracking.svg";
+import realTimeDrugsImageMobile from "@public/images/tracking - mobile.svg";
+import stockImage from "@public/images/ims-stock.svg";
+import stockImageMobile from "@public/images/ims-stock-mobile.svg";
+import manageDrugsImage from "@public/images/manage-drugs.svg";
+import manageDrugsImageMobile from "@public/images/manage-drugs-mobile.svg";
+import notificationsImage from "@public/images/Mobile - Notification.svg";
+import notificationsImageMobile from "@public/images/Mobile - Notification-mobile.svg";
+import manageSuppliersImage from "@public/images/manage_suppliers.svg";
+import manageSuppliersImageMobile from "@public/images/manage_suppliers-mobile.svg";
 
 export default function Features() {
   return (
     <section
       id="features"
-      className="bg-white px-6 py-14 lg:px-[120px] lg:py-20"
+      className="bg-white px-6 py-18 lg:py-28 xl:px-[150px]"
     >
       <div className="mb-16 text-center">
         <h2 className="mb-4 text-3xl font-bold text-[#111111] lg:text-[42px]">
           Features
         </h2>
-        <p className="mx-auto max-w-2xl text-[#64748B]">
-          Efficient drug management for hospitals, clinics, and <br />
-          pharmacies. Ensure accuracy, prevent stockouts, and optimize <br />
-          your supply chain.
+        <p className="mx-auto max-w-md text-[#64748B]">
+          Efficient drug management for hospitals, clinics, and pharmacies.
+          Ensure accuracy, prevent stockouts, and optimize your supply chain.
         </p>
       </div>
 
-      <div className="grid gap-10">
+      <div className="grid gap-10 xl:px-8">
         <div className="overflow-hidden">
           <Image
-            src={LANDING_PAGE_IMAGES.realTimeDrugsImage}
+            src={realTimeDrugsImageMobile}
             alt="Real-Time Drug Tracking"
-            width={1920}
             height={1080}
+            className="md:hidden"
+          />
+          <Image
+            src={realTimeDrugsImage}
+            alt="Real-Time Drug Tracking"
+            height={1080}
+            className="hidden md:block"
           />
         </div>
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-          <div className="rounded-2xl bg-[#FFFBEB]">
+        <div className="grid grid-cols-1 gap-x-7 gap-y-10 lg:grid-cols-5">
+          <div className="rounded-2xl bg-[#FFFBEB] lg:col-span-3">
             <div className="px-6 py-6 md:px-8">
               <h3 className="mb-1 text-lg font-semibold text-[#111111]">
                 Manage your drugs with ease
@@ -39,14 +53,23 @@ export default function Features() {
               </p>
             </div>
             <Image
-              src={LANDING_PAGE_IMAGES.manageDrugsImage}
+              src={manageDrugsImageMobile}
               alt="Manage drugs"
               width={600}
               height={400}
               layout="responsive"
+              className="md:hidden"
+            />
+            <Image
+              src={manageDrugsImage}
+              alt="Manage drugs"
+              width={600}
+              height={400}
+              layout="responsive"
+              className="hidden md:block"
             />
           </div>
-          <div className="rounded-2xl bg-[#F1F6FD]">
+          <div className="rounded-2xl bg-[#F1F6FD] lg:col-span-2">
             <div className="px-6 py-6 md:px-8">
               <h3 className="text-lg font-semibold text-[#111111]">
                 Stock adjustment
@@ -57,14 +80,21 @@ export default function Features() {
               </p>
             </div>
             <Image
-              src={LANDING_PAGE_IMAGES.stockImage}
+              src={stockImageMobile}
               alt="Stock adjustment"
               width={600}
               height={200}
-              className="mx-auto block"
+              className="mx-auto block md:hidden"
+            />
+            <Image
+              src={stockImage}
+              alt="Stock adjustment"
+              width={600}
+              height={200}
+              className="mx-auto hidden md:block"
             />
           </div>
-          <div className="rounded-2xl bg-[#F0FDF4]">
+          <div className="rounded-2xl bg-[#F0FDF4] lg:col-span-2">
             <div className="px-6 py-6 md:px-8">
               <h3 className="text-lg font-semibold text-[#111111]">
                 Notifications
@@ -74,13 +104,21 @@ export default function Features() {
               </p>
             </div>
             <Image
-              src={LANDING_PAGE_IMAGES.notificationsImage}
+              src={notificationsImageMobile}
               alt="Notifications"
               width={600}
               height={400}
+              className="mx-auto block md:hidden"
+            />
+            <Image
+              src={notificationsImage}
+              alt="Notifications"
+              width={600}
+              height={400}
+              className="mx-auto hidden md:block"
             />
           </div>
-          <div className="rounded-2xl bg-[#FEF2F2] lg:col-span-1">
+          <div className="rounded-2xl bg-[#FEF2F2] lg:col-span-3">
             <div className="px-6 py-6 md:px-8">
               <h3 className="text-lg font-semibold text-[#111111]">
                 Manage your suppliers
@@ -90,11 +128,20 @@ export default function Features() {
               </p>
             </div>
             <Image
-              src={LANDING_PAGE_IMAGES.manageSuppliersImage}
+              src={manageSuppliersImageMobile}
               alt="Manage suppliers"
               width={600}
               height={400}
               layout="responsive"
+              className="mx-auto block md:hidden"
+            />
+            <Image
+              src={manageSuppliersImage}
+              alt="Manage suppliers"
+              width={600}
+              height={400}
+              layout="responsive"
+              className="mx-auto hidden md:block"
             />
           </div>
         </div>
