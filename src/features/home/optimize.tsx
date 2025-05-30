@@ -7,7 +7,7 @@ export default function OptimizeInventory() {
     <section className="flex h-auto w-full flex-col gap-8 bg-[#111111] py-14 lg:h-screen lg:gap-20 lg:pt-20 xl:px-[150px]">
       <div className="grid w-full grid-cols-1 gap-4 px-8 text-white lg:grid-cols-2 lg:gap-16">
         <h3 className="text-3xl font-bold tracking-wide md:text-[42px]">
-          Optimizing Inventory for <br /> Healthcare Providers
+          Optimizing Inventory for Healthcare Providers
         </h3>
         <p className="tracking-wide opacity-60">
           Whether you're a hospital or a local pharmacy, IMS streamlines stock
