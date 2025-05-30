@@ -1,8 +1,9 @@
 "use client";
 import Image from "next/image";
-import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { useState } from "react";
-import { FAQs, LANDING_PAGE_IMAGES } from "@/lib/constant";
+import { FAQs } from "@/lib/constant";
+import faqImage from "@public/images/faq.jpg";
+import { ChevronDown, ChevronUp } from "lucide-react";
 
 export default function Faq() {
   const [activeIndex, setActiveIndex] = useState<number | null>(0);
@@ -11,8 +12,8 @@ export default function Faq() {
   };
 
   return (
-    <section className="bg-white py-16 lg:py-24">
-      <div className="flex flex-col items-start gap-12 px-6 md:px-8 lg:flex-row lg:px-[120px]">
+    <section className="py-16 lg:py-24 xl:px-[150px]">
+      <div className="flex flex-col items-start gap-12 px-6 md:px-8 lg:flex-row">
         <div className="w-full lg:w-1/2">
           <h2 className="mb-4 text-4xl font-bold tracking-wide text-[#111111] lg:text-5xl">
             Frequently asked <br /> Questions
@@ -22,7 +23,7 @@ export default function Faq() {
           </p>
           <div className="hidden h-full w-full rounded-3xl lg:block">
             <Image
-              src={LANDING_PAGE_IMAGES.faqImage}
+              src={faqImage}
               alt="Pharmacist"
               width={430}
               height={400}
@@ -47,9 +48,9 @@ export default function Faq() {
               >
                 <span>{faq.question}</span>
                 {activeIndex === index ? (
-                  <FaChevronUp className="tracking-wide text-[#111]" />
+                  <ChevronUp className="tracking-wide text-[#111]" />
                 ) : (
-                  <FaChevronDown className="tracking-wide text-[#111]" />
+                  <ChevronDown className="tracking-wide text-[#111]" />
                 )}
               </button>
               {activeIndex === index && (
@@ -62,7 +63,7 @@ export default function Faq() {
         </div>
         <div className="h-full w-full rounded-3xl lg:hidden">
           <Image
-            src={LANDING_PAGE_IMAGES.faqImage}
+            src={faqImage}
             alt="Pharmacist"
             width={430}
             height={400}
