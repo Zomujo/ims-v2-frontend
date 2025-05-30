@@ -3,6 +3,7 @@ import Hero from "@features/home/hero";
 import styles from "./home.module.css";
 import { cn } from "@/lib/utils";
 import OptimizeInventory from "@features/home/optimize";
+import Features from "@features/home/features";
 
 const Home = () => {
   return (
@@ -12,6 +13,7 @@ const Home = () => {
         <Hero />
       </div>
       <OptimizeInventory />
+      <Features />
     </div>
   );
 };
