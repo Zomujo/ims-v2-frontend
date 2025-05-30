@@ -5,13 +5,14 @@ export type HandleRequestState = {
   res: Promise<Record<string, unknown>>;
 };
 
-type DateRangeQueryOptions =
+export type DateRangeQueryOptions =
   | "today"
   | "this_week"
   | "this_month"
   | "last_month"
   | "this_year"
   | "last_three_month";
+
 export type GenerateQueryParams = Partial<{
   id: string;
   search: string;
@@ -22,6 +23,8 @@ export type GenerateQueryParams = Partial<{
   dateRange: DateRangeQueryOptions;
   todaySales: boolean;
   status: "PAID" | "UNPAID" | "LOW" | "STOCKED" | "OUT_OF_STOCK";
+  startDate: string;
+  endDate: string;
   [key: string]: string | number | boolean;
 }>;
 
@@ -33,6 +36,9 @@ export enum CRUDACTION {
   DEACTIVATE = "deactivate",
   ACTIVATE = "activate",
   STATUS = "status",
+  ACCEPT = "accept",
+  DECLINE = "cancel",
+  DELIVERED = "delivered",
 }
 
 export type CrudAction =
@@ -42,4 +48,12 @@ export type CrudAction =
   | "view"
   | "deactivate"
   | "activate"
-  | "status";
+  | "status"
+  | "accept"
+  | "cancel"
+  | "delivered";
+
+export enum ActiveDeactivedStatus {
+  ACTIVE = "Active",
+  DEACTIVATE = "Deactivated",
+}

@@ -1,10 +1,5 @@
-import { LogOutButton } from "@/features/auth/auth-components-client";
+import DashboardOverview from "@features/dashboard/dashboardOverview";
 
 export default async function Dashboard() {
-  return (
-    <div>
-      <h1>Dashboard</h1>
-      <LogOutButton />
-    </div>
-  );
+  return <DashboardOverview />;
 }

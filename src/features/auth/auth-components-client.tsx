@@ -83,7 +83,7 @@ export function RenderPasswordInput({
         <LucideEye
           size={20}
           className={cn(
-            "absolute top-1/2 right-4 -translate-y-1/2 stroke-neutral-400",
+            "absolute top-1/2 right-4 -translate-y-1/2 cursor-pointer stroke-neutral-400",
             {
               hidden: disabled,
             },

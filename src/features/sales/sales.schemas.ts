@@ -26,19 +26,21 @@ export const salesCartSchema = z.object({
     errorMap: () => ({ message: "Please select a valid payment type" }),
   }),
   notes: z.string().optional(),
-  saleItems: z.array(
-    z.object({
-      batchId: z.string().min(1, {
-        message: "Please select a batch",
-      }),
-      quantity: z
-        .number()
-        .min(1, {
-          message: "Please select a quantity",
-        })
-        .max(100, {
-          message: "Quantity should not be more than 100",
+  saleItems: z
+    .array(
+      z.object({
+        batchId: z.string().min(1, {
+          message: "Please select a batch",
         }),
-    }),
-  ),
+        quantity: z
+          .number()
+          .min(1, {
+            message: "Please select a quantity",
+          })
+          .max(100, {
+            message: "Quantity should not be more than 100",
+          }),
+      }),
+    )
+    .min(1, { message: "Please add at least one sale item" }),
 });

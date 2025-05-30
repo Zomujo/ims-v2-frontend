@@ -14,7 +14,7 @@ import useFetchData from "../shared/hooks/use-fetch-data";
 import { getSalesItemsAction } from "../shared/actions/sales.action";
 
 export default function SalesItemList() {
-  const { data } = useFetchData({
+  const { data, loading } = useFetchData({
     fetchFn: getSalesItemsAction,
   });
   const salesItems = data?.rows ?? [];
@@ -27,6 +27,7 @@ export default function SalesItemList() {
     <ScrollArea className="h-[87%] rounded-2xl bg-white pt-5 pr-4">
       <ImsSearchBar className="ml-4 w-full" />
       <IMSDataTable<SaleItem, unknown>
+        isLoading={loading}
         totalPages={data?.totalPages ?? 0}
         columns={salesItemsColumns.concat(
           getActionColumn<SaleItem, unknown>({
