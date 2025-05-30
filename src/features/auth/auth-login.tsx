@@ -85,6 +85,7 @@ function AuthLoginActions({
         isLoading={isSubmitting}
         isLoadingLabel="Logging in..."
         variant="imsPrimary"
+        disabled={isSubmitting}
         className="order-last h-12 cursor-pointer justify-self-end md:order-none"
         type="submit"
       >

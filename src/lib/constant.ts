@@ -96,21 +96,34 @@ export const PERMISION_MODULES: (keyof typeof PermissionModules)[] = [
 ];
 export const UI_STATE = "state";
 
-export const LANDING_PAGE_IMAGES = {
-  heroImage: "/images/home.png",
-  partnerImage: "/images/trusted.png",
-  hospitalImage: "/images/korle-bu.png",
-  optimizeImage: "/images/hospital.jpg",
-  localPharmaciesImage: "/images/local-pharmacies.jpg",
-  realTimeDrugsImage: "/images/tracking.svg",
-  stockImage: "/images/ims-stock.svg",
-  notificationsImage: "/images/Mobile - Notification.svg",
-  manageDrugsImage: "/images/manage-drugs.svg",
-  manageSuppliersImage: "/images/manage_suppliers.svg",
-  heartImage: "/images/heart.svg",
-  faqImage: "/images/faq.jpg",
-  accessImage: "/images/access.png",
-  imsImage: "/images/ims.jpg",
-  whiteCheckedImage: "/images/checked.svg",
-  blueCheckedImage: "/images/checkmark.svg",
-};
+export const featureOptions = [
+  {
+    label: "Items",
+    value: PermissionModules.ITEMS,
+  },
+  {
+    label: "Items Categories",
+    value: PermissionModules.ITEMS_CATEGORIES,
+  },
+  {
+    label: "Suppliers",
+    value: PermissionModules.SUPPLIERS,
+  },
+  {
+    label: "Reports",
+    value: PermissionModules.REPORTS,
+  },
+
+  {
+    label: "Stock Adjustments",
+    value: PermissionModules.STOCK_ADJUSTMENT,
+  },
+  {
+    label: "Departments",
+    value: PermissionModules.DEPARTMENTS,
+  },
+  {
+    label: "Departments Requests",
+    value: PermissionModules.DEPARTMENT_REQUESTS,
+  },
+];

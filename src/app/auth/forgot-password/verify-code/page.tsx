@@ -16,8 +16,8 @@ export default function VerifyCode() {
           className="flex"
         />
         <AuthFormHeading
-          title="Get started"
-          description="Complete your details to get started."
+          title="Verify your email"
+          description="Enter the code sent to your email address to continue."
           className="mt-[12%]"
         />
         <Suspense fallback={<div>Loading....</div>}>

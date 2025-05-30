@@ -1,13 +1,16 @@
 "use client";
 import { ACCESS_LEVELS, UI_STATE } from "@/lib/constant";
 import { handleRequestState } from "@/lib/utils";
-import { use, useEffect } from "react";
+import { use, useEffect, useState } from "react";
 import { Control, useFieldArray } from "react-hook-form";
 import { z } from "zod";
 import {
+  activateUserAction,
   addUserAction,
+  deactivateUserAction,
   editUserRoleAction,
   getUserAction,
+  getUsersAction,
 } from "../shared/actions/settings.actions";
 import CrudPage from "../shared/components/crud-page";
 import HookFormField from "../shared/components/hook-form-filed";
@@ -17,7 +20,10 @@ import { ImsSelect } from "../shared/components/ims-select";
 import useHookForm from "../shared/hooks/use-hook-form";
 import useImsSearchParams from "../shared/hooks/use-ims-search-params";
 import usePageCRUD from "../shared/hooks/use-page-crud";
-import { AuthIMSUserProfile } from "../shared/types/auth-action.types";
+import {
+  AuthIMSUserProfile,
+  PermissionModules,
+} from "../shared/types/auth-action.types";
 import {
   FacilityUsers,
   USER_STATUS,
@@ -32,31 +38,81 @@ import {
 } from "./settings.context";
 import { defaultPermissions } from "./settings.data";
 import { ManageUsersSettingsProps } from "./settings.types";
+import useFetchData from "@features/shared/hooks/use-fetch-data";
+import { useSessionData } from "@/hooks/useSessionData";
 
 type ManageUsersSettingsFormProps = {
   defaultValues?: z.infer<typeof newUserSettingsSchema> | null;
 };
 
 export default function ManageUsersSettings({
-  users,
   departments,
   roles,
-  totalPages,
 }: Readonly<ManageUsersSettingsProps>) {
+  const { canWrite } = useSessionData();
+  const { data, loading, refetch } = useFetchData({ fetchFn: getUsersAction });
+  const users = data?.data.rows ?? [];
+  const [modalActionProperties, setModalActionProperties] = useState({
+    label: "Deactivate",
+    crudAction: CRUDACTION.DEACTIVATE,
+  });
+  const [openModal, setOpenModal] = useState(false);
   const {
     state,
     isEditMode,
     singleData,
     getData,
+    getId,
     handleActionBtnClicked,
     handleEditBtnClicked,
     handleRemoveQueryparam,
+    removeSearchParams,
   } = usePageCRUD<FacilityUsers, AuthIMSUserProfile>({
     data: users,
     getSingleDataFn: getUserAction,
   });
 
-  const handleDeactivateUser = async () => {};
+  function handleAction(action: CRUDACTION, id: string) {
+    setOpenModal(true);
+
+    switch (action) {
+      case CRUDACTION.DEACTIVATE:
+        handleActionBtnClicked({ action: CRUDACTION.DEACTIVATE, id });
+        setModalActionProperties({
+          label: "Deactivate",
+          crudAction: CRUDACTION.DEACTIVATE,
+        });
+        break;
+      case CRUDACTION.ACTIVATE:
+        handleActionBtnClicked({ action: CRUDACTION.ACTIVATE, id });
+        setModalActionProperties({
+          label: "Activate",
+          crudAction: CRUDACTION.ACTIVATE,
+        });
+        break;
+    }
+  }
+
+  const handleModalAction = async () => {
+    const action = modalActionProperties.crudAction;
+    const id = getId(action);
+
+    const res =
+      action === CRUDACTION.DEACTIVATE
+        ? deactivateUserAction(id)
+        : activateUserAction(id);
+
+    const loadingVerb =
+      action === CRUDACTION.ACTIVATE ? "Activating" : "Deactivating";
+
+    handleRequestState({ res, loadingMsg: `${loadingVerb} user....` });
+    setOpenModal(false);
+    await res;
+    handleRemoveQueryparam(false);
+    removeSearchParams(action);
+    refetch();
+  };
+
   const handleChangeUserRole = () => {
     return singleData
       ? ({
@@ -75,34 +131,44 @@ export default function ManageUsersSettings({
       moduleName="user"
       data={users}
       state={state}
+      isLoading={loading}
       isEditMode={singleData ? isEditMode : false}
-      totalPages={totalPages}
-      modalAction={handleDeactivateUser}
-      modalActionLabel="Deactivate User"
+      totalPages={data?.data.totalPages ?? 0}
+      modalAction={handleModalAction}
+      modalActionLabel={modalActionProperties.label}
       tableColumns={settingsUserTableColumns}
       handleRemoveQueryparam={handleRemoveQueryparam}
       currentDataDisplayName={getData(CRUDACTION.STATUS)?.fullName ?? ""}
-      openModal={state.includes(CRUDACTION.STATUS)}
+      openModal={openModal}
+      closeModal={() => setOpenModal(false)}
       actions={(item) => {
         const status = item.status.toLowerCase();
         const isActive = status === USER_STATUS.ACTIVE;
+        const isDeactivated = status === USER_STATUS.INACTIVE;
         const isDeclined = status === USER_STATUS.DECLINED;
         return [
           {
-            label: "change role",
+            label: "Edit Role",
             icon: "lucide:edit-2",
             action: () => handleEditBtnClicked(item),
+            hide: !canWrite(PermissionModules.USERS),
           },
           isActive || isDeclined
             ? {
-                label: isActive ? "deactivate user" : "activate user",
+                label: "deactivate user",
                 icon: "material-symbols:delete-outline",
                 type: "destructive",
-                action: () =>
-                  handleActionBtnClicked({
-                    id: item.id,
-                    action: CRUDACTION.STATUS,
-                  }),
+                action: () => handleAction(CRUDACTION.DEACTIVATE, item.id),
+                hide: !canWrite(PermissionModules.USERS),
+              }
+            : null,
+          isDeactivated
+            ? {
+                label: "activate user",
+                icon: "solar:power-bold-duotone",
+                type: "",
+                action: () => handleAction(CRUDACTION.ACTIVATE, item.id),
+                hide: !canWrite(PermissionModules.USERS),
               }
             : null,
         ];
@@ -140,6 +206,12 @@ function ManageUsersSettingsForm({
 
   const handleSubmit = async (data: unknown) => {
     const newUser = data as ManageUsersSettingsFormProps["defaultValues"];
+    if (newUser) {
+      newUser.permissions = newUser?.permissions.filter((permission) => {
+        const [, access] = permission.split(":");
+        return access && ACCESS_LEVELS.includes(access);
+      });
+    }
     const res = isEditMode
       ? editUserRoleAction({
           id: newUser?.id ?? "",
@@ -176,13 +248,17 @@ function ManageUsersSettingsForm({
       ({ role }) => role === form.getValues("role"),
     );
 
-    if (selectedRole?.permissions) {
-      const mergedPermissions = getUpdatedPermissions(selectedRole.permissions);
-      form.setValue("permissions", mergedPermissions);
-    } else {
-      setDefaultPermissions();
+    if (!defaultValues) {
+      if (selectedRole?.permissions) {
+        const mergedPermissions = getUpdatedPermissions(
+          selectedRole.permissions,
+        );
+        form.setValue("permissions", mergedPermissions);
+      } else {
+        setDefaultPermissions();
+      }
     }
-  }, [form.watch("role")]);
+  }, [form.watch("role"), defaultValues]);
 
   return (
     <ImsForm
@@ -192,6 +268,7 @@ function ManageUsersSettingsForm({
       handleAuthSubmit={handleSubmit}
       RenderActions={
         <ImsButton
+          disabled={!form.formState.isValid || form.formState.isSubmitting}
           isLoading={form.formState.isSubmitting}
           isLoadingLabel={
             isEditMode ? "Updating user role..." : "Adding user..."
