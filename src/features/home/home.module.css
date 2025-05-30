@@ -11,5 +11,7 @@
 @media (min-width: 768px) {
     .homeBackground {
         background-image: url('public/images/hero-section.png');
+        background-position: center top 0;
+
     }
 }

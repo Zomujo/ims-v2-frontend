@@ -47,7 +47,7 @@ export default function NavigationBar() {
           isScrolled && "bg-white",
         )}
       >
-        <div className="flex items-center justify-between px-8 py-6 lg:px-[100px]">
+        <div className="flex items-center justify-between px-8 py-6">
           <div className="flex items-center space-x-2">
             <h1 className="text-2xl font-bold text-[#111111]">IMS</h1>
             <span className="cursor-pointer rounded-full bg-[#FF6E66] px-[12px] py-1 text-xs font-bold text-white">

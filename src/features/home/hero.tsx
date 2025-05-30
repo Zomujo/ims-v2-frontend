@@ -27,7 +27,7 @@ const Hero = () => {
     },
   ];
   return (
-    <section className="flex w-full flex-col gap-2 px-6 py-12 max-md:px-0 md:px-8 lg:px-[100px] lg:py-48">
+    <section className="flex w-full flex-col gap-2 px-6 py-16 max-md:px-0 md:px-8 lg:py-48">
       <div className="container grid grid-cols-1 gap-10 py-16 md:grid-cols-2">
         <div className="w-full">
           <div className="mb-6 flex w-full items-center space-x-2 rounded-lg bg-[#FDF8E5] px-4 py-[10px] text-[#6A5E34] md:w-fit">
