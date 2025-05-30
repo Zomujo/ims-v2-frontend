@@ -1,7 +1,7 @@
 "use client";
 import { Input } from "@/features/ui/input";
 import { SearchIcon, X } from "lucide-react";
-import { useRef } from "react";
+import { useRef, ChangeEvent } from "react";
 import { useDebounceCallback } from "usehooks-ts";
 import useImsSearchParams from "../hooks/use-ims-search-params";
 import { cn } from "@/lib/utils";
@@ -18,8 +18,8 @@ export default function ImsSearchBar({
   const searchValue = getSearchParams(searchParamKey);
 
   const handleOnChange = useDebounceCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value;
+    ({ target }: ChangeEvent<HTMLInputElement>) => {
+      const value = target.value;
       if (!value) {
         removeSearchParams(searchParamKey);
         return;

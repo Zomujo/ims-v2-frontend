@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
-import { XIcon } from "lucide-react";
+import { X, XIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
@@ -124,6 +124,36 @@ function DialogDescription({
   );
 }
 
+type DialogComponentProps = {
+  children: React.ReactNode;
+  title: string;
+  dialogTrigger: React.ReactElement;
+  open?: boolean;
+  onOpenChange?(value: boolean): void;
+};
+
+function DialogComponent({
+  children,
+  title,
+  dialogTrigger,
+  open,
+  onOpenChange,
+}: DialogComponentProps) {
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogTrigger asChild>{dialogTrigger}</DialogTrigger>
+
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle className="text-lg">{title}</DialogTitle>
+          <X className="absolute top-4 right-4 h-4 w-4 cursor-pointer opacity-70" />
+        </DialogHeader>
+        {children}
+      </DialogContent>
+    </Dialog>
+  );
+}
+
 export {
   Dialog,
   DialogClose,
@@ -135,4 +165,5 @@ export {
   DialogPortal,
   DialogTitle,
   DialogTrigger,
+  DialogComponent,
 };

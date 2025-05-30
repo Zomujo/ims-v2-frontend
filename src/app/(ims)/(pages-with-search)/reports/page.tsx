@@ -1,6 +1,12 @@
 import ReportsList from "@/features/reports/reports-list";
 import React from "react";
+import { PermissionModules } from "@features/shared/types/auth-action.types";
+import { PermissionProvider } from "@/lib/providers/permission-provider";
 
 export default function page() {
-  return <ReportsList />;
+  return (
+    <PermissionProvider permission={PermissionModules.REPORTS}>
+      <ReportsList />
+    </PermissionProvider>
+  );
 }

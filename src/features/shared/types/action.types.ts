@@ -557,20 +557,10 @@ export enum StockAdjustmentStatus {
   REJECTED = "REJECTED",
 }
 
-// Types for Department Item Requests
 export type CreateDepartmentRequestDto = {
-  id: string;
-  createdAt: string;
-  updatedAt: string;
   itemId: string;
-  departmentId: string;
   quantity: number;
-  additionalNotes?: string;
-  requestNumber: string;
-  status: ItemRequestStatus;
-  facilityId: string;
-  deletedAt: string | null;
-  deletedBy: string | null;
+  additionalNotes: string;
 };
 
 export type GetItemRequestsResponseDto = {
@@ -631,7 +621,9 @@ export type GetItemOrderResponseDto = {
   itemId: string;
   quantity: number;
   expectedDeliveryDate?: string;
-  notes?: string;
+  deliveryMethod: string;
+  deliveryAddress: string;
+  additionalNotes?: string;
   createdAt: string;
   updatedAt: string;
 };
@@ -781,4 +773,11 @@ export type PaginatedResponse<T> = {
   };
   statusCode: number;
   message: string;
+};
+
+export type LogComplainDto = {
+  feature: string;
+  complaint: string;
+  dateTimeIssueOccured: string;
+  errorMessage?: string;
 };

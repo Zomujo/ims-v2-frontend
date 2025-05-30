@@ -7,6 +7,12 @@ export default function useImsSearchParams() {
     const params = searchParams.get(key);
     return params ?? "";
   };
+
+  const getArraySearchParams = (key: string) => {
+    const params = searchParams.getAll(key);
+    return params ?? [];
+  };
+
   const updateSearchParams = (
     action: (queryParams: URLSearchParams) => void,
   ) => {
@@ -23,9 +29,27 @@ export default function useImsSearchParams() {
     updateSearchParams((params) => params.set(key, value));
   };
 
+  const setArraySearchParams = ({
+    key,
+    values,
+  }: {
+    key: string;
+    values: (string | number)[];
+  }) => {
+    updateSearchParams((params) => {
+      params.delete(key);
+
+      values.forEach((value) => {
+        params.append(key, value.toString());
+      });
+    });
+  };
+
   return {
     getSearchParams,
     setSearchParams,
     removeSearchParams,
+    setArraySearchParams,
+    getArraySearchParams,
   };
 }
