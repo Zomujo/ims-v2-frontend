@@ -23,6 +23,8 @@ import { StockAdjustmentFormInputs } from "./stock-adjustment-component-client";
 import { StockAdjustmentProvider } from "./stock-adjustment.context";
 import { stockAdjustmentTableColumns } from "./stock-adjustment.data";
 import { stockAdjustmentSchema } from "./stock-adjustment.schemas";
+import { useSessionData } from "@/hooks/useSessionData";
+import { PermissionModules } from "@features/shared/types/auth-action.types";
 
 type StockAdjustmentListProps = {
   items: IdData[];
@@ -30,7 +32,8 @@ type StockAdjustmentListProps = {
 export default function StockAdjustmentList({
   items,
 }: Readonly<StockAdjustmentListProps>) {
-  const { data } = useFetchData({ fetchFn: getStockAdjustments });
+  const { canWrite, canDelete } = useSessionData();
+  const { data, loading } = useFetchData({ fetchFn: getStockAdjustments });
   const stockAdjustments = data?.rows ?? [];
   const {
     state,
@@ -56,6 +59,7 @@ export default function StockAdjustmentList({
   return (
     <ScrollArea className="mt-2 h-[calc(100%-5rem)] rounded-2xl bg-white pr-4">
       <CrudPage
+        isLoading={loading}
         moduleName="Stock Adjustments"
         data={stockAdjustments}
         modalAction={handleDelete}
@@ -70,12 +74,14 @@ export default function StockAdjustmentList({
             label: "edit",
             icon: "lucide:edit-2",
             action: () => handleEditBtnClicked(item),
+            hide: !canWrite(PermissionModules.STOCK_ADJUSTMENT),
           },
           {
             label: "delete",
             icon: "solar:trash-bin-trash-line-duotone",
             type: "destructive",
             action: () => handleDeleteBtnClicked(item),
+            hide: !canDelete(PermissionModules.STOCK_ADJUSTMENT),
           },
         ]}
       >
@@ -146,6 +152,7 @@ export function StockAdjustmentForm({
         <ImsButton
           isLoading={form.formState.isSubmitting}
           isLoadingLabel="Submitting..."
+          disabled={form.formState.isSubmitting}
           variant="imsPrimary"
           type="submit"
         >
