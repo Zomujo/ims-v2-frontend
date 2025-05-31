@@ -25,7 +25,7 @@ import { Input } from "../ui/input";
 import { itemBatchesTableColumns } from "./items.data";
 import { itemBatchFormSchema } from "./items.schemas";
 import { usePageHeading } from "@/hooks/usePageHeading";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSessionData } from "@/hooks/useSessionData";
 import { PermissionModules } from "@features/shared/types/auth-action.types";
 
@@ -47,6 +47,7 @@ export default function ItemBatchesList({
     fetchFn: (params) => getItemBatches(itemId ?? "", params),
   });
   const itemBatches = data?.rows ?? [];
+
   const {
     state,
     isEditMode,
@@ -129,6 +130,17 @@ function ItemBatchesForm({
     label: supplier.name,
   }));
 
+  const [useBoxes, setUseBoxes] = useState(false);
+  const [boxes, setBoxes] = useState<number>(0);
+  const [itemsPerBox, setItemsPerBox] = useState<number>(0);
+
+  useEffect(() => {
+    if (useBoxes) {
+      const calculated = Number(boxes) * Number(itemsPerBox);
+      form.setValue("quantity", calculated, { shouldValidate: true });
+    }
+  }, [boxes, itemsPerBox, useBoxes]);
+
   const handleSubmit = async (data: unknown) => {
     const oneBatchData = data as z.infer<typeof itemBatchFormSchema>;
     const res = batchId
@@ -178,7 +190,7 @@ function ItemBatchesForm({
               );
             }}
           />
-          <HookFormField
+          {/* <HookFormField
             formControl={form.control}
             name="quantity"
             label="Quantity"
@@ -190,8 +202,59 @@ function ItemBatchesForm({
                 placeholder="eg: 100"
               />
             )}
-          />
+          /> */}
+          <div className="space-y-2">
+            <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
+              <input
+                type="checkbox"
+                checked={useBoxes}
+                onChange={(e) => setUseBoxes(e.target.checked)}
+              />
+              Use boxes & items per box
+            </label>
 
+            {useBoxes ? (
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="mb-2 text-sm font-medium">Boxes</p>
+                  <Input
+                    type="number"
+                    value={boxes}
+                    onChange={(e) => setBoxes(Number(e.target.value))}
+                    placeholder="e.g. 5"
+                    className="bg-white"
+                  />
+                </div>
+                <div>
+                  <p className="mb-2 text-sm font-medium">Items per Box</p>
+                  <Input
+                    type="number"
+                    value={itemsPerBox}
+                    onChange={(e) => setItemsPerBox(Number(e.target.value))}
+                    placeholder="e.g. 10"
+                    className="bg-white"
+                  />
+                </div>
+                <div className="col-span-2 text-sm text-gray-500">
+                  Quantity (<strong>{form.watch("quantity")}</strong>)
+                </div>
+              </div>
+            ) : (
+              <HookFormField
+                formControl={form.control}
+                name="quantity"
+                label="Quantity"
+                renderInput={({ field }) => (
+                  <Input
+                    {...inputTypeNumber(field)}
+                    className="focus-visible:ring-ims-blue-300 bg-white"
+                    type="number"
+                    placeholder="eg: 100"
+                  />
+                )}
+              />
+            )}
+          </div>
           <HookFormField
             formControl={form.control}
             name="validity"
