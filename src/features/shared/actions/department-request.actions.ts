@@ -1,17 +1,17 @@
 "use server";
 
-import { API_ENDPOINTS, API_ENDPOINT_TAGS } from "@/lib/api-constants";
+import { API_ENDPOINT_TAGS, API_ENDPOINTS } from "@/lib/api-constants";
 import { revalidateTag } from "next/cache";
 import {
-  CreateDepartmentRequestDto,
   ApiSuccessResponseDto,
-  GetDepartmentRequestResponseDto,
-  PaginatedResponse,
-  GetSpecificRequestResponseDto,
-  UpdateDepartmentRequestDto,
   ApiSuccessResponseNoData,
+  CreateDepartmentRequestDto,
+  GetDepartmentRequestResponseDto,
   GetItemRequestsResponseDto,
-  UpdateRequestStatusDto,
+  GetSpecificRequestResponseDto,
+  PaginatedResponse,
+  RequestStatus,
+  UpdateDepartmentRequestDto,
 } from "../types/action.types";
 import { FetchApi } from "../types/ims-api-action.types";
 import { imsApiWithAuth } from "./ims-api.action";
@@ -20,7 +20,7 @@ import { generateUrlWithQueryParams } from "@/lib/utils";
 
 export async function addDepartmentRequest(data: CreateDepartmentRequestDto) {
   const fetchOptions: FetchApi = {
-    url: API_ENDPOINTS.DEPARTMENT_REQUESTS,
+    url: API_ENDPOINTS.DEPARTMENT_ITEM_REQUESTS,
     method: "POST",
     headers: {},
     body: JSON.stringify(data),
@@ -43,8 +43,25 @@ export async function getDepartmentRequests(params?: GenerateQueryParams) {
     ),
     method: "GET",
     headers: {},
-    cache: "force-cache",
     next: { tags: [API_ENDPOINT_TAGS.DEPARTMENT_REQUESTS] },
+  };
+
+  return (
+    await imsApiWithAuth<PaginatedResponse<GetDepartmentRequestResponseDto>>(
+      fetchOptions,
+    )
+  ).data;
+}
+
+export async function getDepartmentItemRequests(params?: GenerateQueryParams) {
+  const fetchOptions: FetchApi = {
+    url: generateUrlWithQueryParams(
+      API_ENDPOINTS.DEPARTMENT_ITEM_REQUESTS,
+      params ?? {},
+    ),
+    method: "GET",
+    headers: {},
+    next: { tags: [API_ENDPOINT_TAGS.DEPARTMENT_ITEM_REQUESTS] },
   };
 
   return (
@@ -73,7 +90,7 @@ export async function updateDepartmentRequest(
   data: UpdateDepartmentRequestDto,
 ) {
   const fetchOptions: FetchApi = {
-    url: API_ENDPOINTS.DEPARTMENT_REQUEST.replace(":id", id),
+    url: API_ENDPOINTS.DEPARTMENT_ITEM_REQUEST.replace(":id", id),
     method: "PATCH",
     headers: {},
     body: JSON.stringify(data),
@@ -87,7 +104,7 @@ export async function updateDepartmentRequest(
 
 export async function deleteDepartmentRequest(id: string) {
   const fetchOptions: FetchApi = {
-    url: API_ENDPOINTS.DEPARTMENT_REQUEST.replace(":id", id),
+    url: API_ENDPOINTS.DEPARTMENT_ITEM_REQUEST.replace(":id", id),
     method: "DELETE",
     headers: {},
   };
@@ -115,19 +132,13 @@ export async function getItemRequests(params: GenerateQueryParams) {
   );
 }
 
-export async function updateRequestStatus(
-  id: string,
-  data: UpdateRequestStatusDto,
-) {
+export async function updateRequestStatus(id: string, status: RequestStatus) {
   const fetchOptions: FetchApi = {
-    url: API_ENDPOINTS.DEPARTMENT_REQUEST_STATUS.replace(":id", id),
-    method: "PATCH",
+    url: API_ENDPOINTS.DEPARTMENT_REQUEST.replace(":id", id),
+    method: "PUT",
     headers: {},
-    body: JSON.stringify(data),
+    body: JSON.stringify({ status }),
   };
 
-  const result = await imsApiWithAuth<ApiSuccessResponseNoData>(fetchOptions);
-  revalidateTag(API_ENDPOINT_TAGS.DEPARTMENT_REQUESTS);
-  revalidateTag(API_ENDPOINT_TAGS.DEPARTMENT_REQUESTS_ITEM);
-  return result;
+  return await imsApiWithAuth<ApiSuccessResponseNoData>(fetchOptions);
 }

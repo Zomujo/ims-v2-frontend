@@ -10,9 +10,8 @@ export default function useHookForm<T>({
     z.infer<T extends z.ZodTypeAny ? T : never>;
   resolver: T;
 }) {
-  const form = useForm({
+  return useForm({
     defaultValues,
     resolver: zodResolver(resolver as z.ZodSchema),
   });
-  return form;
 }

@@ -1,5 +1,5 @@
 import { SettingsSidebar } from "@/features/settings/settings-component-clinet";
-import { PropsWithChildren } from "react";
+import React, { PropsWithChildren } from "react";
 
 export default function layout({ children }: Readonly<PropsWithChildren>) {
   return (
