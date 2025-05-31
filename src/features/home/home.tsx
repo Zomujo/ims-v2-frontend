@@ -7,6 +7,7 @@ import Features from "@features/home/features";
 import Pricing from "@/features/home/pricing";
 import Reviews from "@features/home/reviews";
 import Faq from "@features/home/faq";
+import Footer from "@features/home/footer";
 
 const Home = () => {
   return (
@@ -20,6 +21,7 @@ const Home = () => {
       <Pricing />
       <Reviews />
       <Faq />
+      <Footer />
     </div>
   );
 };
