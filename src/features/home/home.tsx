@@ -7,6 +7,7 @@ import Features from "@features/home/features";
 import Pricing from "@/features/home/pricing";
 import Reviews from "@features/home/reviews";
 import Faq from "@features/home/faq";
+import Contact from "@features/home/contact";
 
 const Home = () => {
   return (
@@ -20,6 +21,7 @@ const Home = () => {
       <Pricing />
       <Reviews />
       <Faq />
+      <Contact />
     </div>
   );
 };
