@@ -267,3 +267,13 @@ export function getRelativeTime(date: Date | string): string {
   }
   return currentDate.toLocaleDateString();
 }
+
+export const scrollToSection = (id: string) => {
+  const element = document.getElementById(id);
+  if (element) {
+    element.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  }
+};

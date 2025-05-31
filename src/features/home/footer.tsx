@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { scrollToSection } from "@/lib/utils";
 
 export default function Footer() {
   return (
@@ -21,21 +22,17 @@ export default function Footer() {
               Company
             </h3>
             <ul className="space-y-2 text-sm">
-              <li>
-                <Link
-                  href="#features"
-                  className="cursor-pointer hover:underline"
-                >
-                  Features
-                </Link>
+              <li
+                onClick={() => scrollToSection("features")}
+                className="cursor-pointer hover:underline"
+              >
+                Features
               </li>
-              <li>
-                <Link
-                  href="#pricing"
-                  className="cursor-pointer hover:underline"
-                >
-                  Pricing
-                </Link>
+              <li
+                className="cursor-pointer hover:underline"
+                onClick={() => scrollToSection("pricing")}
+              >
+                Pricing
               </li>
             </ul>
           </div>
@@ -45,18 +42,17 @@ export default function Footer() {
               Help
             </h3>
             <ul className="space-y-2 text-sm">
-              <li>
-                <Link
-                  href="#contact"
-                  className="cursor-pointer hover:underline"
-                >
-                  Contact us
-                </Link>
+              <li
+                onClick={() => scrollToSection("contact")}
+                className="cursor-pointer hover:underline"
+              >
+                Contact us
               </li>
-              <li>
-                <Link href="#faq" className="cursor-pointer hover:underline">
-                  FAQs
-                </Link>
+              <li
+                onClick={() => scrollToSection("faq")}
+                className="cursor-pointer hover:underline"
+              >
+                FAQs
               </li>
               <li>
                 <a
