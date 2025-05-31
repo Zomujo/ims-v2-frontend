@@ -12,7 +12,7 @@ export default function Faq() {
   };
 
   return (
-    <section className="py-16 lg:py-24 xl:px-[150px]">
+    <section id="faq" className="py-16 lg:py-24 xl:px-[150px]">
       <div className="flex flex-col items-start gap-12 px-6 md:px-8 lg:flex-row">
         <div className="w-full lg:w-1/2">
           <h2 className="mb-4 text-4xl font-bold tracking-wide text-[#111111] lg:text-5xl">

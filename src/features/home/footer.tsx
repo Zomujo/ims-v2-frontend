@@ -4,11 +4,11 @@ import { scrollToSection } from "@/lib/utils";
 
 export default function Footer() {
   return (
-    <footer className="relative bg-black pt-16 pb-8 text-white md:pb-16">
-      <div className="flex flex-col justify-between gap-12 px-6 md:px-8 lg:flex-row lg:px-[120px]">
-        <div className="lg:w-1/3">
+    <footer className="relative bg-black pt-16 pb-8 text-white md:pb-16 xl:px-[150px]">
+      <div className="flex flex-col justify-between gap-12 px-6 md:px-8 lg:flex-row">
+        <div>
           <h2 className="mb-4 text-2xl font-bold">IMS</h2>
-          <p className="text-sm leading-relaxed text-white opacity-60">
+          <p className="max-w-lg text-sm leading-relaxed text-white opacity-60">
             IMS is a modern inventory and management solution designed to
             streamline operations for businesses of all sizes. From real-time
             tracking to intelligent analytics, IMS helps you stay in control and
@@ -16,12 +16,12 @@ export default function Footer() {
           </p>
         </div>
 
-        <div className="flex flex-col gap-8 sm:flex-row md:gap-16 lg:gap-20">
+        <div className="flex flex-wrap gap-12">
           <div>
-            <h3 className="mb-4 text-sm font-semibold text-white uppercase opacity-60">
+            <h3 className="mb-8 text-sm font-semibold text-white uppercase opacity-60">
               Company
             </h3>
-            <ul className="space-y-2 text-sm">
+            <ul className="space-y-8 text-sm">
               <li
                 onClick={() => scrollToSection("features")}
                 className="cursor-pointer hover:underline"
@@ -38,10 +38,10 @@ export default function Footer() {
           </div>
 
           <div>
-            <h3 className="mb-4 text-sm font-semibold text-white uppercase opacity-60">
+            <h3 className="mb-8 text-sm font-semibold text-white uppercase opacity-60">
               Help
             </h3>
-            <ul className="space-y-2 text-sm">
+            <ul className="space-y-8 text-sm">
               <li
                 onClick={() => scrollToSection("contact")}
                 className="cursor-pointer hover:underline"
@@ -66,10 +66,10 @@ export default function Footer() {
           </div>
 
           <div>
-            <h3 className="mb-4 text-sm font-semibold text-white uppercase opacity-60">
+            <h3 className="mb-8 text-sm font-semibold text-white uppercase opacity-60">
               Connect
             </h3>
-            <ul className="space-y-2 text-sm">
+            <ul className="space-y-8 text-sm">
               <li>
                 <Link href="#" className="cursor-pointer hover:underline">
                   LinkedIn
@@ -91,9 +91,9 @@ export default function Footer() {
         </div>
       </div>
 
-      <div className="mt-12 flex flex-col items-center justify-between px-6 pt-6 text-sm text-white md:flex-row md:px-8 lg:px-[120px]">
+      <div className="mt-32 flex flex-col items-center justify-between px-8 pt-6 text-sm text-white md:flex-row">
         <p>© Copyright 2025 Stealth. All rights reserved.</p>
-        <div className="mt-4 flex space-x-6 md:mt-0">
+        <div className="mt-10 flex space-x-6 md:mt-0">
           <Link href="#" className="hover:underline">
             Privacy policy
           </Link>
