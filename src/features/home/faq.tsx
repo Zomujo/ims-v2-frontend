@@ -12,8 +12,6 @@ export default function Faq() {
   };
 
   return (
-    <section id="faq" className="bg-white py-16 lg:py-24">
-      <div className="flex flex-col items-start gap-12 px-6 md:px-8 lg:flex-row lg:px-[120px]">
     <section className="py-16 lg:py-24 xl:px-[150px]">
       <div className="flex flex-col items-start gap-12 px-6 md:px-8 lg:flex-row">
         <div className="w-full lg:w-1/2">
