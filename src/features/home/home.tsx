@@ -8,6 +8,7 @@ import Pricing from "@/features/home/pricing";
 import Reviews from "@features/home/reviews";
 import Faq from "@features/home/faq";
 import Contact from "@features/home/contact";
+import Footer from "@features/home/footer";
 
 const Home = () => {
   return (
@@ -22,6 +23,7 @@ const Home = () => {
       <Reviews />
       <Faq />
       <Contact />
+      <Footer />
     </div>
   );
 };
