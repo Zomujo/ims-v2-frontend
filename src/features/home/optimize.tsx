@@ -1,6 +1,6 @@
 import Image from "next/image";
-import OptimizeInventoryImage from "@public/images/hospital.jpg";
-import LocalPharmacyImage from "@public/images/local-pharmacies.jpg";
+import optimizeInventoryImage from "@public/images/hospital.jpg";
+import localPharmacyImage from "@public/images/local-pharmacies.jpg";
 
 export default function OptimizeInventory() {
   return (
@@ -18,7 +18,7 @@ export default function OptimizeInventory() {
       <div className="grid w-full grid-cols-1 gap-5 px-8 lg:grid-cols-2">
         <div className="relative w-full">
           <Image
-            src={OptimizeInventoryImage}
+            src={optimizeInventoryImage}
             alt="Optimize Inventory"
             className="h-full w-full rounded-2xl lg:w-[95%]"
             width={492}
@@ -36,7 +36,7 @@ export default function OptimizeInventory() {
         </div>
         <div className="relative w-full">
           <Image
-            src={LocalPharmacyImage}
+            src={localPharmacyImage}
             alt="local and ruralpahrmacy"
             className="h-full w-full rounded-2xl lg:w-[95%]"
             width={492}
