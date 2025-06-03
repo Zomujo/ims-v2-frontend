@@ -58,7 +58,10 @@ export function GlobalNotificationsProvider({
   const notificationIdsRef = useRef<Set<string>>(new Set());
 
   const addNotificationsNoDuplicates = useCallback(
-    (newNotifications: NotificationPayload[]) => {
+    (
+      newNotifications: NotificationPayload[],
+      mode: "append" | "prepend" = "append",
+    ) => {
       const uniqueNotifications = newNotifications.filter(
         (notification) => !notificationIdsRef.current.has(notification.id),
       );
@@ -68,26 +71,11 @@ export function GlobalNotificationsProvider({
           notificationIdsRef.current.add(notification.id),
         );
 
-        setNotifications((prev) => [...prev, ...uniqueNotifications]);
-      }
-
-      return uniqueNotifications.length;
-    },
-    [],
-  );
-
-  const prependNotificationsNoDuplicates = useCallback(
-    (newNotifications: NotificationPayload[]) => {
-      const uniqueNotifications = newNotifications.filter(
-        (notification) => !notificationIdsRef.current.has(notification.id),
-      );
-
-      if (uniqueNotifications.length > 0) {
-        uniqueNotifications.forEach((notification) =>
-          notificationIdsRef.current.add(notification.id),
-        );
-
-        setNotifications((prev) => [...uniqueNotifications, ...prev]);
+        if (mode === "prepend") {
+          setNotifications((prev) => [...uniqueNotifications, ...prev]);
+        } else {
+          setNotifications((prev) => [...prev, ...uniqueNotifications]);
+        }
       }
 
       return uniqueNotifications.length;
@@ -181,9 +169,10 @@ export function GlobalNotificationsProvider({
         try {
           const newNotification = JSON.parse(event.data) as NotificationPayload;
 
-          const addedCount = prependNotificationsNoDuplicates([
-            newNotification,
-          ]);
+          const addedCount = addNotificationsNoDuplicates(
+            [newNotification],
+            "prepend",
+          );
 
           if (addedCount > 0) {
             console.log("New notification added via SSE:", newNotification.id);
