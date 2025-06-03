@@ -92,7 +92,6 @@ export function GlobalNotificationsProvider({
     try {
       const response = await fetchNotifications(1);
       const notificationsData = response.data?.rows;
-      console.log("Response data:", response.data);
       if (notificationsData) {
         setNotifications([]);
         notificationIdsRef.current.clear();

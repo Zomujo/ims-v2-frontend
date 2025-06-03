@@ -30,14 +30,6 @@ export default function RealtimeNotifications(): JSX.Element {
     threshold: 100,
   });
 
-  const handleMarkAllAsRead = () => {
-    markAllAsRead();
-  };
-
-  const handleMarkAsRead = (id: string) => {
-    markAsRead(id);
-  };
-
   const handleRefetch = () => {
     refetch();
   };
@@ -71,7 +63,7 @@ export default function RealtimeNotifications(): JSX.Element {
               <ImsButton
                 variant="ghost"
                 size="sm"
-                onClick={handleRefetch}
+                onClick={refetch}
                 className="h-6 w-6 p-0"
               >
                 <RefreshCw className="h-3 w-3" />
@@ -90,7 +82,7 @@ export default function RealtimeNotifications(): JSX.Element {
             <ImsButton
               className="text-base font-medium underline"
               variant="link"
-              onClick={handleMarkAllAsRead}
+              onClick={markAllAsRead}
               disabled={isLoading || notifications.length === 0}
             >
               Mark all as read
@@ -126,7 +118,7 @@ export default function RealtimeNotifications(): JSX.Element {
                     "flex cursor-pointer gap-x-3 p-6 text-[#000000] transition-colors hover:bg-gray-50",
                     status === "UNREAD" && "bg-[#F6F7FE]",
                   )}
-                  onClick={() => status === "UNREAD" && handleMarkAsRead(id)}
+                  onClick={() => status === "UNREAD" && markAsRead(id)}
                 >
                   <div className="relative">
                     <ImsAvatar src={""} alt={"Profile Image"} fallback={""} />
