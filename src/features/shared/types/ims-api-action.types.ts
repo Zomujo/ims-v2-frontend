@@ -33,3 +33,7 @@ export type IMSApiActionPaginationResponse<T> = IMSApiActionResponse<
     rows: T[];
   } & IMSPaginationData
 >;
+
+export type IMSNotificationPaginationResponse<T> = {
+  rows: T[];
+} & IMSPaginationData;

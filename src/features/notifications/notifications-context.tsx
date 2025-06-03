@@ -22,11 +22,14 @@ interface GlobalNotificationsContextType {
   unreadCount: number;
   isConnected: boolean;
   isLoading: boolean;
+  isLoadingMore: boolean;
+  hasMore: boolean;
   error: string | null;
   markAllAsRead: () => void;
   markAsRead: (id: string) => void;
   refetch: () => void;
   clearNotifications: () => void;
+  loadMore: () => void;
 }
 
 const GlobalNotificationsContext =
@@ -46,9 +49,51 @@ export function GlobalNotificationsProvider({
   const [isConnected, setIsConnected] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
 
   const eventSourceRef = useRef<EventSource | null>(null);
   const initialLoadRef = useRef(false);
+  const notificationIdsRef = useRef<Set<string>>(new Set());
+
+  const addNotificationsNoDuplicates = useCallback(
+    (newNotifications: NotificationPayload[]) => {
+      const uniqueNotifications = newNotifications.filter(
+        (notification) => !notificationIdsRef.current.has(notification.id),
+      );
+
+      if (uniqueNotifications.length > 0) {
+        uniqueNotifications.forEach((notification) =>
+          notificationIdsRef.current.add(notification.id),
+        );
+
+        setNotifications((prev) => [...prev, ...uniqueNotifications]);
+      }
+
+      return uniqueNotifications.length;
+    },
+    [],
+  );
+
+  const prependNotificationsNoDuplicates = useCallback(
+    (newNotifications: NotificationPayload[]) => {
+      const uniqueNotifications = newNotifications.filter(
+        (notification) => !notificationIdsRef.current.has(notification.id),
+      );
+
+      if (uniqueNotifications.length > 0) {
+        uniqueNotifications.forEach((notification) =>
+          notificationIdsRef.current.add(notification.id),
+        );
+
+        setNotifications((prev) => [...uniqueNotifications, ...prev]);
+      }
+
+      return uniqueNotifications.length;
+    },
+    [],
+  );
 
   const loadInitialNotifications = useCallback(async () => {
     if (!userId || initialLoadRef.current) return;
@@ -57,10 +102,21 @@ export function GlobalNotificationsProvider({
     setError(null);
 
     try {
-      const response = await fetchNotifications();
-      if (response.data) {
-        setNotifications(response.data);
+      const response = await fetchNotifications(1);
+      const notificationsData = response.data?.rows;
+      console.log("Response data:", response.data);
+      if (notificationsData) {
+        setNotifications([]);
+        notificationIdsRef.current.clear();
+
+        const addedCount = addNotificationsNoDuplicates(notificationsData);
+        setCurrentPage(1);
+        setHasMore(
+          notificationsData.length > 0 && (response.data?.totalPages ?? 0) > 1,
+        );
+
         initialLoadRef.current = true;
+        console.log(`Loaded ${addedCount} unique notifications`);
       } else {
         setError("Failed to load notifications");
       }
@@ -70,7 +126,41 @@ export function GlobalNotificationsProvider({
     } finally {
       setIsLoading(false);
     }
-  }, [userId]);
+  }, [userId, addNotificationsNoDuplicates]);
+
+  const loadMore = useCallback(async () => {
+    if (!userId || isLoading || isLoadingMore || !hasMore) return;
+
+    setIsLoadingMore(true);
+
+    try {
+      const nextPage = currentPage + 1;
+      const response = await fetchNotifications(nextPage);
+
+      if (response.data?.rows) {
+        const addedCount = addNotificationsNoDuplicates(response.data.rows);
+
+        setCurrentPage(nextPage);
+        setHasMore(nextPage < response.data.totalPages);
+
+        console.log(
+          `Loaded ${addedCount} more unique notifications (page ${nextPage})`,
+        );
+      }
+    } catch (err) {
+      console.error("Error loading more notifications:", err);
+      setError("Failed to load more notifications");
+    } finally {
+      setIsLoadingMore(false);
+    }
+  }, [
+    userId,
+    currentPage,
+    hasMore,
+    isLoading,
+    isLoadingMore,
+    addNotificationsNoDuplicates,
+  ]);
 
   // SSE connection
   const connectSSE = useCallback(() => {
@@ -91,19 +181,22 @@ export function GlobalNotificationsProvider({
         try {
           const newNotification = JSON.parse(event.data) as NotificationPayload;
 
-          setNotifications((prev) => {
-            const exists = prev.some(({ id }) => id === newNotification.id);
-            if (exists) return prev;
+          const addedCount = prependNotificationsNoDuplicates([
+            newNotification,
+          ]);
 
-            return [newNotification, ...prev];
-          });
+          if (addedCount > 0) {
+            console.log("New notification added via SSE:", newNotification.id);
 
-          if (enableToasts) {
-            toast.info(newNotification.message || "New notification", {
-              description: newNotification.message,
-              duration: 7000,
-              position: "top-center",
-            });
+            if (enableToasts) {
+              toast.info(newNotification.message || "New notification", {
+                description: newNotification.message,
+                duration: 7000,
+                position: "top-center",
+              });
+            }
+          } else {
+            console.log("Duplicate notification ignored:", newNotification.id);
           }
         } catch (error) {
           console.error("Failed to parse notification:", error);
@@ -169,11 +262,14 @@ export function GlobalNotificationsProvider({
 
   const refetch = useCallback(async () => {
     initialLoadRef.current = false;
+    setCurrentPage(1);
+    setHasMore(true);
     await loadInitialNotifications();
   }, [loadInitialNotifications]);
 
   const clearNotifications = useCallback(() => {
     setNotifications([]);
+    notificationIdsRef.current.clear();
   }, []);
 
   const unreadCount = notifications.filter(
@@ -185,11 +281,14 @@ export function GlobalNotificationsProvider({
     unreadCount,
     isConnected,
     isLoading,
+    isLoadingMore,
     error,
+    hasMore,
     markAllAsRead,
     markAsRead,
     refetch,
     clearNotifications,
+    loadMore,
   };
 
   return (

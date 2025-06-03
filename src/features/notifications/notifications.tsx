@@ -7,17 +7,28 @@ import { ImsAvatar } from "@features/shared/components/ims-avatar";
 import Link from "next/link";
 import { Wifi, WifiOff, Loader2, RefreshCw } from "lucide-react";
 import { useGlobalNotifications } from "@features/notifications/notifications-context";
+import { useInfiniteScroll } from "@/hooks/use-infinite-scroll";
 
 export default function RealtimeNotifications(): JSX.Element {
   const {
     notifications,
     isConnected,
     isLoading,
+    isLoadingMore,
     error,
+    hasMore,
     markAllAsRead,
     markAsRead,
     refetch,
+    loadMore,
   } = useGlobalNotifications();
+
+  const { observerRef } = useInfiniteScroll({
+    hasMore,
+    isLoading: isLoadingMore,
+    onLoadMore: loadMore,
+    threshold: 100,
+  });
 
   const handleMarkAllAsRead = () => {
     markAllAsRead();
@@ -84,13 +95,10 @@ export default function RealtimeNotifications(): JSX.Element {
             >
               Mark all as read
             </ImsButton>
-            <ImsButton className="font-medium" variant="secondary">
-              View All
-            </ImsButton>
           </div>
         </div>
       </div>
-      <div className="max-h-[500px] overflow-y-scroll font-normal">
+      <div className="max-h-[500px] overflow-y-auto font-normal">
         {isLoading ? (
           <div className="flex items-center justify-center py-8 text-gray-500">
             <Loader2 className="mr-2 h-6 w-6 animate-spin" />
@@ -109,39 +117,66 @@ export default function RealtimeNotifications(): JSX.Element {
             <span>No notifications yet</span>
           </div>
         ) : (
-          notifications.map(
-            ({ message, id, createdAt, status, linkName, linkRoute }) => (
-              <div
-                key={id}
-                className={cn(
-                  "flex cursor-pointer gap-x-3 p-6 text-[#000000] transition-colors hover:bg-gray-50",
-                  status === "UNREAD" && "bg-[#F6F7FE]",
-                )}
-                onClick={() => status === "UNREAD" && handleMarkAsRead(id)}
-              >
-                <div className="relative">
-                  <ImsAvatar src={""} alt={"Profile Image"} fallback={""} />
-                  {status === "UNREAD" && (
-                    <span className="bg-warning-400 absolute top-0 left-1 h-3 w-3 rounded-full"></span>
+          <>
+            {notifications.map(
+              ({ message, id, createdAt, status, linkName, linkRoute }) => (
+                <div
+                  key={id}
+                  className={cn(
+                    "flex cursor-pointer gap-x-3 p-6 text-[#000000] transition-colors hover:bg-gray-50",
+                    status === "UNREAD" && "bg-[#F6F7FE]",
                   )}
-                </div>
+                  onClick={() => status === "UNREAD" && handleMarkAsRead(id)}
+                >
+                  <div className="relative">
+                    <ImsAvatar src={""} alt={"Profile Image"} fallback={""} />
+                    {status === "UNREAD" && (
+                      <span className="bg-warning-400 absolute top-0 left-1 h-3 w-3 rounded-full"></span>
+                    )}
+                  </div>
 
-                <div className="flex-1">
-                  <p className="text-sm font-light">{message}</p>
-                  <span className="text-sm font-light text-gray-500">
-                    {getRelativeTime(createdAt)}
-                  </span>
-                  {linkName && linkRoute && (
-                    <div className="mt-5">
-                      <Link href={linkRoute}>
-                        <ImsButton variant="imsPrimary">{linkName}</ImsButton>
-                      </Link>
-                    </div>
-                  )}
+                  <div className="flex-1">
+                    <p className="text-sm font-light">{message}</p>
+                    <span className="text-sm font-light text-gray-500">
+                      {getRelativeTime(createdAt)}
+                    </span>
+                    {linkName && linkRoute && (
+                      <div className="mt-5">
+                        <Link href={linkRoute}>
+                          <ImsButton variant="imsPrimary">{linkName}</ImsButton>
+                        </Link>
+                      </div>
+                    )}
+                  </div>
                 </div>
+              ),
+            )}
+
+            {hasMore && (
+              <div
+                ref={observerRef}
+                className="flex items-center justify-center py-4"
+              >
+                {isLoadingMore ? (
+                  <div className="flex items-center gap-2 text-gray-500">
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <span className="text-sm">
+                      Loading more notifications...
+                    </span>
+                  </div>
+                ) : (
+                  <div className="h-4" />
+                )}
               </div>
-            ),
-          )
+            )}
+            {!hasMore && notifications.length > 10 && (
+              <div className="flex items-center justify-center py-4 text-gray-500">
+                <span className="text-sm">
+                  You've reached the end of notifications
+                </span>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>
