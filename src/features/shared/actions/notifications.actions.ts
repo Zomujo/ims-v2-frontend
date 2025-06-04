@@ -3,37 +3,30 @@
 import { API_ENDPOINTS, API_ENDPOINT_TAGS } from "@/lib/api-constants";
 import { revalidateTag } from "next/cache";
 import {
-  GetNotificationDto,
   ApiSuccessResponseDto,
   ApiSuccessResponseNoData,
 } from "../types/action.types";
-import { FetchApi } from "../types/ims-api-action.types";
+import {
+  FetchApi,
+  IMSNotificationPaginationResponse,
+} from "../types/ims-api-action.types";
 import { imsApiWithAuth } from "./ims-api.action";
+import { NotificationPayload } from "@features/shared/types/notifications.types";
 
-export async function streamEvents() {
+export async function fetchNotifications(page = 1) {
   const fetchOptions: FetchApi = {
-    url: API_ENDPOINTS.NOTIFICATIONS_STREAM,
-    method: "GET",
-    headers: {},
-    cache: "force-cache",
-    next: { tags: [API_ENDPOINT_TAGS.NOTIFICATIONS_STREAM] },
-  };
-
-  return await imsApiWithAuth<GetNotificationDto>(fetchOptions);
-}
-
-export async function fetchAllNotifications() {
-  const fetchOptions: FetchApi = {
-    url: API_ENDPOINTS.NOTIFICATIONS,
+    url: `${API_ENDPOINTS.NOTIFICATIONS}?page=${page}`,
     method: "GET",
     headers: {},
     cache: "force-cache",
     next: { tags: [API_ENDPOINT_TAGS.NOTIFICATIONS] },
   };
 
-  return await imsApiWithAuth<ApiSuccessResponseDto<GetNotificationDto[]>>(
-    fetchOptions,
-  );
+  return await imsApiWithAuth<
+    ApiSuccessResponseDto<
+      IMSNotificationPaginationResponse<NotificationPayload>
+    >
+  >(fetchOptions);
 }
 
 export async function markNotificationsAsRead() {
