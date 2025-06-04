@@ -96,14 +96,13 @@ export function GlobalNotificationsProvider({
         setNotifications([]);
         notificationIdsRef.current.clear();
 
-        const addedCount = addNotificationsNoDuplicates(notificationsData);
+        addNotificationsNoDuplicates(notificationsData);
         setCurrentPage(1);
         setHasMore(
           notificationsData.length > 0 && (response.data?.totalPages ?? 0) > 1,
         );
 
         initialLoadRef.current = true;
-        console.log(`Loaded ${addedCount} unique notifications`);
       } else {
         setError("Failed to load notifications");
       }
@@ -125,14 +124,9 @@ export function GlobalNotificationsProvider({
       const response = await fetchNotifications(nextPage);
 
       if (response.data?.rows) {
-        const addedCount = addNotificationsNoDuplicates(response.data.rows);
-
+        addNotificationsNoDuplicates(response.data.rows);
         setCurrentPage(nextPage);
         setHasMore(nextPage < response.data.totalPages);
-
-        console.log(
-          `Loaded ${addedCount} more unique notifications (page ${nextPage})`,
-        );
       }
     } catch (err) {
       console.error("Error loading more notifications:", err);
@@ -153,7 +147,7 @@ export function GlobalNotificationsProvider({
   const connectSSE = useCallback(() => {
     if (!userId || !initialLoadRef.current) return;
 
-    const url = `https://stealth-server-production.up.railway.app/api/v1/notifications/stream?user=${userId}`;
+    const url = `${process.env.NEXT_PUBLIC_IMS_API_URL}/notifications/stream?user=${userId}`;
 
     try {
       eventSourceRef.current = new EventSource(url);
@@ -211,7 +205,7 @@ export function GlobalNotificationsProvider({
 
   useEffect(() => {
     if (!userId) return;
-    loadInitialNotifications();
+    void loadInitialNotifications();
   }, [userId, loadInitialNotifications]);
 
   useEffect(() => {
