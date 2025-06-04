@@ -21,8 +21,29 @@ export function ShowItemsDashboard({ children }: Readonly<PropsWithChildren>) {
 
 // Placeholder options for dropdowns
 const dosageFormOptions = [
-  { value: "LIQUIDS", label: "Liquid" },
-  { value: "SOLIDS", label: "Solid" },
+  { value: "TABLET", label: "Tablet" },
+  { value: "INJECTION", label: "Injection" },
+  { value: "SYRUP", label: "Syrup" },
+  { value: "CAPSULE", label: "Capsule" },
+  { value: "CREAM", label: "Cream" },
+  { value: "OINTMENT", label: "Ointment" },
+  { value: "LOTION", label: "Lotion" },
+  { value: "GEL", label: "Gel" },
+  { value: "SUSPENSION", label: "Suspension" },
+  { value: "DROPS", label: "Drops" },
+  { value: "SPRAY", label: "Spray" },
+  { value: "POWDER", label: "Powder" },
+  { value: "SUPPOSITORY", label: "Suppository" },
+  { value: "INHALER", label: "Inhaler" },
+  { value: "PATCH", label: "Patch" },
+  { value: "LOZENGE", label: "Lozenge" },
+  { value: "MOUTHWASH", label: "Mouthwash" },
+  { value: "SHAMPOO", label: "Shampoo" },
+];
+
+const FDAFormOptions = [
+  { value: "YES", label: "Yes" },
+  { value: "NO", label: "No" },
 ];
 
 type ItemFormInputsProps = {
@@ -150,9 +171,10 @@ export function ItemFormInputs({
           name="fdaApproval"
           label="FDA Approval"
           renderInput={({ field }) => (
-            <Input
+            <ImsSelect
+              options={FDAFormOptions}
+              moduleName="Yes or No"
               {...field}
-              type="text"
               className="focus-visible:ring-ims-blue-300 !h-11 bg-white"
             />
           )}
