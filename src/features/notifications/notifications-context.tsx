@@ -171,7 +171,7 @@ export function GlobalNotificationsProvider({
             console.log("New notification added via SSE:", newNotification.id);
 
             if (enableToasts) {
-              toast.info(newNotification.message || "New notification", {
+              toast.info("New notification", {
                 description: newNotification.message,
                 duration: 7000,
                 position: "top-center",
