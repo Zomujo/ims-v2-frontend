@@ -8,6 +8,7 @@ type ReportAccordionType = {
   reportReference: {
     name: string;
     id: string;
+    quantity?: number | string;
   }[];
 };
 
@@ -19,7 +20,12 @@ export const ReportAccordion = ({
   const [showDropdown, setShowDropdown] = useState(false);
   return (
     <>
-      <div className="mt-[12px] flex h-12 items-center rounded-xl border-1 bg-[#f5f5f5] px-3.5 text-[14px] font-medium text-gray-700">
+      <div
+        className={cn(
+          "mt-[12px] flex h-12 items-center rounded-xl border-1 bg-[#f5f5f5] px-3.5 text-[14px] font-medium text-gray-700",
+          showDropdown && "sticky top-0",
+        )}
+      >
         <div className="flex items-center justify-center">
           <p> {title}</p>{" "}
           <span className="ml-1 flex h-[18px] w-[18px] items-center justify-center rounded-full bg-[#Fef3c7] text-xs font-medium">
@@ -31,23 +37,26 @@ export const ReportAccordion = ({
           <Icon
             icon="solar:alt-arrow-down-linear"
             fontSize={24}
-            className={cn("transition-all", !showDropdown && "rotate-180")}
+            className={cn("transition-all", showDropdown && "rotate-180")}
           />
         </div>
       </div>
-      {reportReference.map(({ name, id }) => (
+      {reportReference.map(({ name, id, quantity }) => (
         <div
           key={id}
           className={cn(
             "w-auto overflow-hidden transition-all duration-300",
-            showDropdown && "w-0",
+            !showDropdown && "hidden w-0",
           )}
         >
           <div className="mt-[12px] flex rounded-xl border px-[18px] py-[23px]">
-            <div className="w-[37%] font-medium text-[#415be6]">
-              <p>{name} </p>
+            <div className="w-[36%] font-medium text-[#415be6]">
+              <p className="truncate pr-4">{name} </p>
             </div>
-            <p className="text-[#111111]">{type}</p>
+            <div className="w-[38%]">
+              <p className="truncate pr-4 text-[#111111]">{type}</p>
+            </div>
+            <p className="text-[#111111]">{quantity}</p>
           </div>
         </div>
       ))}
