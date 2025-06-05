@@ -23,9 +23,13 @@ export const authOptions = {
   },
   providers: [LoginCredentialsProvider()],
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger, session }) {
       if (user) {
         token = { ...user };
+      }
+
+      if (trigger === "update" && session) {
+        token.status = session.status || token.status;
       }
 
       if (!user && isTokenExpired(token.expiresAt)) {

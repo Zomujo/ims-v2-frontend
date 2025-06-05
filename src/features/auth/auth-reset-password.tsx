@@ -14,8 +14,11 @@ import { ImsButton } from "../shared/components/ims-button";
 import useHookForm from "../shared/hooks/use-hook-form";
 import { AuthForm, RenderPasswordInput } from "./auth-components-client";
 import { resetPasswordSchema } from "./auth.schemas";
+import { useSessionData } from "@/hooks/useSessionData";
+import { UserStatus } from "@features/shared/types/auth-action.types";
 
 export function ResetPasswordForm() {
+  const { updateUserStatus } = useSessionData();
   const router = useRouter();
   const form = useHookForm({
     resolver: resetPasswordSchema,
@@ -33,11 +36,10 @@ export function ResetPasswordForm() {
       ? authForgotPasswordResetPasswordAction({ email, newPassword })
       : authChangePasswordAction({ newPassword });
     handleRequestState({ res, loadingMsg: "Resetting password..." });
-    res.then(() => {
-      searchParams.delete("email");
-      router.push(email ? AUTH_PAGE_ROUTES.LOG_IN : PAGE_ROUTES.DASHBOARD);
-    });
     await res;
+    await updateUserStatus(UserStatus.ACTIVE);
+    searchParams.delete("email");
+    router.replace(email ? AUTH_PAGE_ROUTES.LOG_IN : PAGE_ROUTES.DASHBOARD);
   };
 
   return (
