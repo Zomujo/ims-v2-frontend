@@ -76,7 +76,6 @@ export async function getDepartmentRequest(id: string) {
     url: API_ENDPOINTS.DEPARTMENT_REQUEST.replace(":id", id),
     method: "GET",
     headers: {},
-    cache: "force-cache",
     next: { tags: [API_ENDPOINT_TAGS.DEPARTMENT_REQUESTS] },
   };
 
@@ -123,7 +122,6 @@ export async function getItemRequests(params: GenerateQueryParams) {
     ),
     method: "GET",
     headers: {},
-    cache: "force-cache",
     next: { tags: [API_ENDPOINT_TAGS.DEPARTMENT_REQUESTS_ITEM] },
   };
 

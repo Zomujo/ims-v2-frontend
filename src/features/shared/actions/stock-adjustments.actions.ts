@@ -41,7 +41,6 @@ export async function getStockAdjustments(params?: GenerateQueryParams) {
     ),
     method: "GET",
     headers: {},
-    cache: "force-cache",
     next: { tags: [API_ENDPOINT_TAGS.STOCK_ADJUSTMENTS] },
   };
 
@@ -56,7 +55,6 @@ export async function getStockAdjustment(id: string) {
     url: API_ENDPOINTS.STOCK_ADJUSTMENT.replace(":id", id),
     method: "GET",
     headers: {},
-    cache: "force-cache",
     next: { tags: [API_ENDPOINT_TAGS.STOCK_ADJUSTMENTS] },
   };
 
