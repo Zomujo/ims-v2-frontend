@@ -99,7 +99,6 @@ export default function SalesCart() {
   const handleSubmit = async (data: unknown) => {
     setIsSubmitting(true);
     const patientCardId = getSearchParams(patientIdKey);
-    console.log("patientId", patientCardId);
     const dataWithPatientId = { ...(data as SaleCartFormData), patientCardId };
     const action = isEditMode
       ? updateSale(salesId as string, dataWithPatientId)
