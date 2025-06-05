@@ -1,6 +1,6 @@
 import { getToken } from "next-auth/jwt";
 import { withAuth } from "next-auth/middleware";
-import { UserStatus } from "./features/shared/types/auth-action.types";
+import { UserStatus } from "@features/shared/types/auth-action.types";
 import {
   redirectUsersWithoutTokenBackToLogin,
   getUserStatusFromToken,

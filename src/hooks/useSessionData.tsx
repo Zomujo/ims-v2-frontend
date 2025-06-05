@@ -2,11 +2,12 @@ import { useSession } from "next-auth/react";
 import {
   PermissionActions,
   PermissionModules,
+  UserStatus,
 } from "@features/shared/types/auth-action.types";
 import { hasActionPermissionHelper } from "@/lib/utils/permissions.utils";
 
 export const useSessionData = () => {
-  const { data: session, status } = useSession();
+  const { data: session, status, update } = useSession();
 
   const user = session?.user;
 
@@ -43,6 +44,12 @@ export const useSessionData = () => {
   const canDelete = (module: PermissionModules) =>
     hasActionPermission(`${module}:${PermissionActions.DELETE}`);
 
+  const updateUserStatus = async (userStatus: UserStatus) => {
+    await update({
+      status: userStatus,
+    });
+  };
+
   return {
     session,
     isLoading,
@@ -59,5 +66,6 @@ export const useSessionData = () => {
     firstName,
     token,
     userId,
+    updateUserStatus,
   };
 };
