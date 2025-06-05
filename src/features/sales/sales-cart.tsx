@@ -47,7 +47,6 @@ export default function SalesCart() {
     resolver: salesCartSchema,
     defaultValues: {
       saleItems: [],
-      patientCardId: getSearchParams(patientIdKey),
       paymentType: "CASH",
       notes: "",
     },
@@ -83,9 +82,14 @@ export default function SalesCart() {
       const response = await getSale(salesId as string);
       const saleData = response.data;
       if (!saleData) return;
+      const saleItems = saleData.saleItems as SaleItem[];
       form.setValue("notes", saleData.notes);
       form.setValue("paymentType", saleData.paymentType);
-      setSalesItems(saleData.saleItems as SaleItem[]);
+      form.setValue(
+        "saleItems",
+        saleItems.map((item) => handleSalesItem(item, true)),
+      );
+      setSalesItems(saleItems);
       setIsLoading(false);
     };
 
@@ -94,9 +98,11 @@ export default function SalesCart() {
 
   const handleSubmit = async (data: unknown) => {
     setIsSubmitting(true);
+    const patientCardId = getSearchParams(patientIdKey);
+    const dataWithPatientId = { ...(data as SaleCartFormData), patientCardId };
     const action = isEditMode
-      ? updateSale(salesId as string, data as SaleCartFormData)
-      : createSaleAction(data);
+      ? updateSale(salesId as string, dataWithPatientId)
+      : createSaleAction(dataWithPatientId);
     handleRequestState({ res: action, loadingMsg: "Saving sales..." });
     action.then(() => {
       printReceipt(data as SaleCartFormData, addedSalesItems);

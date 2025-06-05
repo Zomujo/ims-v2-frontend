@@ -22,14 +22,16 @@ export const salesTableColumns: ColumnDef<GetSalesDto>[] = [
     accessorKey: "saleItem.item.name",
     cell: ({ row, getValue }) => {
       const items = getValue() as string;
-      const itemQuantity = row.original.totalQuantity;
+      const remainderItems = row.original.remainderItems;
 
       return (
         <span className="space-x-1 text-sm">
           <span>{items}</span>
-          <span className="rounded-full bg-[#FEF3C7] p-1 text-xs">
-            {itemQuantity}+
-          </span>
+          {remainderItems > 0 ? (
+            <span className="rounded-full bg-[#FEF3C7] p-1 text-xs">
+              {remainderItems}+
+            </span>
+          ) : null}
         </span>
       );
     },
