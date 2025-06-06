@@ -32,7 +32,7 @@ export default function ExpiryItemsList() {
         handleRemoveQueryparam={handleRemoveQueryparam}
         currentDataDisplayName={""}
         tableColumns={expiryItemsTableColumns}
-        totalPages={0}
+        totalPages={data?.totalPages ?? 0}
         state={state}
         isEditMode={isEditMode}
         actions={({ item }) => [
