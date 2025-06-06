@@ -70,6 +70,9 @@ export const PAGE_ROUTES = {
     VIEW: "/stock-adjustment",
     CREATE: "?state=create",
   },
+  EXPIRY: {
+    VIEW: "/expiry",
+  },
   ITEM_ORDERS: {
     VIEW: "/item-orders",
     CREATE: "?state=create",

@@ -11,6 +11,7 @@ import {
   BatchResponseDto,
   CreateBatchDto,
   CreateItemDto,
+  ExpiryItemsDto,
   IdData,
   ItemAnalytics,
   ItemCounts,
@@ -55,6 +56,18 @@ export async function getItems(
   };
 
   return (await imsApiWithAuth<PaginatedResponse<ItemsDto>>(fetchOptions)).data;
+}
+
+export async function getItemsExpiry(params?: GenerateQueryParams) {
+  const fetchOptions: FetchApi = {
+    url: generateUrlWithQueryParams(API_ENDPOINTS.ITEMS_VALIDITY, params ?? {}),
+    method: "GET",
+    headers: {},
+    next: { tags: [API_ENDPOINT_TAGS.ITEMS_VALIDITY] },
+  };
+
+  return (await imsApiWithAuth<PaginatedResponse<ExpiryItemsDto>>(fetchOptions))
+    .data;
 }
 
 export async function addBatch(data: CreateBatchDto) {

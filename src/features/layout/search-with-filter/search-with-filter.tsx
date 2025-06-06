@@ -28,7 +28,7 @@ export default function SearchWithFilter() {
     [role],
   );
 
-  if (!btnData?.href) return null;
+  if (!btnData) return null;
   const [pathname, query] = (btnData?.href ?? "").split("?");
 
   if (params.id) return null;
@@ -39,7 +39,8 @@ export default function SearchWithFilter() {
       <ImsFilters>
         <FilterForms />
       </ImsFilters>
-      {!pathName.includes(PAGE_ROUTES.REPORTS) &&
+      {btnData.href &&
+        !pathName.includes(PAGE_ROUTES.REPORTS) &&
         hasActionPermission(btnData.permission ?? "") &&
         checkRole(btnData.roles) && (
           <ButtonLink

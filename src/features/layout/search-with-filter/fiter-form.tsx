@@ -16,6 +16,7 @@ import {
   todaySalesFilters,
   userRoleFilter,
   userStatusFilter,
+  validityStatusFilter,
 } from "@features/layout/search-with-filter/search-with-filter.data";
 import { useCategories } from "@/hooks/useCategories";
 
@@ -82,6 +83,9 @@ export default function FilterForms() {
       ),
       [PAGE_ROUTES.DEPARTMENTS_REQUESTS.VIEW]: (
         <Filters filters={[dateRangeFilter, requestStatusFilter]} />
+      ),
+      [PAGE_ROUTES.EXPIRY.VIEW]: (
+        <Filters dateRangeFilter={true} filters={[validityStatusFilter]} />
       ),
     };
   };

@@ -28,6 +28,12 @@ export const generalTabs = [
         link: "/stock-adjustment",
         permission: PermissionModules.STOCK_ADJUSTMENT,
       },
+      {
+        name: "Expiry",
+        icon: "solar:bone-crack-bold",
+        link: "/expiry",
+        permission: PermissionModules.ITEMS,
+      },
     ],
   },
   {
