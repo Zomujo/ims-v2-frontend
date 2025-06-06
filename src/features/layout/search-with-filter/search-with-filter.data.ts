@@ -6,6 +6,7 @@ import {
   RequestStatus,
   StockAdjustmentStatus,
   StockAdjustmentType,
+  ValidityStatus,
 } from "@features/shared/types/action.types";
 import { SALES_STATUS } from "@features/shared/types/sales-action.types";
 import {
@@ -27,6 +28,10 @@ export const actionButtonData = {
     href: PAGE_ROUTES.ITEMS.CREATE,
     icon: "solar:jar-of-pills-bold-duotone",
     permission: `${PermissionModules.ITEMS}:${PermissionActions.WRITE}`,
+  },
+  [PAGE_ROUTES.EXPIRY.VIEW]: {
+    icon: "solar:jar-of-pills-bold-duotone",
+    permission: `${PermissionModules.ITEMS}:${PermissionActions.READ}`,
   },
   [PAGE_ROUTES.ITEM_BATCHES]: {
     label: "Add New Batch",
@@ -155,6 +160,20 @@ export const adjustmentStatusFilter = {
     { label: "Submitted", value: StockAdjustmentStatus.SUBMITTED },
     { label: "Adjusted", value: StockAdjustmentStatus.ADJUSTED },
     { label: "Rejected", value: StockAdjustmentStatus.REJECTED },
+  ],
+  defaultValue: "",
+};
+
+export const validityStatusFilter = {
+  key: "status",
+  label: "Validity Status",
+  type: "radio" as const,
+  options: [
+    { label: "All", value: "" },
+    { label: "Expired", value: ValidityStatus.EXPIRED },
+    { label: "Critical", value: ValidityStatus.CRITICAL },
+    { label: "Approaching", value: ValidityStatus.APPROACHING },
+    { label: "Safe", value: ValidityStatus.SAFE },
   ],
   defaultValue: "",
 };

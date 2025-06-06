@@ -25,6 +25,10 @@ export const pageHeadingMap = {
     title: "Stock Adjustment",
     description: "Manage your stock adjustments here.",
   },
+  expiry: {
+    title: "Expiry Items",
+    description: "View items that are nearing their expiry date.",
+  },
 };
 
 interface PageHeadingContextType {

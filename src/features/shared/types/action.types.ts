@@ -220,6 +220,13 @@ export enum ITEMS_STATUS {
   OUT_OF_STOCK = "OUT_OF_STOCK",
 }
 
+export enum ValidityStatus {
+  EXPIRED = "EXPIRED",
+  CRITICAL = "CRITICAL",
+  APPROACHING = "APPROACHING",
+  SAFE = "SAFE",
+}
+
 export type ItemsDto = {
   id: string;
   createdAt: string;
@@ -228,6 +235,16 @@ export type ItemsDto = {
   totalStock: number;
   status: ITEMS_STATUS;
   category: Pick<ItemCategoryResponse, "name" | "id">;
+};
+
+export type ExpiryItemsDto = {
+  id: string;
+  batchId: string;
+  batchNumber: string;
+  validity: string;
+  item: Pick<ItemsDto, "id" | "name" | "status">;
+  quantity: number;
+  status: ValidityStatus;
 };
 
 export type CreateItemDto = {

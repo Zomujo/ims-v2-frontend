@@ -58,6 +58,7 @@ export const API_ENDPOINTS = {
 
   // Items
   ITEMS: "/items",
+  ITEMS_VALIDITY: "/items/validity",
   ITEM: "/items/:id",
   ITEMS_ADD_BATCH: "/items/add-batch",
   ITEMS_BATCHES_NO_PAGINATE: "/items/batches/:itemId/no-paginate",
@@ -147,6 +148,7 @@ export const API_ENDPOINT_TAGS = {
 
   // Items
   ITEMS: "api-v1-items",
+  ITEMS_VALIDITY: "api-v1-items-validity",
   ITEMS_BATCHES: "api-v1-items-batches",
 
   // Item Category

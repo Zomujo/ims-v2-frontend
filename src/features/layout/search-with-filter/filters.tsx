@@ -15,6 +15,8 @@ import { ChevronDown } from "lucide-react";
 import useImsSearchParams from "@features/shared/hooks/use-ims-search-params";
 import { Switch } from "@features/ui/switch";
 import { Label } from "@features/ui/label";
+import { DatePickerWithRange } from "@features/dashboard/dashboardGeneral";
+import { DateRange } from "react-day-picker";
 
 interface FilterOption {
   label: string;
@@ -31,10 +33,15 @@ export interface Filter {
 
 export type FiltersProps = {
   filters: Filter[];
+  dateRangeFilter?: boolean;
   className?: string;
 };
 
-export const Filters: FC<FiltersProps> = ({ filters, className = "" }) => {
+export const Filters: FC<FiltersProps> = ({
+  filters,
+  className = "",
+  dateRangeFilter = false,
+}) => {
   const {
     setSearchParams,
     setArraySearchParams,
@@ -45,6 +52,10 @@ export const Filters: FC<FiltersProps> = ({ filters, className = "" }) => {
   const [selectedValues, setSelectedValues] = useState<
     Record<string, string | string[] | boolean>
   >({});
+  const [date, setDate] = useState<DateRange>({
+    from: undefined,
+    to: undefined,
+  });
 
   useEffect(() => {
     const initialValues: Record<string, string | string[] | boolean> = {};
@@ -108,8 +119,39 @@ export const Filters: FC<FiltersProps> = ({ filters, className = "" }) => {
     }
   };
 
+  useEffect(() => {
+    setSearchParams({
+      key: "startDate",
+      value: date.from ? date.from.toISOString() : "",
+    });
+    setSearchParams({
+      key: "endDate",
+      value: date.to ? date.to.toISOString() : "",
+    });
+  }, [date]);
+
+  useEffect(() => {
+    if (dateRangeFilter) {
+      const startDate = getSearchParams("startDate");
+      const endDate = getSearchParams("endDate");
+
+      setDate({
+        from: startDate ? new Date(startDate) : undefined,
+        to: endDate ? new Date(endDate) : undefined,
+      });
+    }
+  }, []);
+
   return (
     <div className={`flex items-center gap-2 p-1 ${className}`}>
+      {dateRangeFilter && (
+        <DatePickerWithRange
+          date={date as Required<DateRange>}
+          setDate={
+            setDate as React.Dispatch<React.SetStateAction<Required<DateRange>>>
+          }
+        />
+      )}
       {filters.map(({ key, label, type, options }) => (
         <DropdownMenu key={key}>
           <DropdownMenuTrigger asChild>
