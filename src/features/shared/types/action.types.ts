@@ -781,3 +781,24 @@ export type LogComplainDto = {
   dateTimeIssueOccured: string;
   errorMessage?: string;
 };
+
+export type ExpiryReportDto = {
+  approaching: CountExpiryInfo;
+  critical: CountExpiryInfo;
+  highRisk: CountExpiryInfo;
+  expired: CountExpiryInfo;
+};
+
+export type CountExpiryInfo = {
+  count: number;
+  rows: ReportInfoDto[];
+};
+
+export type ReportInfoDto = {
+  batchNumber: string;
+  item: {
+    id: string;
+    name: string;
+  };
+  validity: string;
+};
