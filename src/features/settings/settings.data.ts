@@ -68,7 +68,7 @@ export const settingsAccountInfoFields = [
     label: "Phone Number",
     name: "phoneNumber",
     type: "tel",
-    placeholder: "eg 0248765432",
+    placeholder: "eg. +233248765432",
   },
 ];
 

@@ -31,29 +31,31 @@ export function SettingsSidebar() {
 
 export function SettingsFromActions({
   isSubmitting,
-  setEidtForm,
-  editForm,
+  setEditFormAction,
+  editFormAction,
   className,
+  disabled,
 }: Readonly<{
+  disabled: boolean;
   isSubmitting: boolean;
-  editForm: boolean;
+  editFormAction: boolean;
   className?: string;
-  setEidtForm: Dispatch<SetStateAction<boolean>>;
+  setEditFormAction: Dispatch<SetStateAction<boolean>>;
 }>) {
   return (
     <div className={cn("absolute top-0 right-0 flex gap-4", className)}>
-      {!editForm && (
+      {!editFormAction && (
         <ImsButton
           startIcon={<Icon icon="hugeicons:edit-01" />}
           isLoadingLabel="Logging in..."
           variant="outline"
           type="button"
-          onClick={() => setEidtForm((prev) => !prev)}
+          onClick={() => setEditFormAction((prev) => !prev)}
         >
           Edit
         </ImsButton>
       )}
-      {editForm && (
+      {editFormAction && (
         <>
           <ImsButton
             isLoadingLabel="Logging in..."
@@ -61,12 +63,13 @@ export function SettingsFromActions({
             className="order-last cursor-pointer justify-self-end bg-red-50 text-red-600 hover:bg-red-600 hover:text-white md:order-none"
             type="reset"
             onClick={() => {
-              setEidtForm((prev) => !prev);
+              setEditFormAction((prev) => !prev);
             }}
           >
             Discard
           </ImsButton>
           <ImsButton
+            disabled={disabled || isSubmitting}
             isLoading={isSubmitting}
             isLoadingLabel="Logging in..."
             variant="imsPrimary"
