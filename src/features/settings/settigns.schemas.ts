@@ -1,9 +1,14 @@
 import { z } from "zod";
 
 export const generalSettingsSchema = z.object({
-  fullName: z.string().optional(),
-  email: z.string().email().optional(),
-  phoneNumber: z.string().optional(),
+  fullName: z.string().nonempty("Full name is required"),
+  email: z.string().email("Invalid email format").nonempty("Email is required"),
+  phoneNumber: z
+    .string()
+    .regex(/^\+233\d{9}$/, {
+      message: "Phone number must start with +233 and be 14 characters long",
+    })
+    .nonempty("Phone number is required"),
   otpCode: z.string().optional(),
 });
 

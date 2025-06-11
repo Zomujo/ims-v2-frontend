@@ -43,6 +43,7 @@ export function GeneralSettingsAccountForm({
       phoneNumber,
       otpCode: "",
     },
+    mode: "onTouched",
   });
 
   const handleSubmitFn = async (data: unknown) => {
@@ -87,9 +88,10 @@ export function GeneralSettingsAccountForm({
       handleAuthSubmit={handleSubmitFn}
       RenderActions={
         <SettingsFromActions
-          editForm={editForm}
-          setEidtForm={setEditForm}
+          editFormAction={editForm}
+          setEditFormAction={setEditForm}
           isSubmitting={form.formState.isSubmitting}
+          disabled={!form.formState.isValid}
         />
       }
       RenderInputs={
