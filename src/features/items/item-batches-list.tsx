@@ -118,12 +118,8 @@ function ItemBatchesForm({
   const { removeSearchParams } = useImsSearchParams();
   const form = useHookForm({
     resolver: itemBatchFormSchema,
-    defaultValues: batch ?? {
-      batchNumber: "",
-      quantity: undefined,
-      supplierId: "",
-      validity: "",
-    },
+    defaultValues: batch,
+    mode: "onTouched",
   });
   const supplierOptions = suppliers.map((supplier) => ({
     value: supplier.id,
@@ -190,19 +186,6 @@ function ItemBatchesForm({
               );
             }}
           />
-          {/* <HookFormField
-            formControl={form.control}
-            name="quantity"
-            label="Quantity"
-            renderInput={({ field }) => (
-              <Input
-                {...inputTypeNumber(field)}
-                className="focus-visible:ring-ims-blue-300 bg-white"
-                type="number"
-                placeholder="eg: 100"
-              />
-            )}
-          /> */}
           <div className="space-y-2">
             <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
               <input

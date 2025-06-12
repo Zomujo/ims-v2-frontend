@@ -33,7 +33,7 @@ export const itemFormSchema = z.object({
 });
 
 export const itemBatchFormSchema = z.object({
-  quantity: z.number().min(1, "Quantity is required").optional(),
+  quantity: z.number().min(1, "Quantity is required"),
   validity: z.string().min(1, "Validity is required"),
   batchNumber: z.string().min(1, "Batch number is required"),
   supplierId: z.string().min(1, "Supplier ID is required"),
