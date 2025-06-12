@@ -3,6 +3,7 @@ import { ENV_VARIABLES } from "@/lib/config/env.config";
 import { AUTH_PAGE_ROUTES } from "@/lib/constant";
 import { redirect } from "next/navigation";
 import { FetchApi, IMSApiErrorResponse } from "../types/ims-api-action.types";
+import { headers as nextHeaders } from "next/headers";
 
 export const imsApiWithAuth = async <T>({
   url,
@@ -61,12 +62,15 @@ const fetchApi = async <T>({
     },
     cache,
   });
-
   if (!response.ok) {
     const errorData = await response.json();
 
     if (errorData.message === "TOKEN_EXPIRED" && errorData.statusCode === 401) {
-      redirect(AUTH_PAGE_ROUTES.LOG_IN);
+      const headerList = await nextHeaders();
+      const refererUrl = headerList.get("referer");
+      redirect(
+        `${AUTH_PAGE_ROUTES.LOG_IN}?redirect=${encodeURIComponent(refererUrl ?? "")}`,
+      );
     }
 
     throw new Error(JSON.stringify(errorData as IMSApiErrorResponse));
