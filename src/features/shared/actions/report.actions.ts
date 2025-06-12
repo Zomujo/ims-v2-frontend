@@ -108,3 +108,20 @@ export async function getSalesReport() {
 
   return await imsApiWithAuth<PaginatedResponse<GetSaleDto>>(fetchOptions);
 }
+
+export async function getCategorizedReport(category: string, id: string) {
+  const fetchOptions: FetchApi = {
+    url: API_ENDPOINTS.CATEGORIZED_REPORT.replace(":id", id).replace(
+      ":category",
+      category,
+    ),
+    method: "GET",
+    headers: {},
+    cache: "force-cache",
+    next: { tags: [API_ENDPOINT_TAGS.REPORTS] },
+  };
+
+  return await imsApiWithAuth<ApiSuccessResponseDto<GetReportDataDto>>(
+    fetchOptions,
+  );
+}

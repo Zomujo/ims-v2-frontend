@@ -806,16 +806,30 @@ export type ExpiryReportDto = {
   expired: CountExpiryInfo;
 };
 
-export type CountExpiryInfo = {
+export type CountExpiryInfo<T = ReportInfoDto> = {
   count: number;
-  rows: ReportInfoDto[];
+  rows: T[];
 };
 
 export type ReportInfoDto = {
   batchNumber: string;
-  item: {
-    id: string;
-    name: string;
-  };
+  item: Item;
   validity: string;
+  quantity: string;
+};
+
+export type PeriodicSalesDto = {
+  saleItems: GetSalesItemsDto[];
+};
+
+export type Item = {
+  id: string;
+  name: string;
+  sellingPrice: number;
+};
+
+export type TopSellingDto = {
+  item: Item;
+  totalQuantity: number;
+  totalSales: number;
 };
