@@ -41,10 +41,11 @@ export default function SettingsSecurityForm() {
       className="relative flex"
       RenderActions={
         <SettingsFromActions
-          editForm={editForm}
-          setEidtForm={setEditForm}
+          editFormAction={editForm}
+          setEditFormAction={setEditForm}
           isSubmitting={form.formState.isSubmitting}
           className={cn("top-8 right-8", { "": editForm })}
+          disabled={!form.formState.isValid}
         />
       }
       RenderInputs={
