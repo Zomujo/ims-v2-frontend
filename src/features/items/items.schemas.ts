@@ -5,8 +5,14 @@ export const itemFormSchema = z.object({
   brandName: z.string().min(1, "Brand name is required"),
   code: z.string().min(1, "Item code is required"),
   dosageForm: z.string().min(1, "Dosage form is required"),
-  strength: z.string().min(1, "Strength is required"),
-  unitOfMeasurement: z.string().min(1, "Unit of measure is required"),
+  strength: z
+    .string()
+    .nonempty("Unit of Measurement is required")
+    .min(1, "Unit of Measurement cannot be empty"),
+  unitOfMeasurement: z
+    .string()
+    .nonempty("Unit of Measurement is required")
+    .min(1, "Unit of Measurement cannot be empty"),
   manufacturer: z.string().min(1, "Manufacturer is required"),
   reorderPoint: z
     .number()

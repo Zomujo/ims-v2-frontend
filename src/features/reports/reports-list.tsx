@@ -1,6 +1,7 @@
 "use client";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import {
+  getCategorizedReport,
   getReportData,
   getSalesReport,
 } from "../shared/actions/report.actions";
@@ -11,17 +12,30 @@ import {
   ReportInfoDto,
   ExpiryReportDto,
   CountExpiryInfo,
+  GetSaleDto,
+  PeriodicSalesDto,
+  TopSellingDto,
 } from "../shared/types/action.types";
 
 type ReportInfo = {
   id: string;
   name: string;
-  quantity?: string;
+  quantity?: string | number;
+  total?: string | number;
 };
 
 export default function ReportsList() {
-  const { data } = useFetchData({ fetchFn: getSalesReport });
-
+  const { data, loading: financeLoading } = useFetchData({
+    fetchFn: getSalesReport,
+  });
+  const [periodicSales, setPeriodicSales] = useState<ReportInfo[]>([]);
+  const [topSelling, setTopSelling] = useState<ReportInfo[]>([]);
+  const [loading, setLoading] = useState({
+    expiry: false,
+    topSales: false,
+    periodicSales: false,
+    stockLevel: false,
+  });
   const [reportSections, setReportSections] = useState<{
     approaching: ReportInfo[];
     critical: ReportInfo[];
@@ -46,8 +60,15 @@ export default function ReportsList() {
     ) ?? [];
 
   useEffect(() => {
+    setLoading((prev) => ({
+      ...prev,
+      expiry: true,
+    }));
     const fetchExpiryReport = async () => {
-      const { data: expiryReportData } = await getReportData("expiry_report");
+      const { data: expiryReportData } = await getCategorizedReport(
+        "items",
+        "expiry",
+      );
       const { approaching, critical, highRisk, expired } =
         expiryReportData?.rows as unknown as ExpiryReportDto;
 
@@ -58,15 +79,26 @@ export default function ReportsList() {
         highRisk: mapToReportInfo(highRisk.rows),
         expired: mapToReportInfo(expired.rows),
       }));
+
+      setLoading((prev) => ({
+        ...prev,
+        expiry: false,
+      }));
     };
 
     void fetchExpiryReport();
   }, []);
 
   useEffect(() => {
+    setLoading((prev) => ({
+      ...prev,
+      stockLevel: true,
+    }));
     const fetchStockLevelReport = async () => {
-      const { data: stockLevelReportData } =
-        await getReportData("stock_level_report");
+      const { data: stockLevelReportData } = await getCategorizedReport(
+        "items",
+        "stock-level",
+      );
 
       const { rows } = stockLevelReportData as unknown as CountExpiryInfo;
       if (rows) {
@@ -75,9 +107,92 @@ export default function ReportsList() {
           stockLevelReport: mapToReportInfo(rows),
         }));
       }
+
+      setLoading((prev) => ({
+        ...prev,
+        stockLevel: false,
+      }));
     };
 
     void fetchStockLevelReport();
+  }, []);
+
+  useEffect(() => {
+    setLoading((prev) => ({
+      ...prev,
+      periodicSales: true,
+    }));
+    const fetchSalesLevelReport = async () => {
+      const { data: SalesReportData } = await getCategorizedReport(
+        "sales",
+        "periodic-sales",
+      );
+
+      const { rows } =
+        SalesReportData as unknown as CountExpiryInfo<PeriodicSalesDto>;
+
+      if (rows) {
+        const periodicSalesResponse = rows.flatMap(({ saleItems }) =>
+          saleItems.map(
+            ({
+              batchId,
+              batchNumber,
+              quantity,
+              item: { name, sellingPrice },
+            }) => ({
+              id: batchId,
+              name: `${name} (${batchNumber})`,
+              quantity: `${sellingPrice} (${quantity})`,
+              total: `GHS ${quantity * sellingPrice}`,
+            }),
+          ),
+        );
+        setPeriodicSales(periodicSalesResponse);
+      }
+
+      setLoading((prev) => ({
+        ...prev,
+        periodicSales: false,
+      }));
+    };
+
+    void fetchSalesLevelReport();
+  }, []);
+  useEffect(() => {
+    setLoading((prev) => ({
+      ...prev,
+      topSales: true,
+    }));
+    const fetchTopSelling = async () => {
+      const { data: topSellingReport } = await getCategorizedReport(
+        "sales",
+        "top-selling",
+      );
+
+      const { rows } =
+        topSellingReport as unknown as CountExpiryInfo<TopSellingDto>;
+      if (rows) {
+        const topSellingResponse = rows.map(
+          ({
+            item: { id, name, sellingPrice },
+            totalQuantity,
+            totalSales,
+          }) => ({
+            id,
+            name,
+            quantity: `${sellingPrice} (${totalQuantity})`,
+            total: `GHS ${totalSales}`,
+          }),
+        );
+        setTopSelling(topSellingResponse);
+      }
+      setLoading((prev) => ({
+        ...prev,
+        topSales: false,
+      }));
+    };
+
+    void fetchTopSelling();
   }, []);
 
   function mapToReportInfo(items: ReportInfoDto[]): ReportInfo[] {
@@ -88,7 +203,7 @@ export default function ReportsList() {
     }));
   }
   return (
-    <ScrollArea className="mt-2 h-[calc(100%-5rem)] rounded-2xl bg-white pr-4">
+    <ScrollArea className="mt-2 h-[calc(100%_-_5rem)] rounded-2xl bg-white pr-4">
       <ReportHeader
         title="REPORT NAME (Batch number)"
         option="Type"
@@ -98,11 +213,31 @@ export default function ReportsList() {
         title="SALES AND FINANCIAL REPORTS"
         type="Sales and Financial Reports"
         reportReference={saleNameId}
+        loading={financeLoading}
       />
       <ReportAccordion
         title="STOCK LEVEL REPORT"
         type="Stock Level Reports"
         reportReference={reportSections.stockLevelReport}
+        loading={loading.stockLevel}
+      />
+
+      <ReportHeader
+        title="SALES NAME"
+        option="Total Sales"
+        variant="Selling Price(Quantity)"
+      />
+      <ReportAccordion
+        title="TOP SALES REPORT"
+        type="Total sales"
+        reportReference={topSelling}
+        loading={loading.topSales}
+      />
+      <ReportAccordion
+        title="PERIODIC SALES REPORT"
+        type="Periodic Sales Reports"
+        reportReference={periodicSales}
+        loading={loading.periodicSales}
       />
 
       <ReportHeader
@@ -114,21 +249,25 @@ export default function ReportsList() {
         title="EXPIRY APPROACHING"
         type="Approaching"
         reportReference={reportSections.approaching}
+        loading={loading.expiry}
       />
       <ReportAccordion
         title="EXPIRY HIGH RISK"
         type="High Risk"
         reportReference={reportSections.highRisk}
+        loading={loading.expiry}
       />
       <ReportAccordion
         title="EXPIRY CRITICAL"
         type="Critical"
         reportReference={reportSections.critical}
+        loading={loading.expiry}
       />
       <ReportAccordion
         title="EXPIRED"
         type="Expired"
         reportReference={reportSections.expired}
+        loading={loading.expiry}
       />
     </ScrollArea>
   );

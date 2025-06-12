@@ -9,13 +9,16 @@ type ReportAccordionType = {
     name: string;
     id: string;
     quantity?: number | string;
+    total?: number | string;
   }[];
+  loading?: boolean;
 };
 
 export const ReportAccordion = ({
   title,
   type,
   reportReference,
+  loading,
 }: ReportAccordionType) => {
   const [showDropdown, setShowDropdown] = useState(false);
   return (
@@ -26,24 +29,35 @@ export const ReportAccordion = ({
           showDropdown && "sticky top-0",
         )}
       >
-        <div className="flex items-center justify-center">
-          <p> {title}</p>{" "}
-          <span className="ml-1 flex h-[18px] w-[18px] items-center justify-center rounded-full bg-[#Fef3c7] text-xs font-medium">
-            {" "}
-            {reportReference.length}
-          </span>
-        </div>
-        <div className="ml-auto" onClick={() => setShowDropdown(!showDropdown)}>
-          <Icon
-            icon="solar:alt-arrow-down-linear"
-            fontSize={24}
-            className={cn("transition-all", showDropdown && "rotate-180")}
-          />
-        </div>
+        {loading ? (
+          <div className="flex w-full animate-pulse items-center justify-between">
+            <div className="h-4 w-32 rounded bg-gray-300" />
+            <div className="h-6 w-6 rounded-full bg-gray-300" />
+          </div>
+        ) : (
+          <>
+            <div className="flex items-center justify-center">
+              <p>{title}</p>
+              <span className="ml-1 flex h-[18px] w-[18px] items-center justify-center rounded-full bg-[#Fef3c7] text-xs font-medium">
+                {reportReference.length}
+              </span>
+            </div>
+            <div
+              className="ml-auto cursor-pointer"
+              onClick={() => setShowDropdown(!showDropdown)}
+            >
+              <Icon
+                icon="solar:alt-arrow-down-linear"
+                fontSize={24}
+                className={cn("transition-all", showDropdown && "rotate-180")}
+              />
+            </div>
+          </>
+        )}
       </div>
-      {reportReference.map(({ name, id, quantity }) => (
+      {reportReference.map(({ name, id, quantity, total }, index) => (
         <div
-          key={id}
+          key={id + index}
           className={cn(
             "w-auto overflow-hidden transition-all duration-300",
             !showDropdown && "hidden w-0",
@@ -54,7 +68,7 @@ export const ReportAccordion = ({
               <p className="truncate pr-4">{name} </p>
             </div>
             <div className="w-[38%]">
-              <p className="truncate pr-4 text-[#111111]">{type}</p>
+              <p className="truncate pr-4 text-[#111111]">{total || type}</p>
             </div>
             <p className="text-[#111111]">{quantity}</p>
           </div>
