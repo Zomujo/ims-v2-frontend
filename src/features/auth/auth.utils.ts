@@ -33,7 +33,10 @@ export const handleAuth = async ({
   });
   const authRes = await res;
   if (authRes?.ok && authRes.url) {
-    routeFn(authRes.url);
+    const redirectUrl = new URLSearchParams(window.location.search).get(
+      "redirect",
+    );
+    routeFn(redirectUrl ?? authRes.url);
   }
 };
 
