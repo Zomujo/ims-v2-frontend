@@ -70,3 +70,52 @@ export const itemBatchesTableColumns: ColumnDef<BatchResponseDto>[] = [
     cell: ({ row }) => formateDate(row.original.createdAt),
   },
 ];
+
+export const dosageFormOptions = [
+  { value: "TABLET", label: "Tablet" },
+  { value: "INJECTION", label: "Injection" },
+  { value: "SYRUP", label: "Syrup" },
+  { value: "CAPSULE", label: "Capsule" },
+  { value: "CREAM", label: "Cream" },
+  { value: "OINTMENT", label: "Ointment" },
+  { value: "LOTION", label: "Lotion" },
+  { value: "GEL", label: "Gel" },
+  { value: "SUSPENSION", label: "Suspension" },
+  { value: "DROPS", label: "Drops" },
+  { value: "SPRAY", label: "Spray" },
+  { value: "POWDER", label: "Powder" },
+  { value: "SUPPOSITORY", label: "Suppository" },
+  { value: "INHALER", label: "Inhaler" },
+  { value: "PATCH", label: "Patch" },
+  { value: "LOZENGE", label: "Lozenge" },
+  { value: "MOUTHWASH", label: "Mouthwash" },
+  { value: "SHAMPOO", label: "Shampoo" },
+];
+
+export const FDAFormOptions = [
+  { value: "YES", label: "Yes" },
+  { value: "NO", label: "No" },
+];
+
+export const prescriptionUnits = [
+  { label: "Milligrams", value: "mg" },
+  { label: "Grams", value: "g" },
+  { label: "Micrograms", value: "mcg" },
+  { label: "International Units", value: "IU" },
+  { label: "Milliliters", value: "mL" },
+  { label: "Liters", value: "L" },
+  { label: "Units", value: "units" },
+  { label: "Puffs", value: "puffs" },
+  { label: "Drops", value: "gtt" },
+  { label: "Tablets", value: "tablets" },
+  { label: "Capsules", value: "capsules" },
+  { label: "Teaspoons", value: "tsp" },
+  { label: "Tablespoons", value: "tbsp" },
+  { label: "Sprays", value: "sprays" },
+  { label: "Patches", value: "patches" },
+  { label: "Suppositories", value: "suppositories" },
+  { label: "Ointment (percentage)", value: "%" },
+  { label: "Cream (percentage)", value: "%" },
+  { label: "Gel (percentage)", value: "%" },
+  { label: "Fingertip Units", value: "FTU" },
+];

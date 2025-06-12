@@ -6,9 +6,9 @@ export const itemFormSchema = z.object({
   code: z.string().min(1, "Item code is required"),
   dosageForm: z.string().min(1, "Dosage form is required"),
   strength: z
-    .string()
-    .nonempty("Unit of Measurement is required")
-    .min(1, "Unit of Measurement cannot be empty"),
+    .number()
+    .min(1, "Strength of item must be non-negative and greater than 0")
+    .transform((val) => String(val)),
   unitOfMeasurement: z
     .string()
     .nonempty("Unit of Measurement is required")

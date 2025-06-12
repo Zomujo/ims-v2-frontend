@@ -121,22 +121,7 @@ export function ItemForm({
 
   const form = useHookForm({
     resolver: itemFormSchema,
-    defaultValues: {
-      brandName: "",
-      categoryId: "",
-      code: "",
-      costPrice: undefined,
-      sellingPrice: undefined,
-      dosageForm: "",
-      fdaApproval: "",
-      ISO: "",
-      manufacturer: "",
-      name: "",
-      reorderPoint: undefined,
-      storageReq: "",
-      strength: "",
-      unitOfMeasurement: "",
-    },
+    mode: "onTouched",
   });
 
   const isStepFilled = useCallback(() => {

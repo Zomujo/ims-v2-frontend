@@ -7,7 +7,7 @@ export default function useHookForm<T>({
   resolver,
   mode,
 }: {
-  defaultValues: UseFormProps["defaultValues"] &
+  defaultValues?: UseFormProps["defaultValues"] &
     z.infer<T extends z.ZodTypeAny ? T : never>;
   resolver: T;
   mode?: "onBlur" | "onChange" | "onSubmit" | "onTouched" | "all" | undefined;

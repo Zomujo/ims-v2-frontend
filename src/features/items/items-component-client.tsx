@@ -12,39 +12,17 @@ import { ImsSelect } from "../shared/components/ims-select";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import { ItemsContext } from "./items.context";
+import {
+  dosageFormOptions,
+  FDAFormOptions,
+  prescriptionUnits,
+} from "@features/items/items.data";
 
 export function ShowItemsDashboard({ children }: Readonly<PropsWithChildren>) {
   const pathName = usePathname();
   if (pathName === PAGE_ROUTES.ITEMS.VIEW) return children;
   return null;
 }
-
-// Placeholder options for dropdowns
-const dosageFormOptions = [
-  { value: "TABLET", label: "Tablet" },
-  { value: "INJECTION", label: "Injection" },
-  { value: "SYRUP", label: "Syrup" },
-  { value: "CAPSULE", label: "Capsule" },
-  { value: "CREAM", label: "Cream" },
-  { value: "OINTMENT", label: "Ointment" },
-  { value: "LOTION", label: "Lotion" },
-  { value: "GEL", label: "Gel" },
-  { value: "SUSPENSION", label: "Suspension" },
-  { value: "DROPS", label: "Drops" },
-  { value: "SPRAY", label: "Spray" },
-  { value: "POWDER", label: "Powder" },
-  { value: "SUPPOSITORY", label: "Suppository" },
-  { value: "INHALER", label: "Inhaler" },
-  { value: "PATCH", label: "Patch" },
-  { value: "LOZENGE", label: "Lozenge" },
-  { value: "MOUTHWASH", label: "Mouthwash" },
-  { value: "SHAMPOO", label: "Shampoo" },
-];
-
-const FDAFormOptions = [
-  { value: "YES", label: "Yes" },
-  { value: "NO", label: "No" },
-];
 
 type ItemFormInputsProps = {
   control: Control;
@@ -137,7 +115,9 @@ export function ItemFormInputs({
           renderInput={({ field }) => (
             <Input
               {...field}
-              type="text"
+              placeholder="Eg. 500"
+              {...inputTypeNumber(field)}
+              type="number"
               className="focus-visible:ring-ims-blue-300 !h-11 bg-white"
             />
           )}
@@ -147,9 +127,11 @@ export function ItemFormInputs({
           name="unitOfMeasurement"
           label="Unit of Measurement"
           renderInput={({ field }) => (
-            <Input
+            <ImsSelect
+              showNone={false}
+              options={prescriptionUnits}
+              moduleName="unit of measurement"
               {...field}
-              type="text"
               className="focus-visible:ring-ims-blue-300 !h-11 bg-white"
             />
           )}
@@ -162,6 +144,7 @@ export function ItemFormInputs({
             <Input
               {...field}
               type="text"
+              placeholder="Eg. ABC Pharmaceuticals"
               className="focus-visible:ring-ims-blue-300 !h-11 bg-white"
             />
           )}
@@ -172,6 +155,7 @@ export function ItemFormInputs({
           label="FDA Approval"
           renderInput={({ field }) => (
             <ImsSelect
+              showNone={false}
               options={FDAFormOptions}
               moduleName="Yes or No"
               {...field}
@@ -186,6 +170,7 @@ export function ItemFormInputs({
           renderInput={({ field }) => (
             <Input
               {...field}
+              placeholder="Eg. ISO 9001:2015"
               type="text"
               className="focus-visible:ring-ims-blue-300 !h-11 bg-white"
             />
