@@ -49,12 +49,6 @@ const mockCurrencies = [
   { value: "eur", label: "EUR" },
 ];
 
-const mockPaymentTerms = [
-  { value: "net_30", label: "Net 30 Days" },
-  { value: "net_60", label: "Net 60 Days" },
-  { value: "cash_on_delivery", label: "Cash on Delivery" },
-];
-
 const mockMobileMoneyProviders = [
   { value: "MTN", label: "MTN" },
   { value: "Vodafone", label: "Vodafone" },
@@ -105,6 +99,7 @@ export const SupplierFormInputs = ({
           label="Supplier Type" // Matches UI
           renderInput={({ field }) => (
             <ImsSelect
+              showNone={false}
               options={mockSupplierTypes}
               moduleName="option"
               onChange={field.onChange}
@@ -132,6 +127,7 @@ export const SupplierFormInputs = ({
           label="Lead time" // Matches UI
           renderInput={({ field }) => (
             <ImsSelect
+              showNone={false}
               options={mockLeadTimes}
               moduleName="option"
               onChange={field.onChange}
@@ -146,6 +142,7 @@ export const SupplierFormInputs = ({
           label="Delivery Method" // Matches UI
           renderInput={({ field }) => (
             <ImsSelect
+              showNone={false}
               options={mockDeliveryMethods}
               moduleName="option"
               onChange={field.onChange}
@@ -292,6 +289,7 @@ export const SupplierFormInputs = ({
             <ImsSelect
               options={mockPaymentTypes}
               moduleName="option"
+              showNone={false}
               onChange={field.onChange}
               value={field.value}
               className="focus-visible:ring-ims-blue-300 !h-11 bg-white"
@@ -309,6 +307,7 @@ export const SupplierFormInputs = ({
                 <ImsSelect
                   options={mockBankNames}
                   moduleName="option"
+                  showNone={false}
                   onChange={field.onChange}
                   value={field.value}
                   className="focus-visible:ring-ims-blue-300 !h-11 bg-white"
@@ -325,6 +324,7 @@ export const SupplierFormInputs = ({
                     options={mockAccountTypes}
                     moduleName="option"
                     onChange={field.onChange}
+                    showNone={false}
                     value={field.value}
                     className="focus-visible:ring-ims-blue-300 !h-11 bg-white"
                   />
@@ -355,6 +355,7 @@ export const SupplierFormInputs = ({
               renderInput={({ field }) => (
                 <ImsSelect
                   options={mockMobileMoneyProviders}
+                  showNone={false}
                   moduleName="provider"
                   onChange={field.onChange}
                   value={field.value}
@@ -386,6 +387,7 @@ export const SupplierFormInputs = ({
             <ImsSelect
               options={mockCurrencies}
               moduleName="option"
+              showNone={false}
               onChange={field.onChange}
               value={field.value}
               className="focus-visible:ring-ims-blue-300 !h-11 bg-white"

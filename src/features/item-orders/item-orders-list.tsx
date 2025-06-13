@@ -100,12 +100,6 @@ export default function ItemOrdersList({
               action: () => handleEditBtnClicked(item),
               hide: !canWrite(PermissionModules.ITEMS_ORDERS),
             },
-            // TODO: Will probably be added but at the moment, no functionality for this
-            // {
-            //   label: "print PDF",
-            //   icon: "solar:printer-2-outline",
-            //   action: () => handleDeleteBtnClicked(item),
-            // },
             {
               label: handleCurrentState(item.status) ?? "",
               action: () =>
@@ -161,16 +155,7 @@ export function ItemOrdersForm({
   const { removeSearchParams } = useImsSearchParams();
   const form = useHookForm({
     resolver: orderFormSchema,
-    defaultValues: {
-      itemId: "",
-      supplierId: "",
-      quantity: undefined,
-      expectedDeliveryDate: "",
-      paymentMethod: "",
-      deliveryMethod: "",
-      deliveryAddress: "",
-      additionalNotes: "",
-    },
+    mode: "onTouched",
   });
 
   const handleSubmit = async (data: unknown) => {
@@ -189,11 +174,12 @@ export function ItemOrdersForm({
         ? "Updating item order..."
         : "Creating item order...",
     });
-    res.then(() => {
-      setIsSubmitting(false);
-      form.reset();
-      removeSearchParams(UI_STATE);
-    });
+    res
+      .then(() => {
+        form.reset();
+        removeSearchParams(UI_STATE);
+      })
+      .finally(() => setIsSubmitting(false));
   };
 
   useEffect(() => {
@@ -224,7 +210,7 @@ export function ItemOrdersForm({
           <ImsButton
             type="submit"
             variant="imsPrimary"
-            disabled={isSubmitting}
+            disabled={isSubmitting || !form.formState.isValid}
             isLoading={isSubmitting}
             isLoadingLabel="Saving..."
           >

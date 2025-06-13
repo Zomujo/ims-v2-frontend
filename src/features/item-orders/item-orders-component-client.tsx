@@ -32,6 +32,7 @@ export function ItemOrdersInputs({ control }: Readonly<ItemFormInputsProps>) {
         label="Item"
         renderInput={({ field }) => (
           <ImsSelect
+            showNone={false}
             options={itemsOptions}
             moduleName="item"
             onChange={field.onChange}
@@ -61,6 +62,7 @@ export function ItemOrdersInputs({ control }: Readonly<ItemFormInputsProps>) {
         renderInput={({ field }) => (
           <ImsSelect
             options={suppliersOptions}
+            showNone={false}
             moduleName="supplier"
             onChange={field.onChange}
             value={field.value}
