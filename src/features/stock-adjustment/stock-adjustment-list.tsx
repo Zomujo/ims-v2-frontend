@@ -102,15 +102,8 @@ export function StockAdjustmentForm({
 }: Readonly<StockAdjustmentFormProps>) {
   const { removeSearchParams } = useImsSearchParams();
   const form = useHookForm({
+    mode: "onTouched",
     resolver: stockAdjustmentSchema,
-    defaultValues: {
-      itemId: "",
-      quantity: undefined,
-      reason: "",
-      notes: "",
-      batchId: "",
-      type: "INCREMENT",
-    },
   });
 
   const handleSubmit = async (data: unknown) => {

@@ -79,6 +79,7 @@ export function StockAdjustmentFormInputs({
         label="Quantity"
         renderInput={({ field }) => (
           <Input
+            {...field}
             {...inputTypeNumber(field)}
             type="number"
             className="focus-visible:ring-ims-blue-300 bg-white"
