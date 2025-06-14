@@ -98,24 +98,53 @@ export const FDAFormOptions = [
 ];
 
 export const prescriptionUnits = [
+  // Solid Dosage Units
+  { label: "Tablet(s)", value: "tablets" },
+  { label: "Capsule(s)", value: "capsules" },
+  { label: "Strip(s)", value: "strips" },
+  { label: "Pack(s)", value: "packs" },
+  { label: "Box(es)", value: "boxes" },
+  { label: "Suppository/ies", value: "suppositories" },
+  { label: "Lozenge(s)", value: "lozenges" },
+  { label: "Pessary/ies", value: "pessaries" },
+
+  // Liquid Dosage Units
+  { label: "Millilitre(s)", value: "mL" },
+  { label: "Teaspoon(s)", value: "tsp" },
+  { label: "Tablespoon(s)", value: "tbsp" },
+  { label: "Dose(s)", value: "doses" },
+  { label: "Bottle(s)", value: "bottles" },
+  { label: "Drop(s)", value: "gtt" }, // medical abbreviation for drops
+  { label: "Vial(s)", value: "vials" },
+  { label: "Ampoule(s)", value: "ampoules" },
+
+  // Semi-Solid Units
+  { label: "Gram(s)", value: "g" },
+  { label: "Tube(s)", value: "tubes" },
+  { label: "Jar(s)", value: "jars" },
+
+  // Inhalation/Nebulisation Units
+  { label: "Puff(s)", value: "puffs" },
+  { label: "Inhaler(s)", value: "inhalers" },
+  { label: "Canister(s)", value: "canisters" },
+
+  // Powdered/Granular Units
+  { label: "Sachet(s)", value: "sachets" },
+  { label: "Reconstituted Bottle(s)", value: "reconstituted_bottles" },
+
+  // Other Common Units
   { label: "Milligrams", value: "mg" },
-  { label: "Grams", value: "g" },
   { label: "Micrograms", value: "mcg" },
   { label: "International Units", value: "IU" },
-  { label: "Milliliters", value: "mL" },
   { label: "Liters", value: "L" },
   { label: "Units", value: "units" },
-  { label: "Puffs", value: "puffs" },
-  { label: "Drops", value: "gtt" },
-  { label: "Tablets", value: "tablets" },
-  { label: "Capsules", value: "capsules" },
-  { label: "Teaspoons", value: "tsp" },
-  { label: "Tablespoons", value: "tbsp" },
   { label: "Sprays", value: "sprays" },
-  { label: "Patches", value: "patches" },
-  { label: "Suppositories", value: "suppositories" },
-  { label: "Ointment (percentage)", value: "%" },
-  { label: "Cream (percentage)", value: "%" },
-  { label: "Gel (percentage)", value: "%" },
+
+  // Topical Application Units (Percentage-based)
+  { label: "Ointment (percentage)", value: "ointment_%" },
+  { label: "Cream (percentage)", value: "cream_%" },
+  { label: "Gel (percentage)", value: "gel_%" },
+
+  // Other
   { label: "Fingertip Units", value: "FTU" },
 ];
