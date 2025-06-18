@@ -55,6 +55,7 @@ export const itemsTableColumns: ColumnDef<ItemsDto>[] = [
   },
   { header: "REORDER POINT", accessorKey: "reorderPoint" },
 ];
+
 export const itemBatchesTableColumns: ColumnDef<BatchResponseDto>[] = [
   { header: "BATCH NUMBER", accessorKey: "batchNumber" },
   { header: "QUANTITY", accessorKey: "quantity" },
