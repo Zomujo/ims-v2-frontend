@@ -1,3 +1,5 @@
+import { AmountType } from "@features/items/items.schemas";
+
 export type ApiSuccessResponseDto<T = unknown> = {
   statusCode: number;
   message: string;
@@ -329,11 +331,18 @@ export type BatchesNoPaginate = {
   expiryDate: string;
 };
 
+export type BatchMarkup = {
+  type: "NHIS";
+  amountType: AmountType;
+  amount: number;
+};
+
 export type BatchResponseDto = {
   id: string;
   batchNumber: string;
   quantity: number;
   supplier: IdData;
+  markup: BatchMarkup;
   createdAt: string;
   updatedAt: string;
   validity: string;
