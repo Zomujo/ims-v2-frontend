@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { capitalize } from "@/lib/utils";
 
 export const itemFormSchema = z.object({
   name: z.string().min(1, "Item name is required"),
@@ -32,9 +33,25 @@ export const itemFormSchema = z.object({
   fdaApproval: z.string().min(1, "FDA approval is required"),
 });
 
+export const amountType = ["percentage", "price"] as const;
+
+export type AmountType = (typeof amountType)[number];
+
 export const itemBatchFormSchema = z.object({
   quantity: z.number().min(1, "Quantity is required"),
   validity: z.string().min(1, "Validity is required"),
   batchNumber: z.string().min(1, "Batch number is required"),
   supplierId: z.string().min(1, "Supplier ID is required"),
+  markup: z
+    .object({
+      type: z.literal("NHIS"),
+      amountType: z.enum(["percentage", "price"]),
+      amount: z.number().min(0, "Amount must be non-negative"),
+    })
+    .optional(),
 });
+
+export const amountTypeOptions = amountType.map((type) => ({
+  value: type,
+  label: capitalize(type),
+}));

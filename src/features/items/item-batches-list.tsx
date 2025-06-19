@@ -5,6 +5,7 @@ import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { z } from "zod";
 import {
   addBatch,
+  getBatch,
   getItemBatches,
   updateBatch,
 } from "../shared/actions/items.actions";
@@ -19,19 +20,27 @@ import useFetchData from "../shared/hooks/use-fetch-data";
 import useHookForm from "../shared/hooks/use-hook-form";
 import useImsSearchParams from "../shared/hooks/use-ims-search-params";
 import usePageCRUD from "../shared/hooks/use-page-crud";
-import { IdData, OneItem } from "../shared/types/action.types";
+import {
+  BatchResponseDto,
+  IdData,
+  OneItem,
+} from "../shared/types/action.types";
 import { CRUDACTION } from "../shared/types/utitls.types";
 import { Input } from "../ui/input";
 import { itemBatchesTableColumns } from "./items.data";
-import { itemBatchFormSchema } from "./items.schemas";
+import {
+  amountType,
+  amountTypeOptions,
+  itemBatchFormSchema,
+} from "./items.schemas";
 import { usePageHeading } from "@/hooks/usePageHeading";
 import { useEffect, useState } from "react";
 import { useSessionData } from "@/hooks/useSessionData";
 import { PermissionModules } from "@features/shared/types/auth-action.types";
+import LoadingOverlay from "@features/ui/loadingOverlay";
 
 type ItemBatchesListProps = {
   itemId?: string;
-  batch?: z.infer<typeof itemBatchFormSchema>;
   batchId?: string;
   suppliers: IdData[];
   oneItem?: OneItem;
@@ -87,19 +96,6 @@ export default function ItemBatchesList({
         ]}
       >
         <ItemBatchesForm
-          batch={
-            batch
-              ? {
-                  batchNumber: batch?.batchNumber ?? "",
-                  quantity: batch?.quantity ?? 0,
-                  supplierId: batch?.supplier.id ?? "",
-                  validity: new Date(batch?.validity ?? "").toLocaleDateString(
-                    "en-CA",
-                    { formatMatcher: "basic" },
-                  ),
-                }
-              : undefined
-          }
           batchId={batch?.id}
           suppliers={suppliers}
           itemId={itemId}
@@ -111,14 +107,12 @@ export default function ItemBatchesList({
 
 function ItemBatchesForm({
   suppliers,
-  batch,
   batchId,
   itemId,
 }: Readonly<ItemBatchesListProps>) {
   const { removeSearchParams } = useImsSearchParams();
   const form = useHookForm({
     resolver: itemBatchFormSchema,
-    defaultValues: batch,
     mode: "onTouched",
   });
   const supplierOptions = suppliers.map((supplier) => ({
@@ -127,8 +121,54 @@ function ItemBatchesForm({
   }));
 
   const [useBoxes, setUseBoxes] = useState(false);
+  const [insuranceMarkup, setInsuranceMarkup] = useState(false);
   const [boxes, setBoxes] = useState<number>(0);
   const [itemsPerBox, setItemsPerBox] = useState<number>(0);
+  const [isLoadingBatch, setIsLoadingBatch] = useState(false);
+  const [batch, setBatch] = useState<BatchResponseDto>();
+
+  useEffect(() => {
+    const getEditBatch = async () => {
+      if (batchId) {
+        setIsLoadingBatch(true);
+        const response = await getBatch(batchId);
+        const batchData = response.data;
+        if (batchData) {
+          setBatch(batchData);
+          form.reset({
+            ...batchData,
+            supplierId: batchData.supplier.id,
+            validity: new Date(batchData.validity).toLocaleDateString("en-CA", {
+              formatMatcher: "basic",
+            }),
+          });
+          setInsuranceMarkup(!!batchData.markup);
+        }
+        setIsLoadingBatch(false);
+      }
+    };
+    void getEditBatch();
+  }, [batchId]);
+
+  useEffect(() => {
+    if (insuranceMarkup) {
+      if (!batch) {
+        form.setValue(
+          "markup",
+          {
+            type: "NHIS",
+            amountType: amountType[0],
+            amount: undefined,
+          },
+          { shouldValidate: true },
+        );
+      } else {
+        form.setValue("markup", batch.markup, { shouldValidate: true });
+      }
+    } else {
+      form.setValue("markup", undefined, { shouldValidate: true });
+    }
+  }, [insuranceMarkup, batch]);
 
   useEffect(() => {
     if (useBoxes) {
@@ -153,119 +193,182 @@ function ItemBatchesForm({
     await res;
   };
   return (
-    <ImsForm
-      className="overflow-y-auto [&>*]:px-4"
-      inputSectionClassName="overflow-y-auto"
-      form={form}
-      handleAuthSubmit={handleSubmit}
-      RenderActions={
-        <ImsButton
-          isLoading={form.formState.isSubmitting}
-          isLoadingLabel={batch ? "Updating batch..." : "Adding new batch..."}
-          variant="imsPrimary"
-          disabled={form.formState.isSubmitting}
-          type="submit"
-        >
-          {batch ? "Update Batch" : "Add Batch"}
-        </ImsButton>
-      }
-      RenderInputs={
-        <>
-          <HookFormField
-            formControl={form.control}
-            name="batchNumber"
-            label="Batch Number"
-            renderInput={({ field }) => {
-              return (
+    <>
+      {isLoadingBatch && <LoadingOverlay />}
+      <ImsForm
+        className="overflow-y-auto [&>*]:px-4"
+        inputSectionClassName="overflow-y-auto"
+        form={form}
+        handleAuthSubmit={handleSubmit}
+        RenderActions={
+          <ImsButton
+            isLoading={form.formState.isSubmitting}
+            isLoadingLabel={batch ? "Updating batch..." : "Adding new batch..."}
+            variant="imsPrimary"
+            disabled={form.formState.isSubmitting}
+            type="submit"
+          >
+            {batch ? "Update Batch" : "Add Batch"}
+          </ImsButton>
+        }
+        RenderInputs={
+          <>
+            <HookFormField
+              formControl={form.control}
+              name="batchNumber"
+              label="Batch Number"
+              renderInput={({ field }) => {
+                return (
+                  <Input
+                    {...field}
+                    className="focus-visible:ring-ims-blue-300 bg-white"
+                    type="text"
+                    placeholder="eg: BATCH123"
+                  />
+                );
+              }}
+            />
+            <div className="space-y-2">
+              <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
+                <input
+                  type="checkbox"
+                  checked={useBoxes}
+                  onChange={(e) => setUseBoxes(e.target.checked)}
+                />
+                Use boxes & items per box
+              </label>
+
+              {useBoxes ? (
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="mb-2 text-sm font-medium">Boxes</p>
+                    <Input
+                      type="number"
+                      value={boxes}
+                      onChange={(e) => setBoxes(Number(e.target.value))}
+                      placeholder="e.g. 5"
+                      className="bg-white"
+                    />
+                  </div>
+                  <div>
+                    <p className="mb-2 text-sm font-medium">Items per Box</p>
+                    <Input
+                      type="number"
+                      value={itemsPerBox}
+                      onChange={(e) => setItemsPerBox(Number(e.target.value))}
+                      placeholder="e.g. 10"
+                      className="bg-white"
+                    />
+                  </div>
+                  <div className="col-span-2 text-sm text-gray-500">
+                    Quantity (<strong>{form.watch("quantity")}</strong>)
+                  </div>
+                </div>
+              ) : (
+                <HookFormField
+                  formControl={form.control}
+                  name="quantity"
+                  label="Quantity"
+                  renderInput={({ field }) => (
+                    <Input
+                      {...inputTypeNumber(field)}
+                      className="focus-visible:ring-ims-blue-300 bg-white"
+                      type="number"
+                      placeholder="eg: 100"
+                    />
+                  )}
+                />
+              )}
+            </div>
+            <HookFormField
+              formControl={form.control}
+              name="validity"
+              label="Validity"
+              renderInput={({ field }) => (
                 <Input
                   {...field}
-                  className="focus-visible:ring-ims-blue-300 bg-white"
-                  type="text"
-                  placeholder="eg: BATCH123"
+                  className="focus-visible:ring-ims-blue-300 flex h-11 flex-col justify-between bg-white pt-2.5"
+                  placeholder="eg: 2023-12-31"
+                  type="date"
                 />
-              );
-            }}
-          />
-          <div className="space-y-2">
+              )}
+            />
+            <HookFormField
+              formControl={form.control}
+              name="supplierId"
+              label="Supplier"
+              renderInput={({ field }) => (
+                <ImsSelect
+                  options={supplierOptions}
+                  showNone={false}
+                  moduleName="supplier"
+                  {...field}
+                  className="focus-visible:ring-ims-blue-300 !h-11 bg-white"
+                />
+              )}
+            />
             <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
               <input
                 type="checkbox"
-                checked={useBoxes}
-                onChange={(e) => setUseBoxes(e.target.checked)}
+                checked={insuranceMarkup}
+                onChange={(e) => setInsuranceMarkup(e.target.checked)}
               />
-              Use boxes & items per box
+              Insurance Markup
             </label>
-
-            {useBoxes ? (
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p className="mb-2 text-sm font-medium">Boxes</p>
-                  <Input
-                    type="number"
-                    value={boxes}
-                    onChange={(e) => setBoxes(Number(e.target.value))}
-                    placeholder="e.g. 5"
-                    className="bg-white"
-                  />
-                </div>
-                <div>
-                  <p className="mb-2 text-sm font-medium">Items per Box</p>
-                  <Input
-                    type="number"
-                    value={itemsPerBox}
-                    onChange={(e) => setItemsPerBox(Number(e.target.value))}
-                    placeholder="e.g. 10"
-                    className="bg-white"
-                  />
-                </div>
-                <div className="col-span-2 text-sm text-gray-500">
-                  Quantity (<strong>{form.watch("quantity")}</strong>)
-                </div>
-              </div>
-            ) : (
-              <HookFormField
-                formControl={form.control}
-                name="quantity"
-                label="Quantity"
-                renderInput={({ field }) => (
-                  <Input
-                    {...inputTypeNumber(field)}
-                    className="focus-visible:ring-ims-blue-300 bg-white"
-                    type="number"
-                    placeholder="eg: 100"
-                  />
-                )}
-              />
+            {insuranceMarkup && (
+              <>
+                <HookFormField
+                  formControl={form.control}
+                  name="markup.type"
+                  label="Insurance Type"
+                  renderInput={({ field }) => (
+                    <Input
+                      {...field}
+                      className="focus-visible:ring-ims-blue-300 bg-white"
+                      placeholder="eg: NHIS"
+                      disabled={true}
+                    />
+                  )}
+                />
+                <HookFormField
+                  formControl={form.control}
+                  name="markup.amountType"
+                  label="Mark Amount Type"
+                  renderInput={({ field }) => (
+                    <ImsSelect
+                      options={amountTypeOptions}
+                      showNone={false}
+                      moduleName="amount type"
+                      {...field}
+                      className="focus-visible:ring-ims-blue-300 !h-11 bg-white"
+                    />
+                  )}
+                />
+                <HookFormField
+                  formControl={form.control}
+                  name="markup.amount"
+                  label="Quantity"
+                  renderInput={({ field }) => (
+                    <div className="flex items-center gap-2">
+                      <Input
+                        {...inputTypeNumber(field)}
+                        className="focus-visible:ring-ims-blue-300 bg-white"
+                        type="number"
+                        placeholder="eg: 100"
+                      />
+                      <span className="text-sm">
+                        {form.watch("markup.amountType") === amountType[0]
+                          ? "%"
+                          : "GHC"}
+                      </span>
+                    </div>
+                  )}
+                />
+              </>
             )}
-          </div>
-          <HookFormField
-            formControl={form.control}
-            name="validity"
-            label="Validity"
-            renderInput={({ field }) => (
-              <Input
-                {...field}
-                className="focus-visible:ring-ims-blue-300 flex h-11 flex-col justify-between bg-white pt-2.5"
-                placeholder="eg: 2023-12-31"
-                type="date"
-              />
-            )}
-          />
-          <HookFormField
-            formControl={form.control}
-            name="supplierId"
-            label="Supplier"
-            renderInput={({ field }) => (
-              <ImsSelect
-                options={supplierOptions}
-                moduleName="supplier"
-                {...field}
-                className="focus-visible:ring-ims-blue-300 !h-11 bg-white"
-              />
-            )}
-          />
-        </>
-      }
-    />
+          </>
+        }
+      />
+    </>
   );
 }

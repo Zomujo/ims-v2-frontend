@@ -277,3 +277,6 @@ export const scrollToSection = (id: string) => {
     });
   }
 };
+
+export const capitalize = (text: string): string =>
+  text.toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase());

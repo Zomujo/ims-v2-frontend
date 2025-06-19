@@ -4,6 +4,6 @@ The web frontend implementation of the Inyabon MedSync IMS
 
 TODO
 
-- Let's use auto generation of password when creating facility
+- Let's use auto generation of password when creating a facility
 - Enhance category selection with a search functionality
 - Fully support Insurance
