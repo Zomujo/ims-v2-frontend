@@ -33,9 +33,9 @@ export const itemFormSchema = z.object({
   fdaApproval: z.string().min(1, "FDA approval is required"),
 });
 
-export const amountType = ["percentage", "price"] as const;
+export const amountTypes = ["percentage", "price"] as const;
 
-export type AmountType = (typeof amountType)[number];
+export type AmountType = (typeof amountTypes)[number];
 
 export const itemBatchFormSchema = z.object({
   quantity: z.number().min(1, "Quantity is required"),
@@ -45,13 +45,13 @@ export const itemBatchFormSchema = z.object({
   markup: z
     .object({
       type: z.literal("NHIS"),
-      amountType: z.enum(["percentage", "price"]),
+      amountType: z.enum(amountTypes),
       amount: z.number().min(0, "Amount must be non-negative"),
     })
     .optional(),
 });
 
-export const amountTypeOptions = amountType.map((type) => ({
+export const amountTypeOptions = amountTypes.map((type) => ({
   value: type,
   label: capitalize(type),
 }));

@@ -7,6 +7,7 @@ import {
   addBatch,
   getBatch,
   getItemBatches,
+  removalMarkupFromBatch,
   updateBatch,
 } from "../shared/actions/items.actions";
 import CrudPage from "../shared/components/crud-page";
@@ -29,7 +30,7 @@ import { CRUDACTION } from "../shared/types/utitls.types";
 import { Input } from "../ui/input";
 import { itemBatchesTableColumns } from "./items.data";
 import {
-  amountType,
+  amountTypes,
   amountTypeOptions,
   itemBatchFormSchema,
 } from "./items.schemas";
@@ -38,6 +39,8 @@ import { useEffect, useState } from "react";
 import { useSessionData } from "@/hooks/useSessionData";
 import { PermissionModules } from "@features/shared/types/auth-action.types";
 import LoadingOverlay from "@features/ui/loadingOverlay";
+import { Info } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@features/ui/tooltip";
 
 type ItemBatchesListProps = {
   itemId?: string;
@@ -63,6 +66,9 @@ export default function ItemBatchesList({
     getData,
     handleEditBtnClicked,
     handleRemoveQueryparam,
+    getId,
+    handleDeleteBtnClicked,
+    removeSearchParams,
   } = usePageCRUD({ data: itemBatches });
   const batch = getData(CRUDACTION.EDIT);
 
@@ -73,13 +79,30 @@ export default function ItemBatchesList({
     });
   }, []);
 
+  const handleMarkupRemoval = async () => {
+    const id = getId(CRUDACTION.DELETE);
+    const res = removalMarkupFromBatch(id);
+    handleRequestState({
+      res,
+      loadingMsg: "Removing markup...",
+      successMsg: "Markup removed successfully",
+    });
+    res.then(() => {
+      removeSearchParams(UI_STATE);
+    });
+    await res;
+  };
+
   return (
     <ScrollArea className="mt-2 h-[calc(100%-5rem)] rounded-2xl bg-white pr-4">
       <CrudPage
         moduleName="item batches"
         data={itemBatches}
-        modalAction={() => {}}
+        modalAction={() => {
+          void handleMarkupRemoval();
+        }}
         handleRemoveQueryparam={handleRemoveQueryparam}
+        modalActionLabel={"Remove insurance markup for batch"}
         currentDataDisplayName={getData(CRUDACTION.DELETE)?.batchNumber ?? ""}
         tableColumns={itemBatchesTableColumns}
         totalPages={data?.totalPages ?? 0}
@@ -92,6 +115,12 @@ export default function ItemBatchesList({
             hide: !canWrite(PermissionModules.ITEMS),
             icon: "lucide:edit-2",
             action: () => handleEditBtnClicked(item),
+          },
+          {
+            label: "remove markup",
+            hide: !canWrite(PermissionModules.ITEMS) || !item.markup,
+            icon: "solar:trash-bin-trash-line-duotone",
+            action: () => handleDeleteBtnClicked(item),
           },
         ]}
       >
@@ -152,15 +181,14 @@ function ItemBatchesForm({
 
   useEffect(() => {
     if (insuranceMarkup) {
-      if (!batch) {
+      if (!batch?.markup) {
         form.setValue(
           "markup",
           {
             type: "NHIS",
-            amountType: amountType[0],
-            amount: undefined,
+            amountType: amountTypes[0],
           },
-          { shouldValidate: true },
+          { shouldValidate: true, shouldTouch: true },
         );
       } else {
         form.setValue("markup", batch.markup, { shouldValidate: true });
@@ -168,7 +196,7 @@ function ItemBatchesForm({
     } else {
       form.setValue("markup", undefined, { shouldValidate: true });
     }
-  }, [insuranceMarkup, batch]);
+  }, [insuranceMarkup]);
 
   useEffect(() => {
     if (useBoxes) {
@@ -307,14 +335,31 @@ function ItemBatchesForm({
                 />
               )}
             />
-            <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
-              <input
-                type="checkbox"
-                checked={insuranceMarkup}
-                onChange={(e) => setInsuranceMarkup(e.target.checked)}
-              />
-              Insurance Markup
-            </label>
+            <div className="flex gap-x-4">
+              <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
+                <input
+                  type="checkbox"
+                  checked={insuranceMarkup}
+                  onChange={(e) => setInsuranceMarkup(e.target.checked)}
+                  disabled={!!batchId && !!batch?.markup}
+                />
+                Insurance Markup
+              </label>
+              {!!batchId && !!batch?.markup && (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Info />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>
+                      You cannot uncheck an already existing markup. Remove
+                      insurance markup by using the functionality on the
+                      dropdown
+                    </p>
+                  </TooltipContent>
+                </Tooltip>
+              )}
+            </div>
             {insuranceMarkup && (
               <>
                 <HookFormField
@@ -324,6 +369,7 @@ function ItemBatchesForm({
                   renderInput={({ field }) => (
                     <Input
                       {...field}
+                      value={field.value ?? "NHIS"}
                       className="focus-visible:ring-ims-blue-300 bg-white"
                       placeholder="eg: NHIS"
                       disabled={true}
@@ -340,6 +386,7 @@ function ItemBatchesForm({
                       showNone={false}
                       moduleName="amount type"
                       {...field}
+                      value={field.value ?? amountTypes[0]}
                       className="focus-visible:ring-ims-blue-300 !h-11 bg-white"
                     />
                   )}
@@ -357,7 +404,7 @@ function ItemBatchesForm({
                         placeholder="eg: 100"
                       />
                       <span className="text-sm">
-                        {form.watch("markup.amountType") === amountType[0]
+                        {form.watch("markup.amountType") === amountTypes[0]
                           ? "%"
                           : "GHC"}
                       </span>
