@@ -151,8 +151,8 @@ function ItemBatchesForm({
 
   const [useBoxes, setUseBoxes] = useState(false);
   const [insuranceMarkup, setInsuranceMarkup] = useState(false);
-  const [boxes, setBoxes] = useState<number>(0);
-  const [itemsPerBox, setItemsPerBox] = useState<number>(0);
+  const [boxes, setBoxes] = useState<number>();
+  const [itemsPerBox, setItemsPerBox] = useState<number>();
   const [isLoadingBatch, setIsLoadingBatch] = useState(false);
   const [batch, setBatch] = useState<BatchResponseDto>();
 
@@ -200,8 +200,16 @@ function ItemBatchesForm({
 
   useEffect(() => {
     if (useBoxes) {
-      const calculated = Number(boxes) * Number(itemsPerBox);
-      form.setValue("quantity", calculated, { shouldValidate: true });
+      if (boxes && itemsPerBox) {
+        const calculated = Number(boxes) * Number(itemsPerBox);
+        form.setValue("quantity", calculated, { shouldValidate: true });
+      } else {
+        form.setValue("quantity", undefined, { shouldValidate: true });
+      }
+    } else {
+      if (batch) {
+        form.setValue("quantity", batch.quantity, { shouldValidate: true });
+      }
     }
   }, [boxes, itemsPerBox, useBoxes]);
 
@@ -291,6 +299,9 @@ function ItemBatchesForm({
                   <div className="col-span-2 text-sm text-gray-500">
                     Quantity (<strong>{form.watch("quantity")}</strong>)
                   </div>
+                  <span className="text-sm text-red-500">
+                    {String(form.formState.errors["quantity"]?.message ?? "")}
+                  </span>
                 </div>
               ) : (
                 <HookFormField
