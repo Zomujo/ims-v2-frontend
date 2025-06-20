@@ -188,7 +188,7 @@ function ItemBatchesForm({
             type: "NHIS",
             amountType: amountTypes[0],
           },
-          { shouldValidate: true, shouldTouch: true },
+          { shouldValidate: true },
         );
       } else {
         form.setValue("markup", batch.markup, { shouldValidate: true });
