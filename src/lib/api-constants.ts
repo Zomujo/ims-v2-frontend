@@ -70,6 +70,9 @@ export const API_ENDPOINTS = {
   ITEM_COUNTS: "/items/counts",
   ITEM_ADJUST_PRICES: "/items/adjust-prices/:id",
 
+  // Batches
+  BATCH_MARKUP: "/batches/:batchId/markup",
+
   // Department Item Requests Endpoints
   ITEM_REQUESTS: "/item-requests",
   ITEM_REQUEST: "/item-requests/:id",

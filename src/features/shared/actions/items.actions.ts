@@ -145,6 +145,18 @@ export async function updateBatch(id: string, data: UpdateBatchDto) {
   return result;
 }
 
+export async function removalMarkupFromBatch(batchId: string) {
+  const fetchOptions: FetchApi = {
+    url: API_ENDPOINTS.BATCH_MARKUP.replace(":batchId", batchId),
+    method: "DELETE",
+    headers: {},
+  };
+
+  const result = await imsApiWithAuth<ApiSuccessResponseNoData>(fetchOptions);
+  revalidateTag(API_ENDPOINT_TAGS.ITEMS_BATCHES);
+  return result;
+}
+
 export async function getItemsNoPaginate() {
   const fetchOptions: FetchApi = {
     url: API_ENDPOINTS.ITEMS_NO_PAGINATE,
