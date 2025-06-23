@@ -127,3 +127,8 @@ export const paymentTypeOptions = [
   { label: "Cash", value: "CASH" },
   { label: "Online", value: "ONLINE" },
 ];
+
+export const hasInsuranceOptions = [
+  { value: "true", label: "Yes" },
+  { value: "false", label: "No" },
+];

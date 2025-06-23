@@ -43,4 +43,5 @@ export const salesCartSchema = z.object({
       }),
     )
     .min(1, { message: "Please add at least one sale item" }),
+  insured: z.string().transform((val) => val === "true"),
 });

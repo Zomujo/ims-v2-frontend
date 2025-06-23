@@ -18,7 +18,11 @@ import useImsSearchParams from "../shared/hooks/use-ims-search-params";
 import { SaleItem } from "../shared/types/sales-action.types";
 import { ScrollArea } from "../ui/scroll-area";
 import { Textarea } from "../ui/textarea";
-import { paymentTypeOptions, salesItemLocalStorageKey } from "./sales.data";
+import {
+  hasInsuranceOptions,
+  paymentTypeOptions,
+  salesItemLocalStorageKey,
+} from "./sales.data";
 import { salesCartSchema } from "./sales.schemas";
 import { SaleCardTypes } from "./sales.types";
 import { isSalesEditMode } from "./sales.utils";
@@ -49,6 +53,7 @@ export default function SalesCart() {
       saleItems: [],
       paymentType: "CASH",
       notes: "",
+      insured: false,
     },
   });
 
@@ -135,12 +140,29 @@ export default function SalesCart() {
               label="Select type of payment"
               renderInput={({ field }) => (
                 <ImsSelect
+                  showNone={false}
                   options={paymentTypeOptions}
                   defaultValue={field.value}
                   moduleName="payment type"
                   onChange={(value) => field.onChange(value)}
                   value={field.value}
                   className="focus-visible:ring-0.5 focus-visible:ring-ims-blue-300 !h-11 bg-white"
+                />
+              )}
+            />
+            <HookFormField
+              formControl={form.control}
+              name="insured"
+              label="Patient has active NHIS"
+              renderInput={({ field }) => (
+                <ImsSelect
+                  showNone={false}
+                  defaultValue={"false"}
+                  options={hasInsuranceOptions}
+                  moduleName="Yes or No"
+                  value={field.value ? "true" : "false"}
+                  onChange={(value) => field.onChange(value)}
+                  className="focus-visible:ring-ims-blue-300 !h-11 bg-white"
                 />
               )}
             />
