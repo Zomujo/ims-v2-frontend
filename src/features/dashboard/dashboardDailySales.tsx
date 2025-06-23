@@ -36,18 +36,11 @@ const DashboardDailySales = () => {
       setSalesLoading(true);
       chartData.length = 0;
 
-      const { sales } = (await getDailySales({
+      const salesResponse = (await getDailySales({
         dateRange: selectDailySales as DateRangeQueryOptions,
       })) as DailySalesResponse;
-      const { dates, quantities } = sales[0];
-
-      const formattedData = dates.map((date, index) => ({
-        date: date.split("T")[0],
-        sales: quantities[index] ?? 0,
-      }));
-
-      setChartData(formattedData);
-      setSalesLoading(false);
+      setChartData([]);
+      console.log("Sales Response: ", salesResponse); // TODO: Finish up once backend is ready
     }
     void fetchDailySales();
   }, [selectDailySales]);
