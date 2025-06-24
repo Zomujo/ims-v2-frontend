@@ -2,6 +2,7 @@ import {
   IMSApiActionPaginationResponse,
   IMSApiActionResponse,
 } from "./ims-api-action.types";
+import { BatchMarkup } from "@features/shared/types/action.types";
 
 export type Patient = {
   id: string;
@@ -14,6 +15,7 @@ export type SaleItem = {
   batchId: string;
   batchNumber: string;
   quantity: number;
+  markup: BatchMarkup;
   validity: string;
 };
 
