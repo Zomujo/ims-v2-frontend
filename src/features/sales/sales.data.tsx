@@ -108,6 +108,16 @@ export const salesItemsColumns: ColumnDef<SaleItem>[] = [
     },
   },
   {
+    header: "NHIS Markup",
+    accessorKey: "markup",
+    cell: ({ row }) => {
+      const markup = row.original.markup;
+      return markup
+        ? `${markup.amountType === "price" ? "GHC " : ""}${markup.amount}${markup.amountType === "percentage" ? "%" : ""}`
+        : "N/A";
+    },
+  },
+  {
     accessorKey: "validity",
     header: "Expiry Date",
     cell: ({ row }) => {
