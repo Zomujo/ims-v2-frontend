@@ -140,7 +140,6 @@ const DashboardGeneral = () => {
         LOW: stocks?.lowStocked ?? 0,
         STOCKED: stocks?.highStocked ?? 0,
       };
-      console.log("Stocks here", stocks);
       return (levelStockMap[level] / totalStock) * 100;
     },
     [data],
