@@ -27,13 +27,9 @@ import {
   GeneralResponse,
   StockLevel,
 } from "@features/shared/types/dashboard.types";
-import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@features/ui/chart";
-import { CartesianGrid, Line, LineChart, ResponsiveContainer } from "recharts";
 import { Skeleton } from "@features/ui/skeleton";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@features/ui/tooltip";
+import styles from "./dashboard.module.css";
 
 const stockLevelCategories = [
   {
@@ -53,48 +49,41 @@ const stockLevelCategories = [
   },
 ];
 
-const chartCardsData = [
+const cardsData = [
   {
     title: "TOTAL PRODUCT SOLD",
     key: "totalItemsSold",
-    chartLabel: "Product Sold",
   },
   {
     title: "TOTAL TRANSACTIONS",
     key: "totalTransactions",
-    chartLabel: "Transactions",
   },
   {
     title: "INVENTORY TURNOVER RATE",
     key: "inventoryTurnoverRate",
-    chartLabel: "Turnover Rate",
   },
   {
     title: "TOTAL REVENUE",
     key: "totalRevenue",
-    chartLabel: "Revenue",
   },
   {
     title: "AVERAGE ITEMS PER TRANSACTION",
     key: "averageItemsPerTransaction",
-    chartLabel: "Average Items",
   },
   {
     title: "CUSTOMERS",
     key: "customers",
-    chartLabel: "Customers",
   },
   {
     title: "ITEMS RETURNED",
     key: "itemsReturned",
-    chartLabel: "Returned Items",
   },
 ];
 
 const DashboardGeneral = () => {
   const today = new Date();
-  const threeMonthsAgo = today;
-  threeMonthsAgo.setMonth(today.getMonth() - 3);
+  const threeMonthsAgo = new Date(today);
+  threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
   const [data, setData] = useState<GeneralResponse>();
   const [date, setDate] = useState<Required<DateRange>>({
     from: threeMonthsAgo,
@@ -110,6 +99,7 @@ const DashboardGeneral = () => {
         startDate: date.from?.toISOString(),
       });
       if (generalResponse) {
+        console.log("General response", generalResponse);
         setData(generalResponse);
       }
       setIsLoading(false);
@@ -117,42 +107,26 @@ const DashboardGeneral = () => {
     void fetchGeneralOverview();
   }, [date]);
 
-  const lowStockItems = useMemo(
-    () =>
-      data?.itemStockLevel.items.filter(
-        ({ stockLevel }) => stockLevel === "LOW_STOCK",
-      ) ?? [],
-    [data],
-  );
+  const lowStockItems = useMemo(() => [], [data]); // TODO: Make separate request for this data
 
-  const outOfStockItems = useMemo(
-    () =>
-      data?.itemStockLevel.items.filter(
-        ({ stockLevel }) => stockLevel === "OUT_OF_STOCK",
-      ) ?? [],
-    [data],
-  );
+  const outOfStockItems = useMemo(() => [], [data]); // TODO: Make seaprate request for this data
 
   const stockLevelPercentage = useCallback(
     (level: StockLevel) => {
-      const stocks = data?.itemStockLevel.items ?? [];
-      const totalStock = stocks.length;
-      const levelTotalStock = stocks.filter(
-        ({ stockLevel }) => stockLevel === level,
-      ).length;
-      return (levelTotalStock / totalStock) * 100;
+      const stocks = data?.itemStockLevel.stock;
+      const totalStock = stocks?.total;
+
+      if (!totalStock) return 0;
+
+      const levelStockMap: Record<StockLevel, number> = {
+        OUT_OF_STOCK: stocks?.outOfStock ?? 0,
+        LOW_STOCK: stocks?.lowStocked ?? 0,
+        HIGH_STOCK: stocks?.highStocked ?? 0,
+      };
+      return (levelStockMap[level] / totalStock) * 100;
     },
     [data],
   );
-
-  const getChartColor = (changeType: ChangeType) => {
-    const colorMap: Record<ChangeType, string> = {
-      INCREASE: "#A1FFDD",
-      DECREASE: "#FFA1A1",
-      NONE: "#475569",
-    };
-    return colorMap[changeType];
-  };
 
   return (
     <div>
@@ -162,7 +136,7 @@ const DashboardGeneral = () => {
           className="row-span-2"
           title={"ITEMS STOCK LEVEL"}
           totalData={{
-            total: data?.itemStockLevel.totalStock ?? 0,
+            total: data?.itemStockLevel.stock.totalStock ?? 0,
             type: "number",
           }}
           change={{
@@ -190,16 +164,29 @@ const DashboardGeneral = () => {
                     />
                   ))}
                 </div>
-                <div className="mt-4 flex justify-between">
+                <div className="mt-4 flex w-full justify-between gap-2">
                   {stockLevelCategories.map(({ bgColor, label }) => (
-                    <div key={label} className="flex items-center gap-x-0.5">
-                      <div className={cn("h-3 w-3 rounded-lg", bgColor)}></div>
-                      <span>{label}</span>
-                    </div>
+                    <Tooltip key={label}>
+                      <TooltipTrigger asChild>
+                        <div className="flex min-w-0 items-center gap-x-0.5">
+                          <div
+                            className={cn("h-3 w-3 rounded-lg", bgColor)}
+                          ></div>
+                          <span className="w-[6rem] truncate text-sm lg:text-base">
+                            {label}
+                          </span>
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>{label}</p>
+                      </TooltipContent>
+                    </Tooltip>
                   ))}
                 </div>
                 <div className="text-info-blue bg-info-blue-light mt-4 w-fit rounded-2xl px-3 py-2 text-sm">
-                  Stock DOH: 15 days
+                  Stock DOH:{" "}
+                  {Math.floor(data?.itemStockLevel.stock.stockDaysOnHand ?? 0)}{" "}
+                  days
                 </div>
                 <div className="mt-6">
                   <Tabs defaultValue="account">
@@ -251,8 +238,9 @@ const DashboardGeneral = () => {
             </>
           )}
         </BaseCard>
-        {chartCardsData.map(({ title, key, chartLabel }) => (
+        {cardsData.map(({ title, key }) => (
           <BaseCard
+            showChart={true}
             key={key}
             title={title}
             totalData={{
@@ -265,20 +253,7 @@ const DashboardGeneral = () => {
             }}
             className="pb-0"
             isLoading={isLoading}
-          >
-            {isLoading ? (
-              <ChartSkeleton />
-            ) : (
-              <div className="mt-5">
-                <Chart
-                  label={chartLabel}
-                  color={getChartColor(
-                    data?.[key as keyof GeneralResponse].changeType ?? "NONE",
-                  )}
-                />
-              </div>
-            )}
-          </BaseCard>
+          ></BaseCard>
         ))}
         <BaseCard
           title={"EXPIRING SOON ITEMS"}
@@ -369,7 +344,7 @@ export function DatePickerWithRange({
 
 type BaseCardProps = {
   title: string;
-  children: ReactNode;
+  children?: ReactNode;
   totalData: {
     total: number;
     type: "money" | "number" | "percentage";
@@ -380,6 +355,7 @@ type BaseCardProps = {
   };
   className?: string;
   isLoading?: boolean;
+  showChart?: boolean;
 };
 
 export const BaseCard = ({
@@ -389,6 +365,7 @@ export const BaseCard = ({
   change,
   className,
   isLoading = false,
+  showChart,
 }: BaseCardProps) => {
   return (
     <Card className={cn("w-full gap-0", className)}>
@@ -413,18 +390,18 @@ export const BaseCard = ({
                 <div
                   className={cn(
                     "flex items-center gap-x-1 self-center rounded-4xl px-[6px] py-[3px] text-sm",
-                    change.type === "INCREASE" &&
+                    change.type === "INCREMENT" &&
                       "bg-success-50 text-success-700",
-                    change.type === "DECREASE" && "bg-error-50 text-error-600",
+                    change.type === "DECREMENT" && "bg-error-50 text-error-600",
                   )}
                 >
-                  {change.type === "INCREASE" && (
+                  {change.type === "INCREMENT" && (
                     <MoveUpRight
                       size="15"
                       className="bg-success-700 rounded-full p-1 text-white"
                     />
                   )}
-                  {change.type === "DECREASE" && (
+                  {change.type === "DECREMENT" && (
                     <MoveDownRight
                       size="15"
                       className="bg-error-600 rounded-full p-1 text-white"
@@ -435,65 +412,35 @@ export const BaseCard = ({
               )}
             </div>
             {children}
+            {showChart &&
+              (isLoading ? (
+                <ChartSkeleton />
+              ) : (
+                <div
+                  className={cn(
+                    change?.type === "INCREMENT"
+                      ? styles.incrementGraph
+                      : styles.decrementGraph,
+                    "mt-12 h-[100px] w-full bg-contain bg-center bg-no-repeat",
+                  )}
+                >
+                  <div
+                    style={{
+                      backgroundImage: 'url("/images/increment-graph.png")',
+                    }}
+                    className="flex flex-col gap-8"
+                  >
+                    <div className="border-t border-dotted border-gray-200" />
+                    <div className="border-t border-dotted border-gray-200" />
+                  </div>
+                </div>
+              ))}
           </>
         )}
       </CardContent>
     </Card>
   );
 };
-
-//MOCK DATA
-const chartData = [
-  { month: "January", desktop: 186 },
-  { month: "February", desktop: 305 },
-  { month: "March", desktop: 237 },
-  { month: "April", desktop: 73 },
-  { month: "May", desktop: 209 },
-  { month: "June", desktop: 214 },
-];
-
-type ChartProps = {
-  label: string;
-  color: string;
-};
-export function Chart({ color, label }: ChartProps) {
-  return (
-    <ChartContainer
-      config={{
-        desktop: {
-          label,
-          color,
-        },
-      }}
-      className="h-[100px] w-full"
-    >
-      <ResponsiveContainer width="100%" height={100}>
-        <LineChart
-          accessibilityLayer
-          data={chartData}
-          margin={{
-            left: 12,
-            right: 12,
-          }}
-        >
-          <CartesianGrid height={30} vertical={false} strokeDasharray="3 3" />
-          <ChartTooltip
-            cursor={false}
-            content={<ChartTooltipContent hideLabel />}
-          />
-          <Line
-            dataKey="desktop"
-            type="linear"
-            stroke="var(--color-desktop)"
-            strokeWidth={2}
-            color={"green"}
-            dot={false}
-          />
-        </LineChart>
-      </ResponsiveContainer>
-    </ChartContainer>
-  );
-}
 
 const StockLevelCardSkeleton = () => (
   <div className="space-y-4">

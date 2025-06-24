@@ -139,7 +139,6 @@ export async function getSalePaymentMethod(
     ),
     method: "GET",
     headers: {},
-    cache: "force-cache",
     next: { tags: [API_ENDPOINT_TAGS.DASHBOARD_PAYMENT_METHODS] },
   };
 
