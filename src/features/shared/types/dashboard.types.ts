@@ -5,7 +5,7 @@ export interface GeneralRequest {
 
 export type ChangeType = "INCREMENT" | "DECREMENT" | "NONE";
 
-export type StockLevel = "LOW_STOCK" | "OUT_OF_STOCK" | "HIGH_STOCK";
+export type StockLevel = "LOW" | "OUT_OF_STOCK" | "STOCKED";
 
 export interface MetricData {
   total: number;

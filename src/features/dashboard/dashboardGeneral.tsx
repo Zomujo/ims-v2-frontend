@@ -30,6 +30,8 @@ import {
 import { Skeleton } from "@features/ui/skeleton";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@features/ui/tooltip";
 import styles from "./dashboard.module.css";
+import { getItems } from "@features/shared/actions/items.actions";
+import { ItemsDto } from "@features/shared/types/action.types";
 
 const stockLevelCategories = [
   {
@@ -90,6 +92,10 @@ const DashboardGeneral = () => {
     to: today,
   });
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [currentStockLevelView, setCurrentStockLevelView] =
+    useState<Exclude<StockLevel, "STOCKED">>("LOW");
+  const [isLoadingStock, setIsLoadingStock] = useState(true);
+  const [stockItems, setStockItems] = useState<ItemsDto[]>([]);
 
   useEffect(() => {
     const fetchGeneralOverview = async () => {
@@ -99,7 +105,6 @@ const DashboardGeneral = () => {
         startDate: date.from?.toISOString(),
       });
       if (generalResponse) {
-        console.log("General response", generalResponse);
         setData(generalResponse);
       }
       setIsLoading(false);
@@ -107,9 +112,21 @@ const DashboardGeneral = () => {
     void fetchGeneralOverview();
   }, [date]);
 
-  const lowStockItems = useMemo(() => [], [data]); // TODO: Make separate request for this data
+  const fetchStockItems = async () => {
+    setIsLoadingStock(true);
+    const stockResponse = await getItems({
+      status: currentStockLevelView,
+      pageSize: "5",
+    });
+    if (stockResponse) {
+      setStockItems(stockResponse.rows);
+    }
+    setIsLoadingStock(false);
+  };
 
-  const outOfStockItems = useMemo(() => [], [data]); // TODO: Make seaprate request for this data
+  useEffect(() => {
+    void fetchStockItems();
+  }, [currentStockLevelView]);
 
   const stockLevelPercentage = useCallback(
     (level: StockLevel) => {
@@ -120,12 +137,43 @@ const DashboardGeneral = () => {
 
       const levelStockMap: Record<StockLevel, number> = {
         OUT_OF_STOCK: stocks?.outOfStock ?? 0,
-        LOW_STOCK: stocks?.lowStocked ?? 0,
-        HIGH_STOCK: stocks?.highStocked ?? 0,
+        LOW: stocks?.lowStocked ?? 0,
+        STOCKED: stocks?.highStocked ?? 0,
       };
+      console.log("Stocks here", stocks);
       return (levelStockMap[level] / totalStock) * 100;
     },
     [data],
+  );
+
+  const stockColor = useMemo(() => {
+    const category = stockLevelCategories.find((cat) =>
+      cat.value.includes(currentStockLevelView),
+    );
+    return category?.bgColor ?? "bg-gray-400";
+  }, [currentStockLevelView]);
+
+  const stockLevelItems = isLoadingStock ? (
+    <StockItemsSkeleton />
+  ) : stockItems.length > 0 ? (
+    <div className="space-y-3">
+      {stockItems.map(({ totalStock, name }) => (
+        <div
+          key={`${name}-${totalStock}`}
+          className="flex items-center justify-between"
+        >
+          <div className="flex items-center gap-x-2">
+            <span className={cn("h-3.5 w-1.5 rounded-md", stockColor)}></span>
+            <span className="text-gray-600">{name}</span>
+          </div>
+          <span className="font-medium text-[#111111]">{totalStock}</span>
+        </div>
+      ))}
+    </div>
+  ) : (
+    <div className="flex h-24 items-center justify-center">
+      <p className="text-sm text-gray-500">No items to display.</p>
+    </div>
   );
 
   return (
@@ -145,98 +193,83 @@ const DashboardGeneral = () => {
           }}
           isLoading={isLoading}
         >
-          {isLoading ? (
-            <StockLevelCardSkeleton />
-          ) : (
-            <>
-              <span className="font-medium text-gray-500">Total Stock</span>
-              <div className="mt-6">
-                <div className="flex w-full">
-                  {stockLevelCategories.map(({ bgColor, label, value }) => (
-                    <Progress
-                      key={label}
-                      value={stockLevelPercentage(value as StockLevel)}
-                      filler={true}
-                      className={cn(bgColor)}
-                      style={{
-                        width: `${stockLevelPercentage(value as StockLevel)}%`,
-                      }}
-                    />
-                  ))}
-                </div>
-                <div className="mt-4 flex w-full justify-between gap-2">
-                  {stockLevelCategories.map(({ bgColor, label }) => (
-                    <Tooltip key={label}>
-                      <TooltipTrigger asChild>
-                        <div className="flex min-w-0 items-center gap-x-0.5">
-                          <div
-                            className={cn("h-3 w-3 rounded-lg", bgColor)}
-                          ></div>
-                          <span className="w-[6rem] truncate text-sm lg:text-base">
-                            {label}
-                          </span>
-                        </div>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>{label}</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  ))}
-                </div>
-                <div className="text-info-blue bg-info-blue-light mt-4 w-fit rounded-2xl px-3 py-2 text-sm">
-                  Stock DOH:{" "}
-                  {Math.floor(data?.itemStockLevel.stock.stockDaysOnHand ?? 0)}{" "}
-                  days
-                </div>
+          <div>
+            {isLoading ? (
+              <StockLevelCardSkeleton />
+            ) : (
+              <>
+                <span className="font-medium text-gray-500">Total Stock</span>
                 <div className="mt-6">
-                  <Tabs defaultValue="account">
-                    <TabsList className="grid grid-cols-2">
-                      <TabsTrigger value="LOW_STOCK">Low stock</TabsTrigger>
-                      <TabsTrigger value="OUT_OF_STOCK">
-                        Out of stock
-                      </TabsTrigger>
-                    </TabsList>
-                    <TabsContent value="LOW_STOCK">
-                      <div className="space-y-3">
-                        {lowStockItems.map(({ quantity, itemName }) => (
-                          <div
-                            key={`${itemName}-${quantity}`}
-                            className="flex items-center justify-between"
-                          >
-                            <div className="flex items-center gap-x-0.5">
-                              <span className="h-3.5 w-1.5 rounded-md bg-[#E36D6A]"></span>
-                              <span className="text-gray-600">{itemName}</span>
-                            </div>
-                            <span className="font-medium text-[#111111]">
-                              {quantity}
+                  <div className="flex w-full">
+                    {stockLevelCategories.map(({ bgColor, label, value }) => (
+                      <Progress
+                        key={label}
+                        value={stockLevelPercentage(value as StockLevel)}
+                        filler={true}
+                        className={cn(bgColor)}
+                        style={{
+                          width: `${stockLevelPercentage(value as StockLevel)}%`,
+                        }}
+                      />
+                    ))}
+                  </div>
+                  <div className="mt-4 flex w-full justify-between gap-2">
+                    {stockLevelCategories.map(({ bgColor, label }) => (
+                      <Tooltip key={label}>
+                        <TooltipTrigger asChild>
+                          <div className="flex min-w-0 items-center gap-x-0.5">
+                            <div
+                              className={cn("h-3 w-3 rounded-lg", bgColor)}
+                            ></div>
+                            <span className="w-[6rem] truncate text-sm lg:text-base">
+                              {label}
                             </span>
                           </div>
-                        ))}
-                      </div>
-                    </TabsContent>
-                    <TabsContent value="OUT_OF_STOCK">
-                      <div className="space-y-3">
-                        {outOfStockItems.map(({ quantity, itemName }) => (
-                          <div
-                            key={`${itemName}-${quantity}`}
-                            className="flex items-center justify-between"
-                          >
-                            <div className="flex items-center gap-x-0.5">
-                              <span className="h-3.5 w-1.5 rounded-md bg-[#E36D6A]"></span>
-                              <span className="text-gray-600">{itemName}</span>
-                            </div>
-                            <span className="font-medium text-[#111111]">
-                              {quantity}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                    </TabsContent>
-                  </Tabs>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>{label}</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    ))}
+                  </div>
+                  <div className="text-info-blue bg-info-blue-light mt-4 w-fit rounded-2xl px-3 py-2 text-sm">
+                    Stock DOH:{" "}
+                    {Math.floor(
+                      data?.itemStockLevel.stock.stockDaysOnHand ?? 0,
+                    )}{" "}
+                    days
+                  </div>
                 </div>
-              </div>
-            </>
-          )}
+              </>
+            )}
+            <div className="mt-6">
+              <Tabs defaultValue="LOW_STOCK">
+                <TabsList className="grid grid-cols-2">
+                  <TabsTrigger
+                    onClick={() => setCurrentStockLevelView("LOW")}
+                    value="LOW_STOCK"
+                  >
+                    Low stock
+                  </TabsTrigger>
+                  <TabsTrigger
+                    onClick={() => setCurrentStockLevelView("OUT_OF_STOCK")}
+                    value="OUT_OF_STOCK"
+                  >
+                    Out of stock
+                  </TabsTrigger>
+                </TabsList>
+                <TabsContent
+                  onClick={() => setCurrentStockLevelView("OUT_OF_STOCK")}
+                  value="LOW_STOCK"
+                >
+                  {stockLevelItems}
+                </TabsContent>
+                <TabsContent value="OUT_OF_STOCK">
+                  {stockLevelItems}
+                </TabsContent>
+              </Tabs>
+            </div>
+          </div>
         </BaseCard>
         {cardsData.map(({ title, key }) => (
           <BaseCard
@@ -378,65 +411,58 @@ export const BaseCard = ({
         {isLoading ? (
           <div className="space-y-4">
             <Skeleton className="h-10 w-[150px]" />
-            <Skeleton className="h-[100px] w-full" />
+            {/*<Skeleton className="h-[100px] w-full" />*/}
           </div>
         ) : (
-          <>
-            <div className="flex gap-1">
-              <span className="text-4xl font-bold">
-                {formatValue(totalData.total, totalData.type)}
-              </span>
-              {change && (
-                <div
-                  className={cn(
-                    "flex items-center gap-x-1 self-center rounded-4xl px-[6px] py-[3px] text-sm",
-                    change.type === "INCREMENT" &&
-                      "bg-success-50 text-success-700",
-                    change.type === "DECREMENT" && "bg-error-50 text-error-600",
-                  )}
-                >
-                  {change.type === "INCREMENT" && (
-                    <MoveUpRight
-                      size="15"
-                      className="bg-success-700 rounded-full p-1 text-white"
-                    />
-                  )}
-                  {change.type === "DECREMENT" && (
-                    <MoveDownRight
-                      size="15"
-                      className="bg-error-600 rounded-full p-1 text-white"
-                    />
-                  )}
-                  <span>{formatValue(change.value, "percentage")}</span>
-                </div>
-              )}
-            </div>
-            {children}
-            {showChart &&
-              (isLoading ? (
-                <ChartSkeleton />
-              ) : (
-                <div
-                  className={cn(
-                    change?.type === "INCREMENT"
-                      ? styles.incrementGraph
-                      : styles.decrementGraph,
-                    "mt-12 h-[100px] w-full bg-contain bg-center bg-no-repeat",
-                  )}
-                >
-                  <div
-                    style={{
-                      backgroundImage: 'url("/images/increment-graph.png")',
-                    }}
-                    className="flex flex-col gap-8"
-                  >
-                    <div className="border-t border-dotted border-gray-200" />
-                    <div className="border-t border-dotted border-gray-200" />
-                  </div>
-                </div>
-              ))}
-          </>
+          <div className="flex gap-1">
+            <span className="text-4xl font-bold">
+              {formatValue(totalData.total, totalData.type)}
+            </span>
+            {change && (
+              <div
+                className={cn(
+                  "flex items-center gap-x-1 self-center rounded-4xl px-[6px] py-[3px] text-sm",
+                  change.type === "INCREMENT" &&
+                    "bg-success-50 text-success-700",
+                  change.type === "DECREMENT" && "bg-error-50 text-error-600",
+                )}
+              >
+                {change.type === "INCREMENT" && (
+                  <MoveUpRight
+                    size="15"
+                    className="bg-success-700 rounded-full p-1 text-white"
+                  />
+                )}
+                {change.type === "DECREMENT" && (
+                  <MoveDownRight
+                    size="15"
+                    className="bg-error-600 rounded-full p-1 text-white"
+                  />
+                )}
+                <span>{formatValue(change.value, "percentage")}</span>
+              </div>
+            )}
+          </div>
         )}
+        {children}
+        {showChart &&
+          (isLoading ? (
+            <ChartSkeleton />
+          ) : (
+            <div
+              className={cn(
+                change?.type === "INCREMENT"
+                  ? styles.incrementGraph
+                  : styles.decrementGraph,
+                "mt-12 h-[100px] w-full bg-contain bg-center bg-no-repeat",
+              )}
+            >
+              <div className="flex flex-col gap-8">
+                <div className="border-t border-dotted border-gray-200" />
+                <div className="border-t border-dotted border-gray-200" />
+              </div>
+            </div>
+          ))}
       </CardContent>
     </Card>
   );
@@ -453,19 +479,25 @@ const StockLevelCardSkeleton = () => (
       <Skeleton className="h-4 w-20" />
     </div>
     <Skeleton className="h-8 w-32" />
-    <div className="space-y-2 pt-4">
-      <Skeleton className="h-8 w-full" />
-      <div className="space-y-2 pt-2">
-        <Skeleton className="h-6 w-full" />
-        <Skeleton className="h-6 w-full" />
-        <Skeleton className="h-6 w-full" />
-      </div>
-    </div>
   </div>
 );
 
 const ChartSkeleton = () => (
-  <div className="mt-5">
+  <div className="mt-12">
     <Skeleton className="h-[100px] w-full" />
+  </div>
+);
+
+const StockItemsSkeleton = () => (
+  <div className="space-y-3 pt-2">
+    {[...Array(5)].map((_, i) => (
+      <div key={i} className="flex items-center justify-between">
+        <div className="flex items-center gap-x-2">
+          <Skeleton className="h-3.5 w-1.5 rounded-md" />
+          <Skeleton className="h-4 w-32" />
+        </div>
+        <Skeleton className="h-4 w-8" />
+      </div>
+    ))}
   </div>
 );

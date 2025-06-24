@@ -55,6 +55,8 @@ export async function getItems(
     next: { tags: [API_ENDPOINT_TAGS.ITEMS] },
   };
 
+  console.log("Fetching items with params:", fetchOptions);
+
   return (await imsApiWithAuth<PaginatedResponse<ItemsDto>>(fetchOptions)).data;
 }
 
