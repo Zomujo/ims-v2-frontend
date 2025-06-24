@@ -30,8 +30,12 @@ import {
 import { Skeleton } from "@features/ui/skeleton";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@features/ui/tooltip";
 import styles from "./dashboard.module.css";
-import { getItems } from "@features/shared/actions/items.actions";
-import { ItemsDto } from "@features/shared/types/action.types";
+import {
+  getItems,
+  getItemsExpiry,
+} from "@features/shared/actions/items.actions";
+import { ExpiryItemsDto, ItemsDto } from "@features/shared/types/action.types";
+import Link from "next/link";
 
 const stockLevelCategories = [
   {
@@ -96,6 +100,8 @@ const DashboardGeneral = () => {
     useState<Exclude<StockLevel, "STOCKED">>("LOW");
   const [isLoadingStock, setIsLoadingStock] = useState(true);
   const [stockItems, setStockItems] = useState<ItemsDto[]>([]);
+  const [expiringItems, setExpiringItems] = useState<ExpiryItemsDto[]>([]);
+  const [isLoadingExpiring, setIsLoadingExpiring] = useState(true);
 
   useEffect(() => {
     const fetchGeneralOverview = async () => {
@@ -128,6 +134,23 @@ const DashboardGeneral = () => {
     void fetchStockItems();
   }, [currentStockLevelView]);
 
+  const fetchExpiringItems = async () => {
+    setIsLoadingExpiring(true);
+    const expiringResponse = await getItemsExpiry({
+      pageSize: "5",
+      orderBy: "expiryDate",
+      orderDirection: "ASC",
+    });
+    if (expiringResponse) {
+      setExpiringItems(expiringResponse.rows);
+    }
+    setIsLoadingExpiring(false);
+  };
+
+  useEffect(() => {
+    void fetchExpiringItems();
+  }, []);
+
   const stockLevelPercentage = useCallback(
     (level: StockLevel) => {
       const stocks = data?.itemStockLevel.stock;
@@ -153,13 +176,13 @@ const DashboardGeneral = () => {
   }, [currentStockLevelView]);
 
   const stockLevelItems = isLoadingStock ? (
-    <StockItemsSkeleton />
+    <ItemsListSkeleton />
   ) : stockItems.length > 0 ? (
     <div className="space-y-3">
       {stockItems.map(({ totalStock, name }) => (
         <div
           key={`${name}-${totalStock}`}
-          className="flex items-center justify-between"
+          className="flex items-center justify-between text-sm"
         >
           <div className="flex items-center gap-x-2">
             <span className={cn("h-3.5 w-1.5 rounded-md", stockColor)}></span>
@@ -172,6 +195,33 @@ const DashboardGeneral = () => {
   ) : (
     <div className="flex h-24 items-center justify-center">
       <p className="text-sm text-gray-500">No items to display.</p>
+    </div>
+  );
+
+  const expiringItemsList = isLoadingExpiring ? (
+    <ItemsListSkeleton />
+  ) : expiringItems.length > 0 ? (
+    <div className="mt-2 mb-5 space-y-3">
+      {expiringItems.map(({ item, validity, batchNumber }) => (
+        <div
+          key={`${item.name}-${validity}`}
+          className="flex items-center justify-between"
+        >
+          <div className="flex items-center gap-x-2">
+            <span className={cn("h-3.5 w-1.5 rounded-md", stockColor)}></span>
+            <span className="text-sm text-gray-600">
+              {item.name} ({batchNumber})
+            </span>
+          </div>
+          <span className="text-xs font-medium text-[#111111]">
+            {format(new Date(validity), "LLL dd, y")}
+          </span>
+        </div>
+      ))}
+    </div>
+  ) : (
+    <div className="flex h-24 items-center justify-center">
+      <p className="text-sm text-gray-500">No expiring items to display.</p>
     </div>
   );
 
@@ -243,20 +293,30 @@ const DashboardGeneral = () => {
             )}
             <div className="mt-6">
               <Tabs defaultValue="LOW_STOCK">
-                <TabsList className="grid grid-cols-2">
-                  <TabsTrigger
-                    onClick={() => setCurrentStockLevelView("LOW")}
-                    value="LOW_STOCK"
-                  >
-                    Low stock
-                  </TabsTrigger>
-                  <TabsTrigger
-                    onClick={() => setCurrentStockLevelView("OUT_OF_STOCK")}
-                    value="OUT_OF_STOCK"
-                  >
-                    Out of stock
-                  </TabsTrigger>
-                </TabsList>
+                <div className="flex justify-between gap-4">
+                  <TabsList>
+                    <TabsTrigger
+                      onClick={() => setCurrentStockLevelView("LOW")}
+                      value="LOW_STOCK"
+                    >
+                      Low stock
+                    </TabsTrigger>
+                    <TabsTrigger
+                      onClick={() => setCurrentStockLevelView("OUT_OF_STOCK")}
+                      value="OUT_OF_STOCK"
+                    >
+                      Out of stock
+                    </TabsTrigger>
+                  </TabsList>
+                  {stockItems.length > 0 && (
+                    <Link
+                      className="hover:text-gray-600 hover:underline"
+                      href={`/items?status=${currentStockLevelView}`}
+                    >
+                      See more
+                    </Link>
+                  )}
+                </div>
                 <TabsContent
                   onClick={() => setCurrentStockLevelView("OUT_OF_STOCK")}
                   value="LOW_STOCK"
@@ -299,15 +359,19 @@ const DashboardGeneral = () => {
           }}
           className="pb-0"
         >
-          {isLoading ? (
-            <div className="mt-5 space-y-2">
-              <Skeleton className="h-6 w-full" />
-              <Skeleton className="h-6 w-full" />
-              <Skeleton className="h-6 w-full" />
+          <>
+            <div className="my-2 flex place-self-end self-end">
+              {stockItems.length > 0 && (
+                <Link
+                  className="hover:text-gray-600 hover:underline"
+                  href={`/expiry`}
+                >
+                  See more
+                </Link>
+              )}
             </div>
-          ) : (
-            <div className="mt-5">List here</div>
-          )}
+            {expiringItemsList}
+          </>
         </BaseCard>
       </div>
     </div>
@@ -486,7 +550,7 @@ const ChartSkeleton = () => (
   </div>
 );
 
-const StockItemsSkeleton = () => (
+const ItemsListSkeleton = () => (
   <div className="space-y-3 pt-2">
     {[...Array(5)].map((_, i) => (
       <div key={i} className="flex items-center justify-between">
