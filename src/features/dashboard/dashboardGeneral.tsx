@@ -146,8 +146,8 @@ const DashboardGeneral = () => {
   );
 
   const stockColor = useMemo(() => {
-    const category = stockLevelCategories.find((cat) =>
-      cat.value.includes(currentStockLevelView),
+    const category = stockLevelCategories.find(({ value }) =>
+      value.includes(currentStockLevelView),
     );
     return category?.bgColor ?? "bg-gray-400";
   }, [currentStockLevelView]);
@@ -410,7 +410,6 @@ export const BaseCard = ({
         {isLoading ? (
           <div className="space-y-4">
             <Skeleton className="h-10 w-[150px]" />
-            {/*<Skeleton className="h-[100px] w-full" />*/}
           </div>
         ) : (
           <div className="flex gap-1">
