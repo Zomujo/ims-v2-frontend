@@ -202,22 +202,41 @@ const DashboardGeneral = () => {
     <ItemsListSkeleton />
   ) : expiringItems.length > 0 ? (
     <div className="mt-2 mb-5 space-y-3">
-      {expiringItems.map(({ item, validity, batchNumber }) => (
-        <div
-          key={`${item.name}-${validity}`}
-          className="flex items-center justify-between"
-        >
-          <div className="flex items-center gap-x-2">
-            <span className={cn("h-3.5 w-1.5 rounded-md", stockColor)}></span>
-            <span className="text-sm text-gray-600">
-              {item.name} ({batchNumber})
+      {expiringItems.map(({ item, validity, batchNumber }) => {
+        const expiryDate = new Date(validity);
+        const expiryToday = new Date();
+        expiryToday.setHours(0, 0, 0, 0);
+
+        const diffTime = expiryDate.getTime() - expiryToday.getTime();
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        const getTextColor = () => {
+          if (diffDays < 0) {
+            return "text-red-500";
+          }
+          if (diffDays <= 60) {
+            return "text-orange-500";
+          }
+          return "text-[#111111]";
+        };
+
+        return (
+          <div
+            key={`${item.name}-${validity}`}
+            className="flex items-center justify-between"
+          >
+            <div className="flex items-center gap-x-2">
+              <span className={cn("h-3.5 w-1.5 rounded-md", stockColor)}></span>
+              <span className="text-sm text-gray-600">
+                {item.name} ({batchNumber})
+              </span>
+            </div>
+            <span className={cn("text-xs font-medium", getTextColor())}>
+              {format(expiryDate, "LLL dd, y")}
             </span>
           </div>
-          <span className="text-xs font-medium text-[#111111]">
-            {format(new Date(validity), "LLL dd, y")}
-          </span>
-        </div>
-      ))}
+        );
+      })}
     </div>
   ) : (
     <div className="flex h-24 items-center justify-center">
