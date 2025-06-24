@@ -348,7 +348,7 @@ const DashboardGeneral = () => {
           ></BaseCard>
         ))}
         <BaseCard
-          title={"EXPIRING SOON ITEMS"}
+          title={"EXPIRING SOON ITEMS (IN 60 DAYS)"}
           totalData={{
             total: data?.soonToExpireItems.total ?? 0,
             type: "number",
