@@ -56,8 +56,13 @@ export interface SellingItemsResponse {
 }
 
 export interface DailySalesResponse {
-  sales: { dates: string[]; quantities: number[] }[];
+  sales: Sales;
 }
+
+export type Sales = { hours?: string[] } & Omit<
+  Record<string, number[]>,
+  "hours"
+>;
 
 export interface PaymentMethodResponse {
   topSelling: {

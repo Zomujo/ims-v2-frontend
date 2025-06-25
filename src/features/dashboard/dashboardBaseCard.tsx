@@ -5,6 +5,7 @@ import {
 } from "@features/layout/search-with-filter/search-with-filter.data";
 import React, { Dispatch, ReactNode, SetStateAction } from "react";
 import { ImsSelect } from "@features/shared/components/ims-select";
+import { cn } from "@/lib/utils";
 
 interface DropdownOptions {
   label: string;
@@ -14,8 +15,9 @@ interface DropdownOptions {
 type DashboardBaseCardProps = {
   title: string;
   dropdownOptions?: DropdownOptions[];
-  selectedValue: DATE_RANGE;
-  setSelectedValue: Dispatch<SetStateAction<DATE_RANGE>>;
+  selectedValue?: DATE_RANGE;
+  setSelectedValue?: Dispatch<SetStateAction<DATE_RANGE>>;
+  customFilter?: ReactNode;
   children: ReactNode;
 };
 export default function DashboardBaseCard({
@@ -23,6 +25,7 @@ export default function DashboardBaseCard({
   dropdownOptions = dateRangeOptions.slice(1),
   selectedValue,
   setSelectedValue,
+  customFilter,
   children,
 }: DashboardBaseCardProps) {
   return (
@@ -30,14 +33,20 @@ export default function DashboardBaseCard({
       <CardHeader>
         <CardTitle className="flex justify-between">
           <span className="text-2xl font-bold">{title}</span>
-          <div className="max-w-3xs">
-            <ImsSelect
-              showNone={false}
-              options={dropdownOptions}
-              value={selectedValue}
-              onChange={(value) => setSelectedValue(value as DATE_RANGE)}
-              moduleName="Date Range"
-            />
+          <div className={cn(!customFilter && "max-w-3xs")}>
+            {customFilter ? (
+              customFilter
+            ) : (
+              <ImsSelect
+                showNone={false}
+                options={dropdownOptions}
+                value={selectedValue}
+                onChange={(value) =>
+                  setSelectedValue && setSelectedValue(value as DATE_RANGE)
+                }
+                moduleName="Date Range"
+              />
+            )}
           </div>
         </CardTitle>
       </CardHeader>
