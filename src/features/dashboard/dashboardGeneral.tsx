@@ -30,6 +30,12 @@ import {
 import { Skeleton } from "@features/ui/skeleton";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@features/ui/tooltip";
 import styles from "./dashboard.module.css";
+import {
+  getItems,
+  getItemsExpiry,
+} from "@features/shared/actions/items.actions";
+import { ExpiryItemsDto, ItemsDto } from "@features/shared/types/action.types";
+import Link from "next/link";
 
 const stockLevelCategories = [
   {
@@ -90,6 +96,12 @@ const DashboardGeneral = () => {
     to: today,
   });
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [currentStockLevelView, setCurrentStockLevelView] =
+    useState<Exclude<StockLevel, "STOCKED">>("LOW");
+  const [isLoadingStock, setIsLoadingStock] = useState(true);
+  const [stockItems, setStockItems] = useState<ItemsDto[]>([]);
+  const [expiringItems, setExpiringItems] = useState<ExpiryItemsDto[]>([]);
+  const [isLoadingExpiring, setIsLoadingExpiring] = useState(true);
 
   useEffect(() => {
     const fetchGeneralOverview = async () => {
@@ -99,7 +111,6 @@ const DashboardGeneral = () => {
         startDate: date.from?.toISOString(),
       });
       if (generalResponse) {
-        console.log("General response", generalResponse);
         setData(generalResponse);
       }
       setIsLoading(false);
@@ -107,9 +118,38 @@ const DashboardGeneral = () => {
     void fetchGeneralOverview();
   }, [date]);
 
-  const lowStockItems = useMemo(() => [], [data]); // TODO: Make separate request for this data
+  const fetchStockItems = async () => {
+    setIsLoadingStock(true);
+    const stockResponse = await getItems({
+      status: currentStockLevelView,
+      pageSize: "5",
+    });
+    if (stockResponse) {
+      setStockItems(stockResponse.rows);
+    }
+    setIsLoadingStock(false);
+  };
 
-  const outOfStockItems = useMemo(() => [], [data]); // TODO: Make seaprate request for this data
+  useEffect(() => {
+    void fetchStockItems();
+  }, [currentStockLevelView]);
+
+  const fetchExpiringItems = async () => {
+    setIsLoadingExpiring(true);
+    const expiringResponse = await getItemsExpiry({
+      pageSize: "5",
+      orderBy: "expiryDate",
+      orderDirection: "ASC",
+    });
+    if (expiringResponse) {
+      setExpiringItems(expiringResponse.rows);
+    }
+    setIsLoadingExpiring(false);
+  };
+
+  useEffect(() => {
+    void fetchExpiringItems();
+  }, []);
 
   const stockLevelPercentage = useCallback(
     (level: StockLevel) => {
@@ -120,12 +160,88 @@ const DashboardGeneral = () => {
 
       const levelStockMap: Record<StockLevel, number> = {
         OUT_OF_STOCK: stocks?.outOfStock ?? 0,
-        LOW_STOCK: stocks?.lowStocked ?? 0,
-        HIGH_STOCK: stocks?.highStocked ?? 0,
+        LOW: stocks?.lowStocked ?? 0,
+        STOCKED: stocks?.highStocked ?? 0,
       };
       return (levelStockMap[level] / totalStock) * 100;
     },
     [data],
+  );
+
+  const stockColor = useMemo(() => {
+    const category = stockLevelCategories.find(({ value }) =>
+      value.includes(currentStockLevelView),
+    );
+    return category?.bgColor ?? "bg-gray-400";
+  }, [currentStockLevelView]);
+
+  const stockLevelItems = isLoadingStock ? (
+    <ItemsListSkeleton />
+  ) : stockItems.length > 0 ? (
+    <div className="space-y-3">
+      {stockItems.map(({ totalStock, name }) => (
+        <div
+          key={`${name}-${totalStock}`}
+          className="flex items-center justify-between text-sm"
+        >
+          <div className="flex items-center gap-x-2">
+            <span className={cn("h-3.5 w-1.5 rounded-md", stockColor)}></span>
+            <span className="text-gray-600">{name}</span>
+          </div>
+          <span className="font-medium text-[#111111]">{totalStock}</span>
+        </div>
+      ))}
+    </div>
+  ) : (
+    <div className="flex h-24 items-center justify-center">
+      <p className="text-sm text-gray-500">No items to display.</p>
+    </div>
+  );
+
+  const expiringItemsList = isLoadingExpiring ? (
+    <ItemsListSkeleton />
+  ) : expiringItems.length > 0 ? (
+    <div className="mt-2 mb-5 space-y-3">
+      {expiringItems.map(({ item, validity, batchNumber }) => {
+        const expiryDate = new Date(validity);
+        const expiryToday = new Date();
+        expiryToday.setHours(0, 0, 0, 0);
+
+        const diffTime = expiryDate.getTime() - expiryToday.getTime();
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        const getTextColor = () => {
+          if (diffDays < 0) {
+            return "text-red-500";
+          }
+          if (diffDays <= 60) {
+            return "text-orange-500";
+          }
+          return "text-[#111111]";
+        };
+
+        return (
+          <div
+            key={`${item.name}-${validity}`}
+            className="flex items-center justify-between"
+          >
+            <div className="flex items-center gap-x-2">
+              <span className={cn("h-3.5 w-1.5 rounded-md", stockColor)}></span>
+              <span className="text-sm text-gray-600">
+                {item.name} ({batchNumber})
+              </span>
+            </div>
+            <span className={cn("text-xs font-medium", getTextColor())}>
+              {format(expiryDate, "LLL dd, y")}
+            </span>
+          </div>
+        );
+      })}
+    </div>
+  ) : (
+    <div className="flex h-24 items-center justify-center">
+      <p className="text-sm text-gray-500">No expiring items to display.</p>
+    </div>
   );
 
   return (
@@ -145,98 +261,93 @@ const DashboardGeneral = () => {
           }}
           isLoading={isLoading}
         >
-          {isLoading ? (
-            <StockLevelCardSkeleton />
-          ) : (
-            <>
-              <span className="font-medium text-gray-500">Total Stock</span>
-              <div className="mt-6">
-                <div className="flex w-full">
-                  {stockLevelCategories.map(({ bgColor, label, value }) => (
-                    <Progress
-                      key={label}
-                      value={stockLevelPercentage(value as StockLevel)}
-                      filler={true}
-                      className={cn(bgColor)}
-                      style={{
-                        width: `${stockLevelPercentage(value as StockLevel)}%`,
-                      }}
-                    />
-                  ))}
-                </div>
-                <div className="mt-4 flex w-full justify-between gap-2">
-                  {stockLevelCategories.map(({ bgColor, label }) => (
-                    <Tooltip key={label}>
-                      <TooltipTrigger asChild>
-                        <div className="flex min-w-0 items-center gap-x-0.5">
-                          <div
-                            className={cn("h-3 w-3 rounded-lg", bgColor)}
-                          ></div>
-                          <span className="w-[6rem] truncate text-sm lg:text-base">
-                            {label}
-                          </span>
-                        </div>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>{label}</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  ))}
-                </div>
-                <div className="text-info-blue bg-info-blue-light mt-4 w-fit rounded-2xl px-3 py-2 text-sm">
-                  Stock DOH:{" "}
-                  {Math.floor(data?.itemStockLevel.stock.stockDaysOnHand ?? 0)}{" "}
-                  days
-                </div>
+          <div>
+            {isLoading ? (
+              <StockLevelCardSkeleton />
+            ) : (
+              <>
+                <span className="font-medium text-gray-500">Total Stock</span>
                 <div className="mt-6">
-                  <Tabs defaultValue="account">
-                    <TabsList className="grid grid-cols-2">
-                      <TabsTrigger value="LOW_STOCK">Low stock</TabsTrigger>
-                      <TabsTrigger value="OUT_OF_STOCK">
-                        Out of stock
-                      </TabsTrigger>
-                    </TabsList>
-                    <TabsContent value="LOW_STOCK">
-                      <div className="space-y-3">
-                        {lowStockItems.map(({ quantity, itemName }) => (
-                          <div
-                            key={`${itemName}-${quantity}`}
-                            className="flex items-center justify-between"
-                          >
-                            <div className="flex items-center gap-x-0.5">
-                              <span className="h-3.5 w-1.5 rounded-md bg-[#E36D6A]"></span>
-                              <span className="text-gray-600">{itemName}</span>
-                            </div>
-                            <span className="font-medium text-[#111111]">
-                              {quantity}
+                  <div className="flex w-full">
+                    {stockLevelCategories.map(({ bgColor, label, value }) => (
+                      <Progress
+                        key={label}
+                        value={stockLevelPercentage(value as StockLevel)}
+                        filler={true}
+                        className={cn(bgColor)}
+                        style={{
+                          width: `${stockLevelPercentage(value as StockLevel)}%`,
+                        }}
+                      />
+                    ))}
+                  </div>
+                  <div className="mt-4 flex w-full justify-between gap-2">
+                    {stockLevelCategories.map(({ bgColor, label }) => (
+                      <Tooltip key={label}>
+                        <TooltipTrigger asChild>
+                          <div className="flex min-w-0 items-center gap-x-0.5">
+                            <div
+                              className={cn("h-3 w-3 rounded-lg", bgColor)}
+                            ></div>
+                            <span className="w-[6rem] truncate text-sm lg:text-base">
+                              {label}
                             </span>
                           </div>
-                        ))}
-                      </div>
-                    </TabsContent>
-                    <TabsContent value="OUT_OF_STOCK">
-                      <div className="space-y-3">
-                        {outOfStockItems.map(({ quantity, itemName }) => (
-                          <div
-                            key={`${itemName}-${quantity}`}
-                            className="flex items-center justify-between"
-                          >
-                            <div className="flex items-center gap-x-0.5">
-                              <span className="h-3.5 w-1.5 rounded-md bg-[#E36D6A]"></span>
-                              <span className="text-gray-600">{itemName}</span>
-                            </div>
-                            <span className="font-medium text-[#111111]">
-                              {quantity}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                    </TabsContent>
-                  </Tabs>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>{label}</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    ))}
+                  </div>
+                  <div className="text-info-blue bg-info-blue-light mt-4 w-fit rounded-2xl px-3 py-2 text-sm">
+                    Stock DOH:{" "}
+                    {Math.floor(
+                      data?.itemStockLevel.stock.stockDaysOnHand ?? 0,
+                    )}{" "}
+                    days
+                  </div>
                 </div>
-              </div>
-            </>
-          )}
+              </>
+            )}
+            <div className="mt-6">
+              <Tabs defaultValue="LOW_STOCK">
+                <div className="flex justify-between gap-4">
+                  <TabsList>
+                    <TabsTrigger
+                      onClick={() => setCurrentStockLevelView("LOW")}
+                      value="LOW_STOCK"
+                    >
+                      Low stock
+                    </TabsTrigger>
+                    <TabsTrigger
+                      onClick={() => setCurrentStockLevelView("OUT_OF_STOCK")}
+                      value="OUT_OF_STOCK"
+                    >
+                      Out of stock
+                    </TabsTrigger>
+                  </TabsList>
+                  {stockItems.length > 0 && (
+                    <Link
+                      className="hover:text-gray-600 hover:underline"
+                      href={`/items?status=${currentStockLevelView}`}
+                    >
+                      See more
+                    </Link>
+                  )}
+                </div>
+                <TabsContent
+                  onClick={() => setCurrentStockLevelView("OUT_OF_STOCK")}
+                  value="LOW_STOCK"
+                >
+                  {stockLevelItems}
+                </TabsContent>
+                <TabsContent value="OUT_OF_STOCK">
+                  {stockLevelItems}
+                </TabsContent>
+              </Tabs>
+            </div>
+          </div>
         </BaseCard>
         {cardsData.map(({ title, key }) => (
           <BaseCard
@@ -256,7 +367,7 @@ const DashboardGeneral = () => {
           ></BaseCard>
         ))}
         <BaseCard
-          title={"EXPIRING SOON ITEMS"}
+          title={"EXPIRING SOON ITEMS (IN 60 DAYS)"}
           totalData={{
             total: data?.soonToExpireItems.total ?? 0,
             type: "number",
@@ -267,15 +378,19 @@ const DashboardGeneral = () => {
           }}
           className="pb-0"
         >
-          {isLoading ? (
-            <div className="mt-5 space-y-2">
-              <Skeleton className="h-6 w-full" />
-              <Skeleton className="h-6 w-full" />
-              <Skeleton className="h-6 w-full" />
+          <>
+            <div className="my-2 flex place-self-end self-end">
+              {stockItems.length > 0 && (
+                <Link
+                  className="hover:text-gray-600 hover:underline"
+                  href={`/expiry`}
+                >
+                  See more
+                </Link>
+              )}
             </div>
-          ) : (
-            <div className="mt-5">List here</div>
-          )}
+            {expiringItemsList}
+          </>
         </BaseCard>
       </div>
     </div>
@@ -378,65 +493,57 @@ export const BaseCard = ({
         {isLoading ? (
           <div className="space-y-4">
             <Skeleton className="h-10 w-[150px]" />
-            <Skeleton className="h-[100px] w-full" />
           </div>
         ) : (
-          <>
-            <div className="flex gap-1">
-              <span className="text-4xl font-bold">
-                {formatValue(totalData.total, totalData.type)}
-              </span>
-              {change && (
-                <div
-                  className={cn(
-                    "flex items-center gap-x-1 self-center rounded-4xl px-[6px] py-[3px] text-sm",
-                    change.type === "INCREMENT" &&
-                      "bg-success-50 text-success-700",
-                    change.type === "DECREMENT" && "bg-error-50 text-error-600",
-                  )}
-                >
-                  {change.type === "INCREMENT" && (
-                    <MoveUpRight
-                      size="15"
-                      className="bg-success-700 rounded-full p-1 text-white"
-                    />
-                  )}
-                  {change.type === "DECREMENT" && (
-                    <MoveDownRight
-                      size="15"
-                      className="bg-error-600 rounded-full p-1 text-white"
-                    />
-                  )}
-                  <span>{formatValue(change.value, "percentage")}</span>
-                </div>
-              )}
-            </div>
-            {children}
-            {showChart &&
-              (isLoading ? (
-                <ChartSkeleton />
-              ) : (
-                <div
-                  className={cn(
-                    change?.type === "INCREMENT"
-                      ? styles.incrementGraph
-                      : styles.decrementGraph,
-                    "mt-12 h-[100px] w-full bg-contain bg-center bg-no-repeat",
-                  )}
-                >
-                  <div
-                    style={{
-                      backgroundImage: 'url("/images/increment-graph.png")',
-                    }}
-                    className="flex flex-col gap-8"
-                  >
-                    <div className="border-t border-dotted border-gray-200" />
-                    <div className="border-t border-dotted border-gray-200" />
-                  </div>
-                </div>
-              ))}
-          </>
+          <div className="flex gap-1">
+            <span className="text-4xl font-bold">
+              {formatValue(totalData.total, totalData.type)}
+            </span>
+            {change && (
+              <div
+                className={cn(
+                  "flex items-center gap-x-1 self-center rounded-4xl px-[6px] py-[3px] text-sm",
+                  change.type === "INCREMENT" &&
+                    "bg-success-50 text-success-700",
+                  change.type === "DECREMENT" && "bg-error-50 text-error-600",
+                )}
+              >
+                {change.type === "INCREMENT" && (
+                  <MoveUpRight
+                    size="15"
+                    className="bg-success-700 rounded-full p-1 text-white"
+                  />
+                )}
+                {change.type === "DECREMENT" && (
+                  <MoveDownRight
+                    size="15"
+                    className="bg-error-600 rounded-full p-1 text-white"
+                  />
+                )}
+                <span>{formatValue(change.value, "percentage")}</span>
+              </div>
+            )}
+          </div>
         )}
+        {children}
+        {showChart &&
+          (isLoading ? (
+            <ChartSkeleton />
+          ) : (
+            <div
+              className={cn(
+                change?.type === "INCREMENT"
+                  ? styles.incrementGraph
+                  : styles.decrementGraph,
+                "mt-12 h-[100px] w-full bg-contain bg-center bg-no-repeat",
+              )}
+            >
+              <div className="flex flex-col gap-8">
+                <div className="border-t border-dotted border-gray-200" />
+                <div className="border-t border-dotted border-gray-200" />
+              </div>
+            </div>
+          ))}
       </CardContent>
     </Card>
   );
@@ -453,19 +560,25 @@ const StockLevelCardSkeleton = () => (
       <Skeleton className="h-4 w-20" />
     </div>
     <Skeleton className="h-8 w-32" />
-    <div className="space-y-2 pt-4">
-      <Skeleton className="h-8 w-full" />
-      <div className="space-y-2 pt-2">
-        <Skeleton className="h-6 w-full" />
-        <Skeleton className="h-6 w-full" />
-        <Skeleton className="h-6 w-full" />
-      </div>
-    </div>
   </div>
 );
 
 const ChartSkeleton = () => (
-  <div className="mt-5">
+  <div className="mt-12">
     <Skeleton className="h-[100px] w-full" />
+  </div>
+);
+
+const ItemsListSkeleton = () => (
+  <div className="space-y-3 pt-2">
+    {[...Array(5)].map((_, i) => (
+      <div key={i} className="flex items-center justify-between">
+        <div className="flex items-center gap-x-2">
+          <Skeleton className="h-3.5 w-1.5 rounded-md" />
+          <Skeleton className="h-4 w-32" />
+        </div>
+        <Skeleton className="h-4 w-8" />
+      </div>
+    ))}
   </div>
 );

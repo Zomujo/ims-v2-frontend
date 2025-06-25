@@ -1,11 +1,11 @@
 .incrementGraph {
-    background-image: url('public/images/increment-graph.png');
+    background-image: url('/images/increment-graph.png');
     background-size: cover;
     background-position: bottom;
 }
 
 .decrementGraph {
-    background-image: url('public/images/decrement-graph.png');
+    background-image: url('/images/decrement-graph.png');
     background-size: cover;
     background-position: bottom;
 }

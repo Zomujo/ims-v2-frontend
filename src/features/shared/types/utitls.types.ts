@@ -1,3 +1,5 @@
+import { StockLevel } from "@features/shared/types/dashboard.types";
+
 export type HandleRequestState = {
   loadingMsg?: string;
   successMsg?: string;
@@ -22,7 +24,7 @@ export type GenerateQueryParams = Partial<{
   orderDirection: "ASC" | "DESC";
   dateRange: DateRangeQueryOptions;
   todaySales: boolean;
-  status: "PAID" | "UNPAID" | "LOW" | "STOCKED" | "OUT_OF_STOCK";
+  status: "PAID" | "UNPAID" | StockLevel;
   startDate: string;
   endDate: string;
   [key: string]: string | number | boolean;
