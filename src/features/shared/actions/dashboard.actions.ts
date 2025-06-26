@@ -88,7 +88,7 @@ export async function getLeastSellingItems(
 }
 
 export async function getDailySales(
-  params: Pick<GenerateQueryParams, "dateRange">,
+  params: Pick<GenerateQueryParams, "startDate" | "endDate">,
 ) {
   const fetchOptions: FetchApi = {
     url: generateUrlWithQueryParams(

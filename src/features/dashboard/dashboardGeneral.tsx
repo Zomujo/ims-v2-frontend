@@ -1,23 +1,8 @@
-import {
-  Dispatch,
-  ReactNode,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import { DateRange } from "react-day-picker";
 import { format } from "date-fns";
 import { cn, formatValue } from "@/lib/utils";
-import { Popover, PopoverContent, PopoverTrigger } from "@features/ui/popover";
-import { Button } from "@features/ui/button";
-import {
-  Calendar as CalendarIcon,
-  MoveDownRight,
-  MoveUpRight,
-} from "lucide-react";
-import { Calendar } from "@features/ui/calendar";
+import { MoveDownRight, MoveUpRight } from "lucide-react";
 import { getGeneralOverview } from "@features/shared/actions/dashboard.actions";
 import { Card, CardContent, CardHeader, CardTitle } from "@features/ui/card";
 import { Progress } from "@features/ui/progress";
@@ -36,6 +21,7 @@ import {
 } from "@features/shared/actions/items.actions";
 import { ExpiryItemsDto, ItemsDto } from "@features/shared/types/action.types";
 import Link from "next/link";
+import { DatePickerWithRange } from "@features/ui/date-picker";
 
 const stockLevelCategories = [
   {
@@ -398,64 +384,6 @@ const DashboardGeneral = () => {
 };
 
 export default DashboardGeneral;
-
-type DatePickerWithRangeProps = {
-  date: DateRange;
-  setDate: Dispatch<SetStateAction<Required<DateRange>>>;
-};
-export function DatePickerWithRange({
-  setDate,
-  date,
-}: DatePickerWithRangeProps) {
-  return (
-    <div className={cn("grid gap-2")}>
-      <Popover>
-        <PopoverTrigger asChild>
-          <Button
-            id="date"
-            variant={"outline"}
-            className={cn(
-              "w-[300px] justify-start bg-gray-200 text-left font-normal",
-              !date && "text-muted-foreground",
-            )}
-          >
-            <CalendarIcon />
-            {date?.from ? (
-              date.to ? (
-                <>
-                  {format(date.from, "LLL dd, y")} -{" "}
-                  {format(date.to, "LLL dd, y")}
-                </>
-              ) : (
-                format(date.from, "LLL dd, y")
-              )
-            ) : (
-              <span>Pick a date</span>
-            )}
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-auto p-0" align="start">
-          <Calendar
-            autoFocus
-            mode="range"
-            defaultMonth={date?.from}
-            selected={date}
-            onSelect={(dateRange) => {
-              const endDate = dateRange?.to;
-              if (dateRange && endDate) {
-                setDate({
-                  ...dateRange,
-                  to: endDate,
-                });
-              }
-            }}
-            numberOfMonths={2}
-          />
-        </PopoverContent>
-      </Popover>
-    </div>
-  );
-}
 
 type BaseCardProps = {
   title: string;

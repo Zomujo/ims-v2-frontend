@@ -1,108 +1,116 @@
-import React, { useEffect, useState } from "react";
+"use client";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import DashboardBaseCard from "./dashboardBaseCard";
-import { DATE_RANGE } from "../layout/search-with-filter/search-with-filter.data";
-import {
-  ChartConfig,
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "../ui/chart";
-import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts";
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "../ui/chart";
+import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
 import { getDailySales } from "../shared/actions/dashboard.actions";
-import { DateRangeQueryOptions } from "../shared/types/utitls.types";
 import { DailySalesResponse } from "../shared/types/dashboard.types";
 import { Skeleton } from "../ui/skeleton";
+import { DatePicker } from "@features/ui/date-picker";
+import { format } from "date-fns";
 
-const DashboardDailySales = () => {
-  const [chartData, setChartData] = useState<{ date: string; sales: number }[]>(
-    [],
-  );
-  const dailySalesConfig = {
-    visitors: {
-      label: "Visitors",
-    },
-    sales: {
-      label: "Sales",
-      color: "hsl(var(--chart-2))",
-    },
-  } satisfies ChartConfig;
+export const DashboardDailySales = () => {
+  const [chartData, setChartData] = useState<
+    { hour: string; startDate: number; endDate: number }[]
+  >([]);
+
   const [isSalesLoading, setSalesLoading] = useState(false);
-  const [selectDailySales, setSelectedDailySales] = useState<DATE_RANGE>(
-    DATE_RANGE.THIS_MONTH,
-  );
+  const [startDate, setStartDate] = useState<Date>(() => {
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    return yesterday;
+  });
+  const [endDate, setEndDate] = useState<Date>(new Date());
 
   useEffect(() => {
     async function fetchDailySales() {
       setSalesLoading(true);
       chartData.length = 0;
-
-      const salesResponse = (await getDailySales({
-        dateRange: selectDailySales as DateRangeQueryOptions,
+      const start = startDate.toISOString();
+      const end = endDate.toISOString();
+      const { sales } = (await getDailySales({
+        startDate: start,
+        endDate: end,
       })) as DailySalesResponse;
-      setChartData([]);
-      console.log("Sales Response: ", salesResponse); // TODO: Finish up once backend is ready
+
+      const salesChartData = (sales.hours ?? []).map((hour, index) => ({
+        hour,
+        startDate: sales[start.split("T")[0]][index],
+        endDate: sales[end.split("T")[0]][index],
+      }));
+      setChartData(salesChartData);
+      setSalesLoading(false);
     }
     void fetchDailySales();
-  }, [selectDailySales]);
+  }, [startDate, endDate]);
   return (
     <div>
       <DashboardBaseCard
         title="Daily Sales"
-        selectedValue={selectDailySales}
-        setSelectedValue={setSelectedDailySales}
+        customFilter={
+          <div className="flex gap-4">
+            <DatePicker
+              date={startDate}
+              setDate={
+                setStartDate as Dispatch<SetStateAction<Date | undefined>>
+              }
+            />
+            <DatePicker
+              date={endDate}
+              setDate={setEndDate as Dispatch<SetStateAction<Date | undefined>>}
+            />
+          </div>
+        }
       >
         <ChartContainer
-          config={dailySalesConfig}
+          config={{
+            startDate: {
+              label: format(startDate, "LLL dd, y"),
+              color: "#FF6E66",
+            },
+            endDate: {
+              label: format(endDate, "LLL dd, y"),
+              color: "#42B8FF",
+            },
+          }}
           className="aspect-auto h-[400px] w-full"
         >
           {!isSalesLoading ? (
-            <AreaChart data={chartData}>
-              <defs>
-                <linearGradient id="fillMobile" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#1DBF73" stopOpacity={0.8} />
-                  <stop offset="95%" stopColor="#1DBF73" stopOpacity={0.1} />
-                </linearGradient>
-              </defs>
+            <LineChart
+              accessibilityLayer
+              data={chartData}
+              margin={{
+                left: 12,
+                right: 12,
+              }}
+            >
               <CartesianGrid vertical={false} />
               <YAxis tickLine={false} axisLine={false} />
               <XAxis
-                dataKey="date"
+                dataKey="hour"
                 tickLine={false}
                 axisLine={false}
                 tickMargin={8}
-                minTickGap={32}
-                tickFormatter={(value) => {
-                  const date = new Date(value);
-                  return date.toLocaleDateString("en-US", {
-                    month: "short",
-                    day: "numeric",
-                  });
-                }}
+                tickFormatter={(value) => value}
               />
-              <ChartTooltip
-                cursor={false}
-                content={
-                  <ChartTooltipContent
-                    labelFormatter={(value) => {
-                      return new Date(value).toLocaleDateString("en-US", {
-                        month: "short",
-                        day: "numeric",
-                      });
-                    }}
-                    indicator="dot"
-                  />
-                }
+              <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+              <Line
+                dataKey="startDate"
+                type="monotone"
+                stroke="#FF6E66"
+                strokeWidth={2}
+                dot={false}
               />
-              <Area
-                dataKey="sales"
-                type="natural"
-                fill="url(#fillMobile)"
-                stroke="#1DBF73"
-                stackId="a"
+              <Line
+                dataKey="endDate"
+                type="monotone"
+                stroke="#42B8FF"
+                strokeWidth={2}
+                dot={false}
               />
-            </AreaChart>
+            </LineChart>
           ) : (
-            <Skeleton className="h-96 w-[70vw]" />
+            <Skeleton className="h-96" />
           )}
         </ChartContainer>
       </DashboardBaseCard>

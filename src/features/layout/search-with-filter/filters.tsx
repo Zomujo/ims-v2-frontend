@@ -15,8 +15,8 @@ import { ChevronDown } from "lucide-react";
 import useImsSearchParams from "@features/shared/hooks/use-ims-search-params";
 import { Switch } from "@features/ui/switch";
 import { Label } from "@features/ui/label";
-import { DatePickerWithRange } from "@features/dashboard/dashboardGeneral";
 import { DateRange } from "react-day-picker";
+import { DatePickerWithRange } from "@features/ui/date-picker";
 
 interface FilterOption {
   label: string;

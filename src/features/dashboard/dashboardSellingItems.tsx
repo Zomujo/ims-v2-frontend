@@ -117,14 +117,14 @@ export default function DashboardSellingItems() {
             </ChartContainer>
           ) : (
             <div className="flex h-[20vw] items-center justify-center">
-              <p className="flex rotate-180 gap-2">
+              <div className="flex rotate-180 gap-2">
                 {Array.from({ length: 5 }).map((_, index) => (
                   <Skeleton
                     key={index}
                     className={`h-[15vw] w-[100px] animate-pulse`}
                   />
                 ))}
-              </p>
+              </div>
             </div>
           )}
         </DashboardBaseCard>
@@ -168,14 +168,14 @@ export default function DashboardSellingItems() {
             </ChartContainer>
           ) : (
             <div className="flex h-[20vw] items-center justify-center">
-              <p className="flex gap-2">
+              <div className="flex gap-2">
                 {Array.from({ length: 5 }).map((_, index) => (
                   <Skeleton
                     key={index}
                     className={`h-[15vw] w-[100px] animate-pulse`}
                   />
                 ))}
-              </p>
+              </div>
             </div>
           )}
         </DashboardBaseCard>
