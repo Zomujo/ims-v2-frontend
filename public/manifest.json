@@ -1,9 +1,0 @@
-{
-  "theme_color": "#8548e1",
-  "background_color": "#e0c8fd",
-  "display": "standalone",
-  "scope": "/",
-  "start_url": "/",
-  "name": "Next.js App",
-  "short_name": "App"
-}

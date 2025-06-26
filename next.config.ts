@@ -1,20 +1,15 @@
-/* eslint-disable */
 import type { NextConfig } from "next";
 
-const runtimeCaching = require("next-pwa/cache");
-const withPWA = require("next-pwa")({
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const withPWA = require("@ducanh2912/next-pwa").default({
   dest: "public",
-  register: true,
-  skipWaiting: true,
-  runtimeCaching,
-  disable: process.env.NODE_ENV === "development",
 });
 
-const nextConfig: NextConfig = withPWA({
+const nextConfig = {
   eslint: {
     dirs: ["src"],
     ignoreDuringBuilds: true,
   },
-} as NextConfig);
+} satisfies NextConfig;
 
-export default nextConfig;
+module.exports = withPWA(nextConfig);

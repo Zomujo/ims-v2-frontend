@@ -1,12 +1,53 @@
 import { Toaster } from "@/features/ui/sonner";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import NextAuthSessionProvider from "@/lib/providers/next-auth-session-provider";
 import { ReactNode } from "react";
 
+const APP_NAME = "Zomujo Stealth";
+const APP_DEFAULT_TITLE = "Zomujo Stealth - Inventory Management System";
+const APP_TITLE_TEMPLATE = "%s - Zomujo Stealth";
+const APP_DESCRIPTION =
+  "Zomujo Stealth is an inventory management system designed to help you track and manage your medicine inventory efficiently.";
+
 export const metadata: Metadata = {
-  title: "Stealth",
-  description: "Stealth is a medicine inventory management system.",
+  applicationName: APP_NAME,
+  title: {
+    default: APP_DEFAULT_TITLE,
+    template: APP_TITLE_TEMPLATE,
+  },
+  description: APP_DESCRIPTION,
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: APP_DEFAULT_TITLE,
+    // startUpImage: [],
+  },
+  formatDetection: {
+    telephone: false,
+  },
+  openGraph: {
+    type: "website",
+    siteName: APP_NAME,
+    title: {
+      default: APP_DEFAULT_TITLE,
+      template: APP_TITLE_TEMPLATE,
+    },
+    description: APP_DESCRIPTION,
+  },
+  twitter: {
+    card: "summary",
+    title: {
+      default: APP_DEFAULT_TITLE,
+      template: APP_TITLE_TEMPLATE,
+    },
+    description: APP_DESCRIPTION,
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#FFFFFF",
 };
 
 export default function RootLayout({
