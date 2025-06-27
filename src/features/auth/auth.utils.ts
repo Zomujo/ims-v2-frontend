@@ -47,8 +47,15 @@ export const handleAccountCreation = async (
   toast.promise(response, {
     loading: "Creating account...",
     success: "We have sent you a verification email. Please check your inbox.",
-    error: "Failed to create account with provided information",
+    error: (error) => {
+      return (
+        error?.message ||
+        error?.toString() ||
+        "Failed to create account with provided information"
+      );
+    },
   });
+  return response;
 };
 
 export const getFormDefaultValues = <T>(
