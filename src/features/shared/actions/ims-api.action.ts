@@ -2,7 +2,7 @@ import { imsServerSession } from "@/lib/config/auth.config";
 import { ENV_VARIABLES } from "@/lib/config/env.config";
 import { AUTH_PAGE_ROUTES } from "@/lib/constant";
 import { redirect } from "next/navigation";
-import { FetchApi, IMSApiErrorResponse } from "../types/ims-api-action.types";
+import { FetchApi } from "../types/ims-api-action.types";
 import { headers as nextHeaders } from "next/headers";
 
 export const imsApiWithAuth = async <T>({
@@ -73,7 +73,7 @@ const fetchApi = async <T>({
       );
     }
 
-    throw new Error(JSON.stringify(errorData as IMSApiErrorResponse));
+    throw new Error(errorData.message);
   }
 
   return response.json();

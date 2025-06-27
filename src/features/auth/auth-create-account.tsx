@@ -26,9 +26,9 @@ export function CreateAccountForm() {
 
   const handleSubmitFn = async (data: unknown) => {
     setIsSubmitting(true);
-    await handleAccountCreation(data as AuthAccountCreationProps);
-    form.reset();
-    setIsSubmitting(false);
+    handleAccountCreation(data as AuthAccountCreationProps)
+      .then(() => form.reset())
+      .finally(() => setIsSubmitting(false));
   };
 
   return (
