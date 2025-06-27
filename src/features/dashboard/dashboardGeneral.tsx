@@ -23,15 +23,19 @@ import { ExpiryItemsDto, ItemsDto } from "@features/shared/types/action.types";
 import Link from "next/link";
 import { DatePickerWithRange } from "@features/ui/date-picker";
 
-const stockLevelCategories = [
+const stockLevelCategories: {
+  label: string;
+  value: StockLevel;
+  bgColor: string;
+}[] = [
   {
     label: "High stock",
-    value: "HIGH_STOCK",
+    value: "STOCKED",
     bgColor: "bg-[#0DCACA]",
   },
   {
     label: "Low stock",
-    value: "LOW_STOCK",
+    value: "LOW",
     bgColor: "bg-[#E36D6A]",
   },
   {
