@@ -14,9 +14,7 @@ export const stockAdjustmentTableColumns: ColumnDef<OneStockAdjustment>[] = [
   {
     accessorKey: "createdBy",
     header: "Created By",
-    cell: ({ row }) => {
-      return row.original.createdBy.split(",")[0] ?? "-";
-    },
+    cell: ({ row }) => row.original.createdBy.fullName,
   },
   {
     accessorKey: "type",

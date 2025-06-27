@@ -370,7 +370,7 @@ const DashboardGeneral = () => {
         >
           <>
             <div className="my-2 flex place-self-end self-end">
-              {stockItems.length > 0 && (
+              {expiringItems.length > 0 && (
                 <Link
                   className="hover:text-gray-600 hover:underline"
                   href={`/expiry`}
