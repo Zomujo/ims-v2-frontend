@@ -11,9 +11,11 @@ import { Input } from "../ui/input";
 import { AuthForm, RenderPasswordInput } from "./auth-components-client";
 import { authCreateAccountInputsData } from "./auth.data";
 import { createAccountSchema } from "./auth.schemas";
-import { getFormDefaultValues, handleAccountCreation } from "./auth.utils";
+import { getFormDefaultValues } from "./auth.utils";
 import { AuthAccountCreationProps } from "@features/shared/types/auth-action.types";
 import { useState } from "react";
+import { toast } from "sonner";
+import { authCreateAccountAction } from "@features/shared/actions/auth.action";
 
 export function CreateAccountForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -25,10 +27,26 @@ export function CreateAccountForm() {
   });
 
   const handleSubmitFn = async (data: unknown) => {
-    setIsSubmitting(true);
-    handleAccountCreation(data as AuthAccountCreationProps)
-      .then(() => form.reset())
-      .finally(() => setIsSubmitting(false));
+    toast.loading("Creating account...");
+    try {
+      setIsSubmitting(true);
+      await authCreateAccountAction(data as AuthAccountCreationProps);
+      form.reset();
+      toast.success(
+        "We have sent you a verification email. Please check your inbox.",
+      );
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error(
+          "Failed to create account with provided information. Please try again.",
+        );
+      }
+    } finally {
+      setIsSubmitting(false);
+      toast.dismiss();
+    }
   };
 
   return (
