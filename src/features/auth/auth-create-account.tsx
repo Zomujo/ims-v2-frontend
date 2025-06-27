@@ -27,7 +27,7 @@ export function CreateAccountForm() {
   });
 
   const handleSubmitFn = async (data: unknown) => {
-    toast.loading("Creating account...");
+    const loadingToast = toast.loading("Creating account...");
     try {
       setIsSubmitting(true);
       await authCreateAccountAction(data as AuthAccountCreationProps);
@@ -45,7 +45,7 @@ export function CreateAccountForm() {
       }
     } finally {
       setIsSubmitting(false);
-      toast.dismiss();
+      toast.dismiss(loadingToast);
     }
   };
 
