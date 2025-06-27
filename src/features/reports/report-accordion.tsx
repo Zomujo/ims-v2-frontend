@@ -21,12 +21,18 @@ export const ReportAccordion = ({
   loading,
 }: ReportAccordionType) => {
   const [showDropdown, setShowDropdown] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const filteredReports = reportReference.filter((item) =>
+    item.name.toLowerCase().includes(searchTerm.toLowerCase()),
+  );
+
   return (
     <>
       <div
         className={cn(
           "mt-[12px] flex h-12 items-center rounded-xl border-1 bg-[#f5f5f5] px-3.5 text-[14px] font-medium text-gray-700",
-          showDropdown && "sticky top-0",
+          showDropdown && "sticky top-0 z-10 bg-[#f5f5f5]",
         )}
       >
         {loading ? (
@@ -55,25 +61,45 @@ export const ReportAccordion = ({
           </>
         )}
       </div>
-      {reportReference.map(({ name, id, quantity, total }, index) => (
-        <div
-          key={id + index}
-          className={cn(
-            "w-auto overflow-hidden transition-all duration-300",
-            !showDropdown && "hidden w-0",
-          )}
-        >
-          <div className="mt-[12px] flex rounded-xl border px-[18px] py-[23px]">
-            <div className="w-[36%] font-medium text-[#415be6]">
-              <p className="truncate pr-4">{name} </p>
-            </div>
-            <div className="w-[38%]">
-              <p className="truncate pr-4 text-[#111111]">{total || type}</p>
-            </div>
-            <p className="text-[#111111]">{quantity}</p>
-          </div>
+
+      {showDropdown && (
+        <div className="mt-3">
+          <input
+            type="text"
+            placeholder="Search by name..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-700 focus:border-blue-500 focus:outline-none"
+          />
         </div>
-      ))}
+      )}
+
+      {showDropdown && (
+        <div className="mt-3">
+          {filteredReports.length > 0 ? (
+            filteredReports.map(({ name, id, quantity, total }, index) => (
+              <div
+                key={id + index}
+                className="mt-[12px] flex rounded-xl border px-[18px] py-[23px]"
+              >
+                <div className="w-[36%] font-medium text-[#415be6]">
+                  <p className="truncate pr-4">{name}</p>
+                </div>
+                <div className="w-[38%]">
+                  <p className="truncate pr-4 text-[#111111]">
+                    {total || type}
+                  </p>
+                </div>
+                <p className="text-[#111111]">{quantity}</p>
+              </div>
+            ))
+          ) : (
+            <p className="mt-4 text-center text-sm text-gray-500">
+              No items found.
+            </p>
+          )}
+        </div>
+      )}
     </>
   );
 };
