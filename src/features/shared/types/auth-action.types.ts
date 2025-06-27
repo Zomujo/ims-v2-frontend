@@ -1,18 +1,5 @@
 import { IMSApiActionResponse } from "./ims-api-action.types";
 
-export type AuthLoginActionCredentials = {
-  email: string;
-  password: string;
-};
-
-export type AuthCreateAccountActionCredentials = {
-  fullName: string;
-  email: string;
-  password: string;
-  facilityName: string;
-  facilityPassword: string;
-};
-
 export type AuthCreateAccountActionApiBody = {
   fullName: string;
   email: string;

@@ -1,4 +1,5 @@
 import { AmountType } from "@features/items/items.schemas";
+import { AuthIMSUserProfile } from "@features/shared/types/auth-action.types";
 
 export type ApiSuccessResponseDto<T = unknown> = {
   statusCode: number;
@@ -698,7 +699,7 @@ export type OneStockAdjustment = {
   status: StockAdjustmentStatus;
   notes?: string;
   createdAt: string;
-  createdBy: string;
+  createdBy: Pick<AuthIMSUserProfile, "id" | "fullName">;
 };
 
 export type UpdateStockAdjustmentDto = {
