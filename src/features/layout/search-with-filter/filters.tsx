@@ -29,7 +29,7 @@ export interface Filter {
   type: "radio" | "checkbox" | "boolean";
   options: FilterOption[]; // Not used for boolean type, but required by the interface
   defaultValue?: string | string[] | boolean;
-  isLoading: boolean;
+  isLoading?: boolean;
 }
 
 export type FiltersProps = {
@@ -174,7 +174,7 @@ export const Filters: FC<FiltersProps> = ({
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start" className="w-48">
-            {isLoading && (
+            {!!isLoading && (
               <DropdownMenuItem disabled>Loading options...</DropdownMenuItem>
             )}
             {type === "radio" ? (
