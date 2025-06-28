@@ -33,7 +33,7 @@ export interface AuditLog {
   description: string;
   userId: string;
   user: Pick<AuthIMSUserProfile, "fullName" | "email" | "id">;
-  departmentId: string;
-  department: Pick<DepartmentType, "id" | "name">;
+  departmentId?: string;
+  department?: Pick<DepartmentType, "id" | "name">;
   recordId: string;
 }

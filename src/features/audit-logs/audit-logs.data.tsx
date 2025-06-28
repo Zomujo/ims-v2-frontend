@@ -19,6 +19,11 @@ export const auditLogsTableColumns: ColumnDef<AuditLog>[] = [
     cell: ({ row }) => row.original.user.fullName,
   },
   {
+    accessorKey: "department",
+    header: "Department",
+    cell: ({ row }) => row.original.department?.name ?? "Central Admin",
+  },
+  {
     accessorKey: "createdAt",
     header: "Date",
     cell: ({ row }) => formateDate(row.original.createdAt),
