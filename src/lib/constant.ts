@@ -15,6 +15,9 @@ export const API_ENDPOINTS_OLD = {
     SEND_MAIL: "/auth/change-email/send-mail",
     VERIFY_OTP: "/auth/change-email/validate-otp",
   },
+  VERIFICATION: {
+    SEND_MAIL: "/auth/verification/send-mail",
+  },
   CHANGE_ACCOUNT_INFO: "/auth/",
   UPLOAD_PROFILE_PICTURE: "/auth/profile-picture",
   DEPARTMENTS: "/departments",
@@ -82,6 +85,7 @@ export const PAGE_ROUTES = {
     CREATE: "?state=create",
   },
   REPORTS: "/reports",
+  AUDIT_LOGS: "/audit-logs",
 };
 
 export const ACCESS_LEVELS = ["READ", "READ_WRITE", "READ_WRITE_DELETE"];
