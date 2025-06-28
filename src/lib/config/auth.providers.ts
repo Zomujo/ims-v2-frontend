@@ -19,30 +19,3 @@ export const LoginCredentialsProvider = () =>
       return await authLoginAction(credentials);
     },
   });
-
-// export const CreateAccountCredentialsProvider = () =>
-//   CredentialsProvider({
-//     name: "Credentials",
-//     id: AUTH_OPTIONS_CONSTANTS.CREATE_ACCOUNT,
-//     credentials: {
-//       email: {
-//         type: "email",
-//       },
-//       password: {
-//         type: "password",
-//       },
-//       fullName: {
-//         type: "text",
-//       },
-//       facilityName: {
-//         type: "text",
-//       },
-//       facilityPassword: {
-//         type: "text",
-//       },
-//     },
-//     async authorize(credentials) {
-//       if (!credentials) return null;
-//       return await authCreateAccountAction(credentials);
-//     },
-//   });
