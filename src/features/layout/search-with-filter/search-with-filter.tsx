@@ -35,7 +35,7 @@ export default function SearchWithFilter() {
 
   return (
     <div className="relative flex w-full items-center gap-x-4 px-4 pt-1.5">
-      <ImsSearchBar />
+      {!btnData.hideSearch && <ImsSearchBar />}
       <ImsFilters>
         <FilterForms />
       </ImsFilters>

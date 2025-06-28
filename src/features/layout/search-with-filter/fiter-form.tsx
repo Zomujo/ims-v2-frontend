@@ -4,27 +4,35 @@ import { useParams, usePathname } from "next/navigation";
 import React, { useMemo } from "react";
 import Filters from "@features/layout/search-with-filter/filters";
 import {
+  actionsFilter,
   adjustmentStatusFilter,
   adjustmentTypeFilter,
   categoriesFilter,
   categoriesStatusFilter,
   dateRangeFilter,
+  departmentsFilter,
   itemStatusFilter,
+  moduleOptions,
   orderStatusFilter,
   requestStatusFilter,
   salesStatusFilter,
   todaySalesFilters,
   userRoleFilter,
+  usersFilter,
   userStatusFilter,
   validityStatusFilter,
 } from "@features/layout/search-with-filter/search-with-filter.data";
 import { useCategories } from "@/hooks/useCategories";
+import { useUsers } from "@/hooks/useUsers";
+import { useDepartments } from "@/hooks/useDepartments";
 
 export default function FilterForms() {
   const pathName = usePathname();
   const params = useParams();
   const itemId = params.slugs?.[0];
-  const { categories } = useCategories();
+  const { users, loading: loadingUsers } = useUsers();
+  const { categories, loading: loadingCategories } = useCategories();
+  const { departments, loading: loadingDepartments } = useDepartments();
 
   const categoryOptions = useMemo(
     () =>
@@ -35,6 +43,24 @@ export default function FilterForms() {
     [categories],
   );
 
+  const userOptions = useMemo(
+    () =>
+      users.map(({ id, fullName }) => ({
+        label: fullName,
+        value: id,
+      })),
+    [users],
+  );
+
+  const departmentOptions = useMemo(
+    () =>
+      departments.map(({ id, name }) => ({
+        label: name,
+        value: id,
+      })),
+    [departments],
+  );
+
   const renderFilterForm = () => {
     return {
       [PAGE_ROUTES.SALES.VIEW]: <div>Sales</div>,
@@ -42,7 +68,11 @@ export default function FilterForms() {
         <Filters
           filters={[
             itemStatusFilter,
-            { ...categoriesFilter, options: categoryOptions },
+            {
+              ...categoriesFilter,
+              options: categoryOptions,
+              isLoading: loadingCategories,
+            },
           ]}
         />
       ),
@@ -86,6 +116,21 @@ export default function FilterForms() {
       ),
       [PAGE_ROUTES.EXPIRY.VIEW]: (
         <Filters dateRangeFilter={true} filters={[validityStatusFilter]} />
+      ),
+      [PAGE_ROUTES.AUDIT_LOGS]: (
+        <Filters
+          dateRangeFilter={true}
+          filters={[
+            actionsFilter,
+            { ...usersFilter, options: userOptions, isLoading: loadingUsers },
+            moduleOptions,
+            {
+              ...departmentsFilter,
+              options: departmentOptions,
+              isLoading: loadingDepartments,
+            },
+          ]}
+        />
       ),
     };
   };

@@ -280,3 +280,11 @@ export const scrollToSection = (id: string) => {
 
 export const capitalize = (text: string): string =>
   text.toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase());
+
+export const camelCaseToSentence = (camelCaseStr: string): string => {
+  return camelCaseStr
+    .replace(/([a-z])([A-Z])/g, "$1 $2")
+    .replace(/^./, (str) => str.toUpperCase())
+    .toLowerCase()
+    .replace(/^./, (str) => str.toUpperCase());
+};

@@ -67,18 +67,23 @@ export const generalTabs = [
     permission: PermissionModules.DEPARTMENT_REQUESTS,
     forFacility: true,
   },
-  // {
-  //   name: "Stock Requests",
-  //   icon: "solar:box-bold-duotone",
-  //   link: "/item-requests",
-  //   permission: "department_requests",
-  //   forDepartment: true,
-  // },
   {
     name: "Reports",
     icon: "solar:graph-up-bold-duotone",
     link: "/reports",
     permission: PermissionModules.REPORTS,
+  },
+  {
+    name: "Activity",
+    icon: "solar:shield-network-bold",
+    subs: [
+      {
+        name: "Audit Logs",
+        icon: "solar:transmission-line-duotone",
+        link: "/audit-logs",
+        permission: PermissionModules.REPORTS,
+      },
+    ],
   },
 ];
 
@@ -88,10 +93,4 @@ export const helpTabs = [
     icon: "solar:video-frame-bold-duotone",
     link: "/tutorials",
   },
-  // Not sure if we will be implementing this
-  // {
-  //   name: "Support",
-  //   icon: "solar:help-bold-duotone",
-  //   link: "/support",
-  // },
 ];
