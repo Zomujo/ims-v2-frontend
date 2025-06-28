@@ -28,6 +28,7 @@ export const API_ENDPOINTS = {
   AUTH_FORGOT_PASSWORD_SEND_MAIL: "/auth/forgot-password/send-mail",
   AUTH_FORGOT_PASSWORD_VALIDATE_CODE: "/auth/forgot-password/validate-code",
   AUTH_FORGOT_PASSWORD_RESET: "/auth/forgot-password/reset",
+  AUTH_VERIFICATION_SEND_MAIL: "/auth/verification/send-mail",
   AUTH_UPDATE_USER: "/auth",
   AUTH_CHANGE_EMAIL_SEND_MAIL: "/auth/change-email/send-mail",
   AUTH_CHANGE_EMAIL_VALIDATE_OTP: "/auth/change-email/validate-otp",
@@ -113,6 +114,17 @@ export const API_ENDPOINTS = {
 
   // Complaint
   COMPLAINTS: "/complaints",
+
+  // Activity
+  ACTIVITY: "/activity",
+  AUDITS: "/audits",
+  AUDIT: "/audits/:id",
+
+  // Users
+  USERS_NO_PAGINATE: "/users/no-paginate",
+
+  // Department
+  DEPARTMENTS_NO_PAGINATE: "/departments/no-paginate",
 } as const;
 
 export const API_ENDPOINT_TAGS = {
@@ -176,4 +188,7 @@ export const API_ENDPOINT_TAGS = {
   DEPARTMENT_REQUESTS: "api-v1-department-requests",
   DEPARTMENT_REQUESTS_ITEM: "api-v1-department-requests-item",
   DEPARTMENT_ITEM_REQUESTS: "api-v1-item-requests",
+
+  // Activity
+  AUDITS: "api-v1-audits",
 } as const;

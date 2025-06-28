@@ -15,6 +15,8 @@ import {
   UserRole,
   UserStatus,
 } from "@features/shared/types/auth-action.types";
+import { ActionType, TableName } from "@features/shared/types/activity.types";
+import { camelCaseToSentence } from "@/lib/utils";
 
 export const actionButtonData = {
   [PAGE_ROUTES.SALES.VIEW]: {
@@ -75,6 +77,12 @@ export const actionButtonData = {
     href: PAGE_ROUTES.REPORTS,
     icon: "solar:graph-up-bold-duotone",
   },
+  [PAGE_ROUTES.AUDIT_LOGS]: {
+    label: "View Audit Logs",
+    icon: "solar:activity-bold-duotone",
+    permission: `${PermissionModules.REPORTS}:${PermissionActions.READ}`,
+    hideSearch: true,
+  },
 };
 
 export const iconsAndNames = [
@@ -111,6 +119,22 @@ export const categoriesFilter = {
   defaultValue: [],
 };
 
+export const usersFilter = {
+  key: "userId",
+  label: "Users",
+  type: "radio" as const,
+  options: [],
+  defaultValue: [],
+};
+
+export const departmentsFilter = {
+  key: "departmentId",
+  label: "Departments",
+  type: "radio" as const,
+  options: [],
+  defaultValue: [],
+};
+
 export enum DATE_RANGE {
   ALL = "",
   TODAY = "today",
@@ -130,6 +154,17 @@ export const dateRangeOptions = [
   { label: "Last Three Months", value: DATE_RANGE.LAST_THREE_MONTHS },
   { label: "This Year", value: DATE_RANGE.THIS_YEAR },
 ];
+
+export const moduleOptions = {
+  key: "tableNames",
+  label: "Module",
+  type: "checkbox" as const,
+  options: Object.values(TableName).map((tableName) => ({
+    label: camelCaseToSentence(tableName),
+    value: tableName,
+  })),
+  defaultValue: "",
+};
 
 export const dateRangeFilter = {
   key: "dateRange",
@@ -262,6 +297,19 @@ export const requestStatusFilter = {
     { label: "Delivered", value: RequestStatus.DELIVERED },
     { label: "Pending", value: RequestStatus.PENDING },
     { label: "Cancelled", value: RequestStatus.CANCELLED },
+  ],
+  defaultValue: "",
+};
+
+export const actionsFilter = {
+  key: "action",
+  label: "Actions",
+  type: "radio" as const,
+  options: [
+    { label: "All", value: "" },
+    { label: "Create", value: ActionType.CREATE },
+    { label: "Edit", value: ActionType.UPDATE },
+    { label: "Delete", value: ActionType.DELETE },
   ],
   defaultValue: "",
 };
