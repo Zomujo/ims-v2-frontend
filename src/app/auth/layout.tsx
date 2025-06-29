@@ -1,4 +1,4 @@
-import authBgImage from "@public/images/auth-image.jpg";
+import authBgImage from "@public/images/pharmacy.jpg";
 import Image from "next/image";
 import { PropsWithChildren } from "react";
 
@@ -11,7 +11,7 @@ export default function AuthLayout({ children }: Readonly<PropsWithChildren>) {
         width={6000}
         height={6000}
         alt="auth-bg"
-        className="hidden h-full w-full rounded-2xl md:block"
+        className="hidden h-[calc(100vh_-_30px)] w-[50vw] rounded-2xl object-cover md:block"
       />
     </section>
   );
