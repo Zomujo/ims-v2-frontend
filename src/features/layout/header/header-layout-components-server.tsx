@@ -52,7 +52,7 @@ export function UserProfileButton() {
             alt={fullName ?? "Profile Image"}
             fallback={getInitials(fullName ?? "")}
           />
-          <span className="ml-2">{fullName}</span>
+          <span className="ml-2 max-w-32 truncate">{fullName}</span>
           <EllipsisIcon className="rotate-90" size={20} />
         </div>
       }

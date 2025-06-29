@@ -33,7 +33,7 @@ import { useSessionData } from "@/hooks/useSessionData";
 
 export default function SidebarLayout() {
   const [isPharmaOpen, setIsPharmaOpen] = useState(false);
-  const { open, setOpen } = useSidebar(); // Access sidebar state
+  const { open, setOpen, toggleSidebar } = useSidebar(); // Access sidebar state
   const pathname = usePathname();
   const { isLoading, facilityName, role } = useSessionData();
   const { hasPermission } = useSessionData();
@@ -53,7 +53,7 @@ export default function SidebarLayout() {
       <Sidebar
         className="h-full bg-white pr-0"
         variant="inset"
-        collapsible="icon" // Collapses to icons when closed
+        collapsible="offcanvas" // Collapses to icons when closed
       >
         {/* Header */}
         <SidebarHeader className="bg-white p-4">
@@ -69,9 +69,9 @@ export default function SidebarLayout() {
               variant="ghost"
               size="icon"
               className="md:hidden" // Hide on larger screens
-              onClick={() => setOpen(!open)}
+              onClick={toggleSidebar}
             >
-              {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              <X className="h-5 w-5" />
             </Button>
           </div>
           <div className="mt-2 flex items-center space-x-2">
