@@ -161,7 +161,9 @@ export default function SalesCart() {
                   options={hasInsuranceOptions}
                   moduleName="Yes or No"
                   value={field.value ? "true" : "false"}
-                  onChange={(value) => field.onChange(value)}
+                  onChange={(value) =>
+                    form.setValue("insured", value === "true")
+                  }
                   className="focus-visible:ring-ims-blue-300 !h-11 bg-white"
                 />
               )}

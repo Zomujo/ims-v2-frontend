@@ -14,10 +14,6 @@ export const salesTableColumns: ColumnDef<GetSalesDto>[] = [
     },
   },
   {
-    accessorKey: "saleNumber",
-    header: "Sales #",
-  },
-  {
     header: "Item(s)",
     accessorKey: "saleItem.item.name",
     cell: ({ row, getValue }) => {
