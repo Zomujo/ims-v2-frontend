@@ -4,7 +4,6 @@ import { capitalize } from "@/lib/utils";
 export const itemFormSchema = z.object({
   name: z.string().min(1, "Item name is required"),
   brandName: z.string().min(1, "Brand name is required"),
-  code: z.string().min(1, "Item code is required"),
   dosageForm: z.string().min(1, "Dosage form is required"),
   strength: z
     .number()
@@ -28,7 +27,7 @@ export const itemFormSchema = z.object({
     .min(1, "Selling price must be non-negative and greater than 0")
     .optional(),
   storageReq: z.string().min(1, "Storage requirement is required"),
-  ISO: z.string().min(1, "ISO is required"),
+  ISO: z.string().optional(),
   categoryId: z.string().min(1, "Category ID is required"),
   fdaApproval: z.string().min(1, "FDA approval is required"),
 });

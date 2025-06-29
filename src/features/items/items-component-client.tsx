@@ -1,6 +1,6 @@
 "use client";
 
-import { PAGE_ROUTES } from "@/lib/constant";
+import { PAGE_ROUTES, stockAdjustmentReasons } from "@/lib/constant";
 import { usePathname } from "next/navigation";
 import { PropsWithChildren, use } from "react";
 import { Control } from "react-hook-form";
@@ -10,7 +10,6 @@ import HookFormField, {
 } from "../shared/components/hook-form-filed";
 import { ImsSelect } from "../shared/components/ims-select";
 import { Input } from "../ui/input";
-import { Textarea } from "../ui/textarea";
 import { ItemsContext } from "./items.context";
 import {
   dosageFormOptions,
@@ -79,19 +78,6 @@ export function ItemFormInputs({
               moduleName="item category"
               {...field}
               className="focus-visible:ring-ims-blue-300 !h-11 bg-white"
-            />
-          )}
-        />
-        <HookFormField
-          formControl={control}
-          name="code"
-          label="Item Code/ID"
-          renderInput={({ field }) => (
-            <Input
-              {...field}
-              className="focus-visible:ring-ims-blue-300 bg-white"
-              type="text"
-              placeholder="Eg. paracetamol"
             />
           )}
         />
@@ -229,9 +215,12 @@ export function ItemFormInputs({
           name="storageReq"
           label="Storage Requirement"
           renderInput={({ field }) => (
-            <Textarea
+            <ImsSelect
+              showNone={false}
+              options={stockAdjustmentReasons}
+              moduleName="storage requirement"
               {...field}
-              className="focus-visible:ring-0.5 focus-visible:ring-ims-blue-300 !h-11 bg-white"
+              className="focus-visible:ring-ims-blue-300 !h-11 bg-white"
             />
           )}
         />

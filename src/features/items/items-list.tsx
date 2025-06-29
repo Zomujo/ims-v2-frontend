@@ -128,14 +128,12 @@ export function ItemForm({
     const stepOneFields = [
       "name",
       "categoryId",
-      "code",
       "brandName",
       "manufacturer",
       "dosageForm",
       "strength",
       "unitOfMeasurement",
       "fdaApproval",
-      "ISO",
     ];
     return isStepValid(stepOneFields, form.watch());
   }, [form]);
@@ -177,7 +175,6 @@ export function ItemForm({
         form.reset({
           brandName: item.brandName,
           categoryId: item.categoryId,
-          code: item.code,
           costPrice: item.costPrice,
           sellingPrice: item.sellingPrice,
           dosageForm: item.dosageForm,
@@ -234,6 +231,9 @@ export function ItemForm({
                   className="flex-1"
                   isLoading={form.formState.isSubmitting}
                   isLoadingLabel="Adding Item..."
+                  disabled={
+                    form.formState.isSubmitting || !form.formState.isValid
+                  }
                   variant="imsPrimary"
                   type="submit"
                 >
