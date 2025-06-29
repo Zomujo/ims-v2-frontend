@@ -84,19 +84,6 @@ export function ItemFormInputs({
         />
         <HookFormField
           formControl={control}
-          name="code"
-          label="Item Code/ID"
-          renderInput={({ field }) => (
-            <Input
-              {...field}
-              className="focus-visible:ring-ims-blue-300 bg-white"
-              type="text"
-              placeholder="Eg. paracetamol"
-            />
-          )}
-        />
-        <HookFormField
-          formControl={control}
           name="dosageForm"
           label="Dosage Form"
           renderInput={({ field }) => (

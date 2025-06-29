@@ -256,9 +256,8 @@ export type CreateItemDto = {
   costPrice?: number;
   sellingPrice?: number;
   dosageForm: string;
-  code: string;
   fdaApproval: string;
-  ISO: string;
+  ISO?: string;
   reorderPoint?: number;
   strength: string;
   unitOfMeasurement: string;

@@ -186,3 +186,41 @@ export const FAQs = [
       "Yes, we offer onboarding sessions, tutorials, and 24/7 support to ensure your team is fully equipped to use the platform effectively.",
   },
 ];
+
+export const stockAdjustmentReasons = [
+  { label: "Data Entry Error", value: "Data Entry Error" },
+  { label: "Duplicate Entry Correction", value: "Duplicate Entry Correction" },
+  { label: "Wrong Unit of Measure", value: "Wrong Unit of Measure" },
+  { label: "Unrecorded Stock Found", value: "Unrecorded Stock Found" },
+  { label: "Stocktaking Variance", value: "Stocktaking Variance" },
+  { label: "Expired Medicines", value: "Expired Medicines" },
+  { label: "Damaged or Spoiled Stock", value: "Damaged or Spoiled Stock" },
+  { label: "Lost or Stolen Stock", value: "Lost or Stolen Stock" },
+  {
+    label: "Returns from Departments/Wards",
+    value: "Returns from Departments/Wards",
+  },
+  {
+    label: "Unrecorded Donations or Free Stock",
+    value: "Unrecorded Donations or Free Stock",
+  },
+  { label: "Batch Number Correction", value: "Batch Number Correction" },
+  { label: "Expiry Date Correction", value: "Expiry Date Correction" },
+  {
+    label: "Reclassification (e.g., NHIS to Cash)",
+    value: "Reclassification (e.g., NHIS to Cash)",
+  },
+  { label: "Break Bulk Adjustment", value: "Break Bulk Adjustment" },
+  { label: "Repackaging Adjustment", value: "Repackaging Adjustment" },
+  {
+    label: "Quarantine – Suspected Substandard Drug",
+    value: "Quarantine – Suspected Substandard Drug",
+  },
+  { label: "Cold Chain Breach", value: "Cold Chain Breach" },
+  { label: "Unlogged Internal Transfer", value: "Unlogged Internal Transfer" },
+  { label: "System Sync Issue", value: "System Sync Issue" },
+  {
+    label: "Stock Regularization (Initial Balancing)",
+    value: "Stock Regularization (Initial Balancing)",
+  },
+];

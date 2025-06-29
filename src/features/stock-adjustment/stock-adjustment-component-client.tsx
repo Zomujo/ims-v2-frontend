@@ -11,6 +11,7 @@ import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import { StockAdjustmentContext } from "./stock-adjustment.context";
 import LoadingOverlay from "@features/ui/loadingOverlay";
+import { stockAdjustmentReasons } from "@/lib/constant";
 
 type StockAdjustmentFormInputsProps = {
   control: Control;
@@ -104,9 +105,11 @@ export function StockAdjustmentFormInputs({
         name="reason"
         label="Reason for Adjustment"
         renderInput={({ field }) => (
-          <Input
+          <ImsSelect
+            showNone={false}
+            options={stockAdjustmentReasons}
+            moduleName="reason for adjustment"
             {...field}
-            type="text"
             className="focus-visible:ring-ims-blue-300 !h-11 bg-white"
           />
         )}
