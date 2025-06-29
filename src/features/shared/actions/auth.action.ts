@@ -115,6 +115,18 @@ export const authForgotPasswordSendMailAction = async (
   }
 };
 
+export const authVerificationSendMailAction = async (email: string) => {
+  try {
+    return await imsApiWithoutAuth<AuthApiStandardResponse>({
+      url: API_ENDPOINTS_OLD.VERIFICATION.SEND_MAIL,
+      method: "POST",
+      body: JSON.stringify({ email }),
+    });
+  } catch (error) {
+    return error as AuthApiStandardResponse;
+  }
+};
+
 export const authForgotPasswordVerifyCodeAction = async ({
   email,
   code,
