@@ -61,6 +61,7 @@ export interface SellingCategoriesResponse {
     quantities: number[];
   };
 }
+
 export interface DailySalesResponse {
   sales: Sales;
 }
