@@ -99,7 +99,6 @@ export default function SettingsNotification() {
     void getEmailNotificationOptions();
   }, []);
 
-  useEffect(() => {}, [emailNotification]);
   return (
     <div>
       {isLoading ? (
