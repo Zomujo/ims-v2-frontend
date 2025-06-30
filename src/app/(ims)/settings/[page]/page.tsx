@@ -20,6 +20,7 @@ import {
   Department,
   UserRoles,
 } from "@features/shared/types/settings-action.types";
+import SettingsNotification from "@features/settings/settings-notification";
 
 type SettingPages = {
   params: Promise<{ page: string }>;
@@ -62,6 +63,7 @@ const renderSettingsPage = {
   security: SecuritySettings,
   departments: DepartmentSettings,
   users: UsersSettings,
+  notifications: SettingsNotification,
   default: () => <div>Page not found</div>,
 } as const;
 const createBtnLabel = {
