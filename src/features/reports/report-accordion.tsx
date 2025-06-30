@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type ReportAccordionType = {
   title: string;
@@ -12,6 +12,7 @@ type ReportAccordionType = {
     total?: number | string;
   }[];
   loading?: boolean;
+  openAccordion?: boolean;
 };
 
 export const ReportAccordion = ({
@@ -19,14 +20,18 @@ export const ReportAccordion = ({
   type,
   reportReference,
   loading,
+  openAccordion = false,
 }: ReportAccordionType) => {
-  const [showDropdown, setShowDropdown] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(openAccordion);
   const [searchTerm, setSearchTerm] = useState("");
 
   const filteredReports = reportReference.filter((item) =>
     item.name.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
+  useEffect(() => {
+    setShowDropdown(openAccordion);
+  }, [openAccordion]);
   return (
     <>
       <div
@@ -94,8 +99,8 @@ export const ReportAccordion = ({
               </div>
             ))
           ) : (
-            <p className="mt-4 text-center text-sm text-gray-500">
-              No items found.
+            <p className="mt-4 pb-2 text-center text-sm text-gray-500">
+              {loading ? "Loading..." : "No items found."}
             </p>
           )}
         </div>

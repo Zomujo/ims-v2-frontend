@@ -16,6 +16,7 @@ import {
   PeriodicSalesDto,
   TopSellingDto,
 } from "../shared/types/action.types";
+import { cn } from "@/lib/utils";
 
 type ReportInfo = {
   id: string;
@@ -28,8 +29,12 @@ export default function ReportsList() {
   const { data, loading: financeLoading } = useFetchData({
     fetchFn: getSalesReport,
   });
+
   const [periodicSales, setPeriodicSales] = useState<ReportInfo[]>([]);
   const [topSelling, setTopSelling] = useState<ReportInfo[]>([]);
+  const [currentSection, setCurrentSection] = useState(
+    window.location.hash || "",
+  );
   const [loading, setLoading] = useState({
     expiry: false,
     topSales: false,
@@ -195,6 +200,21 @@ export default function ReportsList() {
     void fetchTopSelling();
   }, []);
 
+  useEffect(() => {
+    const hash = window.location.hash;
+
+    if (hash) {
+      setCurrentSection(hash);
+
+      const el = document.querySelector(hash);
+      if (el) {
+        setTimeout(() => {
+          el.scrollIntoView({ behavior: "smooth" });
+        }, 100);
+      }
+    }
+  }, []);
+
   function mapToReportInfo(items: ReportInfoDto[]): ReportInfo[] {
     return items.map(({ batchNumber, item: { id, name }, validity }) => ({
       id,
@@ -204,42 +224,19 @@ export default function ReportsList() {
   }
   return (
     <ScrollArea className="mt-2 h-[calc(100%_-_5rem)] rounded-2xl bg-white pr-4">
+      <ReportCategory category="Inventory Report" classname="mt-2 -mb-4" />
       <ReportHeader
         title="REPORT NAME (Batch number)"
         option="Type"
         variant="Quantity"
       />
-      <ReportAccordion
-        title="SALES AND FINANCIAL REPORTS"
-        type="Sales and Financial Reports"
-        reportReference={saleNameId}
-        loading={financeLoading}
-      />
+
       <ReportAccordion
         title="STOCK LEVEL REPORT"
         type="Stock Level Reports"
         reportReference={reportSections.stockLevelReport}
         loading={loading.stockLevel}
       />
-
-      <ReportHeader
-        title="SALES NAME"
-        option="Total Sales"
-        variant="Selling Price(Quantity)"
-      />
-      <ReportAccordion
-        title="TOP SALES REPORT"
-        type="Total sales"
-        reportReference={topSelling}
-        loading={loading.topSales}
-      />
-      <ReportAccordion
-        title="PERIODIC SALES REPORT"
-        type="Periodic Sales Reports"
-        reportReference={periodicSales}
-        loading={loading.periodicSales}
-      />
-
       <ReportHeader
         title="EXPIRY NAME (Batch number)"
         option="Expiry Type"
@@ -269,6 +266,53 @@ export default function ReportsList() {
         reportReference={reportSections.expired}
         loading={loading.expiry}
       />
+
+      <ReportCategory
+        category="Sales and Finance Report"
+        classname="mt-4 -mb-4"
+      />
+
+      <ReportHeader
+        title="REPORT NAME (Batch number)"
+        option="Type"
+        variant="Quantity"
+      />
+
+      <ReportAccordion
+        title="SALES AND FINANCIAL REPORTS"
+        type="Sales and Financial Reports"
+        reportReference={saleNameId}
+        loading={financeLoading}
+      />
+      <ReportCategory
+        category="Customer and Sales Trends Reports"
+        classname="mt-4 -mb-4"
+      />
+      <ReportHeader
+        title="SALES NAME"
+        option="Total Sales"
+        variant="Selling Price(Quantity)"
+      />
+      <section
+        id="top-selling"
+        className={cn(
+          currentSection === "#top-selling" && "rounded-xl bg-[#FDF4E8]",
+        )}
+      >
+        <ReportAccordion
+          title="TOP SALES REPORT"
+          type="Total sales"
+          reportReference={topSelling}
+          loading={loading.topSales}
+          openAccordion={currentSection === "#top-selling"}
+        />
+      </section>
+      <ReportAccordion
+        title="PERIODIC SALES REPORT"
+        type="Periodic Sales Reports"
+        reportReference={periodicSales}
+        loading={loading.periodicSales}
+      />
     </ScrollArea>
   );
 }
@@ -291,4 +335,12 @@ const ReportHeader = ({ title, option, variant }: ReportHeaderProps) => (
       <p>{variant}</p>
     </div>
   </div>
+);
+
+type ReportCategoryProps = {
+  category: string;
+  classname?: string;
+};
+const ReportCategory = ({ category, classname }: ReportCategoryProps) => (
+  <div className={cn(classname, "text-blue-600")}>{category}</div>
 );

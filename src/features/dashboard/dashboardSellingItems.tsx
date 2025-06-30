@@ -17,6 +17,7 @@ import { DateRangeQueryOptions } from "../shared/types/utitls.types";
 import { SellingItemsResponse } from "../shared/types/dashboard.types";
 import DashboardBaseCard from "@features/dashboard/dashboardBaseCard";
 import { Skeleton } from "../ui/skeleton";
+import Link from "next/link";
 
 type TopLeastChart = {
   items: string;
@@ -85,36 +86,46 @@ export default function DashboardSellingItems() {
           setSelectedValue={setSelectedTopSellingDateRange}
         >
           {!isLoading ? (
-            <ChartContainer config={topSellingChartConfig}>
-              <BarChart
-                accessibilityLayer
-                data={topChartData}
-                margin={{
-                  top: 20,
-                }}
-              >
-                <CartesianGrid vertical={false} />
-                <XAxis
-                  dataKey="items"
-                  tickLine={false}
-                  tickMargin={10}
-                  axisLine={false}
-                  tickFormatter={(value) => value}
-                />
-                <ChartTooltip
-                  cursor={false}
-                  content={<ChartTooltipContent hideLabel />}
-                />
-                <Bar dataKey="desktop" fill="#3FC8E4" radius={8}>
-                  <LabelList
-                    position="top"
-                    offset={12}
-                    className="fill-foreground"
-                    fontSize={12}
+            <>
+              <ChartContainer config={topSellingChartConfig}>
+                <BarChart
+                  accessibilityLayer
+                  data={topChartData}
+                  margin={{
+                    top: 20,
+                  }}
+                >
+                  <CartesianGrid vertical={false} />
+                  <XAxis
+                    dataKey="items"
+                    tickLine={false}
+                    tickMargin={10}
+                    axisLine={false}
+                    tickFormatter={(value) => value}
                   />
-                </Bar>
-              </BarChart>
-            </ChartContainer>
+                  <ChartTooltip
+                    cursor={false}
+                    content={<ChartTooltipContent hideLabel />}
+                  />
+                  <Bar dataKey="desktop" fill="#3FC8E4" radius={8}>
+                    <LabelList
+                      position="top"
+                      offset={12}
+                      className="fill-foreground"
+                      fontSize={12}
+                    />
+                  </Bar>
+                </BarChart>
+              </ChartContainer>
+              <div className="flex items-center justify-center">
+                <Link
+                  className="mx-auto hover:text-gray-600 hover:underline"
+                  href={`/reports#top-selling`}
+                >
+                  See more
+                </Link>
+              </div>
+            </>
           ) : (
             <div className="flex h-[20vw] items-center justify-center">
               <div className="flex rotate-180 gap-2">
@@ -136,36 +147,46 @@ export default function DashboardSellingItems() {
           setSelectedValue={setSelectedLeastSellingDateRange}
         >
           {!isLeastItemsChartLoading ? (
-            <ChartContainer config={topSellingChartConfig}>
-              <BarChart
-                accessibilityLayer
-                data={leastChartData}
-                margin={{
-                  top: 20,
-                }}
-              >
-                <CartesianGrid vertical={false} />
-                <XAxis
-                  dataKey="items"
-                  tickLine={false}
-                  tickMargin={10}
-                  axisLine={false}
-                  tickFormatter={(value) => value}
-                />
-                <ChartTooltip
-                  cursor={false}
-                  content={<ChartTooltipContent hideLabel />}
-                />
-                <Bar dataKey="desktop" fill="#FF6E66" radius={8}>
-                  <LabelList
-                    position="top"
-                    offset={12}
-                    className="fill-foreground"
-                    fontSize={12}
+            <>
+              <ChartContainer config={topSellingChartConfig}>
+                <BarChart
+                  accessibilityLayer
+                  data={leastChartData}
+                  margin={{
+                    top: 20,
+                  }}
+                >
+                  <CartesianGrid vertical={false} />
+                  <XAxis
+                    dataKey="items"
+                    tickLine={false}
+                    tickMargin={10}
+                    axisLine={false}
+                    tickFormatter={(value) => value}
                   />
-                </Bar>
-              </BarChart>
-            </ChartContainer>
+                  <ChartTooltip
+                    cursor={false}
+                    content={<ChartTooltipContent hideLabel />}
+                  />
+                  <Bar dataKey="desktop" fill="#FF6E66" radius={8}>
+                    <LabelList
+                      position="top"
+                      offset={12}
+                      className="fill-foreground"
+                      fontSize={12}
+                    />
+                  </Bar>
+                </BarChart>
+              </ChartContainer>
+              <div className="flex items-center justify-center">
+                <Link
+                  className="mx-auto hover:text-gray-600 hover:underline"
+                  href={`/reports`}
+                >
+                  See more
+                </Link>
+              </div>
+            </>
           ) : (
             <div className="flex h-[20vw] items-center justify-center">
               <div className="flex gap-2">
