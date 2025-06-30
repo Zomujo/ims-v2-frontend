@@ -120,7 +120,7 @@ export default function DashboardSellingItems() {
               <div className="flex items-center justify-center">
                 <Link
                   className="mx-auto hover:text-gray-600 hover:underline"
-                  href={`/reports`}
+                  href={`/reports#top-selling`}
                 >
                   See more
                 </Link>
