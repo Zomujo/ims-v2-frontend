@@ -10,6 +10,7 @@ import {
   SalesTrend,
   DailySalesResponse,
   PaymentMethodResponse,
+  SellingCategoriesResponse,
 } from "@features/shared/types/dashboard.types";
 import { generateUrlWithQueryParams } from "@/lib/utils";
 import { GenerateQueryParams } from "@features/shared/types/utitls.types";
@@ -113,17 +114,17 @@ export async function getSellingCategories(
 ) {
   const fetchOptions: FetchApi = {
     url: generateUrlWithQueryParams(
-      API_ENDPOINTS.DASHBOARD_TOP_SELLING,
+      API_ENDPOINTS.DASHBOARD_ITEMS_CATEGORIES_TOP_SELLING,
       params,
     ),
     method: "GET",
     headers: {},
     cache: "force-cache",
-    next: { tags: [API_ENDPOINT_TAGS.DASHBOARD_TOP_SELLING] },
+    next: { tags: [API_ENDPOINT_TAGS.DASHBOARD_ITEMS_CATEGORIES_TOP_SELLING] },
   };
 
   return (
-    await imsApiWithAuth<ApiSuccessResponseDto<SellingItemsResponse>>(
+    await imsApiWithAuth<ApiSuccessResponseDto<SellingCategoriesResponse>>(
       fetchOptions,
     )
   ).data;

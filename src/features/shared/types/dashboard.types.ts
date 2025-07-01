@@ -55,6 +55,13 @@ export interface SellingItemsResponse {
   };
 }
 
+export interface SellingCategoriesResponse {
+  topSelling: {
+    categories: string[];
+    quantities: number[];
+  };
+}
+
 export interface DailySalesResponse {
   sales: Sales;
 }

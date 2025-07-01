@@ -39,8 +39,8 @@ export default function DashboardSellingCategories() {
         dateRange: selectedDateRange as DateRangeQueryOptions,
       });
       if (sellingCategoriesResponse) {
-        const { names, quantities } = sellingCategoriesResponse.items;
-        const convertedChartData = names.map((name, index) => {
+        const { categories, quantities } = sellingCategoriesResponse.topSelling;
+        const convertedChartData = categories.map((name, index) => {
           setChartConfig((prev) => ({
             ...prev,
             [name]: {
