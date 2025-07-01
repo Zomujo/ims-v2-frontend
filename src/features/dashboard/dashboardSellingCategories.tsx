@@ -38,7 +38,6 @@ export default function DashboardSellingCategories() {
       const sellingCategoriesResponse = await getSellingCategories({
         dateRange: selectedDateRange as DateRangeQueryOptions,
       });
-      console.log("sellingCategoriesResponse", sellingCategoriesResponse);
       if (sellingCategoriesResponse) {
         const { categories, quantities } = sellingCategoriesResponse.topSelling;
         const convertedChartData = categories.map((name, index) => {
