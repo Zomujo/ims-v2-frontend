@@ -41,18 +41,20 @@ export default function DashboardSalesTrend() {
       });
       if (salesTrendResponse) {
         const { dates, quantities } = salesTrendResponse.trend;
-        const convertedData = dates.map((date, index) => {
-          const formattedDate = new Date(date).toLocaleDateString("en-US", {
-            month: "short",
-            day: "numeric",
+        if (dates && quantities) {
+          const convertedData = dates.map((date, index) => {
+            const formattedDate = new Date(date).toLocaleDateString("en-US", {
+              month: "short",
+              day: "numeric",
+            });
+            return {
+              date: formattedDate,
+              quantity: quantities[index],
+            };
           });
-          return {
-            date: formattedDate,
-            quantity: quantities[index],
-          };
-        });
 
-        setChartData(convertedData);
+          setChartData(convertedData);
+        }
       }
       setIsLoading(false);
     };
@@ -64,6 +66,8 @@ export default function DashboardSalesTrend() {
       title={"Sales Trend"}
       selectedValue={selectedDateRange}
       setSelectedValue={setSelectedDateRange}
+      noResults={!chartData.length}
+      isLoading={isLoading}
     >
       {isLoading ? (
         <div className="space-y-3">
