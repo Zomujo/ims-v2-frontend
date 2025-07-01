@@ -17,7 +17,7 @@ import { useSessionData } from "@/hooks/useSessionData";
 export function SettingsSidebar() {
   const { hasPermission } = useSessionData();
   return (
-    <nav className="flex h-full w-85 flex-col gap-y-1 overflow-y-auto rounded-2xl bg-white py-7 pr-2 pl-4">
+    <nav className="flex w-full flex-row gap-x-2 overflow-x-auto bg-white px-4 py-4 md:gap-x-0 md:gap-y-1 md:overflow-y-auto md:rounded-2xl md:py-7 md:pr-2 md:pl-4 xl:h-full xl:w-85 xl:flex-col">
       {settingsSidebarNavItems.map((item) => {
         return (
           (!item.permission || hasPermission(item.permission)) && (
