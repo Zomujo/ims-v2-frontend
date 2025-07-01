@@ -46,6 +46,8 @@ export const DashboardDailySales = () => {
   return (
     <div>
       <DashboardBaseCard
+        noResults={!chartData.length}
+        isLoading={isSalesLoading}
         title="Daily Sales"
         customFilter={
           <div className="flex gap-4">
