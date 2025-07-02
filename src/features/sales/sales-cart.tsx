@@ -27,6 +27,7 @@ import { salesCartSchema } from "./sales.schemas";
 import { SaleCardTypes } from "./sales.types";
 import { isSalesEditMode } from "./sales.utils";
 import LoadingOverlay from "@features/ui/loadingOverlay";
+import { getBatchesNoPaginate } from "@features/shared/actions/items.actions";
 
 type SaleCartFormData = z.infer<typeof salesCartSchema>;
 const handleSalesItem = (saleItems: SaleItem, isEditMode?: boolean) => {
@@ -121,8 +122,19 @@ export default function SalesCart() {
 
   if (!isClient) return null;
 
+  const salesItemBuilder = (batchId: string) => {
+    const foundSalesItem = addedSalesItems.find((sale) => {
+      return sale.batchId === batchId;
+    })!;
+
+    return {
+      id: foundSalesItem.item.id,
+      ...foundSalesItem,
+    };
+  };
+
   return (
-    <ScrollArea className="relative h-[99%] w-full flex-[0.4] rounded-xl border bg-white">
+    <ScrollArea className="relative h-[99%] w-full flex-[0.4] rounded-xl border bg-white py-5">
       {isLoading && <LoadingOverlay />}
       <ImsForm
         className="gap-y-0 px-4 py-2 pb-2"
@@ -179,7 +191,11 @@ export default function SalesCart() {
                     return (
                       <SaleCard
                         remove={remove}
-                        salesItem={item}
+                        salesItem={{
+                          ...salesItemBuilder(
+                            (item as unknown as SaleItem).batchId,
+                          ),
+                        }}
                         index={index}
                         quantity={field.value}
                         onChange={field.onChange}
@@ -232,6 +248,9 @@ function SaleCard({
     salesItemLocalStorageKey,
     [],
   );
+  const [alternativeBatchMessage, setAlternativeBatchMessage] = useState<
+    string | null
+  >(null);
 
   const handleItemDelete = () => {
     remove(index);
@@ -241,6 +260,43 @@ function SaleCard({
       ),
     );
   };
+
+  useEffect(() => {
+    const checkForAlternativeBatch = async () => {
+      const { validity: saleItemValidity, id: itemId } = salesItem;
+      if (!saleItemValidity || !itemId) return;
+
+      try {
+        const batches = await getBatchesNoPaginate(itemId);
+        if (batches && batches.length > 0) {
+          const alternativeBatches = batches.filter(({ validity, id }) => {
+            const currentDate = new Date().toISOString();
+            return (
+              validity < saleItemValidity &&
+              validity > currentDate &&
+              id !== salesItem.batchId
+            );
+          });
+
+          if (alternativeBatches.length > 0) {
+            const soonestBatch = alternativeBatches.sort((a, b) =>
+              a.validity.localeCompare(b.validity),
+            )[0];
+
+            const expiryDate = new Date(
+              soonestBatch.validity,
+            ).toLocaleDateString();
+            setAlternativeBatchMessage(
+              `⚠️ Alternative batch available: Batch #${soonestBatch.batchNumber} expires on ${expiryDate} (sooner than current batch). Consider using this batch first to minimize waste.`,
+            );
+          }
+        }
+      } catch (error) {
+        console.error("Error checking alternative batches:", error);
+      }
+    };
+    void checkForAlternativeBatch();
+  }, []);
 
   const activeAddedSalesItem = addedSalesItems.find(
     (item) => item.batchId === salesItem.batchId,
@@ -311,6 +367,9 @@ function SaleCard({
           </button>
         </div>
       </div>
+      <span className="mt-2 text-xs text-orange-300">
+        {alternativeBatchMessage && alternativeBatchMessage}
+      </span>
     </div>
   );
 }
