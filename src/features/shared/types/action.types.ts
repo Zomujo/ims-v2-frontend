@@ -330,7 +330,7 @@ export type BatchesNoPaginate = {
   id: string;
   batchNumber: string;
   quantity: number;
-  expiryDate: string;
+  validity: string;
 };
 
 export type BatchMarkup = {
