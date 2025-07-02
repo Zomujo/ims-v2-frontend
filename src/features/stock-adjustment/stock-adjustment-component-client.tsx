@@ -54,6 +54,7 @@ export function StockAdjustmentFormInputs({
           <ImsSelect
             options={itemOptions}
             moduleName="item"
+            showNone={false}
             {...field}
             defaultValue={field.value}
             className="focus-visible:ring-ims-blue-300 !h-11 bg-white"
@@ -69,7 +70,13 @@ export function StockAdjustmentFormInputs({
             {...field}
             options={batchOptions}
             defaultValue={field.value}
+            showNone={false}
             moduleName="batch"
+            noResultsText={
+              control._getWatch("itemId")
+                ? "No batches found for this item"
+                : "Select an item first"
+            }
             className="focus-visible:ring-ims-blue-300 !h-11 bg-white"
           />
         )}
@@ -95,6 +102,7 @@ export function StockAdjustmentFormInputs({
           <ImsSelect
             options={adjustmentTypeOptions}
             moduleName="adjustment type"
+            showNone={false}
             {...field}
             className="focus-visible:ring-ims-blue-300 !h-11 bg-white"
           />
