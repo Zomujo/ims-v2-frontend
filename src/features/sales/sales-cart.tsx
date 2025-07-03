@@ -225,7 +225,7 @@ export default function SalesCart() {
         RenderActions={
           <ImsButton
             isLoading={isSubmitting}
-            isLoadingLabel={"Adding user..."}
+            isLoadingLabel={"Submitting..."}
             disabled={isSubmitting || !form.formState.isValid}
             variant="imsPrimary"
             type="submit"
