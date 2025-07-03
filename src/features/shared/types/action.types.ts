@@ -234,6 +234,7 @@ export enum ValidityStatus {
 
 export type ItemsDto = {
   id: string;
+  itemFullName: string;
   createdAt: string;
   updatedAt: string;
   name: string;
