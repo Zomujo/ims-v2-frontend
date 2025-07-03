@@ -22,15 +22,15 @@ export const authUserProfileAction = async () => {
 };
 
 export const authLoginAction = async ({
-  email,
+  accountIdentifier,
   password,
-}: Pick<AuthActionProps, "email" | "password">) => {
+}: Pick<AuthActionProps, "accountIdentifier" | "password">) => {
   try {
     const { data: loginData } =
       await imsApiWithoutAuth<AuthLoginActionResponse>({
         url: API_ENDPOINTS_OLD.LOGIN,
         method: "POST",
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ accountIdentifier, password }),
       });
 
     const { data: profileData } =

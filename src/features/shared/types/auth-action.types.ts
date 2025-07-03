@@ -52,6 +52,7 @@ export type AuthActionProps = {
   newPassword: string;
   refreshToken: string;
   code: number;
+  accountIdentifier: string;
 };
 
 export type AuthAccountCreationProps = Omit<

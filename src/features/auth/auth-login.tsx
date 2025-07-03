@@ -19,7 +19,7 @@ export function LoginForm() {
   const form = useHookForm({
     resolver: loginSchema,
     defaultValues: {
-      email: "",
+      accountIdentifier: "",
       password: "",
     },
   });
@@ -29,7 +29,7 @@ export function LoginForm() {
       credentials: data as z.infer<typeof loginSchema>,
       routeFn: router.push,
       options: {
-        authId: AUTH_OPTIONS_CONSTANTS.EMAIL_PASSWORD,
+        authId: AUTH_OPTIONS_CONSTANTS.LOGIN,
         routeTo: PAGE_ROUTES.DASHBOARD,
         loadingMsg: "Logging in...",
         successMsg: "Logged in successfully",
@@ -55,14 +55,14 @@ function AuthLoginInputs({ control }: Readonly<{ control: Control }>) {
     <>
       <HookFormField
         formControl={control}
-        name="email"
-        label="Email"
+        name="accountIdentifier"
+        label="Email / Username"
         renderInput={({ field }) => (
           <Input
             {...field}
             className="focus-visible:ring-ims-blue-300 bg-white"
-            type="email"
-            placeholder="Email"
+            type="text"
+            placeholder="email / username"
           />
         )}
       />
