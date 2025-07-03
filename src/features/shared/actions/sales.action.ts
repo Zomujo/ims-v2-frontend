@@ -73,7 +73,10 @@ export const createSaleAction = async (sale: unknown) => {
     const res = await imsApiWithAuth<AuthApiStandardResponse>({
       url: API_ENDPOINTS_OLD.SALES,
       method: "POST",
-      body: JSON.stringify(sale),
+      body: JSON.stringify({
+        ...(sale as object),
+        insured: (sale as { insured: "true" | "false" }).insured === "true", // Convert insured to boolean
+      }),
     });
     revalidateTag(API_ENDPOINTS_OLD.SALES);
     return res;

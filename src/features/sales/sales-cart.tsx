@@ -54,7 +54,7 @@ export default function SalesCart() {
       saleItems: [],
       paymentType: "CASH",
       notes: "",
-      insured: false,
+      insured: "false",
     },
   });
 
@@ -73,10 +73,11 @@ export default function SalesCart() {
       ].some((item: SaleItem) => item.batchId === saleItem?.batchId);
     if (isItemAlreadyAdded) return;
     if (!saleItem) return;
-    form.setValue("saleItems", [
-      ...form.getValues()["saleItems"],
-      handleSalesItem(saleItem),
-    ]);
+    form.setValue(
+      "saleItems",
+      [...form.getValues()["saleItems"], handleSalesItem(saleItem)],
+      { shouldValidate: true },
+    );
   }, [addedSalesItems, form, isEditMode]);
 
   // Fetch and set sale data in edit mode
@@ -89,11 +90,14 @@ export default function SalesCart() {
       const saleData = response.data;
       if (!saleData) return;
       const saleItems = saleData.saleItems as SaleItem[];
-      form.setValue("notes", saleData.notes);
+      form.setValue("notes", saleData.notes, { shouldValidate: true });
       form.setValue("paymentType", saleData.paymentType);
       form.setValue(
         "saleItems",
         saleItems.map((item) => handleSalesItem(item, true)),
+        {
+          shouldValidate: true,
+        },
       );
       setSalesItems(saleItems);
       setIsLoading(false);
@@ -172,10 +176,8 @@ export default function SalesCart() {
                   defaultValue={"false"}
                   options={hasInsuranceOptions}
                   moduleName="Yes or No"
-                  value={field.value ? "true" : "false"}
-                  onChange={(value) =>
-                    form.setValue("insured", value === "true")
-                  }
+                  value={field.value}
+                  onChange={(value) => field.onChange(value)}
                   className="focus-visible:ring-ims-blue-300 !h-11 bg-white"
                 />
               )}
@@ -224,7 +226,7 @@ export default function SalesCart() {
           <ImsButton
             isLoading={isSubmitting}
             isLoadingLabel={"Adding user..."}
-            disabled={isSubmitting}
+            disabled={isSubmitting || !form.formState.isValid}
             variant="imsPrimary"
             type="submit"
             className=" "

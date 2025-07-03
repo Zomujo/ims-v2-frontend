@@ -64,7 +64,10 @@ export async function updateSale(id: string, data: UpdateSalesDto) {
     url: API_ENDPOINTS.SALE.replace(":id", id),
     method: "PATCH",
     headers: {},
-    body: JSON.stringify(data),
+    body: JSON.stringify({
+      ...data,
+      insured: data.insured === "true", // Convert insured to boolean
+    }),
   };
 
   const result = await imsApiWithAuth<ApiSuccessResponseNoData>(fetchOptions);
