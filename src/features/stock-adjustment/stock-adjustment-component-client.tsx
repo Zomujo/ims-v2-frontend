@@ -114,7 +114,6 @@ export function StockAdjustmentFormInputs({
         label="Reason for Adjustment"
         renderInput={({ field }) => (
           <ImsSelect
-            showNone={false}
             options={stockAdjustmentReasons}
             moduleName="reason for adjustment"
             {...field}

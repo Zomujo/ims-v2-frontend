@@ -219,6 +219,7 @@ export const stockAdjustmentReasons = [
   { label: "Cold Chain Breach", value: "Cold Chain Breach" },
   { label: "Unlogged Internal Transfer", value: "Unlogged Internal Transfer" },
   { label: "System Sync Issue", value: "System Sync Issue" },
+  { label: "Theft", value: "Theft" },
   {
     label: "Stock Regularization (Initial Balancing)",
     value: "Stock Regularization (Initial Balancing)",
