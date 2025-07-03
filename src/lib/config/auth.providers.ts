@@ -5,10 +5,10 @@ import { authLoginAction } from "@/features/shared/actions/auth.action";
 export const LoginCredentialsProvider = () =>
   CredentialsProvider({
     name: "Credentials",
-    id: AUTH_OPTIONS_CONSTANTS.EMAIL_PASSWORD,
+    id: AUTH_OPTIONS_CONSTANTS.LOGIN,
     credentials: {
-      email: {
-        type: "email",
+      accountIdentifier: {
+        type: "string",
       },
       password: {
         type: "password",

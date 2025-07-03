@@ -12,7 +12,7 @@ import { JWT } from "next-auth/jwt";
 import { LoginCredentialsProvider } from "./auth.providers";
 
 export const AUTH_OPTIONS_CONSTANTS = {
-  EMAIL_PASSWORD: "email-password",
+  LOGIN: "login",
   CREATE_ACCOUNT: "create-account",
   LOG_OUT: "log-out",
 };
