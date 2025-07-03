@@ -21,6 +21,7 @@ type ImsSelectProps = {
   value?: string;
   disabled?: boolean;
   showNone?: boolean;
+  noResultsText?: string;
   showSearch?: boolean;
 };
 
@@ -33,6 +34,7 @@ export function ImsSelect({
   onChange,
   showNone = true,
   showSearch = false,
+  noResultsText = "No results found.",
   ...props
 }: Readonly<ImsSelectProps>) {
   const [searchTerm, setSearchTerm] = React.useState("");
@@ -81,7 +83,7 @@ export function ImsSelect({
             ))
           ) : (
             <div className="px-4 py-2 text-sm text-gray-500">
-              No results found.
+              {noResultsText}
             </div>
           )}
         </SelectGroup>

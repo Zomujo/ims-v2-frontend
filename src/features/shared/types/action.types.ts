@@ -119,12 +119,14 @@ export type UpdateFacilityDto = {
   country?: string;
 };
 
-export type CreateSettingsDto = {
-  [key: string]: unknown;
-};
+export type CreateSettingsDto = Omit<GetSettingsDto, "id">;
 
 export type GetSettingsDto = {
-  [key: string]: unknown;
+  id: string;
+  emailDepartmentRequests: boolean;
+  emailItemLowStocks: boolean;
+  emailItemOutOfStock: boolean;
+  emailItemStocked: boolean;
 };
 
 export type CreateUserDto = {
@@ -328,7 +330,7 @@ export type BatchesNoPaginate = {
   id: string;
   batchNumber: string;
   quantity: number;
-  expiryDate: string;
+  validity: string;
 };
 
 export type BatchMarkup = {

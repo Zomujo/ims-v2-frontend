@@ -5,7 +5,7 @@ import SalesPatientList from "./sales-patient-list";
 
 export default function SalesRecord() {
   return (
-    <section className="flex h-[95%] w-full gap-x-3 rounded-2xl bg-white">
+    <section className="flex h-[95%] w-full gap-x-3 rounded-2xl bg-white pb-20">
       <div className="flex-1">
         <SalesPatientList />
         <SalesItemList />

@@ -39,8 +39,8 @@ export interface GeneralResponse {
 }
 
 export interface Trend {
-  dates: string[]; // ISO format date strings
-  quantities: number[];
+  dates: string[] | null; // ISO format date strings
+  quantities: number[] | null;
 }
 
 export interface SalesTrend {
@@ -50,8 +50,15 @@ export interface SalesTrend {
 export interface SellingItemsResponse {
   average: number;
   items: {
-    names: string[];
-    quantities: number[];
+    names: string[] | null;
+    quantities: number[] | null;
+  };
+}
+
+export interface SellingCategoriesResponse {
+  topSelling: {
+    categories: string[] | null;
+    quantities: number[] | null;
   };
 }
 
@@ -66,7 +73,7 @@ export type Sales = { hours?: string[] } & Omit<
 
 export interface PaymentMethodResponse {
   topSelling: {
-    categories: string[];
-    quantities: number[];
+    categories: string[] | null;
+    quantities: number[] | null;
   };
 }

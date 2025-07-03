@@ -19,6 +19,9 @@ type DashboardBaseCardProps = {
   setSelectedValue?: Dispatch<SetStateAction<DATE_RANGE>>;
   customFilter?: ReactNode;
   children: ReactNode;
+  noResults?: boolean;
+  isLoading?: boolean;
+  noResultsHeight?: string;
 };
 export default function DashboardBaseCard({
   title,
@@ -27,6 +30,9 @@ export default function DashboardBaseCard({
   setSelectedValue,
   customFilter,
   children,
+  noResultsHeight = "450px",
+  noResults = false,
+  isLoading = false,
 }: DashboardBaseCardProps) {
   return (
     <Card className="mt-8">
@@ -50,7 +56,16 @@ export default function DashboardBaseCard({
           </div>
         </CardTitle>
       </CardHeader>
-      <CardContent>{children}</CardContent>
+      {noResults && !isLoading ? (
+        <CardContent
+          className="flex items-center justify-center"
+          style={{ height: `${noResultsHeight}` }}
+        >
+          <span className="text-muted-foreground">No results found</span>
+        </CardContent>
+      ) : (
+        <CardContent className="p-0">{children}</CardContent>
+      )}
     </Card>
   );
 }

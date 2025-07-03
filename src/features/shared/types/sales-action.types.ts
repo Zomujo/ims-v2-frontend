@@ -38,6 +38,7 @@ export type Sale = {
 };
 
 export type Item = {
+  id: string;
   name: string;
   brandName: string;
   costPrice: number;

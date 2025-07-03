@@ -42,22 +42,23 @@ export default function DashboardSalePaymentMethod() {
       });
       if (salePaymentMethodsResponse) {
         const { categories, quantities } = salePaymentMethodsResponse;
-        const convertedChartData = categories.map((category, index) => {
-          setChartConfig((prev) => ({
-            ...prev,
-            [category]: {
-              label: category,
-              color: generateColor(index + 1, true, true),
-            },
-          }));
-          return {
-            category,
-            quantity: quantities[index],
-            fill: generateColor(index + 1, true, true),
-          };
-        });
-
-        setChartData(convertedChartData);
+        if (categories && quantities) {
+          const convertedChartData = categories.map((category, index) => {
+            setChartConfig((prev) => ({
+              ...prev,
+              [category]: {
+                label: category,
+                color: generateColor(index + 1, true, true),
+              },
+            }));
+            return {
+              category,
+              quantity: quantities[index],
+              fill: generateColor(index + 1, true, true),
+            };
+          });
+          setChartData(convertedChartData);
+        }
       }
       setIsLoading(false);
     };
@@ -67,6 +68,8 @@ export default function DashboardSalePaymentMethod() {
   return (
     <DashboardBaseCard
       title="Sale Payment Method"
+      noResults={!chartData.length}
+      isLoading={isLoading}
       selectedValue={selectedDateRange}
       setSelectedValue={setSelectedDateRange}
     >

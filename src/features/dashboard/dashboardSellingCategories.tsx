@@ -39,23 +39,25 @@ export default function DashboardSellingCategories() {
         dateRange: selectedDateRange as DateRangeQueryOptions,
       });
       if (sellingCategoriesResponse) {
-        const { names, quantities } = sellingCategoriesResponse.items;
-        const convertedChartData = names.map((name, index) => {
-          setChartConfig((prev) => ({
-            ...prev,
-            [name]: {
-              label: name,
-              color: generateColor(index + 1, true, true),
-            },
-          }));
-          return {
-            name,
-            quantity: quantities[index],
-            fill: generateColor(index + 1, true, true),
-          };
-        });
+        const { categories, quantities } = sellingCategoriesResponse.topSelling;
+        if (categories && quantities) {
+          const convertedChartData = categories.map((name, index) => {
+            setChartConfig((prev) => ({
+              ...prev,
+              [name]: {
+                label: name,
+                color: generateColor(index + 1, true, true),
+              },
+            }));
+            return {
+              name,
+              quantity: quantities[index],
+              fill: generateColor(index + 1, true, true),
+            };
+          });
 
-        setChartData(convertedChartData);
+          setChartData(convertedChartData);
+        }
       }
       setIsLoading(false);
     };
@@ -64,6 +66,8 @@ export default function DashboardSellingCategories() {
 
   return (
     <DashboardBaseCard
+      noResults={!chartData.length}
+      isLoading={isLoading}
       title="Top selling Categories"
       selectedValue={selectedDateRange}
       setSelectedValue={setSelectedDateRange}

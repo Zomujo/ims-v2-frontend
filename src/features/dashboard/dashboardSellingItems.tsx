@@ -52,9 +52,11 @@ export default function DashboardSellingItems() {
         dateRange: selectedTopSellingDateRange as DateRangeQueryOptions,
       })) as SellingItemsResponse;
       topChartData.length = 0;
-      names.forEach((name, index) =>
-        topChartData.push({ items: name, desktop: quantities[index] }),
-      );
+      if (names && quantities) {
+        names.forEach((name, index) =>
+          topChartData.push({ items: name, desktop: quantities[index] }),
+        );
+      }
       setIsLoading(false);
     }
     void fetchTopSellingItems();
@@ -69,9 +71,11 @@ export default function DashboardSellingItems() {
         dateRange: selectedLeastSellingDateRange as DateRangeQueryOptions,
       })) as SellingItemsResponse;
       leastChartData.length = 0;
-      names.forEach((name, index) =>
-        leastChartData.push({ items: name, desktop: quantities[index] }),
-      );
+      if (names && quantities) {
+        names.forEach((name, index) =>
+          leastChartData.push({ items: name, desktop: quantities[index] }),
+        );
+      }
       setIsLeastItemsChartLoading(false);
     }
     void fetchLeastSellingItems();
@@ -81,6 +85,9 @@ export default function DashboardSellingItems() {
     <div className="flex flex-col justify-between overflow-y-auto lg:flex-row">
       <div className="w-full lg:w-[49%]">
         <DashboardBaseCard
+          noResults={!topChartData.length}
+          isLoading={isLoading}
+          noResultsHeight="20vw"
           title="Top - selling items"
           selectedValue={selectedTopSellingDateRange}
           setSelectedValue={setSelectedTopSellingDateRange}
@@ -142,6 +149,9 @@ export default function DashboardSellingItems() {
       </div>
       <div className="w-full lg:w-[49%]">
         <DashboardBaseCard
+          noResults={!leastChartData.length}
+          isLoading={isLeastItemsChartLoading}
+          noResultsHeight="20vw"
           title="Low - selling items"
           selectedValue={selectedLeastSellingDateRange}
           setSelectedValue={setSelectedLeastSellingDateRange}
