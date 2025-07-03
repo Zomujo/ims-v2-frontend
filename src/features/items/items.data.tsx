@@ -14,7 +14,7 @@ const statusText = {
 };
 
 export const itemsTableColumns: ColumnDef<ItemsDto>[] = [
-  { header: "ITEM NAME", accessorKey: "name" },
+  { header: "ITEM NAME", accessorKey: "itemFullName" },
   {
     header: "CATEGORY",
     accessorKey: "category.name",
