@@ -12,6 +12,7 @@ export const API_ENDPOINTS = {
   DASHBOARD_ITEMS_CATEGORIES_TOP_SELLING:
     "/dashboard/item-categories/top-selling",
   DASHBOARD_PAYMENT_METHODS: "/dashboard/sales/payment-methods",
+  DASHBOARD_SALES_MARKUP: "/dashboard/sales/markup",
 
   // Notifications
   NOTIFICATIONS_STREAM: "/notifications/stream",
@@ -143,6 +144,7 @@ export const API_ENDPOINT_TAGS = {
   DASHBOARD_ITEMS_CATEGORIES_TOP_SELLING:
     "api-v1-dashboard-item-categories-top-selling",
   DASHBOARD_PAYMENT_METHODS: "api-v1-dashboard-sales-payment-methods",
+  DASHBOARD_SALES_MARKUP: "api-v1-dashboard-sales-markup",
 
   // Notifications
   NOTIFICATIONS_STREAM: "api-v1-notifications-stream",

@@ -11,6 +11,7 @@ import {
   DailySalesResponse,
   PaymentMethodResponse,
   SellingCategoriesResponse,
+  SalesMarkupResponse,
 } from "@features/shared/types/dashboard.types";
 import { generateUrlWithQueryParams } from "@/lib/utils";
 import { GenerateQueryParams } from "@features/shared/types/utitls.types";
@@ -148,4 +149,24 @@ export async function getSalePaymentMethod(
       fetchOptions,
     )
   ).data?.topSelling;
+}
+
+export async function getSaleInsuranceMarkup(
+  params: Pick<GenerateQueryParams, "dateRange">,
+) {
+  const fetchOptions: FetchApi = {
+    url: generateUrlWithQueryParams(
+      API_ENDPOINTS.DASHBOARD_SALES_MARKUP,
+      params,
+    ),
+    method: "GET",
+    headers: {},
+    next: { tags: [API_ENDPOINT_TAGS.DASHBOARD_SALES_MARKUP] },
+  };
+
+  return (
+    await imsApiWithAuth<ApiSuccessResponseDto<SalesMarkupResponse>>(
+      fetchOptions,
+    )
+  ).data;
 }
