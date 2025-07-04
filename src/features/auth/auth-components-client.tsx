@@ -28,7 +28,7 @@ export function AuthForm({
       <form
         onSubmit={form.handleSubmit(handleSubmitFn)}
         className={cn(
-          "flex flex-1 flex-col justify-between gap-y-15 pt-10 md:justify-normal md:gap-y-15",
+          "flex flex-1 flex-col gap-y-15 pt-10 md:justify-normal md:gap-y-15",
           className,
         )}
       >
