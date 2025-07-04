@@ -20,7 +20,6 @@ import useHookForm from "../shared/hooks/use-hook-form";
 import useImsSearchParams from "../shared/hooks/use-ims-search-params";
 import usePageCRUD from "../shared/hooks/use-page-crud";
 import { CRUDACTION } from "../shared/types/utitls.types";
-import { ScrollArea } from "../ui/scroll-area";
 import { ItemFormInputs } from "./items-component-client";
 import { ItemsContextProvider } from "./items.context";
 import { itemsTableColumns } from "./items.data";
@@ -66,44 +65,42 @@ export default function ItemsList() {
   };
 
   return (
-    <ScrollArea className="mt-2 h-[calc(100%-5rem)] rounded-2xl bg-white pr-4">
-      <CrudPage
-        moduleName="items"
-        data={items}
-        isLoading={loading}
-        modalAction={handleDelete}
-        handleRemoveQueryparam={handleRemoveQueryparam}
-        currentDataDisplayName={getData(CRUDACTION.DELETE)?.name ?? ""}
-        tableColumns={itemsTableColumns}
-        totalPages={data?.totalPages ?? 0}
-        state={state}
-        isEditMode={isEditMode}
-        actions={(item) => [
-          {
-            label: "edit",
-            icon: "lucide:edit-2",
-            action: () => handleEditBtnClicked(item),
-            hide: !canWrite(PermissionModules.ITEMS),
-          },
-          {
-            label: "view batches",
-            icon: "solar:box-bold-duotone",
-            action: () => handleViewBatches(item.id),
-          },
-          {
-            label: "delete",
-            icon: "solar:trash-bin-trash-line-duotone",
-            type: "destructive",
-            action: () => handleDeleteBtnClicked(item),
-            hide: !canDelete(PermissionModules.ITEMS),
-          },
-        ]}
-      >
-        <ItemsContextProvider value={{ categories }}>
-          <ItemForm itemId={getId(CRUDACTION.EDIT)} isEditMode={isEditMode} />
-        </ItemsContextProvider>
-      </CrudPage>
-    </ScrollArea>
+    <CrudPage
+      moduleName="items"
+      data={items}
+      isLoading={loading}
+      modalAction={handleDelete}
+      handleRemoveQueryparam={handleRemoveQueryparam}
+      currentDataDisplayName={getData(CRUDACTION.DELETE)?.name ?? ""}
+      tableColumns={itemsTableColumns}
+      totalPages={data?.totalPages ?? 0}
+      state={state}
+      isEditMode={isEditMode}
+      actions={(item) => [
+        {
+          label: "edit",
+          icon: "lucide:edit-2",
+          action: () => handleEditBtnClicked(item),
+          hide: !canWrite(PermissionModules.ITEMS),
+        },
+        {
+          label: "view batches",
+          icon: "solar:box-bold-duotone",
+          action: () => handleViewBatches(item.id),
+        },
+        {
+          label: "delete",
+          icon: "solar:trash-bin-trash-line-duotone",
+          type: "destructive",
+          action: () => handleDeleteBtnClicked(item),
+          hide: !canDelete(PermissionModules.ITEMS),
+        },
+      ]}
+    >
+      <ItemsContextProvider value={{ categories }}>
+        <ItemForm itemId={getId(CRUDACTION.EDIT)} isEditMode={isEditMode} />
+      </ItemsContextProvider>
+    </CrudPage>
   );
 }
 

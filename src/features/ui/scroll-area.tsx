@@ -18,11 +18,15 @@ function ScrollArea({
     >
       <ScrollAreaPrimitive.Viewport
         data-slot="scroll-area-viewport"
-        className="size-full rounded-[inherit] transition-[color,box-shadow] outline-none focus-visible:ring-[3px] focus-visible:ring-neutral-950/50 focus-visible:outline-1 dark:focus-visible:ring-neutral-300/50"
+        className="size-full h-full w-full rounded-[inherit] transition-[color,box-shadow] outline-none focus-visible:ring-[3px] focus-visible:ring-neutral-950/50 focus-visible:outline-1 dark:focus-visible:ring-neutral-300/50"
       >
         {children}
       </ScrollAreaPrimitive.Viewport>
       <ScrollBar />
+      <ScrollBar
+        orientation="horizontal"
+        className="absolute right-0 bottom-0 left-0 h-2.5"
+      />
       <ScrollAreaPrimitive.Corner />
     </ScrollAreaPrimitive.Root>
   );

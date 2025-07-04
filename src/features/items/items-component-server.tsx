@@ -24,8 +24,8 @@ export default async function StockCard() {
     itemCounts?.totalItems?.changeType === "INCREASE";
   return (
     <Card className="w-full border-0 p-0 shadow-sm [&+div]:h-[calc(100%-14rem)]">
-      <CardContent className="flex [&>div_p]:mb-4">
-        <div className="flex-[0.15] border-r-2 border-gray-200 p-5">
+      <CardContent className="flex px-0 md:px-6 [&>div_p]:mb-4">
+        <div className="basis-1/3 border-r-2 border-gray-200 p-5">
           <p className="text-sm tracking-wide text-gray-400 uppercase">
             Total Items
           </p>
@@ -52,7 +52,7 @@ export default async function StockCard() {
             </Badge>
           </div>
         </div>
-        <div className="flex-1 p-5 pl-15">
+        <div className="basis-2/3 p-5 md:pl-15">
           <p className="text-sm tracking-wide text-gray-400 uppercase">
             Total In Stock
           </p>
@@ -63,7 +63,7 @@ export default async function StockCard() {
             <div style={{ width: `${outOfStock}%` }} className="bg-gray-400" />
           </div>
 
-          <div className="mt-3 flex w-1/2 justify-between text-sm">
+          <div className="mt-3 flex flex-wrap gap-8 text-sm">
             <div className="flex items-center gap-2">
               <span className="h-3 w-3 rounded-full bg-teal-500"></span>
               <span className="text-gray-600">High stock</span>

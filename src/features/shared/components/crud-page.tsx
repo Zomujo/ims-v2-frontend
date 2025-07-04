@@ -43,12 +43,14 @@ export default function CrudPage<T>({
       >
         {children}
       </ImsSheet>
-      <IMSDataTable<T, unknown>
-        columns={allColumns}
-        data={data}
-        totalPages={totalPages}
-        isLoading={isLoading}
-      />
+      <div className="h-full overflow-auto pt-4 pb-32">
+        <IMSDataTable<T, unknown>
+          columns={allColumns}
+          data={data}
+          totalPages={totalPages}
+          isLoading={isLoading}
+        />
+      </div>
       <ImsAlertModal
         open={openModal || state?.includes("delete")}
         onOpenChange={alertModalOnChange ? handleRemoveQueryparam : undefined}
