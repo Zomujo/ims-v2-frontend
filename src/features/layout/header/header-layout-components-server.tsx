@@ -52,8 +52,10 @@ export function UserProfileButton() {
             alt={fullName ?? "Profile Image"}
             fallback={getInitials(fullName ?? "")}
           />
-          <span className="ml-2 max-w-32 truncate">{fullName}</span>
-          <EllipsisIcon className="rotate-90" size={20} />
+          <span className="ml-2 max-w-32 truncate max-sm:hidden">
+            {fullName}
+          </span>
+          <EllipsisIcon className="rotate-90 max-sm:hidden" size={20} />
         </div>
       }
       menuItems={[
