@@ -11,6 +11,7 @@ export interface MetricData {
   total: number;
   percentageChange: number;
   changeType: ChangeType;
+  totalCost: number;
 }
 
 interface Stock {

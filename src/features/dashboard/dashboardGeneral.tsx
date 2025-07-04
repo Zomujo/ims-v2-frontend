@@ -366,6 +366,11 @@ const DashboardGeneral = () => {
             type: data?.soonToExpireItems.changeType ?? "NONE",
             value: data?.soonToExpireItems.percentageChange ?? 0,
           }}
+          moreInfo={
+            data
+              ? `Risk of loss: ${formatValue(data.soonToExpireItems.totalCost, "money")}`
+              : undefined
+          }
           className="pb-0"
         >
           <>
@@ -403,6 +408,7 @@ type BaseCardProps = {
   className?: string;
   isLoading?: boolean;
   showChart?: boolean;
+  moreInfo?: string;
 };
 
 export const BaseCard = ({
@@ -413,6 +419,7 @@ export const BaseCard = ({
   className,
   isLoading = false,
   showChart,
+  moreInfo,
 }: BaseCardProps) => {
   return (
     <Card className={cn("w-full gap-0", className)}>
@@ -427,35 +434,38 @@ export const BaseCard = ({
             <Skeleton className="h-10 w-[150px]" />
           </div>
         ) : (
-          <div className="flex gap-1">
-            <span className="text-4xl font-bold">
-              {formatValue(totalData.total, totalData.type)}
-            </span>
-            {change && (
-              <div
-                className={cn(
-                  "flex items-center gap-x-1 self-center rounded-4xl px-[6px] py-[3px] text-sm",
-                  change.type === "INCREMENT" &&
-                    "bg-success-50 text-success-700",
-                  change.type === "DECREMENT" && "bg-error-50 text-error-600",
-                )}
-              >
-                {change.type === "INCREMENT" && (
-                  <MoveUpRight
-                    size="15"
-                    className="bg-success-700 rounded-full p-1 text-white"
-                  />
-                )}
-                {change.type === "DECREMENT" && (
-                  <MoveDownRight
-                    size="15"
-                    className="bg-error-600 rounded-full p-1 text-white"
-                  />
-                )}
-                <span>{formatValue(change.value, "percentage")}</span>
-              </div>
-            )}
-          </div>
+          <>
+            <div className="flex gap-1">
+              <span className="text-4xl font-bold">
+                {formatValue(totalData.total, totalData.type)}{" "}
+              </span>
+              {change && (
+                <div
+                  className={cn(
+                    "flex items-center gap-x-1 self-center rounded-4xl px-[6px] py-[3px] text-sm",
+                    change.type === "INCREMENT" &&
+                      "bg-success-50 text-success-700",
+                    change.type === "DECREMENT" && "bg-error-50 text-error-600",
+                  )}
+                >
+                  {change.type === "INCREMENT" && (
+                    <MoveUpRight
+                      size="15"
+                      className="bg-success-700 rounded-full p-1 text-white"
+                    />
+                  )}
+                  {change.type === "DECREMENT" && (
+                    <MoveDownRight
+                      size="15"
+                      className="bg-error-600 rounded-full p-1 text-white"
+                    />
+                  )}
+                  <span>{formatValue(change.value, "percentage")}</span>
+                </div>
+              )}
+            </div>
+            {moreInfo && <div className="mt-1 text-gray-600">{moreInfo}</div>}
+          </>
         )}
         {children}
         {showChart &&
