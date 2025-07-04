@@ -77,3 +77,13 @@ export interface PaymentMethodResponse {
     quantities: number[] | null;
   };
 }
+
+interface QuantityTotal {
+  total: number;
+  quantity: number;
+}
+
+export interface SalesMarkupResponse {
+  insured: QuantityTotal | null;
+  notInsured: QuantityTotal | null;
+}
