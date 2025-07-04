@@ -12,7 +12,7 @@ export function HeaderLayout() {
   return (
     <header className="fixed top-0 z-5 flex h-(--header-height) w-[calc(100%)] items-center justify-between gap-2 bg-white pr-6">
       <Menu
-        className="ml-4 h-5 w-5 min-w-4 cursor-pointer md:hidden"
+        className="ml-4 h-5 w-5 min-w-4 cursor-pointer lg:hidden"
         onClick={toggleSidebar}
       />
       <HeaderLayoutUIActions />
