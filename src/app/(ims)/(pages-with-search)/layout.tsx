@@ -13,10 +13,12 @@ export default async function PagesLayout({
   );
   return (
     <>
-      <ShowItemsDashboard>
-        {hasItemsPermission ? <StockCard /> : null}
-      </ShowItemsDashboard>
-      <div className="h-[95%] rounded-2xl bg-white p-6">
+      <div className="max-[480px]:hidden">
+        <ShowItemsDashboard>
+          {hasItemsPermission ? <StockCard /> : null}
+        </ShowItemsDashboard>
+      </div>
+      <div className="h-full rounded-2xl bg-white p-6">
         <SearchWithFilter />
         {children}
       </div>

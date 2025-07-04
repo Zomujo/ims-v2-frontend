@@ -11,7 +11,7 @@ export default function ImsFilters({
       triggerProps={{ asChild: true }}
       trigger={
         <Button variant="ghost" className="h-10 border border-gray-300">
-          <Icon icon="lets-icons:filter" className="h size-5" />
+          <Icon icon="lets-icons:filter" className="size-5" />
           <span>Filters</span>
         </Button>
       }
