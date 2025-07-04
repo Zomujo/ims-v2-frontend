@@ -37,7 +37,9 @@ export default function ImsSearchBar({
     }
   };
   return (
-    <div className={cn("relative flex w-max items-center", className)}>
+    <div
+      className={cn("relative flex w-full max-w-sm items-center", className)}
+    >
       <SearchIcon size={20} className="z-5 -mr-8 text-gray-500" />
       <Input
         ref={inputRef}

@@ -34,24 +34,25 @@ export default function SearchWithFilter() {
   if (params.id) return null;
 
   return (
-    <div className="relative flex w-full items-center gap-x-4 px-4 pt-1.5">
+    <div className="flex items-center gap-4 px-4 pt-1.5 max-xl:flex-wrap">
       {!btnData.hideSearch && <ImsSearchBar />}
-      <ImsFilters>
-        <FilterForms />
-      </ImsFilters>
-      {btnData.href &&
-        !pathName.includes(PAGE_ROUTES.REPORTS) &&
-        hasActionPermission(btnData.permission ?? "") &&
-        checkRole(btnData.roles) && (
-          <ButtonLink
-            variant="imsPrimary"
-            className="absolute top-1.5 right-0"
-            href={{ pathname, query }}
-            startIcon={<Icon icon={btnData.icon} />}
-          >
-            {btnData.label}
-          </ButtonLink>
-        )}
+      <div className="flex w-full flex-wrap justify-between gap-4">
+        <ImsFilters>
+          <FilterForms />
+        </ImsFilters>
+        {btnData.href &&
+          !pathName.includes(PAGE_ROUTES.REPORTS) &&
+          hasActionPermission(btnData.permission ?? "") &&
+          checkRole(btnData.roles) && (
+            <ButtonLink
+              variant="imsPrimary"
+              href={{ pathname, query }}
+              startIcon={<Icon icon={btnData.icon} />}
+            >
+              {btnData.label}
+            </ButtonLink>
+          )}
+      </div>
     </div>
   );
 }
