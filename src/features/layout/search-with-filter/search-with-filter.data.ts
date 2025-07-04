@@ -17,6 +17,38 @@ import {
 } from "@features/shared/types/auth-action.types";
 import { ActionType, TableName } from "@features/shared/types/activity.types";
 import { camelCaseToSentence } from "@/lib/utils";
+import { API_ENDPOINTS } from "@/lib/api-constants";
+
+export const exportActionButtonData = {
+  [PAGE_ROUTES.ITEMS.VIEW]: {
+    label: "Export Items",
+    fileName: "Items",
+    endpoint: API_ENDPOINTS.ITEMS_EXPORT,
+    icon: "solar:file-download-linear",
+    permission: `${PermissionModules.ITEMS}:${PermissionActions.READ}`,
+  },
+  [PAGE_ROUTES.EXPIRY.VIEW]: {
+    label: "Export Expiry Report",
+    fileName: "Expiry_Report",
+    endpoint: API_ENDPOINTS.ITEMS_VALIDITY_EXPORT,
+    icon: "solar:file-download-linear",
+    permission: `${PermissionModules.ITEMS}:${PermissionActions.READ}`,
+  },
+  [PAGE_ROUTES.STOCK_ADJUSTMENT.VIEW]: {
+    label: "Export Stock Adjustments",
+    fileName: "Stock_Adjustments",
+    endpoint: API_ENDPOINTS.STOCK_ADJUSTMENTS_EXPORT,
+    icon: "solar:file-download-linear",
+    permission: `${PermissionModules.STOCK_ADJUSTMENT}:${PermissionActions.READ}`,
+  },
+  [PAGE_ROUTES.AUDIT_LOGS]: {
+    label: "Export Audit Logs",
+    fileName: "Audit_Logs",
+    endpoint: API_ENDPOINTS.AUDITS_EXPORT,
+    icon: "solar:file-download-linear",
+    permission: `${PermissionModules.REPORTS}:${PermissionActions.READ}`,
+  },
+};
 
 export const actionButtonData = {
   [PAGE_ROUTES.SALES.VIEW]: {

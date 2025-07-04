@@ -1,5 +1,7 @@
 import { StockLevel } from "@features/shared/types/dashboard.types";
 
+export type ExportType = "csv" | "xlsx";
+
 export type HandleRequestState = {
   loadingMsg?: string;
   successMsg?: string;
@@ -27,6 +29,7 @@ export type GenerateQueryParams = Partial<{
   status: "PAID" | "UNPAID" | StockLevel;
   startDate: string;
   endDate: string;
+  exportType: ExportType;
   [key: string]: string | number | boolean;
 }>;
 

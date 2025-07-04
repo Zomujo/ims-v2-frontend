@@ -18,7 +18,7 @@ export const imsApiWithAuth = async <T>({
     redirect(AUTH_PAGE_ROUTES.LOG_IN);
   }
   const accessToken = session?.user?.tokens?.accessToken;
-  return await fetchApi<T>({
+  const response = await fetchApi({
     url,
     method,
     body,
@@ -26,7 +26,33 @@ export const imsApiWithAuth = async <T>({
     cache,
     next,
   });
+  return fetchJson<T>(response);
 };
+
+export const imsApiWithAuthBlob = async ({
+  url,
+  method,
+  body,
+  headers,
+  cache,
+  next,
+}: FetchApi) => {
+  const session = await imsServerSession();
+  if (!session?.user?.tokens) {
+    redirect(AUTH_PAGE_ROUTES.LOG_IN);
+  }
+  const accessToken = session?.user?.tokens?.accessToken;
+  const response = await fetchApi({
+    url,
+    method,
+    body,
+    headers: { ...headers, Authorization: `Bearer ${accessToken}` },
+    cache,
+    next,
+  });
+  return fetchBlob(response);
+};
+
 export const imsApiWithoutAuth = async <T>({
   url,
   method,
@@ -35,17 +61,33 @@ export const imsApiWithoutAuth = async <T>({
   next,
   cache,
 }: FetchApi) => {
-  return await fetchApi<T>({ url, method, body, headers, cache, next });
+  const response = await fetchApi({ url, method, body, headers, cache, next });
+  return fetchJson<T>(response);
 };
 
-const fetchApi = async <T>({
+const fetchJson = async <T>(response: Response): Promise<T> => {
+  if (response.status === 204) {
+    return {} as T; // Return empty object for 204 No Content
+  }
+  const data = await response.json();
+  return data as T;
+};
+
+const fetchBlob = async (response: Response): Promise<Blob> => {
+  if (response.status === 204) {
+    return new Blob(); // Return empty Blob for 204 No Content
+  }
+  return await response.blob();
+};
+
+const fetchApi = async ({
   url,
   method,
   body,
   headers,
   next,
   cache,
-}: FetchApi): Promise<T> => {
+}: FetchApi) => {
   const fetchUrl = `${ENV_VARIABLES.IMS_API_ENPOINT}${url}`;
   const getHeaders = () => {
     if (body instanceof FormData) return headers;
@@ -76,5 +118,5 @@ const fetchApi = async <T>({
     throw new Error(errorData.message);
   }
 
-  return response.json();
+  return response;
 };
