@@ -38,7 +38,9 @@ export default function DashboardBaseCard({
     <Card className="mt-8">
       <CardHeader>
         <CardTitle className="flex justify-between">
-          <span className="text-2xl font-bold">{title}</span>
+          <span className="text-base font-bold sm:text-lg md:text-xl lg:text-2xl">
+            {title}
+          </span>
           <div className={cn(!customFilter && "max-w-3xs")}>
             {customFilter ? (
               customFilter

@@ -13,7 +13,8 @@ import { getSellingCategories } from "@features/shared/actions/dashboard.actions
 import { DateRangeQueryOptions } from "@features/shared/types/utitls.types";
 import { Skeleton } from "../ui/skeleton";
 import DashboardBaseCard from "@features/dashboard/dashboardBaseCard";
-import { generateColor } from "@/lib/utils";
+import { cn, generateColor } from "@/lib/utils";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface ChartData {
   name: string;
@@ -31,6 +32,7 @@ export default function DashboardSellingCategories() {
       label: "Name",
     },
   });
+  const isMobile = useIsMobile("x-large-mobile");
 
   useEffect(() => {
     const fetchSellingCategories = async () => {
@@ -74,7 +76,7 @@ export default function DashboardSellingCategories() {
     >
       {isLoading ? (
         <div className="space-y-3">
-          <div className="flex h-[450px] w-full items-center justify-center gap-5">
+          <div className="flex h-[450px] w-full items-center justify-center gap-5 px-6">
             <div className="flex items-center justify-center">
               <Skeleton className="h-100 w-100 rounded-full" />
             </div>
@@ -90,7 +92,7 @@ export default function DashboardSellingCategories() {
       ) : (
         <ChartContainer
           config={chartConfig}
-          className="mx-auto max-h-[450px] w-full max-w-4xl"
+          className="mx-auto max-h-[450px] w-full max-w-4xl px-6"
         >
           <PieChart className="w-full" height={450}>
             <Pie
@@ -100,10 +102,18 @@ export default function DashboardSellingCategories() {
               dataKey="quantity"
             />
             <ChartLegend
-              layout="vertical"
-              align="right"
-              verticalAlign="middle"
-              content={<ChartLegendContent nameKey="name" />}
+              layout={isMobile ? "horizontal" : "vertical"}
+              verticalAlign={isMobile ? "bottom" : "middle"}
+              align={isMobile ? "center" : "right"}
+              content={
+                <ChartLegendContent
+                  nameKey="name"
+                  className={cn(
+                    !isMobile && "ml-4",
+                    "flex-wrap justify-center",
+                  )}
+                />
+              }
             />
           </PieChart>
         </ChartContainer>

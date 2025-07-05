@@ -54,7 +54,7 @@ export default function DashboardSalesMarkup() {
       setIsLoading(false);
     };
     void fetchSalesMarkup();
-  }, []);
+  }, [selectedDateRange]);
 
   return (
     <DashboardBaseCard
