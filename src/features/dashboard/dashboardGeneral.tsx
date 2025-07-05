@@ -1,7 +1,7 @@
 import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import { DateRange } from "react-day-picker";
 import { format } from "date-fns";
-import { cn, formatValue } from "@/lib/utils";
+import { cn, formatValue, scrollToSection } from "@/lib/utils";
 import { MoveDownRight, MoveUpRight } from "lucide-react";
 import { getGeneralOverview } from "@features/shared/actions/dashboard.actions";
 import { Card, CardContent, CardHeader, CardTitle } from "@features/ui/card";
@@ -61,6 +61,14 @@ const cardsData = [
   {
     title: "TOTAL REVENUE",
     key: "totalRevenue",
+    more: (
+      <a
+        className="hover:text-primary cursor-pointer text-sm text-gray-600"
+        onClick={() => scrollToSection("dashboard-sales-markup")}
+      >
+        View Breakdown
+      </a>
+    ),
   },
   {
     title: "AVERAGE ITEMS PER TRANSACTION",
@@ -339,10 +347,11 @@ const DashboardGeneral = () => {
             </div>
           </div>
         </BaseCard>
-        {cardsData.map(({ title, key }) => (
+        {cardsData.map(({ title, key, more }) => (
           <BaseCard
             showChart={true}
             key={key}
+            moreInfo={more}
             title={title}
             totalData={{
               total: data?.[key as keyof GeneralResponse].total ?? 0,
@@ -408,7 +417,7 @@ type BaseCardProps = {
   className?: string;
   isLoading?: boolean;
   showChart?: boolean;
-  moreInfo?: string;
+  moreInfo?: string | ReactNode;
 };
 
 export const BaseCard = ({

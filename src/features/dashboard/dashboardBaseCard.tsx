@@ -13,6 +13,7 @@ interface DropdownOptions {
 }
 
 type DashboardBaseCardProps = {
+  id?: string;
   title: string;
   dropdownOptions?: DropdownOptions[];
   selectedValue?: DATE_RANGE;
@@ -33,9 +34,10 @@ export default function DashboardBaseCard({
   noResultsHeight = "450px",
   noResults = false,
   isLoading = false,
+  id,
 }: DashboardBaseCardProps) {
   return (
-    <Card className="mt-8">
+    <Card className="mt-8" id={id}>
       <CardHeader>
         <CardTitle className="flex justify-between">
           <span className="text-base font-bold sm:text-lg md:text-xl lg:text-2xl">
