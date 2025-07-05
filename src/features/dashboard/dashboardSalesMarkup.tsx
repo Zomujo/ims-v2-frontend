@@ -58,7 +58,8 @@ export default function DashboardSalesMarkup() {
 
   return (
     <DashboardBaseCard
-      title="Insurance Sales Comparison"
+      id="dashboard-sales-markup"
+      title="Revenue Comparison"
       noResults={!chartData.length}
       isLoading={isLoading}
       selectedValue={selectedDateRange}
