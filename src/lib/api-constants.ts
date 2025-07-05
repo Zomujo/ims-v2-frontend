@@ -62,7 +62,9 @@ export const API_ENDPOINTS = {
 
   // Items
   ITEMS: "/items",
+  ITEMS_EXPORT: "/items/export",
   ITEMS_VALIDITY: "/items/validity",
+  ITEMS_VALIDITY_EXPORT: "/items/validity/export",
   ITEM: "/items/:id",
   ITEMS_ADD_BATCH: "/items/add-batch",
   ITEMS_BATCHES_NO_PAGINATE: "/items/batches/:itemId/no-paginate",
@@ -88,6 +90,7 @@ export const API_ENDPOINTS = {
 
   // Stock Adjustments Endpoints
   STOCK_ADJUSTMENTS: "/stock-adjustments",
+  STOCK_ADJUSTMENTS_EXPORT: "/stock-adjustments/export",
   STOCK_ADJUSTMENT: "/stock-adjustments/:id",
 
   // Report
@@ -121,6 +124,7 @@ export const API_ENDPOINTS = {
   // Activity
   ACTIVITY: "/activity",
   AUDITS: "/audits",
+  AUDITS_EXPORT: "/audits/export",
   AUDIT: "/audits/:id",
 
   // Users
