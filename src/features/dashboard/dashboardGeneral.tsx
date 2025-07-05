@@ -47,7 +47,7 @@ const stockLevelCategories: {
 
 const cardsData = [
   {
-    title: "TOTAL PRODUCT SOLD",
+    title: "TOTAL PRODUCT DISPENSED",
     key: "totalItemsSold",
   },
   {
@@ -237,7 +237,7 @@ const DashboardGeneral = () => {
   return (
     <div>
       <DatePickerWithRange date={date} setDate={setDate} />
-      <div className="mt-2 grid w-full grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-2 grid w-full grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3">
         <BaseCard
           className="row-span-2"
           title={"ITEMS STOCK LEVEL"}

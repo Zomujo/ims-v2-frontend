@@ -82,8 +82,8 @@ export default function DashboardSellingItems() {
   }, [selectedLeastSellingDateRange]);
 
   return (
-    <div className="flex flex-col justify-between overflow-y-auto lg:flex-row">
-      <div className="w-full lg:w-[49%]">
+    <div className="flex flex-col justify-between overflow-y-auto xl:flex-row">
+      <div className="w-full xl:w-[49%]">
         <DashboardBaseCard
           noResults={!topChartData.length}
           isLoading={isLoading}
@@ -147,7 +147,7 @@ export default function DashboardSellingItems() {
           )}
         </DashboardBaseCard>
       </div>
-      <div className="w-full lg:w-[49%]">
+      <div className="w-full xl:w-[49%]">
         <DashboardBaseCard
           noResults={!leastChartData.length}
           isLoading={isLeastItemsChartLoading}
