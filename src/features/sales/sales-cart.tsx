@@ -2,9 +2,9 @@
 import { formateCurrency, handleRequestState } from "@/lib/utils";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useFieldArray } from "react-hook-form";
-import { useIsClient, useLocalStorage, useReadLocalStorage } from "usehooks-ts";
+import { useIsClient, useLocalStorage } from "usehooks-ts";
 import { z } from "zod";
 import { createSaleAction } from "../shared/actions/sales.action";
 import { getSale, updateSale } from "../shared/actions/sales.actions";
@@ -28,6 +28,7 @@ import { SaleCardTypes } from "./sales.types";
 import { isSalesEditMode } from "./sales.utils";
 import LoadingOverlay from "@features/ui/loadingOverlay";
 import { getBatchesNoPaginate } from "@features/shared/actions/items.actions";
+import { MultiSelect } from "@features/ui/multiSelect";
 
 type SaleCartFormData = z.infer<typeof salesCartSchema>;
 const handleSalesItem = (saleItems: SaleItem, isEditMode?: boolean) => {
@@ -52,7 +53,7 @@ export default function SalesCart() {
     resolver: salesCartSchema,
     defaultValues: {
       saleItems: [],
-      paymentType: "CASH",
+      paymentType: [],
       notes: "",
       insured: "false",
     },
@@ -62,25 +63,86 @@ export default function SalesCart() {
     name: "saleItems",
     control: form.control,
   });
+  const formSalesItems = form.watch()["saleItems"];
+  const insured = form.watch("insured");
+  const hasActiveNHIS = insured === "true";
+  const paymentType = form.watch("paymentType");
 
-  // Update form when sales items change in non-edit mode
+  const addedSalesItemsMap = useMemo(
+    () => new Map(addedSalesItems.map((item) => [item.batchId, item])),
+    [addedSalesItems],
+  );
+
+  const { amountSubtotal, nhisCoveredAmount } = useMemo(() => {
+    const totals = {
+      amountSubtotal: 0,
+      nhisCoveredAmount: 0,
+    };
+
+    if (!formSalesItems) {
+      return totals;
+    }
+
+    for (const saleItem of formSalesItems) {
+      const item = addedSalesItemsMap.get(saleItem.batchId);
+      const sellingPrice = item?.item?.sellingPrice ?? 0;
+      const quantity = saleItem.quantity;
+
+      totals.amountSubtotal += quantity * sellingPrice;
+
+      if (hasActiveNHIS && item?.markup) {
+        totals.nhisCoveredAmount += quantity * sellingPrice;
+      }
+    }
+
+    return totals;
+  }, [formSalesItems, addedSalesItemsMap, hasActiveNHIS]);
+
+  const allHaveNHIS = useMemo(() => {
+    return (
+      !!addedSalesItems.length &&
+      addedSalesItems.every(({ markup }) => !!markup) &&
+      hasActiveNHIS
+    );
+  }, [addedSalesItems, hasActiveNHIS]);
+
+  const nhisItemsIncluded = useMemo(() => {
+    return addedSalesItems.some(({ markup }) => !!markup);
+  }, [addedSalesItems]);
+
   useEffect(() => {
-    const saleItem = addedSalesItems.slice(-1)[0];
-    const isItemAlreadyAdded = form
-      .getValues()
-      [
-        "saleItems"
-      ].some((item: SaleItem) => item.batchId === saleItem?.batchId);
-    if (isItemAlreadyAdded) return;
-    if (!saleItem) return;
+    if (addedSalesItems.length === 0 || !hasActiveNHIS) {
+      form.setValue("paymentType", []);
+    } else if (allHaveNHIS) {
+      form.setValue("paymentType", ["NHIS"], { shouldValidate: true });
+    }
+  }, [addedSalesItems.length, allHaveNHIS]);
+
+  const paymentTypeOptionsBuilder = useMemo(() => {
+    if (!nhisItemsIncluded) {
+      return paymentTypeOptions.filter(({ value }) => value !== "NHIS");
+    }
+    return paymentTypeOptions;
+  }, [allHaveNHIS, hasActiveNHIS, nhisItemsIncluded]);
+
+  useEffect(() => {
+    if (paymentType.includes("NHIS")) {
+      form.setValue("insured", "true", { shouldValidate: true });
+    }
+  }, [paymentType]);
+
+  useEffect(() => {
+    const currentItems = form.getValues()["saleItems"] as SaleItem[];
+    const newItems = addedSalesItems.filter(
+      (item) => !currentItems.some((i) => i.batchId === item.batchId),
+    );
+    if (!newItems.length) return;
     form.setValue(
       "saleItems",
-      [...form.getValues()["saleItems"], handleSalesItem(saleItem)],
+      [...currentItems, ...newItems.map((i) => handleSalesItem(i))],
       { shouldValidate: true },
     );
   }, [addedSalesItems, form, isEditMode]);
-
-  // Fetch and set sale data in edit mode
 
   useEffect(() => {
     if (!isEditMode) return;
@@ -115,7 +177,12 @@ export default function SalesCart() {
       : createSaleAction(dataWithPatientId);
     handleRequestState({ res: action, loadingMsg: "Saving sales..." });
     action.then(() => {
-      printReceipt(data as SaleCartFormData, addedSalesItems);
+      printReceipt(
+        data as SaleCartFormData,
+        addedSalesItems,
+        amountSubtotal,
+        nhisCoveredAmount,
+      );
       removeSalesItems();
       removeSearchParams(patientIdKey);
       form.reset();
@@ -129,10 +196,10 @@ export default function SalesCart() {
   const salesItemBuilder = (batchId: string) => {
     const foundSalesItem = addedSalesItems.find((sale) => {
       return sale.batchId === batchId;
-    })!;
+    });
 
     return {
-      id: foundSalesItem.item.id,
+      id: foundSalesItem?.item.id ?? "",
       ...foundSalesItem,
     };
   };
@@ -150,21 +217,16 @@ export default function SalesCart() {
             <h2 className="absolute inset-x-0 top-0 rounded-xl bg-white px-6 py-2 font-bold">
               Sale Cart ( {addedSalesItems?.length} )
             </h2>
-            <HookFormField
-              formControl={form.control}
-              name="paymentType"
-              label="Select type of payment"
-              renderInput={({ field }) => (
-                <ImsSelect
-                  showNone={false}
-                  options={paymentTypeOptions}
-                  defaultValue={field.value}
-                  moduleName="payment type"
-                  onChange={(value) => field.onChange(value)}
-                  value={field.value}
-                  className="focus-visible:ring-0.5 focus-visible:ring-ims-blue-300 !h-11 bg-white"
-                />
-              )}
+            <MultiSelect
+              options={paymentTypeOptionsBuilder}
+              onValueChange={(value) =>
+                form.setValue("paymentType", value, { shouldValidate: true })
+              }
+              defaultValue={paymentType}
+              value={paymentType}
+              disabled={allHaveNHIS}
+              animation={2}
+              variant="inverted"
             />
             <HookFormField
               formControl={form.control}
@@ -173,6 +235,7 @@ export default function SalesCart() {
               renderInput={({ field }) => (
                 <ImsSelect
                   showNone={false}
+                  disabled={paymentType === "NHIS"}
                   defaultValue={"false"}
                   options={hasInsuranceOptions}
                   moduleName="Yes or No"
@@ -219,7 +282,10 @@ export default function SalesCart() {
                 />
               )}
             />
-            <SaleCartSummery formSalesItems={form.watch()["saleItems"]} />
+            <SaleCartSummery
+              amountTotal={amountSubtotal}
+              nhisCoveredAmount={nhisCoveredAmount}
+            />
           </>
         }
         RenderActions={
@@ -369,7 +435,7 @@ function SaleCard({
           </button>
         </div>
       </div>
-      <span className="mt-2 text-xs text-orange-300">
+      <span className="mt-2 text-xs text-red-400">
         {alternativeBatchMessage && alternativeBatchMessage}
       </span>
     </div>
@@ -377,38 +443,37 @@ function SaleCard({
 }
 
 function SaleCartSummery({
-  formSalesItems,
-}: Readonly<{ formSalesItems: SaleCartFormData["saleItems"] }>) {
-  const addedSalesItems = useReadLocalStorage<SaleItem[]>(
-    salesItemLocalStorageKey,
-  );
-  const amountSubtotal = formSalesItems?.reduce((acc, saleItem) => {
-    const sellingPrice =
-      addedSalesItems?.find((item) => item.batchId === saleItem.batchId)?.item
-        ?.sellingPrice ?? 0;
-    return acc + saleItem.quantity * sellingPrice;
-  }, 0);
-
+  nhisCoveredAmount,
+  amountTotal,
+}: Readonly<{
+  nhisCoveredAmount: number;
+  amountTotal: number;
+}>) {
   return (
     <div className="space-y-1 text-xs">
       <h2 className="py-2 font-bold">Summary</h2>
       <p className="flex justify-between">
         <span>Subtotal</span>
-        <span>{formateCurrency(amountSubtotal ?? 0)}</span>
+        <span>{formateCurrency(amountTotal ?? 0)}</span>
       </p>
       <p className="flex justify-between">
-        <span>Discount</span>
-        <span>GHC 0.00</span>
+        <span>NHIS Covered</span>
+        <span>{formateCurrency(nhisCoveredAmount)}</span>
       </p>
       <p className="flex justify-between py-4 font-bold">
         <span>Total</span>
-        <span>{formateCurrency(amountSubtotal)}</span>
+        <span>{formateCurrency(amountTotal - nhisCoveredAmount)}</span>
       </p>
     </div>
   );
 }
 
-const printReceipt = (data: SaleCartFormData, addedSalesItems: SaleItem[]) => {
+const printReceipt = (
+  data: SaleCartFormData,
+  addedSalesItems: SaleItem[],
+  subTotal: number,
+  nhisAmount: number,
+) => {
   const receiptContent = `
     <html lang="en">
       <head>
@@ -510,17 +575,8 @@ const printReceipt = (data: SaleCartFormData, addedSalesItems: SaleItem[]) => {
           </div>
 
           <div class="total">
-            TOTAL: GHC ${data.saleItems
-              .reduce(
-                (acc, item) =>
-                  acc +
-                  item.quantity *
-                    (addedSalesItems?.find(
-                      (addedItem) => addedItem.batchId === item.batchId,
-                    )?.item?.sellingPrice || 0),
-                0,
-              )
-              .toFixed(2)}
+            NHIS Covered: GHC ${nhisAmount.toFixed(2)}<br />
+            TOTAL: GHC ${(subTotal - nhisAmount).toFixed(2)}
           </div>
 
           ${data.notes ? `<div class="info">Notes: ${data.notes}</div>` : ""}

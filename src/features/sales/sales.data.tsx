@@ -132,6 +132,7 @@ export const singleSale = "single-sale";
 export const paymentTypeOptions = [
   { label: "Cash", value: "CASH" },
   { label: "Online", value: "ONLINE" },
+  { label: "NHIS", value: "NHIS" },
 ];
 
 export const hasInsuranceOptions = [

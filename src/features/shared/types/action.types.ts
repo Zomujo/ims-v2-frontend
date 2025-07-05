@@ -533,7 +533,7 @@ export type GetSalesDto = {
 
 export type UpdateSalesDto = {
   patientCardId?: string;
-  paymentType?: "CASH" | "ONLINE";
+  paymentType?: ("CASH" | "ONLINE" | "NHIS")[];
   insured: "true" | "false";
   saleItems?: CreateSaleItemsDto[];
   notes?: string;
