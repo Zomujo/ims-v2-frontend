@@ -95,22 +95,12 @@ export const salesItemsColumns: ColumnDef<SaleItem>[] = [
   },
   {
     accessorKey: "item.sellingPrice",
-    header: "Selling Price (unit)",
+    header: "Unit Price",
     cell: ({ row }) => {
       return row.original.item.sellingPrice.toLocaleString("en-US", {
         style: "currency",
         currency: "GHC",
       });
-    },
-  },
-  {
-    header: "NHIS Markup",
-    accessorKey: "markup",
-    cell: ({ row }) => {
-      const markup = row.original.markup;
-      return markup
-        ? `${markup.amountType === "price" ? "GHC " : ""}${markup.amount}${markup.amountType === "percentage" ? "%" : ""}`
-        : "N/A";
     },
   },
   {

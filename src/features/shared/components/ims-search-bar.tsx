@@ -53,7 +53,7 @@ export default function ImsSearchBar({
       {searchValue && (
         <button
           onClick={handleClearSearch}
-          className="absolute right-2 z-5 rounded-full text-gray-500 hover:bg-gray-100 hover:text-gray-600 active:scale-90"
+          className="absolute right-5 z-5 rounded-full text-gray-500 hover:bg-gray-100 hover:text-gray-600 active:scale-90"
         >
           <X size={20} />
         </button>

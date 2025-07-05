@@ -75,7 +75,7 @@ export const MultiSelect = React.forwardRef<
       className,
       labelName,
       labelClassName,
-      defaultMaxWidth = true,
+      defaultMaxWidth = false,
       value: selectedValues = [],
       ...props
     },
