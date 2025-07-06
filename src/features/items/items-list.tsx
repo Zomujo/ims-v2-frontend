@@ -130,7 +130,6 @@ export function ItemForm({
       "dosageForm",
       "strength",
       "unitOfMeasurement",
-      "fdaApproval",
     ];
     return isStepValid(stepOneFields, form.watch());
   }, [form]);
@@ -169,20 +168,34 @@ export function ItemForm({
       const res = await getItem(itemId ?? "");
       const item = res.data;
       if (item) {
+        const {
+          brandName,
+          categoryId,
+          costPrice,
+          sellingPrice,
+          dosageForm,
+          manufacturer,
+          name,
+          reorderPoint,
+          strength,
+          unitOfMeasurement,
+        } = item;
         form.reset({
-          brandName: item.brandName,
-          categoryId: item.categoryId,
-          costPrice: item.costPrice,
-          sellingPrice: item.sellingPrice,
-          dosageForm: item.dosageForm,
-          fdaApproval: item.fdaApproval,
-          ISO: item.ISO,
-          manufacturer: item.manufacturer,
-          name: item.name,
-          reorderPoint: item.reorderPoint,
-          storageReq: item.storageReq,
-          strength: item.strength,
-          unitOfMeasurement: item.unitOfMeasurement,
+          brandName,
+          categoryId,
+          costPrice,
+          sellingPrice,
+          dosageForm,
+          manufacturer,
+          name,
+          reorderPoint,
+          strength: Number(strength),
+          unitOfMeasurement,
+        });
+        const markup = ((sellingPrice - costPrice) / costPrice) * 100;
+        form.setValue("sellingPriceMarkup", markup, {
+          shouldValidate: true,
+          shouldTouch: true,
         });
       }
       setIsLoading(false);
@@ -227,22 +240,22 @@ export function ItemForm({
                 <ImsButton
                   className="flex-1"
                   isLoading={form.formState.isSubmitting}
-                  isLoadingLabel="Adding Item..."
+                  isLoadingLabel={
+                    isEditMode ? "Updating Item..." : "Adding Item..."
+                  }
                   disabled={
                     form.formState.isSubmitting || !form.formState.isValid
                   }
                   variant="imsPrimary"
                   type="submit"
                 >
-                  Add Item
+                  {isEditMode ? "Update Item" : "Add Item"}
                 </ImsButton>
               )}
             </div>
           </>
         }
-        RenderInputs={
-          <ItemFormInputs control={form.control} currentStep={currentStep} />
-        }
+        RenderInputs={<ItemFormInputs form={form} currentStep={currentStep} />}
       />
     </>
   );
