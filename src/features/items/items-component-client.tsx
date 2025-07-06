@@ -2,19 +2,17 @@
 
 import { PAGE_ROUTES } from "@/lib/constant";
 import { usePathname } from "next/navigation";
-import { PropsWithChildren, use } from "react";
-import { Control } from "react-hook-form";
+import { PropsWithChildren, use, useEffect, useRef } from "react";
+import { UseFormReturn } from "react-hook-form";
 import HookFormField, {
   inputTypeNumber,
   MultiStep,
 } from "../shared/components/hook-form-filed";
 import { ImsSelect } from "../shared/components/ims-select";
 import { Input } from "../ui/input";
-import { Textarea } from "../ui/textarea";
 import { ItemsContext } from "./items.context";
 import {
   dosageFormOptions,
-  FDAFormOptions,
   prescriptionUnits,
 } from "@features/items/items.data";
 
@@ -25,16 +23,61 @@ export function ShowItemsDashboard({ children }: Readonly<PropsWithChildren>) {
 }
 
 type ItemFormInputsProps = {
-  control: Control;
+  form: UseFormReturn;
   currentStep: number;
 };
 
 export function ItemFormInputs({
-  control,
+  form,
   currentStep,
 }: Readonly<ItemFormInputsProps>) {
-  // State to manage supplier details based on supplier selection
+  const { control, setValue, watch } = form;
   const { categories } = use(ItemsContext);
+
+  const sellingPrice = watch("sellingPrice");
+  const sellingPriceMarkup = watch("sellingPriceMarkup");
+  const costPrice = watch("costPrice");
+
+  const updatingFromPrice = useRef(false);
+  const updatingFromMarkup = useRef(false);
+
+  useEffect(() => {
+    if (updatingFromMarkup.current) {
+      updatingFromMarkup.current = false;
+      return;
+    }
+
+    const cp = Number(costPrice);
+    const sp = Number(sellingPrice);
+
+    if (cp > 0 && sp >= 0) {
+      const markup = ((sp - cp) / cp) * 100;
+      updatingFromPrice.current = true;
+      setValue("sellingPriceMarkup", parseFloat(markup.toFixed(2)), {
+        shouldTouch: true,
+        shouldValidate: true,
+      });
+    }
+  }, [sellingPrice, costPrice]);
+
+  useEffect(() => {
+    if (updatingFromPrice.current) {
+      updatingFromPrice.current = false;
+      return;
+    }
+
+    const cp = Number(costPrice);
+    const markup = Number(sellingPriceMarkup);
+
+    if (cp > 0 && markup >= 0) {
+      const sp = cp * (1 + markup / 100);
+      updatingFromMarkup.current = true;
+      setValue("sellingPrice", parseFloat(sp.toFixed(2)), {
+        shouldTouch: true,
+        shouldValidate: true,
+      });
+    }
+  }, [sellingPriceMarkup, costPrice]);
 
   return (
     <>
@@ -90,6 +133,7 @@ export function ItemFormInputs({
             <ImsSelect
               options={dosageFormOptions}
               moduleName="dosage form"
+              showNone={false}
               {...field}
               className="focus-visible:ring-ims-blue-300 !h-11 bg-white"
             />
@@ -126,39 +170,12 @@ export function ItemFormInputs({
         <HookFormField
           formControl={control}
           name="manufacturer"
-          label="Manufacturer"
+          label="Supplier / Manufacturer"
           renderInput={({ field }) => (
             <Input
               {...field}
               type="text"
               placeholder="Eg. ABC Pharmaceuticals"
-              className="focus-visible:ring-ims-blue-300 !h-11 bg-white"
-            />
-          )}
-        />
-        <HookFormField
-          formControl={control}
-          name="fdaApproval"
-          label="FDA Approval"
-          renderInput={({ field }) => (
-            <ImsSelect
-              showNone={false}
-              options={FDAFormOptions}
-              moduleName="Yes or No"
-              {...field}
-              className="focus-visible:ring-ims-blue-300 !h-11 bg-white"
-            />
-          )}
-        />
-        <HookFormField
-          formControl={control}
-          name="ISO"
-          label="ISO"
-          renderInput={({ field }) => (
-            <Input
-              {...field}
-              placeholder="Eg. ISO 9001:2015"
-              type="text"
               className="focus-visible:ring-ims-blue-300 !h-11 bg-white"
             />
           )}
@@ -198,7 +215,23 @@ export function ItemFormInputs({
         <HookFormField
           formControl={control}
           name="sellingPrice"
-          label="Selling Price (Markup)"
+          label="Selling Price"
+          renderInput={({ field }) => (
+            <div className="flex items-center gap-2">
+              <span className="text-sm">GHS</span>
+              <Input
+                {...inputTypeNumber(field)}
+                type="number"
+                className="focus-visible:ring-ims-blue-300 bg-white"
+                placeholder="Eg. 15"
+              />
+            </div>
+          )}
+        />
+        <HookFormField
+          formControl={control}
+          name="sellingPriceMarkup"
+          label="Selling Price Markup"
           renderInput={({ field }) => (
             <div className="flex items-center gap-2">
               <Input
@@ -209,17 +242,6 @@ export function ItemFormInputs({
               />
               <span className="text-sm">%</span>
             </div>
-          )}
-        />
-        <HookFormField
-          formControl={control}
-          name="storageReq"
-          label="Storage Requirement"
-          renderInput={({ field }) => (
-            <Textarea
-              {...field}
-              className="focus-visible:ring-0.5 focus-visible:ring-ims-blue-300 !h-11 bg-white"
-            />
           )}
         />
       </MultiStep>

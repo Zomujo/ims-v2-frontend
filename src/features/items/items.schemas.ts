@@ -16,20 +16,17 @@ export const itemFormSchema = z.object({
   manufacturer: z.string().min(1, "Manufacturer is required"),
   reorderPoint: z
     .number()
-    .min(1, "Reorder level must be non-negative and greater than 0")
-    .optional(),
+    .min(1, "Reorder level must be non-negative and greater than 0"),
   costPrice: z
     .number()
-    .min(1, "Cost price must be non-negative and greater than 0")
-    .optional(),
+    .min(1, "Cost price must be non-negative and greater than 0"),
   sellingPrice: z
     .number()
-    .min(1, "Selling price must be non-negative and greater than 0")
-    .optional(),
-  storageReq: z.string().min(1, "Storage requirement is required"),
-  ISO: z.string().optional(),
+    .min(1, "Selling price must be non-negative and greater than 0"),
+  sellingPriceMarkup: z
+    .number()
+    .min(1, "Selling price markup must be non-negative and greater than 0"),
   categoryId: z.string().min(1, "Category ID is required"),
-  fdaApproval: z.string().min(1, "FDA approval is required"),
 });
 
 export const amountTypes = ["percentage", "price"] as const;

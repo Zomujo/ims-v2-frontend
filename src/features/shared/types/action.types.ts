@@ -259,14 +259,11 @@ export type CreateItemDto = {
   costPrice?: number;
   sellingPrice?: number;
   dosageForm: string;
-  fdaApproval: string;
-  ISO?: string;
   reorderPoint?: number;
   strength: string;
   unitOfMeasurement: string;
   manufacturer: string;
   categoryId: string;
-  storageReq: string;
 };
 
 type Batch = {

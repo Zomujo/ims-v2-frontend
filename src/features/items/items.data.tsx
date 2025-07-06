@@ -66,13 +66,11 @@ export const itemBatchesTableColumns: ColumnDef<BatchResponseDto>[] = [
     cell: ({ row }) => formateDate(row.original.validity),
   },
   {
-    header: "NHIS Markup",
+    header: "NHIS",
     accessorKey: "markup",
     cell: ({ row }) => {
       const markup = row.original.markup;
-      return markup
-        ? `${markup.amountType === "price" ? "GHC " : ""}${markup.amount}${markup.amountType === "percentage" ? "%" : ""}`
-        : "N/A";
+      return markup ? "Yes" : "No";
     },
   },
   {
