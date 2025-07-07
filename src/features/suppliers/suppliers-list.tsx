@@ -17,7 +17,6 @@ import useFetchData from "../shared/hooks/use-fetch-data";
 import useHookForm from "../shared/hooks/use-hook-form";
 import usePageCRUD from "../shared/hooks/use-page-crud";
 import { CRUDACTION } from "../shared/types/utitls.types";
-import { ScrollArea } from "../ui/scroll-area";
 import { SupplierFormInputs } from "./suppliers-component-client";
 import { supplierDefaultValues, suppliersTableColumns } from "./suppliers.data";
 import { supplierSchema } from "./suppliers.schemas";
@@ -106,58 +105,56 @@ export default function SuppliersList() {
     handleRemoveQueryparam(false);
   };
   return (
-    <ScrollArea className="mt-2 h-[calc(100%-5rem)] rounded-2xl bg-white pr-4">
-      <CrudPage
-        moduleName="supplier"
-        data={suppliers}
-        isLoading={loading}
-        modalAction={() => handleModalAction(modalActionProperties.crudAction)}
-        modalActionLabel={modalActionProperties.label}
-        currentDataDisplayName={
-          getData(modalActionProperties.crudAction)?.name ?? ""
-        }
-        tableColumns={suppliersTableColumns}
-        totalPages={data?.totalPages ?? 0}
-        handleRemoveQueryparam={handleRemoveQueryparam}
-        state={state}
-        isEditMode={isEditMode}
-        openModal={openModal}
-        closeModal={() => setOpenModal(false)}
-        alertModalOnChange={false}
-        actions={(item) => [
-          {
-            label: "edit",
-            icon: "lucide:edit-2",
-            action: () => handleEditBtnClicked(item),
-            hide: !canWrite(PermissionModules.SUPPLIERS),
-          },
-          item.status === UserStatus.ACTIVE
-            ? {
-                label: "Deactivate",
-                icon: "solar:forbidden-circle-line-duotone",
-                action: () => handleAction(CRUDACTION.DEACTIVATE, item),
-                hide: !canWrite(PermissionModules.SUPPLIERS),
-              }
-            : {
-                label: "Activate",
-                icon: "solar:power-bold-duotone",
-                action: () => handleAction(CRUDACTION.ACTIVATE, item),
-                hide: !canWrite(PermissionModules.SUPPLIERS),
-              },
-          {
-            label: "delete",
-            icon: "solar:trash-bin-trash-line-duotone",
-            type: "destructive",
-            action: () => {
-              handleAction(CRUDACTION.DELETE, item);
+    <CrudPage
+      moduleName="supplier"
+      data={suppliers}
+      isLoading={loading}
+      modalAction={() => handleModalAction(modalActionProperties.crudAction)}
+      modalActionLabel={modalActionProperties.label}
+      currentDataDisplayName={
+        getData(modalActionProperties.crudAction)?.name ?? ""
+      }
+      tableColumns={suppliersTableColumns}
+      totalPages={data?.totalPages ?? 0}
+      handleRemoveQueryparam={handleRemoveQueryparam}
+      state={state}
+      isEditMode={isEditMode}
+      openModal={openModal}
+      closeModal={() => setOpenModal(false)}
+      alertModalOnChange={false}
+      actions={(item) => [
+        {
+          label: "edit",
+          icon: "lucide:edit-2",
+          action: () => handleEditBtnClicked(item),
+          hide: !canWrite(PermissionModules.SUPPLIERS),
+        },
+        item.status === UserStatus.ACTIVE
+          ? {
+              label: "Deactivate",
+              icon: "solar:forbidden-circle-line-duotone",
+              action: () => handleAction(CRUDACTION.DEACTIVATE, item),
+              hide: !canWrite(PermissionModules.SUPPLIERS),
+            }
+          : {
+              label: "Activate",
+              icon: "solar:power-bold-duotone",
+              action: () => handleAction(CRUDACTION.ACTIVATE, item),
+              hide: !canWrite(PermissionModules.SUPPLIERS),
             },
-            hide: !canDelete(PermissionModules.SUPPLIERS),
+        {
+          label: "delete",
+          icon: "solar:trash-bin-trash-line-duotone",
+          type: "destructive",
+          action: () => {
+            handleAction(CRUDACTION.DELETE, item);
           },
-        ]}
-      >
-        <SupplierForm supplierId={isEditMode ? getId(CRUDACTION.EDIT) : ""} />
-      </CrudPage>
-    </ScrollArea>
+          hide: !canDelete(PermissionModules.SUPPLIERS),
+        },
+      ]}
+    >
+      <SupplierForm supplierId={isEditMode ? getId(CRUDACTION.EDIT) : ""} />
+    </CrudPage>
   );
 }
 
