@@ -108,7 +108,7 @@ export default function SuppliersList() {
   return (
     <ScrollArea className="mt-2 h-[calc(100%-5rem)] rounded-2xl bg-white pr-4">
       <CrudPage
-        moduleName="item categories"
+        moduleName="supplier"
         data={suppliers}
         isLoading={loading}
         modalAction={() => handleModalAction(modalActionProperties.crudAction)}
@@ -216,9 +216,6 @@ function SupplierForm({ supplierId }: Readonly<SupplierFormProps>) {
         "email",
         "physicalAddress",
         "mailingAddress",
-        "emergencyContactName",
-        "emergencyContactTitle",
-        "emergencyContactNumber",
       ],
     };
     const fields = stepFieldMap[currentStep];

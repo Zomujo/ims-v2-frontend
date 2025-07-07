@@ -241,44 +241,6 @@ export const SupplierFormInputs = ({
             />
           )}
         />
-        {/* Emergency Contact fields - Optional based on type */}
-        <HookFormField
-          formControl={control}
-          name="emergencyContactName" // Matches AddSupplier type
-          label="Emergency Contact name" // Matches UI
-          renderInput={({ field }) => (
-            <Input
-              {...field}
-              className="focus-visible:ring-ims-blue-300 bg-white"
-              placeholder="Eg:James Appiah"
-            />
-          )}
-        />
-        <HookFormField
-          formControl={control}
-          name="emergencyContactTitle" // Matches AddSupplier type
-          label="Emergency Contact Title" // Added label based on type
-          renderInput={({ field }) => (
-            <Input
-              {...field}
-              className="focus-visible:ring-ims-blue-300 bg-white"
-              placeholder="Eg: Manager" // Example placeholder
-            />
-          )}
-        />
-        <HookFormField
-          formControl={control}
-          name="emergencyContactNumber" // Matches AddSupplier type
-          label="Emergency Contact Number" // Added label based on type
-          renderInput={({ field }) => (
-            <Input
-              {...field}
-              type="tel" // Use tel type for phone numbers
-              className="focus-visible:ring-ims-blue-300 bg-white"
-              placeholder="555 553 8672"
-            />
-          )}
-        />
       </MultiStep>
       <MultiStep currentStep={currentStep} step={3}>
         <HookFormField
