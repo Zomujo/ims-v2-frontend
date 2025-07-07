@@ -21,6 +21,7 @@ export default function SalesList() {
   const { data, loading, refetch } = useFetchData({ fetchFn: getSales });
   const [, , removeSalesItems] = useLocalStorage(salesItemLocalStorageKey, []);
   const sales = data?.rows ?? [];
+  console.log("Sales list", sales);
   const {
     state,
     isEditMode,
