@@ -1,8 +1,6 @@
-import { cn } from "@/lib/utils";
 import { ColumnDef } from "@tanstack/react-table";
 import { GetSalesDto } from "../shared/types/action.types";
-import { SaleItem, SALES_STATUS } from "../shared/types/sales-action.types";
-import { Badge } from "../ui/badge";
+import { SaleItem } from "../shared/types/sales-action.types";
 
 export const salesTableColumns: ColumnDef<GetSalesDto>[] = [
   {
@@ -55,23 +53,11 @@ export const salesTableColumns: ColumnDef<GetSalesDto>[] = [
     },
   },
   {
-    header: "Status",
+    header: "Payment Type",
     accessorKey: "status",
     cell: ({ row }) => {
-      const status = row.original.status;
-      return (
-        <Badge
-          className={cn("capitalize", {
-            "bg-green-100 text-green-800 [&_span]:bg-green-500":
-              status === SALES_STATUS.PAID,
-            "bg-red-100 text-red-800 [&_span]:bg-red-500":
-              status === SALES_STATUS.UNPAID,
-          })}
-        >
-          <span className="h-1.5 w-1.5 rounded-full"></span>
-          {status}
-        </Badge>
-      );
+      const paymentType = row.original.paymentType;
+      return paymentType.join(", ");
     },
   },
 ];
@@ -95,7 +81,7 @@ export const salesItemsColumns: ColumnDef<SaleItem>[] = [
   },
   {
     accessorKey: "item.sellingPrice",
-    header: "Selling Price (unit)",
+    header: "Unit Price",
     cell: ({ row }) => {
       return row.original.item.sellingPrice.toLocaleString("en-US", {
         style: "currency",
@@ -104,13 +90,11 @@ export const salesItemsColumns: ColumnDef<SaleItem>[] = [
     },
   },
   {
-    header: "NHIS Markup",
+    header: "NHIS",
     accessorKey: "markup",
     cell: ({ row }) => {
       const markup = row.original.markup;
-      return markup
-        ? `${markup.amountType === "price" ? "GHC " : ""}${markup.amount}${markup.amountType === "percentage" ? "%" : ""}`
-        : "N/A";
+      return markup ? "Yes" : "No";
     },
   },
   {
@@ -132,6 +116,7 @@ export const singleSale = "single-sale";
 export const paymentTypeOptions = [
   { label: "Cash", value: "CASH" },
   { label: "Online", value: "ONLINE" },
+  { label: "NHIS", value: "NHIS" },
 ];
 
 export const hasInsuranceOptions = [

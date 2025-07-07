@@ -8,7 +8,6 @@ import ImsSearchBar from "../shared/components/ims-search-bar";
 import { SaleItem } from "../shared/types/sales-action.types";
 import { Button } from "../ui/button";
 import { salesItemLocalStorageKey, salesItemsColumns } from "./sales.data";
-import { ScrollArea } from "../ui/scroll-area";
 import { useLocalStorage } from "usehooks-ts";
 import useFetchData from "../shared/hooks/use-fetch-data";
 import { getSalesItemsAction } from "../shared/actions/sales.action";
@@ -24,28 +23,30 @@ export default function SalesItemList() {
   );
 
   return (
-    <ScrollArea className="h-[87%] rounded-2xl bg-white pt-5 pr-4">
+    <div className="h-full pt-4">
       <ImsSearchBar className="ml-4 w-full" />
-      <IMSDataTable<SaleItem, unknown>
-        isLoading={loading}
-        totalPages={data?.totalPages ?? 0}
-        columns={salesItemsColumns.concat(
-          getActionColumn<SaleItem, unknown>({
-            actions: (item) => [
-              {
-                label: "Add",
-                icon: "mdi:plus",
-                action: () => {
-                  setSalesItem([...addedSalesItems, item]);
+      <div className="h-full overflow-auto pb-24">
+        <IMSDataTable<SaleItem, unknown>
+          isLoading={loading}
+          totalPages={data?.totalPages ?? 0}
+          columns={salesItemsColumns.concat(
+            getActionColumn<SaleItem, unknown>({
+              actions: (item) => [
+                {
+                  label: "Add",
+                  icon: "mdi:plus",
+                  action: () => {
+                    setSalesItem([...addedSalesItems, item]);
+                  },
                 },
-              },
-            ],
-            addedSalesItems,
-          }),
-        )}
-        data={salesItems}
-      />
-    </ScrollArea>
+              ],
+              addedSalesItems,
+            }),
+          )}
+          data={salesItems}
+        />
+      </div>
+    </div>
   );
 }
 

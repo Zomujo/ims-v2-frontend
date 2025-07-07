@@ -499,9 +499,11 @@ export type CreateSaleResponseDto = {
   deletedBy: string | null;
 };
 
+export type PaymentType = "CASH" | "ONLINE" | "NHIS";
+
 export type CreateSaleDto = {
   patientCardId?: string;
-  paymentType: "CASH" | "ONLINE";
+  paymentType: PaymentType[];
   saleItems: CreateSaleItemsDto[];
   notes?: string;
   patientId?: string;
@@ -514,6 +516,7 @@ export type CreateSaleDto = {
 export type GetSalesDto = {
   notes?: string;
   saleNumber: string;
+  paymentType: PaymentType[];
   status: "PAID" | "UNPAID";
   total: number;
   id: string;
@@ -530,7 +533,7 @@ export type GetSalesDto = {
 
 export type UpdateSalesDto = {
   patientCardId?: string;
-  paymentType?: "CASH" | "ONLINE";
+  paymentType?: PaymentType[];
   insured: "true" | "false";
   saleItems?: CreateSaleItemsDto[];
   notes?: string;

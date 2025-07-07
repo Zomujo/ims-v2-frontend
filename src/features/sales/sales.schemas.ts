@@ -22,9 +22,13 @@ export const newPatientSchema = z
 
 export const salesCartSchema = z.object({
   patientCardId: z.string().optional(),
-  paymentType: z.enum(["CASH", "ONLINE"], {
-    errorMap: () => ({ message: "Please select a valid payment type" }),
-  }),
+  paymentType: z
+    .array(
+      z.enum(["CASH", "ONLINE", "NHIS"], {
+        errorMap: () => ({ message: "Please select a valid payment type" }),
+      }),
+    )
+    .min(1, { message: "Please add at least one payment type" }),
   notes: z.string().optional(),
   saleItems: z
     .array(
