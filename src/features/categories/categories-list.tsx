@@ -18,7 +18,6 @@ import useImsSearchParams from "../shared/hooks/use-ims-search-params";
 import usePageCRUD from "../shared/hooks/use-page-crud";
 import { CRUDACTION } from "../shared/types/utitls.types";
 import { Input } from "../ui/input";
-import { ScrollArea } from "../ui/scroll-area";
 import { itemCategoriesTableColumns } from "./categories.data";
 import { categoryFormSchema } from "./categories.schemas";
 import { ITEMS_CATEGORIES_STATUS } from "@features/shared/types/action.types";
@@ -49,41 +48,39 @@ export default function CategoriesList() {
   };
 
   return (
-    <ScrollArea className="mt-2 h-[calc(100%-5rem)] rounded-2xl bg-white pr-4">
-      <CrudPage
-        moduleName="item categories"
-        data={itemCategories}
-        modalAction={handleDelete}
-        handleRemoveQueryparam={handleRemoveQueryparam}
-        currentDataDisplayName={getData(CRUDACTION.DELETE)?.name ?? ""}
-        tableColumns={itemCategoriesTableColumns}
-        totalPages={data?.totalPages ?? 0}
-        state={state}
-        isEditMode={isEditMode}
-        isLoading={loading}
-        actions={(item) => [
-          {
-            label: "edit",
-            icon: "lucide:edit-2",
-            action: () => handleEditBtnClicked(item),
-            hide: !canWrite(PermissionModules.ITEMS_CATEGORIES),
-          },
-          {
-            label: "delete",
-            icon: "solar:trash-bin-trash-line-duotone",
-            type: "destructive",
-            action: () => handleDeleteBtnClicked(item),
-            hide: !canDelete(PermissionModules.ITEMS_CATEGORIES),
-          },
-        ]}
-      >
-        <CategoriesForm
-          categoryId={getId(CRUDACTION.EDIT)}
-          categoryName={getData("edit")?.name}
-          status={getData("edit")?.status}
-        />
-      </CrudPage>
-    </ScrollArea>
+    <CrudPage
+      moduleName="item categories"
+      data={itemCategories}
+      modalAction={handleDelete}
+      handleRemoveQueryparam={handleRemoveQueryparam}
+      currentDataDisplayName={getData(CRUDACTION.DELETE)?.name ?? ""}
+      tableColumns={itemCategoriesTableColumns}
+      totalPages={data?.totalPages ?? 0}
+      state={state}
+      isEditMode={isEditMode}
+      isLoading={loading}
+      actions={(item) => [
+        {
+          label: "edit",
+          icon: "lucide:edit-2",
+          action: () => handleEditBtnClicked(item),
+          hide: !canWrite(PermissionModules.ITEMS_CATEGORIES),
+        },
+        {
+          label: "delete",
+          icon: "solar:trash-bin-trash-line-duotone",
+          type: "destructive",
+          action: () => handleDeleteBtnClicked(item),
+          hide: !canDelete(PermissionModules.ITEMS_CATEGORIES),
+        },
+      ]}
+    >
+      <CategoriesForm
+        categoryId={getId(CRUDACTION.EDIT)}
+        categoryName={getData("edit")?.name}
+        status={getData("edit")?.status}
+      />
+    </CrudPage>
   );
 }
 

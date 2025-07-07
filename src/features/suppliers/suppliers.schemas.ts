@@ -36,9 +36,6 @@ export const supplierSchema = z.object({
   email: z.string().email("Invalid email address").min(1, "Email is required"),
   physicalAddress: z.string().min(1, "Physical Address is required"),
   mailingAddress: z.string().optional(),
-  emergencyContactName: z.string().optional(),
-  emergencyContactTitle: z.string().optional(),
-  emergencyContactNumber: z.string().transform(convertTelToGH).optional(),
 
   // Step 3: Payment Details
   paymentType: z.union([z.literal("Bank"), z.literal("Mobile Money")], {
