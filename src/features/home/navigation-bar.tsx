@@ -101,6 +101,9 @@ export default function NavigationBar() {
             </button>
           </div>
           <ul className="mt-8 space-y-6 px-6 text-lg font-medium">
+            <li className="cursor-pointer border-b border-[#a7afb6] pb-2 hover:text-[#FF6E66]">
+              <Link href="auth/login">Login</Link>
+            </li>
             {navigations.map((nav) => (
               <li
                 key={nav.id}
