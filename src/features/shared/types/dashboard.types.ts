@@ -21,7 +21,7 @@ interface Stock {
   outOfStock: number;
   stockDaysOnHand: number;
   total: number;
-  totalStock: number;
+  totalStock: number | null;
 }
 
 export interface ItemStockLevel extends MetricData {

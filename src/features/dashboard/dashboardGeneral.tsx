@@ -392,7 +392,7 @@ const DashboardGeneral = () => {
           }}
           moreInfo={
             data
-              ? `Risk of loss: ${formatValue(data.soonToExpireItems.totalCost, "money")}`
+              ? `Risk of loss: ${formatValue(data.soonToExpireItems.totalCost ?? 0, "money")}`
               : undefined
           }
           className="pb-0"
