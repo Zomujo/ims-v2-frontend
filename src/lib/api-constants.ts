@@ -103,6 +103,7 @@ export const API_ENDPOINTS = {
   // Sales
   SALES: "/sales",
   SALE: "/sales/:id",
+  SALE_EXPORT: "/sales/export",
   SALE_ITEMS: "/sales/:id/items",
   SALE_RETURN: "/sales/return/:id",
 
