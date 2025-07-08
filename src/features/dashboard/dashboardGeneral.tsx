@@ -61,6 +61,7 @@ const cardsData = [
   {
     title: "TOTAL REVENUE",
     key: "totalRevenue",
+    type: "money",
     more: (
       <a
         className="hover:text-primary cursor-pointer text-sm text-gray-600"
@@ -109,6 +110,7 @@ const DashboardGeneral = () => {
         startDate: date.from?.toISOString(),
       });
       if (generalResponse) {
+        console.log("Let's see", generalResponse);
         setData(generalResponse);
       }
       setIsLoading(false);
@@ -347,7 +349,21 @@ const DashboardGeneral = () => {
             </div>
           </div>
         </BaseCard>
-        {cardsData.map(({ title, key, more }) => (
+        <BaseCard
+          showChart={true}
+          title={"Total Stock Value"}
+          totalData={{
+            total: data?.itemStockLevel.stock.stockValue ?? 0,
+            type: "money",
+          }}
+          change={{
+            type: data?.itemStockLevel.changeType ?? "NONE",
+            value: data?.itemStockLevel.percentageChange ?? 0,
+          }}
+          className="pb-0"
+          isLoading={isLoading}
+        ></BaseCard>
+        {cardsData.map(({ title, key, more, type }) => (
           <BaseCard
             showChart={true}
             key={key}
@@ -355,7 +371,7 @@ const DashboardGeneral = () => {
             title={title}
             totalData={{
               total: data?.[key as keyof GeneralResponse].total ?? 0,
-              type: "number",
+              type: (type ?? "number") as "money" | "number" | "percentage",
             }}
             change={{
               type: data?.[key as keyof GeneralResponse].changeType ?? "NONE",
