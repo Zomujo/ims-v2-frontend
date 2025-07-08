@@ -110,7 +110,6 @@ const DashboardGeneral = () => {
         startDate: date.from?.toISOString(),
       });
       if (generalResponse) {
-        console.log("Let's see", generalResponse);
         setData(generalResponse);
       }
       setIsLoading(false);
