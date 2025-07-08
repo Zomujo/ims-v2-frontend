@@ -17,6 +17,7 @@ export interface MetricData {
 interface Stock {
   highStocked: number;
   lowStocked: number;
+  stockValue: number;
   outOfStock: number;
   stockDaysOnHand: number;
   total: number;
