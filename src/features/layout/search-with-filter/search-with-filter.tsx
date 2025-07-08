@@ -3,7 +3,7 @@ import { ButtonLink } from "@/features/shared/components/button-link";
 import ImsFilters from "@/features/shared/components/ims-filter";
 import ImsSearchBar from "@/features/shared/components/ims-search-bar";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import { useParams, usePathname } from "next/navigation";
+import { useParams, usePathname, useSearchParams } from "next/navigation";
 import FilterForms from "./fiter-form";
 import {
   actionButtonData,
@@ -24,6 +24,7 @@ export default function SearchWithFilter() {
   const isSlugs = !!params.slugs;
   const pathName = usePathname();
   const { hasActionPermission, role } = useSessionData();
+  const searchParams = useSearchParams();
   const btnData =
     actionButtonData[isSlugs ? PAGE_ROUTES.ITEM_BATCHES : pathName];
   const exportBtnData =
@@ -42,10 +43,13 @@ export default function SearchWithFilter() {
   const [pathname, query] = (btnData?.href ?? "").split("?");
 
   const downloadFile = async (exportType: ExportType) => {
+    const queryParams = Object.fromEntries(searchParams.entries());
+
     if (exportBtnData?.endpoint) {
       setExporting(exportType);
       try {
         const blob = await exportFile(exportBtnData.endpoint, {
+          ...queryParams,
           exportType,
         });
         const downloadUrl = URL.createObjectURL(blob);

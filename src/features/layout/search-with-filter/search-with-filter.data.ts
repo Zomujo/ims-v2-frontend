@@ -48,6 +48,13 @@ export const exportActionButtonData = {
     icon: "solar:file-download-linear",
     permission: `${PermissionModules.REPORTS}:${PermissionActions.READ}`,
   },
+  [PAGE_ROUTES.SALES.VIEW]: {
+    label: "Export Sales",
+    fileName: "Sales",
+    endpoint: API_ENDPOINTS.SALE_EXPORT,
+    icon: "solar:file-download-linear",
+    permission: `${PermissionModules.SALES}:${PermissionActions.READ}`,
+  },
 };
 
 export const actionButtonData = {
