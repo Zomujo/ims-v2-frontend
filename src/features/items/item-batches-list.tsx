@@ -322,7 +322,7 @@ function ItemBatchesForm({
             <HookFormField
               formControl={form.control}
               name="validity"
-              label="Validity"
+              label="Expiry Date"
               renderInput={({ field }) => (
                 <Input
                   {...field}
