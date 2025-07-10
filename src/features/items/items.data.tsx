@@ -108,52 +108,55 @@ export const FDAFormOptions = [
 
 export const prescriptionUnits = [
   // Solid Dosage Units
-  { label: "Tablet(s)", value: "tablets" },
-  { label: "Capsule(s)", value: "capsules" },
-  { label: "Strip(s)", value: "strips" },
-  { label: "Pack(s)", value: "packs" },
-  { label: "Box(es)", value: "boxes" },
-  { label: "Suppository/ies", value: "suppositories" },
-  { label: "Lozenge(s)", value: "lozenges" },
-  { label: "Pessary/ies", value: "pessaries" },
+  { label: "tab – Tablet(s)", value: "tablets" },
+  { label: "cap – Capsule(s)", value: "capsules" },
+  { label: "strip – Strip(s)", value: "strips" },
+  { label: "pack – Pack(s)", value: "packs" },
+  { label: "box – Box(es)", value: "boxes" },
+  { label: "supp – Suppository/ies", value: "suppositories" },
+  { label: "loz – Lozenge(s)", value: "lozenges" },
+  { label: "pes – Pessary/ies", value: "pessaries" },
 
   // Liquid Dosage Units
-  { label: "Millilitre(s)", value: "mL" },
-  { label: "Teaspoon(s)", value: "tsp" },
-  { label: "Tablespoon(s)", value: "tbsp" },
-  { label: "Dose(s)", value: "doses" },
-  { label: "Bottle(s)", value: "bottles" },
-  { label: "Drop(s)", value: "gtt" }, // medical abbreviation for drops
-  { label: "Vial(s)", value: "vials" },
-  { label: "Ampoule(s)", value: "ampoules" },
+  { label: "mL – Millilitre(s)", value: "mL" },
+  { label: "tsp – Teaspoon(s)", value: "tsp" },
+  { label: "tbsp – Tablespoon(s)", value: "tbsp" },
+  { label: "dose – Dose(s)", value: "doses" },
+  { label: "bottle – Bottle(s)", value: "bottles" },
+  { label: "gtt – Drop(s)", value: "gtt" },
+  { label: "vial – Vial(s)", value: "vials" },
+  { label: "amp – Ampoule(s)", value: "ampoules" },
 
   // Semi-Solid Units
-  { label: "Gram(s)", value: "g" },
-  { label: "Tube(s)", value: "tubes" },
-  { label: "Jar(s)", value: "jars" },
+  { label: "g – Gram(s)", value: "g" },
+  { label: "tube – Tube(s)", value: "tubes" },
+  { label: "jar – Jar(s)", value: "jars" },
 
   // Inhalation/Nebulisation Units
-  { label: "Puff(s)", value: "puffs" },
-  { label: "Inhaler(s)", value: "inhalers" },
-  { label: "Canister(s)", value: "canisters" },
+  { label: "puff – Puff(s)", value: "puffs" },
+  { label: "inh – Inhaler(s)", value: "inhalers" },
+  { label: "can – Canister(s)", value: "canisters" },
 
   // Powdered/Granular Units
-  { label: "Sachet(s)", value: "sachets" },
-  { label: "Reconstituted Bottle(s)", value: "reconstituted_bottles" },
+  { label: "sachet – Sachet(s)", value: "sachets" },
+  {
+    label: "rec-bottle – Reconstituted Bottle(s)",
+    value: "reconstituted_bottles",
+  },
 
   // Other Common Units
-  { label: "Milligrams", value: "mg" },
-  { label: "Micrograms", value: "mcg" },
-  { label: "International Units", value: "IU" },
-  { label: "Liters", value: "L" },
-  { label: "Units", value: "units" },
-  { label: "Sprays", value: "sprays" },
+  { label: "mg – Milligrams", value: "mg" },
+  { label: "mcg – Micrograms", value: "mcg" },
+  { label: "IU – International Units", value: "IU" },
+  { label: "L – Liters", value: "L" },
+  { label: "U – Units", value: "units" },
+  { label: "spray – Sprays", value: "sprays" },
 
   // Topical Application Units (Percentage-based)
-  { label: "Ointment (percentage)", value: "ointment_%" },
-  { label: "Cream (percentage)", value: "cream_%" },
-  { label: "Gel (percentage)", value: "gel_%" },
+  { label: "ointment% – Ointment (percentage)", value: "ointment_%" },
+  { label: "cream% – Cream (percentage)", value: "cream_%" },
+  { label: "gel% – Gel (percentage)", value: "gel_%" },
 
   // Other
-  { label: "Fingertip Units", value: "FTU" },
+  { label: "FTU – Fingertip Units", value: "FTU" },
 ];

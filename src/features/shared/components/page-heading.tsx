@@ -32,7 +32,7 @@ export default function PageHeading({
             Welcome {firstName}
           </h2>
           <div className="mt-4 flex gap-2 text-gray-500">
-            <span>{format(new Date(2024, 4, 20), "EEEE, MMMM d, yyyy")}</span>
+            <span>{format(new Date(), "EEEE, MMMM d, yyyy")}</span>
             <RotateCw
               onClick={() => router.refresh()}
               className="hover:bg-primary cursor-pointer rounded-full bg-gray-200 p-1 text-sm"
