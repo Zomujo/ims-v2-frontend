@@ -8,10 +8,10 @@ export const authCreateAccountInputsData = [
   },
   {
     type: "email",
-    label: "Email",
+    label: "Email (Optional)",
     name: "email",
-    placeholder: "",
-    classNamen: "",
+    placeholder: "email@domain.com",
+    className: "",
   },
   {
     type: "password",
