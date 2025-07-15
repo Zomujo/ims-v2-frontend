@@ -42,6 +42,7 @@ export async function getDepartmentRequests(params?: GenerateQueryParams) {
       params ?? {},
     ),
     method: "GET",
+    cache: "force-cache",
     headers: {},
     next: { tags: [API_ENDPOINT_TAGS.DEPARTMENT_REQUESTS] },
   };
@@ -60,6 +61,7 @@ export async function getDepartmentItemRequests(params?: GenerateQueryParams) {
       params ?? {},
     ),
     method: "GET",
+    cache: "force-cache",
     headers: {},
     next: { tags: [API_ENDPOINT_TAGS.DEPARTMENT_ITEM_REQUESTS] },
   };
@@ -76,6 +78,7 @@ export async function getDepartmentRequest(id: string) {
     url: API_ENDPOINTS.DEPARTMENT_REQUEST.replace(":id", id),
     method: "GET",
     headers: {},
+    cache: "force-cache",
     next: { tags: [API_ENDPOINT_TAGS.DEPARTMENT_REQUESTS] },
   };
 
@@ -121,6 +124,7 @@ export async function getItemRequests(params: GenerateQueryParams) {
       params,
     ),
     method: "GET",
+    cache: "force-cache",
     headers: {},
     next: { tags: [API_ENDPOINT_TAGS.DEPARTMENT_REQUESTS_ITEM] },
   };
