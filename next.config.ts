@@ -1,9 +1,6 @@
 import type { NextConfig } from "next";
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
-const precacheManifest = require("./precache-manifest");
-
-// eslint-disable-next-line @typescript-eslint/no-require-imports
 const withPWA = require("@ducanh2912/next-pwa").default({
   dest: "public",
   fallbacks: {
@@ -25,10 +22,6 @@ const nextConfig = {
     register: true,
     skipWaiting: true,
     dynamicStartUrl: false,
-    additionalManifestEntries: precacheManifest.map((url: never) => ({
-      url,
-      revision: null,
-    })),
     workboxOptions: {
       exclude: [
         /\.map$/,

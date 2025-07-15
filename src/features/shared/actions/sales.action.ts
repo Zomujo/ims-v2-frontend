@@ -36,6 +36,7 @@ export const getSalesPatientListAction = async (
     next: {
       tags: [queryParams],
     },
+    cache: "force-cache",
   });
   return res.data;
 };
@@ -64,6 +65,7 @@ export const getSalesItemsAction = async (
     next: {
       tags: [queryParams],
     },
+    cache: "force-cache",
   });
   return res.data;
 };

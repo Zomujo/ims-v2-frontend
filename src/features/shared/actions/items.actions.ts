@@ -52,6 +52,7 @@ export async function getItems(
     ),
     method: "GET",
     headers: {},
+    cache: "force-cache",
     next: { tags: [API_ENDPOINT_TAGS.ITEMS] },
   };
 
@@ -63,6 +64,7 @@ export async function getItemsExpiry(params?: GenerateQueryParams) {
     url: generateUrlWithQueryParams(API_ENDPOINTS.ITEMS_VALIDITY, params ?? {}),
     method: "GET",
     headers: {},
+    cache: "force-cache",
     next: { tags: [API_ENDPOINT_TAGS.ITEMS_VALIDITY] },
   };
 
@@ -93,6 +95,7 @@ export async function getBatchesNoPaginate(itemId: string) {
     url: API_ENDPOINTS.ITEMS_BATCHES_NO_PAGINATE.replace(":itemId", itemId),
     method: "GET",
     headers: {},
+    cache: "force-cache",
     next: { tags: [API_ENDPOINT_TAGS.ITEMS_BATCHES] },
   };
 
@@ -110,6 +113,7 @@ export async function getItemBatches(id: string, params?: GenerateQueryParams) {
       params ?? {},
     ),
     method: "GET",
+    cache: "force-cache",
     headers: {},
     next: { tags: [API_ENDPOINT_TAGS.ITEMS_BATCHES] },
   };
@@ -124,6 +128,7 @@ export async function getBatch(id: string) {
     url: API_ENDPOINTS.ITEM_BATCH.replace(":id", id),
     method: "GET",
     headers: {},
+    cache: "force-cache",
     next: { tags: [API_ENDPOINT_TAGS.ITEMS_BATCHES] },
   };
 
@@ -189,6 +194,7 @@ export async function getItemCounts() {
     url: API_ENDPOINTS.ITEM_COUNTS,
     method: "GET",
     headers: {},
+    cache: "force-cache",
     next: { tags: [API_ENDPOINT_TAGS.ITEMS] },
   };
 
@@ -201,6 +207,7 @@ export async function getItem(id: string) {
     url: API_ENDPOINTS.ITEM.replace(":id", id),
     method: "GET",
     headers: {},
+    cache: "force-cache",
     next: { tags: [API_ENDPOINT_TAGS.ITEMS] },
   };
 
