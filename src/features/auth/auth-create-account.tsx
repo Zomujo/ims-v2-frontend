@@ -3,7 +3,6 @@
 import { AUTH_PAGE_ROUTES } from "@/lib/constant";
 import Link from "next/link";
 import { Control } from "react-hook-form";
-import { z } from "zod";
 import HookFormField from "../shared/components/hook-form-filed";
 import { ImsButton } from "../shared/components/ims-button";
 import useHookForm from "../shared/hooks/use-hook-form";
@@ -28,12 +27,13 @@ export function CreateAccountForm() {
 
   const handleSubmitFn = async (data: unknown) => {
     const loadingToast = toast.loading("Creating account...");
+    const userData = data as AuthAccountCreationProps;
     try {
       setIsSubmitting(true);
-      await authCreateAccountAction(data as AuthAccountCreationProps);
+      await authCreateAccountAction(userData);
       form.reset();
       toast.success(
-        "We have sent you a verification email. Please check your inbox.",
+        "You account has been created successfully. You can now log in.",
       );
     } catch (error) {
       if (error instanceof Error) {
