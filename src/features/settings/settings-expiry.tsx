@@ -58,11 +58,18 @@ const SettingsExpiry = () => {
       {showLoadingLayer ? (
         <LoadingOverlay />
       ) : (
-        <div className="mx-auto mt-10 w-full max-w-xl rounded-2xl bg-white p-6 shadow-xl">
-          <h2 className="mb-6 flex items-center gap-2 text-2xl font-semibold text-gray-800">
+        <div className="mx-auto max-w-6xl px-6 py-10">
+          <h2 className="mb-8 flex items-center gap-2 text-xl font-semibold text-gray-900">
             <span className="text-indigo-500">🔒</span> Expiry Settings
           </h2>
-          <form onSubmit={handleSubmit} className="space-y-6">
+
+          <p className="mb-10 max-w-2xl text-gray-500">
+            Configure how expiry rules work across the platform. These settings
+            determine time intervals used for automatic cleanup, archiving, or
+            notifications.
+          </p>
+
+          <form onSubmit={handleSubmit} className="max-w-2xl space-y-8">
             <div>
               <label
                 htmlFor="intervalQuantity"
@@ -75,7 +82,7 @@ const SettingsExpiry = () => {
                 type="number"
                 min={1}
                 required
-                className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-indigo-400 focus:outline-none"
+                className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-indigo-400 focus:outline-none md:w-1/2 lg:w-1/3"
                 value={intervalQuantity}
                 onChange={(e) => setIntervalQuantity(e.target.value)}
               />
@@ -90,7 +97,7 @@ const SettingsExpiry = () => {
               </label>
               <select
                 id="intervalUnit"
-                className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-indigo-400 focus:outline-none"
+                className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-indigo-400 focus:outline-none md:w-1/2 lg:w-1/3"
                 value={intervalUnit}
                 onChange={(e) => setIntervalUnit(e.target.value)}
               >
@@ -100,13 +107,15 @@ const SettingsExpiry = () => {
               </select>
             </div>
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full rounded-lg bg-indigo-600 px-6 py-2 text-white transition hover:bg-indigo-700 disabled:opacity-50"
-            >
-              {loading ? "Saving..." : "Save Changes"}
-            </button>
+            <div>
+              <button
+                type="submit"
+                disabled={loading}
+                className="inline-flex items-center justify-center rounded-lg bg-indigo-600 px-6 py-2 text-white transition hover:bg-indigo-700 disabled:opacity-50"
+              >
+                {loading ? "Saving..." : "Save Changes"}
+              </button>
+            </div>
           </form>
         </div>
       )}
