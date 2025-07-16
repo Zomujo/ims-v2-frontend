@@ -22,7 +22,6 @@ const withPWA = require("@ducanh2912/next-pwa").default({
             maxEntries: 50,
             maxAgeSeconds: 24 * 60 * 60,
           },
-          networkTimeoutSeconds: 10,
         },
       },
       {
