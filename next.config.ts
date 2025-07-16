@@ -15,7 +15,7 @@ const withPWA = require("@ducanh2912/next-pwa").default({
       {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         urlPattern: (pattern: any) => pattern.request.mode === "navigate",
-        handler: "CacheFirst",
+        handler: "NetworkFirst",
         options: {
           cacheName: "pages-cache",
           expiration: {
@@ -23,6 +23,7 @@ const withPWA = require("@ducanh2912/next-pwa").default({
             maxAgeSeconds: 24 * 60 * 60,
           },
         },
+        networkTimeoutSeconds: 10,
       },
       {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -69,20 +70,6 @@ const nextConfig = {
   eslint: {
     dirs: ["src"],
     ignoreDuringBuilds: true,
-  },
-  pwa: {
-    dest: "public",
-    register: true,
-    skipWaiting: true,
-    dynamicStartUrl: false,
-    workboxOptions: {
-      exclude: [
-        /\.map$/,
-        /\/_next\/static\/.*\.woff2$/,
-        /^manifest.*\.json$/,
-        "/some-large-lib.js",
-      ],
-    },
   },
 } satisfies NextConfig;
 
