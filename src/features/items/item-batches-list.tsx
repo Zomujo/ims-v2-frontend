@@ -328,7 +328,7 @@ function ItemBatchesForm({
                   {...field}
                   className="focus-visible:ring-ims-blue-300 flex h-11 flex-col justify-between bg-white pt-2.5"
                   placeholder="eg: 2023-12-31"
-                  type="date"
+                  type="month"
                 />
               )}
             />

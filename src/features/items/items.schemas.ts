@@ -25,7 +25,7 @@ export const itemFormSchema = z.object({
     .min(1, "Selling price must be non-negative and greater than 0"),
   sellingPriceMarkup: z
     .number()
-    .min(1, "Selling price markup must be non-negative and greater than 0"),
+    .min(0, "Selling price markup must be non-negative"),
   categoryId: z.string().min(1, "Category ID is required"),
 });
 

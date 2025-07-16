@@ -141,6 +141,7 @@ export async function getSalePaymentMethod(
     ),
     method: "GET",
     headers: {},
+    cache: "force-cache",
     next: { tags: [API_ENDPOINT_TAGS.DASHBOARD_PAYMENT_METHODS] },
   };
 
@@ -161,6 +162,7 @@ export async function getSaleInsuranceMarkup(
     ),
     method: "GET",
     headers: {},
+    cache: "force-cache",
     next: { tags: [API_ENDPOINT_TAGS.DASHBOARD_SALES_MARKUP] },
   };
 
