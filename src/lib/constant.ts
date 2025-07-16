@@ -32,6 +32,7 @@ export const API_ENDPOINTS_OLD = {
   SALES: "/sales",
   SALES_ITEMS: "/sales/items",
   PATIENTS: "/patients",
+  SETTINGS_EXPIRY: "/user/settings/expiry",
 };
 
 export const AUTH_PAGE_ROUTES = {

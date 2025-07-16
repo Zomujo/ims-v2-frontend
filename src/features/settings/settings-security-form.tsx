@@ -5,7 +5,7 @@ import useHookForm from "../shared/hooks/use-hook-form";
 import { Control } from "react-hook-form";
 import { AuthForm, RenderPasswordInput } from "../auth/auth-components-client";
 import HookFormField from "../shared/components/hook-form-filed";
-import { SettingsFromActions } from "./settings-component-clinet";
+import { SettingsFromActions } from "./settings-component-client";
 import { cn, handleRequestState } from "@/lib/utils";
 import { changePassword } from "../shared/actions/settings.actions";
 import { z } from "zod";

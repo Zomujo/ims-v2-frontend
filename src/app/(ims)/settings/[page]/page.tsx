@@ -1,4 +1,4 @@
-import { SettingsCreateButton } from "@/features/settings/settings-component-clinet";
+import { SettingsCreateButton } from "@/features/settings/settings-component-client";
 import { UserAvatarGeneralSettings } from "@/features/settings/settings-component-server";
 import { DepartmentManagementSettings } from "@/features/settings/settings-department";
 import { GeneralSettingsAccountForm } from "@/features/settings/settings-general-form";
@@ -21,6 +21,7 @@ import {
   UserRoles,
 } from "@features/shared/types/settings-action.types";
 import SettingsNotification from "@features/settings/settings-notification";
+import SettingsExpiry from "@/features/settings/settings-expiry";
 
 type SettingPages = {
   params: Promise<{ page: string }>;
@@ -43,7 +44,7 @@ export default async function SettingsPages({
     <section className="relative w-full overflow-y-auto rounded-2xl bg-white p-8">
       <PermissionProvider
         permission={page}
-        freePass={["general", "security", "notifications"]}
+        freePass={["general", "security", "notifications", "expiry"]}
       >
         <SettingsSearchWithFilter />
         {pageWithDrawerUI.includes(page) && hasPermission && (
@@ -64,6 +65,7 @@ const renderSettingsPage = {
   departments: DepartmentSettings,
   users: UsersSettings,
   notifications: SettingsNotification,
+  expiry: SettingsExpiry,
   default: () => <div>Page not found</div>,
 } as const;
 const createBtnLabel = {

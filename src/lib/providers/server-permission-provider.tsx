@@ -13,7 +13,6 @@ export async function checkServerPermission(
   if (!session?.user?.permissions) {
     return false;
   }
-
   const permissionKeys = session.user.permissions.map(
     (item) => item.split(":")[0],
   );

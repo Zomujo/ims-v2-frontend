@@ -13,6 +13,8 @@ import {
 } from "../types/settings-action.types";
 import { GenerateQueryParams } from "../types/utitls.types";
 import { imsApiWithAuth } from "./ims-api.action";
+import { ApiSuccessResponseDto } from "../types/action.types";
+import { ExpirySettingsDto } from "@/features/settings/settings.types";
 
 export const changeAccountInfoAction = async ({
   fullName,
@@ -242,5 +244,33 @@ export const activateUserAction = async (id: string) => {
     return res;
   } catch (error) {
     return error as AuthApiStandardResponse;
+  }
+};
+
+export const getExpirySettings = async () => {
+  try {
+    const res = await imsApiWithAuth<ApiSuccessResponseDto<ExpirySettingsDto>>({
+      url: API_ENDPOINTS_OLD.SETTINGS_EXPIRY,
+      method: "GET",
+    });
+    return res;
+  } catch (error) {
+    return error as ApiSuccessResponseDto<ExpirySettingsDto>;
+  }
+};
+
+export const updateExpirySettings = async (
+  expirySettings: Partial<ExpirySettingsDto>,
+) => {
+  try {
+    const res = await imsApiWithAuth<ApiSuccessResponseDto<ExpirySettingsDto>>({
+      url: API_ENDPOINTS_OLD.SETTINGS_EXPIRY,
+      method: "PATCH",
+      body: JSON.stringify(expirySettings),
+    });
+    revalidateTag(API_ENDPOINTS_OLD.SETTINGS_EXPIRY);
+    return res;
+  } catch (error) {
+    return error as ApiSuccessResponseDto<ExpirySettingsDto>;
   }
 };
