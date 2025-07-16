@@ -15,6 +15,7 @@ import { AuthAccountCreationProps } from "@features/shared/types/auth-action.typ
 import { useState } from "react";
 import { toast } from "sonner";
 import { authCreateAccountAction } from "@features/shared/actions/auth.action";
+import { z } from "zod";
 
 export function CreateAccountForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);

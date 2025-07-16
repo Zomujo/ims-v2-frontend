@@ -12,7 +12,8 @@ const withPWA = require("@ducanh2912/next-pwa").default({
   workboxOptions: {
     runtimeCaching: [
       {
-        urlPattern: ({ request }) => request.mode === "navigate",
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        urlPattern: (pattern: any) => pattern.request.mode === "navigate",
         handler: "NetworkFirst",
         options: {
           cacheName: "pages-cache",
@@ -24,7 +25,8 @@ const withPWA = require("@ducanh2912/next-pwa").default({
         },
       },
       {
-        urlPattern: ({ url }) => url.pathname.startsWith("/api/"),
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        urlPattern: (pattern: any) => pattern.url.pathname.startsWith("/api/"),
         handler: "NetworkFirst",
         options: {
           cacheName: "api-cache",
