@@ -15,7 +15,7 @@ const withPWA = require("@ducanh2912/next-pwa").default({
       {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         urlPattern: (pattern: any) => pattern.request.mode === "navigate",
-        handler: "CacheFirst,",
+        handler: "CacheFirst",
         options: {
           cacheName: "pages-cache",
           expiration: {
