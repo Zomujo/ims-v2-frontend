@@ -40,3 +40,9 @@ export type ManageUsersSettingsProps = {
   departments: Department[];
   roles: UserRoles[];
 };
+
+export type ExpirySettingsDto = {
+  id: string;
+  intervalQuantity: number;
+  intervalUnit: string;
+};

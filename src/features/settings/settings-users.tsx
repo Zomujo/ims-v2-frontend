@@ -31,7 +31,7 @@ import {
 import { CRUDACTION } from "../shared/types/utitls.types";
 import { Input } from "../ui/input";
 import { newUserSettingsSchema } from "./settigns.schemas";
-import { settingsUserTableColumns } from "./settings-component-clinet";
+import { settingsUserTableColumns } from "./settings-component-client";
 import {
   ManageUsersContext,
   ManageUsersContextProvider,

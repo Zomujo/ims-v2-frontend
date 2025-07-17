@@ -27,9 +27,7 @@ export const useSessionData = () => {
   const role = user?.role;
 
   const profileImage = user?.imageUrl;
-
   const permissions = user?.permissions;
-
   const hasPermission = (permission: string) => {
     const permissionKeys = permissions?.map((item) => item.split(":")[0]);
     return !!permissionKeys?.includes(permission);

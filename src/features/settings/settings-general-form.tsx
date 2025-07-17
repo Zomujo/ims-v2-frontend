@@ -14,7 +14,7 @@ import { ImsPopover } from "../shared/components/ims-popover";
 import useHookForm from "../shared/hooks/use-hook-form";
 import { Input } from "../ui/input";
 import { generalSettingsSchema } from "./settigns.schemas";
-import { SettingsFromActions } from "./settings-component-clinet";
+import { SettingsFromActions } from "./settings-component-client";
 import { settingsAccountInfoFields } from "./settings.data";
 import {
   handleAccountInfoChange,

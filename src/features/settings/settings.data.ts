@@ -32,6 +32,12 @@ export const settingsSidebarNavItems = [
     icon: "solar:bell-bing-bold",
     href: "notifications",
   },
+  {
+    label: "Expiry",
+    icon: "mdi:timer-sand",
+    href: "expiry",
+    permission: "departments",
+  },
 ];
 
 export const settingPagesDescription = {
@@ -54,6 +60,10 @@ export const settingPagesDescription = {
   notifications: {
     title: "Notifications",
     description: "Notification settings for the application",
+  },
+  expiry: {
+    title: "Expiry",
+    description: "Expiry for the application",
   },
 } as const;
 

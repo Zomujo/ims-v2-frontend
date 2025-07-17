@@ -113,8 +113,7 @@ export default function SettingsNotification() {
             <div>
               <span className="font-medium">Email Notifications</span>
               <p className="text-gray-500">
-                Manage your preferences anytime to tailor your email
-                experience."
+                Manage your preferences anytime to tailor your email experience.
               </p>
             </div>
             <div className="flex flex-col gap-8">
