@@ -55,7 +55,7 @@ export default function SalesList() {
   }, []);
 
   return (
-    <ScrollArea className="mt-5 h-[95%] rounded-2xl bg-white pr-4">
+    <div className="roundd-2xl mt-2 h-[calc(100%-15rem)] bg-white pr-4 sm:h-[calc(100%-10rem)]">
       <CrudPage
         moduleName="sales"
         data={sales}
@@ -83,6 +83,6 @@ export default function SalesList() {
           },
         ]}
       ></CrudPage>
-    </ScrollArea>
+    </div>
   );
 }
