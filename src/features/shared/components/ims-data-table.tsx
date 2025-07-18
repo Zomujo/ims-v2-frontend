@@ -18,6 +18,7 @@ import {
 } from "@/features/ui/table";
 import { DynamicPagination } from "./pagination";
 import { Skeleton } from "@/features/ui/skeleton";
+import { cn } from "@/lib/utils";
 
 // Define props for the DataTable component
 type DataTableProps<TData, TValue> = {
@@ -87,9 +88,13 @@ export function IMSDataTable<TData, TValue>({
                 data-state={row.getIsSelected() && "selected"}
                 className="h-18 rounded-xl py-5"
               >
-                {row.getVisibleCells().map((cell) => (
+                {row.getVisibleCells().map((cell, index, array) => (
                   <TableCell
-                    className="border-y first:rounded-l-2xl first:border-l first:pl-4 last:rounded-r-2xl last:border-r"
+                    className={cn(
+                      index === array.length - 1 &&
+                        "sticky right-0 z-10 bg-white",
+                      "border-y first:rounded-l-2xl first:border-l first:pl-4 last:rounded-r-2xl last:border-r",
+                    )}
                     key={cell.id}
                   >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
