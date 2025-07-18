@@ -1,8 +1,6 @@
 "use client";
 
-import { PAGE_ROUTES } from "@/lib/constant";
-import { usePathname } from "next/navigation";
-import { PropsWithChildren, use, useEffect, useRef } from "react";
+import { use, useEffect, useRef } from "react";
 import { UseFormReturn } from "react-hook-form";
 import HookFormField, {
   inputTypeNumber,
@@ -15,12 +13,6 @@ import {
   dosageFormOptions,
   prescriptionUnits,
 } from "@features/items/items.data";
-
-export function ShowItemsDashboard({ children }: Readonly<PropsWithChildren>) {
-  const pathName = usePathname();
-  if (pathName === PAGE_ROUTES.ITEMS.VIEW) return children;
-  return null;
-}
 
 type ItemFormInputsProps = {
   form: UseFormReturn;
@@ -65,7 +57,6 @@ export function ItemFormInputs({
       updatingFromPrice.current = false;
       return;
     }
-
     const cp = Number(costPrice);
     const markup = Number(sellingPriceMarkup);
 
@@ -119,6 +110,7 @@ export function ItemFormInputs({
                 value: category.id,
                 label: category.name,
               }))}
+              showNone={false}
               moduleName="item category"
               {...field}
               className="focus-visible:ring-ims-blue-300 !h-11 bg-white"
