@@ -255,7 +255,7 @@ export type ExpiryItemsDto = {
 
 export type CreateItemDto = {
   name: string;
-  brandName: string;
+  brandName?: string;
   costPrice?: number;
   sellingPrice?: number;
   dosageForm: string;

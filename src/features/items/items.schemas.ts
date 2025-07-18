@@ -3,7 +3,7 @@ import { capitalize } from "@/lib/utils";
 
 export const itemFormSchema = z.object({
   name: z.string().min(1, "Item name is required"),
-  brandName: z.string().min(1, "Brand name is required"),
+  brandName: z.string().optional(),
   dosageForm: z.string().min(1, "Dosage form is required"),
   strength: z
     .number()

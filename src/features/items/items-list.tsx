@@ -127,7 +127,6 @@ export function ItemForm({
     const stepOneFields = [
       "name",
       "categoryId",
-      "brandName",
       "manufacturer",
       "dosageForm",
       "strength",
