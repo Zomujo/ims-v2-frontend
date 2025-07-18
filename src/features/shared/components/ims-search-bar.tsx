@@ -1,10 +1,11 @@
 "use client";
 import { Input } from "@/features/ui/input";
 import { SearchIcon, X } from "lucide-react";
-import { useRef, ChangeEvent } from "react";
+import { useRef, ChangeEvent, useEffect } from "react";
 import { useDebounceCallback } from "usehooks-ts";
 import useImsSearchParams from "../hooks/use-ims-search-params";
 import { cn } from "@/lib/utils";
+import { usePathname } from "next/navigation";
 
 const searchParamKey = "search";
 export default function ImsSearchBar({
@@ -14,6 +15,7 @@ export default function ImsSearchBar({
   const inputRef = useRef<HTMLInputElement>(null);
   const { setSearchParams, removeSearchParams, getSearchParams } =
     useImsSearchParams();
+  const pathname = usePathname();
 
   const searchValue = getSearchParams(searchParamKey);
 
@@ -29,13 +31,20 @@ export default function ImsSearchBar({
     500,
   );
 
-  const handleClearSearch = () => {
+  const handleClearSearch = (focus = true) => {
     removeSearchParams(searchParamKey);
     if (inputRef.current) {
       inputRef.current.value = "";
-      inputRef.current.focus();
+      if (focus) {
+        inputRef.current.focus();
+      }
     }
   };
+
+  useEffect(() => {
+    handleClearSearch(false);
+  }, [pathname]);
+
   return (
     <div
       className={cn("relative flex w-full max-w-sm items-center", className)}
@@ -52,7 +61,7 @@ export default function ImsSearchBar({
       />
       {searchValue && (
         <button
-          onClick={handleClearSearch}
+          onClick={() => handleClearSearch()}
           className="absolute right-5 z-5 rounded-full text-gray-500 hover:bg-gray-100 hover:text-gray-600 active:scale-90"
         >
           <X size={20} />
