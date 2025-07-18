@@ -73,7 +73,7 @@ const getActionColumn = <TData, TValue>({
                 key={actionItem?.label}
                 onClick={() => actionItem?.action()}
                 variant="ghost"
-                className="w-max border p-0 text-xs"
+                className="w-max border bg-indigo-600 p-0 text-xs text-white"
               >
                 {isAdded ? (
                   <span className="px-4">Added</span>
