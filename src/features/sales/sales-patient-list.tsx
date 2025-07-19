@@ -1,5 +1,5 @@
 "use client";
-import { handleRequestState } from "@/lib/utils";
+import { getAgeFromDate, handleRequestState } from "@/lib/utils";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { useEffect } from "react";
 import { useDebounceCallback } from "usehooks-ts";
@@ -128,6 +128,8 @@ function NewPatientForm() {
     handleRequestState({ res, loadingMsg: "Creating new patient..." });
     await res;
   };
+
+  const dateOfBirth = form.watch("dateOfBirth");
   return (
     <ImsForm
       className="overflow-y-auto [&>*]:px-4"
@@ -164,13 +166,13 @@ function NewPatientForm() {
           <HookFormField
             formControl={form.control}
             name="cardIdentificationNumber"
-            label="Card Identification Number"
+            label="National Health Insurance Scheme Number"
             renderInput={({ field }) => (
               <Input
                 {...field}
                 className="focus-visible:ring-ims-blue-300 bg-white"
                 type="text"
-                placeholder="Ghana card or NHIS number"
+                placeholder="NHIS number"
               />
             )}
           />
@@ -187,6 +189,11 @@ function NewPatientForm() {
               />
             )}
           />
+          {!!dateOfBirth && (
+            <span className="text-gray-600">
+              Age: {getAgeFromDate(dateOfBirth)} years
+            </span>
+          )}
         </>
       }
     />
