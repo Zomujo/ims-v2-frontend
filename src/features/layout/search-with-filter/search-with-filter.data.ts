@@ -320,10 +320,10 @@ export const userRoleFilter = {
 
 export const todaySalesFilters = {
   key: "todaySales",
-  label: "Enable",
+  label: "Today's Sales",
   type: "boolean" as const,
   options: [],
-  defaultValue: false,
+  defaultValue: true,
 };
 
 export const requestStatusFilter = {
