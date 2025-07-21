@@ -35,7 +35,24 @@ export type AmountType = (typeof amountTypes)[number];
 
 export const itemBatchFormSchema = z.object({
   quantity: z.number().min(1, "Quantity is required"),
-  validity: z.string().min(1, "Validity is required"),
+  validity: z
+    .string()
+    .min(1, "Validity is required")
+    .refine(
+      (val) => {
+        const [year, month] = val.split("-").map(Number);
+        const today = new Date();
+        const currentYear = today.getFullYear();
+        const currentMonth = today.getMonth() + 1;
+        return (
+          year > currentYear || (year === currentYear && month >= currentMonth)
+        );
+      },
+      {
+        message: "Expiry date cannot be in the past",
+      },
+    ),
+
   batchNumber: z.string().min(1, "Batch number is required"),
   supplierId: z.string().min(1, "Supplier ID is required"),
   markup: z

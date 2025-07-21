@@ -29,11 +29,7 @@ import {
 import { CRUDACTION } from "../shared/types/utitls.types";
 import { Input } from "../ui/input";
 import { itemBatchesTableColumns } from "./items.data";
-import {
-  amountTypes,
-  amountTypeOptions,
-  itemBatchFormSchema,
-} from "./items.schemas";
+import { amountTypes, itemBatchFormSchema } from "./items.schemas";
 import { usePageHeading } from "@/hooks/usePageHeading";
 import { useEffect, useState } from "react";
 import { useSessionData } from "@/hooks/useSessionData";
@@ -156,6 +152,24 @@ function ItemBatchesForm({
   const [isLoadingBatch, setIsLoadingBatch] = useState(false);
   const [batch, setBatch] = useState<BatchResponseDto>();
 
+  const setMarkupData = (checked: boolean) => {
+    if (checked) {
+      setInsuranceMarkup(true);
+      form.setValue(
+        "markup",
+        {
+          type: "NHIS",
+          amountType: amountTypes[0],
+          amount: 100,
+        },
+        { shouldValidate: true },
+      );
+    } else {
+      setInsuranceMarkup(false);
+      form.setValue("markup", undefined, { shouldValidate: true });
+    }
+  };
+
   useEffect(() => {
     const getEditBatch = async () => {
       if (batchId) {
@@ -178,25 +192,6 @@ function ItemBatchesForm({
     };
     void getEditBatch();
   }, [batchId]);
-
-  useEffect(() => {
-    if (insuranceMarkup) {
-      if (!batch?.markup) {
-        form.setValue(
-          "markup",
-          {
-            type: "NHIS",
-            amountType: amountTypes[0],
-          },
-          { shouldValidate: true },
-        );
-      } else {
-        form.setValue("markup", batch.markup, { shouldValidate: true });
-      }
-    } else {
-      form.setValue("markup", undefined, { shouldValidate: true });
-    }
-  }, [insuranceMarkup]);
 
   useEffect(() => {
     if (useBoxes) {
@@ -351,10 +346,10 @@ function ItemBatchesForm({
                 <input
                   type="checkbox"
                   checked={insuranceMarkup}
-                  onChange={(e) => setInsuranceMarkup(e.target.checked)}
+                  onChange={({ target }) => setMarkupData(target.checked)}
                   disabled={!!batchId && !!batch?.markup}
                 />
-                Insurance Markup
+                Insurance Covered
               </label>
               {!!batchId && !!batch?.markup && (
                 <Tooltip>
@@ -372,57 +367,20 @@ function ItemBatchesForm({
               )}
             </div>
             {insuranceMarkup && (
-              <>
-                <HookFormField
-                  formControl={form.control}
-                  name="markup.type"
-                  label="Insurance Type"
-                  renderInput={({ field }) => (
-                    <Input
-                      {...field}
-                      value={field.value ?? "NHIS"}
-                      className="focus-visible:ring-ims-blue-300 bg-white"
-                      placeholder="eg: NHIS"
-                      disabled={true}
-                    />
-                  )}
-                />
-                <HookFormField
-                  formControl={form.control}
-                  name="markup.amountType"
-                  label="Mark Amount Type"
-                  renderInput={({ field }) => (
-                    <ImsSelect
-                      options={amountTypeOptions}
-                      showNone={false}
-                      moduleName="amount type"
-                      {...field}
-                      value={field.value ?? amountTypes[0]}
-                      className="focus-visible:ring-ims-blue-300 !h-11 bg-white"
-                    />
-                  )}
-                />
-                <HookFormField
-                  formControl={form.control}
-                  name="markup.amount"
-                  label="Quantity"
-                  renderInput={({ field }) => (
-                    <div className="flex items-center gap-2">
-                      <Input
-                        {...inputTypeNumber(field)}
-                        className="focus-visible:ring-ims-blue-300 bg-white"
-                        type="number"
-                        placeholder="eg: 100"
-                      />
-                      <span className="text-sm">
-                        {form.watch("markup.amountType") === amountTypes[0]
-                          ? "%"
-                          : "GHC"}
-                      </span>
-                    </div>
-                  )}
-                />
-              </>
+              <HookFormField
+                formControl={form.control}
+                name="markup.type"
+                label="Insurance Type"
+                renderInput={({ field }) => (
+                  <Input
+                    {...field}
+                    value={field.value ?? "NHIS"}
+                    className="focus-visible:ring-ims-blue-300 bg-white"
+                    placeholder="eg: NHIS"
+                    disabled={true}
+                  />
+                )}
+              />
             )}
           </>
         }
