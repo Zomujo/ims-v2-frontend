@@ -12,7 +12,7 @@ type FetchDataProps<T> = {
   onLoading?: (loading: boolean) => void;
   onComplete?: () => void;
   deps?: unknown[];
-  exercuteOnMount?: boolean;
+  executeOnMount?: boolean;
   arrayQueries?: string[];
 };
 
@@ -23,7 +23,7 @@ export default function useFetchData<T>({
   onLoading,
   onSuccess,
   deps = [],
-  exercuteOnMount = true,
+  executeOnMount = true,
   arrayQueries = [],
 }: FetchDataProps<T>) {
   const [loading, setLoading] = useState(false);
@@ -65,7 +65,7 @@ export default function useFetchData<T>({
   };
 
   useEffect(() => {
-    if (!exercuteOnMount) return;
+    if (!executeOnMount) return;
 
     const newSearchParamsString = searchParams.toString();
     const oldSearchParamsString = prevSearchParams.current;
