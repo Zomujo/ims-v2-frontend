@@ -1,5 +1,5 @@
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { GenerateQueryParams } from "../types/utitls.types";
 
 type FetchDataProps<T> = {
@@ -12,7 +12,7 @@ type FetchDataProps<T> = {
   onLoading?: (loading: boolean) => void;
   onComplete?: () => void;
   deps?: unknown[];
-  exercuteOnMount?: boolean;
+  executeOnMount?: boolean;
   arrayQueries?: string[];
 };
 
@@ -23,13 +23,14 @@ export default function useFetchData<T>({
   onLoading,
   onSuccess,
   deps = [],
-  exercuteOnMount = true,
+  executeOnMount = true,
   arrayQueries = [],
 }: FetchDataProps<T>) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
   const [data, setData] = useState<T | null>(null);
   const searchParams = useSearchParams();
+  const prevSearchParams = useRef<string>("");
 
   const fetchData = async () => {
     const queryParams = Object.fromEntries(searchParams.entries());
@@ -64,7 +65,29 @@ export default function useFetchData<T>({
   };
 
   useEffect(() => {
-    if (!exercuteOnMount) return;
+    if (!executeOnMount) return;
+
+    const newSearchParamsString = searchParams.toString();
+    const oldSearchParamsString = prevSearchParams.current;
+    prevSearchParams.current = newSearchParamsString;
+
+    const state = searchParams.get("state");
+
+    if (
+      (state === "create" || state === "edit") &&
+      oldSearchParamsString !== undefined
+    ) {
+      const newParamsCopy = new URLSearchParams(newSearchParamsString);
+      const oldParamsCopy = new URLSearchParams(oldSearchParamsString);
+
+      newParamsCopy.delete("state");
+      oldParamsCopy.delete("state");
+
+      if (newParamsCopy.toString() === oldParamsCopy.toString()) {
+        return;
+      }
+    }
+
     void fetchData();
   }, [searchParams, ...deps]);
 

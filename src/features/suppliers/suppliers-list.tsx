@@ -175,7 +175,7 @@ function SupplierForm({ supplierId }: Readonly<SupplierFormProps>) {
 
   const { loading } = useFetchData({
     fetchFn: async () => getSupplier(supplierId ?? ""),
-    exercuteOnMount: !!supplierId,
+    executeOnMount: !!supplierId,
     deps: [supplierId],
     onSuccess: (data) => {
       const supplierData = data.data ?? {};
