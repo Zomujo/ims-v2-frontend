@@ -35,6 +35,48 @@ const mockBankNames = [
   { value: "ghana_commercial_bank", label: "Ghana Commercial Bank" },
   { value: "stanbic_bank", label: "Stanbic Bank" },
   { value: "ecobank", label: "Ecobank" },
+  { value: "absa_bank_ghana", label: "Absa Bank Ghana" },
+  { value: "access_bank_ghana", label: "Access Bank (Ghana) PLC" },
+  {
+    value: "agricultural_development_bank",
+    label: "Agricultural Development Bank",
+  },
+  { value: "bank_of_africa_ghana", label: "Bank of Africa Ghana" },
+  { value: "calbank", label: "CalBank PLC" },
+  { value: "consolidated_bank_ghana", label: "Consolidated Bank Ghana" },
+  { value: "fbnbank_ghana", label: "FBNBank (Ghana) Limited" },
+  { value: "fidelity_bank", label: "Fidelity Bank Ghana" },
+  { value: "first_atlantic_bank", label: "First Atlantic Bank Limited" },
+  {
+    value: "first_national_bank_ghana",
+    label: "First National Bank (Ghana) Limited",
+  },
+  { value: "gcb_bank", label: "GCB Bank PLC" },
+  {
+    value: "guaranty_trust_bank_ghana",
+    label: "Guaranty Trust Bank (Ghana) Limited",
+  },
+  {
+    value: "national_investment_bank",
+    label: "National Investment Bank Limited",
+  },
+  { value: "omnibsic_bank", label: "OmniBSIC Bank Ghana Limited" },
+  { value: "prudential_bank", label: "Prudential Bank Limited" },
+  { value: "republic_bank_ghana", label: "Republic Bank (Ghana) PLC" },
+  { value: "societe_generale_ghana", label: "Societe Generale Ghana PLC" },
+  {
+    value: "standard_chartered_bank_ghana",
+    label: "Standard Chartered Bank Ghana PLC",
+  },
+  {
+    value: "united_bank_for_africa_ghana",
+    label: "United Bank for Africa (Ghana) Limited",
+  },
+  {
+    value: "universal_merchant_bank",
+    label: "Universal Merchant Bank Limited",
+  },
+  { value: "zenith_bank_ghana", label: "Zenith Bank (Ghana) Limited" },
 ];
 
 const mockAccountTypes = [

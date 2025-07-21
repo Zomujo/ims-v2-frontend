@@ -19,7 +19,6 @@ const SettingsExpiry = () => {
       const response = await getExpirySettings();
 
       const { data } = response;
-      console.log(data);
 
       if (data) {
         setIntervalQuantity(data.intervalQuantity);
@@ -43,7 +42,6 @@ const SettingsExpiry = () => {
       toast.success("Settings updated successfully!");
     } catch (err) {
       toast.error("Failed to update settings");
-      console.error(err);
     } finally {
       setLoading(false);
     }
