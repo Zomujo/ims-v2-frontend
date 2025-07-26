@@ -19,17 +19,37 @@ const serwist = new Serwist({
   skipWaiting: true,
   clientsClaim: true,
   navigationPreload: true,
-  runtimeCaching: defaultCache,
+  disableDevLogs: true,
+  precacheOptions: {
+    cleanupOutdatedCaches: true,
+    ignoreURLParametersMatching: [/.*/],
+  },
   fallbacks: {
     entries: [
       {
-        url: "/offline", // the page that'll display if user goes offline
+        url: "/~offline",
         matcher({ request }) {
           return request.destination === "document";
         },
       },
     ],
   },
+  runtimeCaching: defaultCache,
+});
+
+const urlsToCache = ["/", "/dashboard", "/~offline"] as const;
+
+self.addEventListener("install", (event) => {
+  event.waitUntil(
+    Promise.all(
+      urlsToCache.map((entry) => {
+        return serwist.handleRequest({
+          request: new Request(entry),
+          event,
+        });
+      }),
+    ),
+  );
 });
 
 serwist.addEventListeners();
