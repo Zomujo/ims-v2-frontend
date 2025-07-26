@@ -26,7 +26,7 @@
   ],
   "theme_color": "#FFFFFF",
   "background_color": "#FFFFFF",
-  "scope": "/dashboard",
+  "scope": "/",
   "start_url": "/dashboard",
   "display": "standalone",
   "splash_pages": null,
