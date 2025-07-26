@@ -1,6 +1,11 @@
 {
+  "id": "com.zomujo.stealth.inventory",
+  "dir": "ltr",
+  "lang": "en",
   "name": "Zomujo Stealth - Inventory Management System",
   "short_name": "Zomujo Stealth",
+  "prefer_related_applications": false,
+  "iarc_rating_id": "13",
   "icons": [
     {
       "src": "/icon-192x192.png",
