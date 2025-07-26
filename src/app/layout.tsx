@@ -11,7 +11,7 @@ const APP_DESCRIPTION =
   "Zomujo Stealth is an inventory management system designed to help you track and manage your medicine inventory efficiently.";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://ims-v2-frontend.vercel.app/"),
+  metadataBase: new URL("https://ims-v2-frontend.vercel.app/dashboard/"),
   applicationName: APP_NAME,
   title: {
     default: APP_DEFAULT_TITLE,
@@ -19,6 +19,8 @@ export const metadata: Metadata = {
   },
   description: APP_DESCRIPTION,
   manifest: "/manifest.json",
+  category: "website",
+  generator: "Next.js",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
