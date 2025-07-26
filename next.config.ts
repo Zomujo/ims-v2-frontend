@@ -15,24 +15,11 @@ module.exports = async (phase: any) => {
       dirs: ["src"],
       ignoreDuringBuilds: true,
     },
-    async headers() {
-      return [
-        {
-          source: "/sw.js",
-          headers: [
-            {
-              key: "Cache-Control",
-              value: "no-cache, no-store, must-revalidate",
-            },
-          ],
-        },
-      ];
-    },
   } satisfies NextConfig;
 
   if (phase === PHASE_DEVELOPMENT_SERVER || phase === PHASE_PRODUCTION_BUILD) {
     const withSerwist = (await import("@serwist/next")).default({
-      swSrc: "public/service-worker/app-worker.ts",
+      swSrc: "public/service-worker/sw.ts",
       swDest: "public/sw.js",
       reloadOnOnline: true,
     });

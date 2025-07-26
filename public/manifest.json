@@ -1,5 +1,5 @@
 {
-  "id": "com.zomujo.stealth.inventory",
+  "id": "zomujo-stealth-inventory",
   "dir": "ltr",
   "lang": "en",
   "name": "Zomujo Stealth - Inventory Management System",
@@ -26,8 +26,10 @@
   ],
   "theme_color": "#FFFFFF",
   "background_color": "#FFFFFF",
+  "scope": "/dashboard",
   "start_url": "/dashboard",
   "display": "standalone",
+  "splash_pages": null,
   "orientation": "portrait",
   "screenshots": [
     {
