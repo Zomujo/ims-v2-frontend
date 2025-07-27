@@ -1,5 +1,5 @@
 "use client";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { DateRange } from "react-day-picker";
 import { Popover, PopoverContent, PopoverTrigger } from "@features/ui/popover";
@@ -81,6 +81,11 @@ export function DatePicker({
   placeholder,
 }: DatePickerProps) {
   const [open, setOpen] = useState(false);
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   return (
     <div className="flex flex-col gap-3">
@@ -96,7 +101,7 @@ export function DatePicker({
             id="date"
             className="w-48 justify-between font-normal"
           >
-            {date
+            {isClient && date
               ? date.toLocaleDateString()
               : placeholder
                 ? placeholder
