@@ -5,29 +5,55 @@ import {
   UserStatus,
 } from "@features/shared/types/auth-action.types";
 import { hasActionPermissionHelper } from "@/lib/utils/permissions.utils";
+import { useState, useEffect } from "react";
+import localforage from "localforage";
+import { Session } from "next-auth";
+
+localforage.config({
+  name: "zomujo-stealth-db",
+});
 
 export const useSessionData = () => {
-  const { data: session, status, update } = useSession();
+  const { data: networkSession, status, update } = useSession();
+  const [cachedSession, setCachedSession] = useState<Session | null>(null);
+
+  useEffect(() => {
+    if (networkSession) {
+      if (JSON.stringify(networkSession) !== JSON.stringify(cachedSession)) {
+        setCachedSession(networkSession);
+        void localforage.setItem("session", networkSession);
+      }
+    }
+  }, [networkSession, cachedSession]);
+
+  useEffect(() => {
+    const loadCachedSession = async () => {
+      if (status !== "loading" && !networkSession) {
+        const savedSession = await localforage.getItem<Session>("session");
+        if (savedSession) {
+          setCachedSession(savedSession);
+        }
+      }
+    };
+    void loadCachedSession();
+  }, [status, networkSession]);
+
+  const session = networkSession || cachedSession;
 
   const user = session?.user;
-
   const userId = user?.id;
-
   const token = session?.user.tokens.accessToken;
 
-  const isLoading = status === "loading";
+  const isLoading = status === "loading" && !cachedSession;
   const isAuthenticated = !!session;
 
   const fullName = user?.fullName;
-
   const firstName = fullName ? fullName.split(" ")[0] : "";
-
   const facilityName = user?.facility?.name;
-
   const role = user?.role;
-
   const profileImage = user?.imageUrl;
   const permissions = user?.permissions;
+
   const hasPermission = (permission: string) => {
     const permissionKeys = permissions?.map((item) => item.split(":")[0]);
     return !!permissionKeys?.includes(permission);
@@ -43,9 +69,13 @@ export const useSessionData = () => {
     hasActionPermission(`${module}:${PermissionActions.DELETE}`);
 
   const updateUserStatus = async (userStatus: UserStatus) => {
-    await update({
-      status: userStatus,
-    });
+    if (networkSession) {
+      await update({
+        status: userStatus,
+      });
+    } else {
+      console.log("Cannot update status while offline.");
+    }
   };
 
   return {
