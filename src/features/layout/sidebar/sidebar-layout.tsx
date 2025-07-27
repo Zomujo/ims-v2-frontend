@@ -24,7 +24,7 @@ import {
   useSidebar,
 } from "@/features/ui/sidebar";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import { ChevronDown, Menu, Pill, X } from "lucide-react";
+import { ChevronDown, Pill, X } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { generalTabs, helpTabs } from "./sidebar.data";
@@ -33,7 +33,7 @@ import { useSessionData } from "@/hooks/useSessionData";
 
 export default function SidebarLayout() {
   const [isPharmaOpen, setIsPharmaOpen] = useState(false);
-  const { open, setOpen, toggleSidebar } = useSidebar(); // Access sidebar state
+  const { toggleSidebar } = useSidebar();
   const pathname = usePathname();
   const { isLoading, facilityName, role } = useSessionData();
   const { hasPermission } = useSessionData();
