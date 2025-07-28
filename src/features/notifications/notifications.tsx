@@ -96,7 +96,7 @@ export default function RealtimeNotifications(): JSX.Element {
             <Loader2 className="mr-2 h-6 w-6 animate-spin" />
             <span>Loading notifications...</span>
           </div>
-        ) : error ? (
+        ) : error && !notifications.length ? (
           <div className="flex flex-col items-center justify-center py-8 text-gray-500">
             <span className="mb-2 text-red-500">{error}</span>
             <ImsButton variant="outline" size="sm" onClick={handleRefetch}>
