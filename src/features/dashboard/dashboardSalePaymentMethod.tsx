@@ -9,7 +9,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/features/ui/chart";
-import React, { useEffect, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { DATE_RANGE } from "@features/layout/search-with-filter/search-with-filter.data";
 import { getSalePaymentMethod } from "@features/shared/actions/dashboard.actions";
 import { DateRangeQueryOptions } from "@features/shared/types/utitls.types";
@@ -17,55 +17,64 @@ import { Skeleton } from "../ui/skeleton";
 import DashboardBaseCard from "@features/dashboard/dashboardBaseCard";
 import { cn, generateColor } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
+import useFetchData from "@features/shared/hooks/use-fetch-data";
+import { TopSelling } from "@features/shared/types/dashboard.types";
 
 interface ChartData {
   category: string;
   quantity: number;
+  fill: string;
 }
 
 export default function DashboardSalePaymentMethod() {
-  const [chartData, setChartData] = useState<ChartData[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [selectedDateRange, setSelectedDateRange] = useState<DATE_RANGE>(
     DATE_RANGE.THIS_MONTH,
   );
-  const [chartConfig, setChartConfig] = useState<ChartConfig>({
-    name: {
-      label: "Category",
-    },
-  });
   const isMobile = useIsMobile("x-large-mobile");
 
-  useEffect(() => {
-    const fetchPaymentMethods = async () => {
-      setIsLoading(true);
-      const salePaymentMethodsResponse = await getSalePaymentMethod({
+  const { data: salePaymentMethodsResponse, loading: isLoading } = useFetchData<
+    TopSelling | undefined
+  >({
+    fetchFn: () =>
+      getSalePaymentMethod({
         dateRange: selectedDateRange as DateRangeQueryOptions,
-      });
-      if (salePaymentMethodsResponse) {
-        const { categories, quantities } = salePaymentMethodsResponse;
-        if (categories && quantities) {
-          const convertedChartData = categories.map((category, index) => {
-            setChartConfig((prev) => ({
-              ...prev,
-              [category]: {
-                label: category,
-                color: generateColor(index + 1, true, true),
-              },
-            }));
-            return {
-              category,
-              quantity: quantities[index],
-              fill: generateColor(index + 1, true, true),
-            };
-          });
-          setChartData(convertedChartData);
-        }
-      }
-      setIsLoading(false);
+      }),
+    cacheKey: `dashboard-sale-payment-method-${selectedDateRange}`,
+    deps: [selectedDateRange],
+  });
+
+  const chartData = useMemo<ChartData[]>(() => {
+    const categories = salePaymentMethodsResponse?.categories;
+    const quantities = salePaymentMethodsResponse?.quantities;
+    if (categories && quantities) {
+      return categories.map((category, index) => ({
+        category,
+        quantity: quantities[index],
+        fill: generateColor(index + 1, true, true),
+      }));
+    }
+    return [];
+  }, [salePaymentMethodsResponse]);
+
+  const chartConfig = useMemo<ChartConfig>(() => {
+    const config: ChartConfig = {
+      name: {
+        label: "Category",
+      },
     };
-    void fetchPaymentMethods();
-  }, [selectedDateRange]);
+    chartData.forEach((data, index) => {
+      config[data.category] = {
+        label: data.category,
+        color: generateColor(index + 1, true, true),
+      };
+    });
+    return config;
+  }, [chartData]);
+
+  const totalQuantity = useMemo(
+    () => chartData.reduce((acc, curr) => acc + curr.quantity, 0),
+    [chartData],
+  );
 
   return (
     <DashboardBaseCard
@@ -130,7 +139,7 @@ export default function DashboardSalePaymentMethod() {
                           y={viewBox.cy}
                           className="fill-foreground text-3xl font-bold"
                         >
-                          100%
+                          {totalQuantity.toLocaleString()}
                         </tspan>
                       </text>
                     );

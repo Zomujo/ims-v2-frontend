@@ -73,11 +73,13 @@ export type Sales = { hours?: string[] } & Omit<
   "hours"
 >;
 
+export interface TopSelling {
+  categories: string[] | null;
+  quantities: number[] | null;
+}
+
 export interface PaymentMethodResponse {
-  topSelling: {
-    categories: string[] | null;
-    quantities: number[] | null;
-  };
+  topSelling: TopSelling;
 }
 
 interface QuantityTotal {
