@@ -36,6 +36,7 @@ export default function ItemsList() {
   const { data, loading, refetch } = useFetchData({
     fetchFn: getItems,
     arrayQueries: ["categories"],
+    cacheKey: "items-list",
   });
   const items = data?.rows ?? [];
   const {

@@ -7,7 +7,7 @@ import {
   ChartLegend,
   ChartLegendContent,
 } from "@/features/ui/chart";
-import React, { useEffect, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { DATE_RANGE } from "@features/layout/search-with-filter/search-with-filter.data";
 import { getSellingCategories } from "@features/shared/actions/dashboard.actions";
 import { DateRangeQueryOptions } from "@features/shared/types/utitls.types";
@@ -15,56 +15,58 @@ import { Skeleton } from "../ui/skeleton";
 import DashboardBaseCard from "@features/dashboard/dashboardBaseCard";
 import { cn, generateColor } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
+import useFetchData from "@features/shared/hooks/use-fetch-data";
+import { SellingCategoriesResponse } from "@features/shared/types/dashboard.types";
 
 interface ChartData {
   name: string;
   quantity: number;
+  fill: string;
 }
 
 export default function DashboardSellingCategories() {
-  const [chartData, setChartData] = useState<ChartData[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [selectedDateRange, setSelectedDateRange] = useState<DATE_RANGE>(
     DATE_RANGE.THIS_MONTH,
   );
-  const [chartConfig, setChartConfig] = useState<ChartConfig>({
-    name: {
-      label: "Name",
-    },
-  });
   const isMobile = useIsMobile("x-large-mobile");
-
-  useEffect(() => {
-    const fetchSellingCategories = async () => {
-      setIsLoading(true);
-      const sellingCategoriesResponse = await getSellingCategories({
+  const { data: sellingCategoriesResponse, loading: isLoading } = useFetchData<
+    SellingCategoriesResponse | undefined
+  >({
+    fetchFn: () =>
+      getSellingCategories({
         dateRange: selectedDateRange as DateRangeQueryOptions,
-      });
-      if (sellingCategoriesResponse) {
-        const { categories, quantities } = sellingCategoriesResponse.topSelling;
-        if (categories && quantities) {
-          const convertedChartData = categories.map((name, index) => {
-            setChartConfig((prev) => ({
-              ...prev,
-              [name]: {
-                label: name,
-                color: generateColor(index + 1, true, true),
-              },
-            }));
-            return {
-              name,
-              quantity: quantities[index],
-              fill: generateColor(index + 1, true, true),
-            };
-          });
+      }),
+    cacheKey: `dashboard-selling-categories`,
+    deps: [selectedDateRange],
+  });
 
-          setChartData(convertedChartData);
-        }
-      }
-      setIsLoading(false);
+  const chartData = useMemo<ChartData[]>(() => {
+    const categories = sellingCategoriesResponse?.topSelling?.categories;
+    const quantities = sellingCategoriesResponse?.topSelling?.quantities;
+    if (categories && quantities) {
+      return categories.map((name, index) => ({
+        name,
+        quantity: quantities[index],
+        fill: generateColor(index + 1, true, true),
+      }));
+    }
+    return [];
+  }, [sellingCategoriesResponse]);
+
+  const chartConfig = useMemo<ChartConfig>(() => {
+    const config: ChartConfig = {
+      name: {
+        label: "Name",
+      },
     };
-    void fetchSellingCategories();
-  }, [selectedDateRange]);
+    chartData.forEach((data, index) => {
+      config[data.name] = {
+        label: data.name,
+        color: generateColor(index + 1, true, true),
+      };
+    });
+    return config;
+  }, [chartData]);
 
   return (
     <DashboardBaseCard

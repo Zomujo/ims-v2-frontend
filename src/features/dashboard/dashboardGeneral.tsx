@@ -1,4 +1,4 @@
-import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
+import { ReactNode, useCallback, useMemo, useState } from "react";
 import { DateRange } from "react-day-picker";
 import { format } from "date-fns";
 import { cn, formatValue, scrollToSection } from "@/lib/utils";
@@ -19,9 +19,14 @@ import {
   getItems,
   getItemsExpiry,
 } from "@features/shared/actions/items.actions";
-import { ExpiryItemsDto, ItemsDto } from "@features/shared/types/action.types";
+import {
+  ExpiryItemsDto,
+  ItemsDto,
+  Pagination,
+} from "@features/shared/types/action.types";
 import Link from "next/link";
 import { DatePickerWithRange } from "@features/ui/date-picker";
+import useFetchData from "@features/shared/hooks/use-fetch-data";
 
 const stockLevelCategories: {
   label: string;
@@ -89,66 +94,49 @@ const DashboardGeneral = () => {
   const today = new Date();
   const threeMonthsAgo = new Date(today);
   threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
-  const [data, setData] = useState<GeneralResponse>();
   const [date, setDate] = useState<Required<DateRange>>({
     from: threeMonthsAgo,
     to: today,
   });
-  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [currentStockLevelView, setCurrentStockLevelView] =
     useState<Exclude<StockLevel, "STOCKED">>("LOW");
-  const [isLoadingStock, setIsLoadingStock] = useState(true);
-  const [stockItems, setStockItems] = useState<ItemsDto[]>([]);
-  const [expiringItems, setExpiringItems] = useState<ExpiryItemsDto[]>([]);
-  const [isLoadingExpiring, setIsLoadingExpiring] = useState(true);
-
-  useEffect(() => {
-    const fetchGeneralOverview = async () => {
-      setIsLoading(true);
-      const generalResponse = await getGeneralOverview({
+  const { data, loading: isLoading } = useFetchData<
+    GeneralResponse | undefined
+  >({
+    fetchFn: () =>
+      getGeneralOverview({
         endDate: date.to.toISOString(),
         startDate: date.from?.toISOString(),
-      });
-      if (generalResponse) {
-        setData(generalResponse);
-      }
-      setIsLoading(false);
-    };
-    void fetchGeneralOverview();
-  }, [date]);
+      }),
+    cacheKey: `dashboard-general`,
+    deps: [date],
+  });
 
-  const fetchStockItems = async () => {
-    setIsLoadingStock(true);
-    const stockResponse = await getItems({
-      status: currentStockLevelView,
-      pageSize: "5",
-    });
-    if (stockResponse) {
-      setStockItems(stockResponse.rows);
-    }
-    setIsLoadingStock(false);
-  };
+  const { data: stockItemsData, loading: isLoadingStock } = useFetchData<
+    Pagination<ItemsDto>
+  >({
+    fetchFn: () =>
+      getItems({
+        status: currentStockLevelView,
+        pageSize: "5",
+      }),
+    cacheKey: `dashboard-stock-items`,
+    deps: [currentStockLevelView],
+  });
+  const stockItems = stockItemsData?.rows ?? [];
 
-  useEffect(() => {
-    void fetchStockItems();
-  }, [currentStockLevelView]);
-
-  const fetchExpiringItems = async () => {
-    setIsLoadingExpiring(true);
-    const expiringResponse = await getItemsExpiry({
-      pageSize: "5",
-      orderBy: "expiryDate",
-      orderDirection: "ASC",
-    });
-    if (expiringResponse) {
-      setExpiringItems(expiringResponse.rows);
-    }
-    setIsLoadingExpiring(false);
-  };
-
-  useEffect(() => {
-    void fetchExpiringItems();
-  }, []);
+  const { data: expiringItemsData, loading: isLoadingExpiring } = useFetchData<
+    Pagination<ExpiryItemsDto>
+  >({
+    fetchFn: () =>
+      getItemsExpiry({
+        pageSize: "5",
+        orderBy: "expiryDate",
+        orderDirection: "ASC",
+      }),
+    cacheKey: "dashboard-expiring-items",
+  });
+  const expiringItems = expiringItemsData?.rows ?? [];
 
   const stockLevelPercentage = useCallback(
     (level: StockLevel) => {

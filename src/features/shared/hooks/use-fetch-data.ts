@@ -1,6 +1,7 @@
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { GenerateQueryParams } from "../types/utitls.types";
+import localforage from "localforage";
 
 type FetchDataProps<T> = {
   fetchFn: (
@@ -13,9 +14,10 @@ type FetchDataProps<T> = {
   onLoading?: (loading: boolean) => void;
   onComplete?: () => void;
   deps?: unknown[];
-  exercuteOnMount?: boolean;
+  executeOnMount?: boolean;
   arrayQueries?: string[];
   routeParams?: Record<string, string>;
+  cacheKey?: string;
 };
 
 export default function useFetchData<T>({
@@ -25,16 +27,31 @@ export default function useFetchData<T>({
   onLoading,
   onSuccess,
   deps = [],
-  exercuteOnMount = true,
+  executeOnMount = true,
   arrayQueries = [],
   routeParams,
+  cacheKey,
 }: FetchDataProps<T>) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
   const [data, setData] = useState<T | null>(null);
   const searchParams = useSearchParams();
+  const prevSearchParams = useRef<string>("");
 
   const fetchData = async () => {
+    const fullCacheKey = cacheKey
+      ? `${cacheKey}:${searchParams.toString()}`
+      : null;
+
+    let cachedData: T | null = null;
+
+    if (fullCacheKey) {
+      cachedData = await localforage.getItem<T>(fullCacheKey);
+      if (cachedData) {
+        setData(cachedData);
+      }
+    }
+
     const queryParams = Object.fromEntries(searchParams.entries());
     const filteredQueryParams = Object.fromEntries(
       Object.entries(queryParams).filter(
@@ -57,7 +74,16 @@ export default function useFetchData<T>({
       );
       setData(response);
       onSuccess?.(response);
+      if (fullCacheKey) {
+        await localforage.setItem(fullCacheKey, response);
+      }
     } catch (err) {
+      const isOffline = typeof navigator !== "undefined" && !navigator.onLine;
+      if (isOffline && cachedData) {
+        // This is a graceful fallback to cache while offline, not an error.
+        // We simply suppress the network error and let the user see the stale data.
+        return;
+      }
       setError(err as Error);
       onError?.(err as Error);
     } finally {
@@ -68,7 +94,29 @@ export default function useFetchData<T>({
   };
 
   useEffect(() => {
-    if (!exercuteOnMount) return;
+    if (!executeOnMount) return;
+
+    const newSearchParamsString = searchParams.toString();
+    const oldSearchParamsString = prevSearchParams.current;
+    prevSearchParams.current = newSearchParamsString;
+
+    const state = searchParams.get("state");
+
+    if (
+      (state === "create" || state === "edit") &&
+      oldSearchParamsString !== undefined
+    ) {
+      const newParamsCopy = new URLSearchParams(newSearchParamsString);
+      const oldParamsCopy = new URLSearchParams(oldSearchParamsString);
+
+      newParamsCopy.delete("state");
+      oldParamsCopy.delete("state");
+
+      if (newParamsCopy.toString() === oldParamsCopy.toString()) {
+        return;
+      }
+    }
+
     void fetchData();
   }, [searchParams, ...deps]);
 

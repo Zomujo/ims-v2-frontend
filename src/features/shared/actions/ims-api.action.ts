@@ -17,12 +17,12 @@ export const imsApiWithAuth = async <T>({
   if (!session?.user?.tokens) {
     redirect(AUTH_PAGE_ROUTES.LOG_IN);
   }
-  const accessToken = session?.user?.tokens?.accessToken;
+  const userId = session?.user?.id;
   const response = await fetchApi({
     url,
     method,
     body,
-    headers: { ...headers, Authorization: `Bearer ${accessToken}` },
+    headers: { ...headers, Authorization: `Bearer ${userId}` },
     cache,
     next,
   });
@@ -41,12 +41,12 @@ export const imsApiWithAuthBlob = async ({
   if (!session?.user?.tokens) {
     redirect(AUTH_PAGE_ROUTES.LOG_IN);
   }
-  const accessToken = session?.user?.tokens?.accessToken;
+  const userId = session?.user?.id;
   const response = await fetchApi({
     url,
     method,
     body,
-    headers: { ...headers, Authorization: `Bearer ${accessToken}` },
+    headers: { ...headers, Authorization: `Bearer ${userId}` },
     cache,
     next,
   });

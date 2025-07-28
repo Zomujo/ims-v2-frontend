@@ -5,7 +5,7 @@ import { SaleItem } from "../shared/types/sales-action.types";
 export const salesTableColumns: ColumnDef<GetSalesDto>[] = [
   {
     accessorKey: "patient.cardIdentificationNumber",
-    header: "Patient ID",
+    header: "NHIS ID",
     cell: ({ row }) => {
       const patientId = row.original.patient?.cardIdentificationNumber;
       return patientId ?? "N/A";
@@ -37,18 +37,6 @@ export const salesTableColumns: ColumnDef<GetSalesDto>[] = [
       return row.original.total.toLocaleString("en-US", {
         style: "currency",
         currency: "GHC",
-      });
-    },
-  },
-  {
-    header: "Date Created",
-    accessorKey: "createdAt",
-    cell: ({ row }) => {
-      const date = new Date(row.original.createdAt);
-      return date.toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
       });
     },
   },

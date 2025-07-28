@@ -297,3 +297,9 @@ export const camelCaseToSentence = (camelCaseStr: string): string => {
     .toLowerCase()
     .replace(/^./, (str) => str.toUpperCase());
 };
+
+export const getAgeFromDate = (date: string | Date): number => {
+  const year = new Date(date).getFullYear();
+  const currentYear = new Date().getFullYear();
+  return Math.abs(currentYear - year);
+};

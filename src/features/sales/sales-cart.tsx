@@ -296,7 +296,7 @@ export default function SalesCart() {
             type="submit"
             className=" "
           >
-            {isEditMode ? "Update and Print Bill" : " Save and Print Bill"}
+            {isEditMode ? "Update Sale" : " Save Sale"}
           </ImsButton>
         }
       />
