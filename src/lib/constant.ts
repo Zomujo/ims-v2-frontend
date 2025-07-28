@@ -86,6 +86,7 @@ export const PAGE_ROUTES = {
     CREATE: "?state=create",
   },
   REPORTS: "/reports",
+  REPORTS_SALES_LEVEL: "/reports/earnings-overview",
   AUDIT_LOGS: "/audit-logs",
 };
 

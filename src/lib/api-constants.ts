@@ -106,6 +106,7 @@ export const API_ENDPOINTS = {
   SALE_EXPORT: "/sales/export",
   SALE_ITEMS: "/sales/:id/items",
   SALE_RETURN: "/sales/return/:id",
+  SALES_LEVEL_REPORT: "/sales/export/periodic-sales",
 
   // Patient
   PATIENTS: "/patients",

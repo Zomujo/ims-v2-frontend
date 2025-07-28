@@ -62,7 +62,7 @@ export default function SearchWithFilter() {
           .split("T")
           .join("_")
           .slice(0, 19);
-        link.download = `Stealth_${exportBtnData.fileName}_${timestamp}.${exportType}`;
+        link.download = `Stealth_${searchParams.get("exportFileName") || exportBtnData.fileName}_${timestamp}.${exportType}`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -81,10 +81,12 @@ export default function SearchWithFilter() {
     <div className="flex items-center gap-4 px-4 pt-1.5 max-xl:flex-wrap">
       {!btnData.hideSearch && <ImsSearchBar />}
       <div className="flex w-full flex-wrap justify-between gap-4">
-        <ImsFilters>
-          <FilterForms />
-        </ImsFilters>
-        <div className="flex items-center gap-2">
+        {!btnData.hideFilters && (
+          <ImsFilters>
+            <FilterForms />
+          </ImsFilters>
+        )}
+        <div className="z-50 ml-auto flex items-center gap-2">
           {btnData.href &&
             !pathName.includes(PAGE_ROUTES.REPORTS) &&
             hasActionPermission(btnData.permission ?? "") &&

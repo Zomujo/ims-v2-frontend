@@ -70,6 +70,7 @@ export const generateUrlWithQueryParams = (
   baseUrl: string,
   params: GenerateQueryParams,
   arrayParams?: string,
+  routeParams?: Record<string, string>,
 ) => {
   const searchParams = new URLSearchParams();
 
@@ -84,7 +85,15 @@ export const generateUrlWithQueryParams = (
       searchParams.append(key, value);
     });
   }
-  return baseUrl + "?" + searchParams.toString();
+  let url = baseUrl;
+
+  if (routeParams) {
+    Object.entries(routeParams).forEach(([key, value]) => {
+      url = url.replace(`:${key}`, value);
+    });
+  }
+
+  return url + "?" + searchParams.toString();
 };
 
 export const updateRouteHashFragment = (fragment: string | null) => {

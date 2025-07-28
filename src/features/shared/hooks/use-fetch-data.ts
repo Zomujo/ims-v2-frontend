@@ -6,6 +6,7 @@ type FetchDataProps<T> = {
   fetchFn: (
     searchParams?: GenerateQueryParams,
     arraySearch?: string,
+    routeParams?: Record<string, string>,
   ) => Promise<T>;
   onSuccess?: (data: T) => void;
   onError?: (error: Error) => void;
@@ -14,6 +15,7 @@ type FetchDataProps<T> = {
   deps?: unknown[];
   exercuteOnMount?: boolean;
   arrayQueries?: string[];
+  routeParams?: Record<string, string>;
 };
 
 export default function useFetchData<T>({
@@ -25,6 +27,7 @@ export default function useFetchData<T>({
   deps = [],
   exercuteOnMount = true,
   arrayQueries = [],
+  routeParams,
 }: FetchDataProps<T>) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
@@ -50,6 +53,7 @@ export default function useFetchData<T>({
       const response = await fetchFn(
         filteredQueryParams,
         arraySearchParams.toString(),
+        routeParams,
       );
       setData(response);
       onSuccess?.(response);
