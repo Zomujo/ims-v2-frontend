@@ -108,7 +108,7 @@ const DashboardGeneral = () => {
         endDate: date.to.toISOString(),
         startDate: date.from?.toISOString(),
       }),
-    cacheKey: `dashboard-general-${date.from?.toISOString()}-${date.to.toISOString()}`,
+    cacheKey: `dashboard-general`,
     deps: [date],
   });
 
@@ -120,7 +120,7 @@ const DashboardGeneral = () => {
         status: currentStockLevelView,
         pageSize: "5",
       }),
-    cacheKey: `dashboard-stock-items-${currentStockLevelView}`,
+    cacheKey: `dashboard-stock-items`,
     deps: [currentStockLevelView],
   });
   const stockItems = stockItemsData?.rows ?? [];
