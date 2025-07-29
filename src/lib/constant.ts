@@ -1,3 +1,4 @@
+import { ViewMode } from "@/features/shared/types/action.types";
 import { PermissionModules } from "@/features/shared/types/auth-action.types";
 
 export const API_ENDPOINTS_OLD = {
@@ -226,4 +227,42 @@ export const stockAdjustmentReasons = [
     label: "Stock Regularization (Initial Balancing)",
     value: "Stock Regularization (Initial Balancing)",
   },
+];
+
+export const calendarOption: { mode: ViewMode; label: string }[] = [
+  {
+    mode: "day",
+    label: "Day",
+  },
+  {
+    mode: "this_week",
+    label: "This week",
+  },
+  {
+    mode: "month",
+    label: "Month",
+  },
+  {
+    mode: "last_three_months",
+    label: "Last Three Months",
+  },
+  {
+    mode: "this_year",
+    label: "This year",
+  },
+] as const;
+
+export const months = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
 ];

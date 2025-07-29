@@ -3,11 +3,13 @@ import {
   CrudAction,
   GenerateQueryParams,
   HandleRequestState,
+  WeekDay,
 } from "@/features/shared/types/utitls.types";
 import { clsx, type ClassValue } from "clsx";
 import { toast } from "sonner";
 import { twMerge } from "tailwind-merge";
 import { FieldValues, UseFormWatch } from "react-hook-form";
+import { addDays, format, isSameMonth } from "date-fns";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -303,3 +305,31 @@ export const getAgeFromDate = (date: string | Date): number => {
   const currentYear = new Date().getFullYear();
   return Math.abs(currentYear - year);
 };
+
+/**
+ * Generates an array of 8 consecutive days starting from a given date.
+ *
+ * Each day includes the date object, a short weekday name, and a flag
+ * indicating whether the date is part of the same month as the selected date.
+ *
+ * @param {Date} currentWeekStart - The starting date of the week (usually a Sunday or Monday).
+ * @param {Date} selectedDate - The date used to determine the current month for comparison.
+ * @returns {WeekDay[]} Array of day objects representing the week.
+ */
+
+export function generateWeekDays(
+  currentWeekStart: Date,
+  selectedDate: Date,
+): WeekDay[] {
+  const days: WeekDay[] = [];
+
+  for (let i = 0; i < 8; i++) {
+    const day = addDays(currentWeekStart, i);
+    days.push({
+      date: day,
+      day: format(day, "EEE"),
+      isCurrentMonth: isSameMonth(day, selectedDate),
+    });
+  }
+  return days;
+}

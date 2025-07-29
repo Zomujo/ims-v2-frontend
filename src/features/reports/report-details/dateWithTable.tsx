@@ -1,11 +1,7 @@
 "use client";
 import CrudPage from "@/features/shared/components/crud-page";
 import usePageCRUD from "@/features/shared/hooks/use-page-crud";
-import {
-  GetSalesItemsDto,
-  SalesDto,
-  ViewMode,
-} from "@/features/shared/types/action.types";
+import { ViewMode } from "@/features/shared/types/action.types";
 import { Badge } from "@/features/ui/badge";
 import { Button } from "@/features/ui/button";
 import {
@@ -14,6 +10,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/features/ui/dropdown-menu";
+import { calendarOption, months } from "@/lib/constant";
+import { generateWeekDays } from "@/lib/utils";
 import { ColumnDef } from "@tanstack/react-table";
 import {
   addDays,
@@ -60,23 +58,6 @@ const DateWithTable = <T extends { id: string }>({
     data: tableData,
   });
 
-  const months = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
-
-  // Sample week data - this would typically come from props or API
-
   const years = useMemo(() => {
     const currentYear = getYear(new Date());
     return Array.from({ length: 10 }, (_, i) => currentYear - 5 + i);
@@ -84,16 +65,7 @@ const DateWithTable = <T extends { id: string }>({
 
   // Generate week days dynamically based on current week
   const weekDays = useMemo(() => {
-    const days = [];
-    for (let i = 0; i < 8; i++) {
-      const day = addDays(currentWeekStart, i);
-      days.push({
-        date: day,
-        day: format(day, "EEE"),
-        isCurrentMonth: isSameMonth(day, selectedDate),
-      });
-    }
-    return days;
+    return generateWeekDays(currentWeekStart, selectedDate);
   }, [currentWeekStart, selectedDate]);
 
   const handleMonthChange = (monthName: string) => {
@@ -134,43 +106,16 @@ const DateWithTable = <T extends { id: string }>({
             <div className="bg-dashboard-card border-border rounded-2xl border p-6 shadow-sm">
               {/* View Mode Toggle */}
               <div className="mb-2 flex items-center gap-2">
-                <Badge
-                  variant={viewMode === "day" ? "default" : "secondary"}
-                  className="cursor-pointer"
-                  onClick={() => setViewMode("day")}
-                >
-                  Day
-                </Badge>
-                <Badge
-                  variant={viewMode === "this_week" ? "default" : "secondary"}
-                  className="cursor-pointer"
-                  onClick={() => setViewMode("this_week")}
-                >
-                  This Week
-                </Badge>
-                <Badge
-                  variant={viewMode === "month" ? "default" : "secondary"}
-                  className="cursor-pointer"
-                  onClick={() => setViewMode("month")}
-                >
-                  Month
-                </Badge>
-                <Badge
-                  variant={
-                    viewMode === "last_three_months" ? "default" : "secondary"
-                  }
-                  className="cursor-pointer"
-                  onClick={() => setViewMode("last_three_months")}
-                >
-                  Last Three Months
-                </Badge>
-                <Badge
-                  variant={viewMode === "all" ? "default" : "secondary"}
-                  className="cursor-pointer"
-                  onClick={() => setViewMode("all")}
-                >
-                  Year
-                </Badge>
+                {calendarOption.map(({ label, mode }, index) => (
+                  <Badge
+                    variant={viewMode === mode ? "default" : "secondary"}
+                    className="cursor-pointer"
+                    onClick={() => setViewMode(mode)}
+                    key={index}
+                  >
+                    {label}
+                  </Badge>
+                ))}
               </div>
 
               {/* Month Selector */}

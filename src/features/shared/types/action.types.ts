@@ -865,7 +865,7 @@ export type GetReportDetailsDto = {
 export type ViewMode =
   | "day"
   | "month"
-  | "all"
+  | "this_year"
   | "this_week"
   | "last_three_months";
 

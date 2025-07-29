@@ -42,43 +42,27 @@ const ReportDetails = () => {
     const reportId = params["report-id"];
     switch (reportId) {
       case "stock-level-report":
+        setReportType("Stock Level Report");
         return { category: "items", id: "stock-level" };
 
       case "earnings-overview":
+        setReportType("Sales Level Report");
         return { category: "sales", id: "periodic-sales" };
       default:
+        setReportType("Expiry Report");
         return { category: "", id: "" };
     }
   }, [params]);
 
   const { data, loading: isLoading } = useFetchData({
     fetchFn: getCategorizedReport,
+    cacheKey: "report-details",
     routeParams,
   });
-  useEffect(() => {
-    const reportId = params["report-id"];
-
-    switch (reportId) {
-      case "stock-level-report":
-        setReportType("Stock Level Report");
-        break;
-
-      case "earnings-overview":
-        setReportType("Sales Level Report");
-        break;
-
-      case "Expiry":
-        setReportType("Expiry Report");
-        break;
-
-      default:
-        setReportType("");
-    }
-  }, [params]);
 
   useEffect(() => {
     const isDay = viewMode === "day";
-    const allReports = viewMode === "all";
+    const allReports = viewMode === "this_year";
     const isRange =
       viewMode === "last_three_months" || viewMode === "this_week";
     const fetchStockLevelReport = async () => {
@@ -117,8 +101,8 @@ const ReportDetails = () => {
 
   useEffect(() => {
     if (reportType === "Stock Level Report") {
-      const { rows } = data?.data as unknown as CountExpiryInfo;
-      if (rows) {
+      if (data?.data) {
+        const { rows } = data?.data as unknown as CountExpiryInfo;
         setCardData([
           {
             title: "TOTAL STOCK",
@@ -132,9 +116,9 @@ const ReportDetails = () => {
     }
 
     if (reportType === "Sales Level Report") {
-      const { rows, analytics } = data?.data as unknown as SalesReportInfo;
+      if (data?.data) {
+        const { rows, analytics } = data?.data as unknown as SalesReportInfo;
 
-      if (rows) {
         const {
           totalSales,
           totalItems: { percentageChange, changeType, data: salesData },
