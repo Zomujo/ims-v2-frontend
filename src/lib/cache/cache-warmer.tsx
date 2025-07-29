@@ -6,13 +6,16 @@ import { useGlobalNotifications } from "@/features/notifications/notifications-c
 
 import {
   getGeneralOverview,
+  getLeastSellingItems,
   getSalePaymentMethod,
+  getTopSellingItems,
 } from "@features/shared/actions/dashboard.actions";
 import { useCacheProgress } from "@/lib/cache/cache-progress-context";
 import {
   getItems,
   getItemsExpiry,
 } from "@features/shared/actions/items.actions";
+import { DATE_RANGE } from "@features/layout/search-with-filter/search-with-filter.data";
 
 const PREFETCH_TARGETS = [
   {
@@ -46,6 +49,20 @@ const PREFETCH_TARGETS = [
         pageSize: "5",
         orderBy: "expiryDate",
         orderDirection: "ASC",
+      }),
+  },
+  {
+    key: "dashboard-top-selling-items",
+    fetcher: () =>
+      getTopSellingItems({
+        dateRange: DATE_RANGE.THIS_MONTH,
+      }),
+  },
+  {
+    key: "dashboard-least-selling-items",
+    fetcher: () =>
+      getLeastSellingItems({
+        dateRange: DATE_RANGE.THIS_MONTH,
       }),
   },
 ];
