@@ -39,7 +39,7 @@ export default function DashboardSalePaymentMethod() {
       getSalePaymentMethod({
         dateRange: selectedDateRange as DateRangeQueryOptions,
       }),
-    cacheKey: `dashboard-sale-payment-method-${selectedDateRange}`,
+    cacheKey: `dashboard-sale-payment-method`,
     deps: [selectedDateRange],
   });
 

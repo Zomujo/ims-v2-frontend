@@ -17,6 +17,13 @@ const serwist = new Serwist({
   clientsClaim: true,
   navigationPreload: true,
   runtimeCaching: [
+    {
+      matcher: ({ request }) => request.mode === "navigate",
+      handler: new NetworkFirst({
+        cacheName: "pages-cache",
+        networkTimeoutSeconds: 3,
+      }),
+    },
     ...defaultCache,
     {
       matcher: ({ url }) => url.pathname.startsWith("/api/auth/session"),

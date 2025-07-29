@@ -17,6 +17,7 @@ import { ImsButton } from "@features/shared/components/ims-button";
 import { exportFile } from "@features/shared/actions/export.actions";
 import { ImsPopover } from "@features/shared/components/ims-popover";
 import { ExportType } from "@features/shared/types/utitls.types";
+import { useGlobalNotifications } from "@features/notifications/notifications-context";
 
 export default function SearchWithFilter() {
   const [exporting, setExporting] = useState<ExportType | null>(null);
@@ -29,6 +30,7 @@ export default function SearchWithFilter() {
     actionButtonData[isSlugs ? PAGE_ROUTES.ITEM_BATCHES : pathName];
   const exportBtnData =
     exportActionButtonData[isSlugs ? PAGE_ROUTES.ITEM_BATCHES : pathName];
+  const { isConnected } = useGlobalNotifications();
 
   const checkRole = useCallback(
     (roles: UserRole[] | undefined) => {
@@ -101,7 +103,10 @@ export default function SearchWithFilter() {
             <ImsPopover
               triggerProps={{ asChild: true }}
               trigger={
-                <ImsButton startIcon={<Icon icon={exportBtnData.icon} />}>
+                <ImsButton
+                  disabled={!isConnected}
+                  startIcon={<Icon icon={exportBtnData.icon} />}
+                >
                   {exportBtnData.label}
                 </ImsButton>
               }
