@@ -3,9 +3,11 @@
 import { useCacheProgress } from "./cache-progress-context";
 import { Progress } from "@features/ui/progress";
 import { useEffect, useState } from "react";
+import { useGlobalNotifications } from "@features/notifications/notifications-context";
 
 export function GlobalCacheIndicator() {
   const { dataProgress } = useCacheProgress();
+  const { isConnected } = useGlobalNotifications();
   const [isComplete, setIsComplete] = useState(false);
   const [assetCustomTracker, setAssetCustomTracker] = useState(0);
 
@@ -26,7 +28,7 @@ export function GlobalCacheIndicator() {
     return () => clearInterval(intervalId);
   }, []);
 
-  if (isComplete && isDataCachingDone) {
+  if (!isConnected || (isComplete && isDataCachingDone)) {
     return null;
   }
 
