@@ -1,5 +1,5 @@
 import { defaultCache } from "@serwist/next/worker";
-import type { PrecacheEntry, SerwistGlobalConfig } from "serwist";
+import { PrecacheEntry, SerwistGlobalConfig } from "serwist";
 import { Serwist } from "serwist";
 import { NetworkFirst } from "serwist";
 
@@ -17,13 +17,6 @@ const serwist = new Serwist({
   clientsClaim: true,
   navigationPreload: true,
   runtimeCaching: [
-    {
-      matcher: ({ request }) => request.mode === "navigate",
-      handler: new NetworkFirst({
-        cacheName: "pages-cache",
-        networkTimeoutSeconds: 3,
-      }),
-    },
     ...defaultCache,
     {
       matcher: ({ url }) => url.pathname.startsWith("/api/auth/session"),
@@ -41,6 +34,50 @@ const serwist = new Serwist({
       }),
     },
   ],
+});
+
+const urlsToPrecache = [
+  "/",
+  "/dashboard",
+  "/items",
+  "/items?state=create",
+  "/items?state=edit",
+  "/categories",
+  "/categories?state=create",
+  "/categories?state=edit",
+  "/stock-adjustment",
+  "/stock-adjustment?state=create",
+  "/stock-adjustment?state=edit",
+  "/expiry",
+  "/items-orders",
+  "/items-orders?state=create",
+  "/items-orders?state=edit",
+  "/suppliers",
+  "/suppliers?state=create",
+  "/suppliers?state=edit",
+  "sales",
+  "sales?todaySales=true",
+  "sales/record",
+  "department-requests",
+  "reports",
+  "audit-logs",
+  "tutorials",
+  "settings/general",
+  "settings/security",
+  "settings/departments",
+  "settings/users",
+  "settings/notifications",
+  "settings/expiry",
+] as const;
+
+self.addEventListener("install", (event) => {
+  const requestPromises = Promise.all(
+    urlsToPrecache.map(async (entry) => {
+      return serwist.handleRequest({ request: new Request(entry), event });
+    }),
+  );
+
+  event.waitUntil(requestPromises);
 });
 
 serwist.addEventListeners();
