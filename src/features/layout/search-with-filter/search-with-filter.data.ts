@@ -55,6 +55,13 @@ export const exportActionButtonData = {
     icon: "solar:file-download-linear",
     permission: `${PermissionModules.SALES}:${PermissionActions.READ}`,
   },
+  [PAGE_ROUTES.REPORTS_SALES_LEVEL]: {
+    label: "Export Report",
+    fileName: "Sales",
+    endpoint: API_ENDPOINTS.SALES_LEVEL_REPORT,
+    icon: "solar:file-download-linear",
+    permission: `${PermissionModules.SALES}:${PermissionActions.READ}`,
+  },
 };
 
 export const actionButtonData = {
@@ -121,6 +128,13 @@ export const actionButtonData = {
     icon: "solar:activity-bold-duotone",
     permission: `${PermissionModules.REPORTS}:${PermissionActions.READ}`,
     hideSearch: true,
+  },
+  [PAGE_ROUTES.REPORTS_SALES_LEVEL]: {
+    label: "Export Sales Level Report",
+    icon: "solar:file-download-linear",
+    permission: `${PermissionModules.SALES}:${PermissionActions.READ}`,
+    hideSearch: true,
+    hideFilters: true,
   },
 };
 

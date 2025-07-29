@@ -62,3 +62,9 @@ export enum ActiveDeactivedStatus {
   ACTIVE = "Active",
   DEACTIVATE = "Deactivated",
 }
+
+export interface WeekDay {
+  date: Date;
+  day: string;
+  isCurrentMonth: boolean;
+}

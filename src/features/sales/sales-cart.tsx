@@ -149,7 +149,7 @@ export default function SalesCart() {
       const response = await getSale(salesId as string);
       const saleData = response.data;
       if (!saleData) return;
-      const saleItems = saleData.saleItems as SaleItem[];
+      const saleItems = saleData.saleItems as unknown as SaleItem[];
       form.setValue("notes", saleData.notes, { shouldValidate: true });
       form.setValue("paymentType", saleData.paymentType);
       form.setValue(
