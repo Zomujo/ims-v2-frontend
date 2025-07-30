@@ -16,7 +16,6 @@ import { FetchApi } from "../types/ims-api-action.types";
 import { GenerateQueryParams } from "../types/utitls.types";
 import { imsApiWithAuth } from "./ims-api.action";
 
-// Server Actions for /api/v1/stock-adjustments
 export async function createStockAdjustment(data: CreateStockAdjustmentDto) {
   const fetchOptions: FetchApi = {
     url: API_ENDPOINTS.STOCK_ADJUSTMENTS,

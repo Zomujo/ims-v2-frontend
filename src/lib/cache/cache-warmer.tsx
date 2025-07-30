@@ -5,6 +5,7 @@ import localforage from "localforage";
 import { useGlobalNotifications } from "@/features/notifications/notifications-context";
 
 import {
+  getDailySales,
   getGeneralOverview,
   getLeastSellingItems,
   getSalePaymentMethod,
@@ -20,6 +21,7 @@ import {
 import { DATE_RANGE } from "@features/layout/search-with-filter/search-with-filter.data";
 import { CACHE_PAGE_SIZE, CacheKey } from "@/lib/cache/cache-data";
 import { getItemCategories } from "@features/shared/actions/item-categories.actions";
+import { getStockAdjustments } from "@features/shared/actions/stock-adjustments.actions";
 
 const PREFETCH_TARGETS = [
   {
@@ -84,6 +86,18 @@ const PREFETCH_TARGETS = [
       }),
   },
   {
+    key: CacheKey.DashboardDailySales,
+    fetcher: () =>
+      getDailySales({
+        startDate: (() => {
+          const date = new Date();
+          date.setDate(date.getDate() - 1);
+          return date.toISOString();
+        })(),
+        endDate: new Date().toISOString(),
+      }),
+  },
+  {
     key: CacheKey.ItemsList,
     fetcher: () =>
       getItems({
@@ -94,6 +108,20 @@ const PREFETCH_TARGETS = [
     key: CacheKey.CategoriesList,
     fetcher: () =>
       getItemCategories({
+        pageSize: CACHE_PAGE_SIZE,
+      }),
+  },
+  {
+    key: CacheKey.StockAdjustmentList,
+    fetcher: () =>
+      getStockAdjustments({
+        pageSize: CACHE_PAGE_SIZE,
+      }),
+  },
+  {
+    key: CacheKey.ExpiryItemList,
+    fetcher: () =>
+      getItemsExpiry({
         pageSize: CACHE_PAGE_SIZE,
       }),
   },

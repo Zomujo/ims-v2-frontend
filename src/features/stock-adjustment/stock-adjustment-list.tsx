@@ -25,6 +25,7 @@ import { stockAdjustmentTableColumns } from "./stock-adjustment.data";
 import { stockAdjustmentSchema } from "./stock-adjustment.schemas";
 import { useSessionData } from "@/hooks/useSessionData";
 import { PermissionModules } from "@features/shared/types/auth-action.types";
+import { CacheKey } from "@/lib/cache/cache-data";
 
 type StockAdjustmentListProps = {
   items: IdData[];
@@ -33,7 +34,11 @@ export default function StockAdjustmentList({
   items,
 }: Readonly<StockAdjustmentListProps>) {
   const { canWrite, canDelete } = useSessionData();
-  const { data, loading } = useFetchData({ fetchFn: getStockAdjustments });
+  const { data, loading } = useFetchData({
+    fetchFn: getStockAdjustments,
+    cacheKey: CacheKey.StockAdjustmentList,
+    searchField: "reason",
+  });
   const stockAdjustments = data?.rows ?? [];
   const {
     state,
