@@ -15,6 +15,7 @@ import { Skeleton } from "../ui/skeleton";
 import DashboardBaseCard from "@features/dashboard/dashboardBaseCard";
 import useFetchData from "@features/shared/hooks/use-fetch-data";
 import { SalesTrend } from "@features/shared/types/dashboard.types";
+import { CacheKey } from "@/lib/cache/cache-data";
 
 const chartConfig = {
   desktop: {
@@ -40,7 +41,7 @@ export default function DashboardSalesTrend() {
       getSalesTrend({
         dateRange: selectedDateRange as DateRangeQueryOptions,
       }),
-    cacheKey: `dashboard-sales-trend`,
+    cacheKey: CacheKey.DashboardSalesTrend,
     deps: [selectedDateRange],
   });
 

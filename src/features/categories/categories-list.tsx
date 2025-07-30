@@ -26,7 +26,11 @@ import { PermissionModules } from "@features/shared/types/auth-action.types";
 
 export default function CategoriesList() {
   const { canWrite, canDelete } = useSessionData();
-  const { data, loading } = useFetchData({ fetchFn: getItemCategories });
+  const { data, loading } = useFetchData({
+    fetchFn: getItemCategories,
+    cacheKey: "categories-list",
+    searchField: "name",
+  });
   const itemCategories = data?.rows ?? [];
   const {
     state,

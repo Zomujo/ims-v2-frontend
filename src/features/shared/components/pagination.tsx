@@ -12,17 +12,20 @@ import { cn } from "@/lib/utils";
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useGlobalNotifications } from "@features/notifications/notifications-context";
+import { useMemo } from "react";
 
 type DynamicPaginationProps = {
   totalPages: number;
   className?: string;
   setPage: (page: number) => void;
+  clientPage?: number;
 };
 
 export function DynamicPagination({
   totalPages,
   className,
   setPage,
+  clientPage,
 }: Readonly<DynamicPaginationProps>) {
   const searchParams = useSearchParams();
   const activePage = searchParams.get("page")
@@ -30,7 +33,15 @@ export function DynamicPagination({
     : 1;
   const { isConnected } = useGlobalNotifications();
 
-  const currentPage = Math.max(1, Math.min(activePage, totalPages));
+  const currentPage = useMemo(
+    () =>
+      isConnected
+        ? Math.max(1, Math.min(activePage, totalPages))
+        : clientPage
+          ? clientPage
+          : 1,
+    [isConnected, clientPage, activePage, totalPages],
+  );
 
   const router = useRouter();
 

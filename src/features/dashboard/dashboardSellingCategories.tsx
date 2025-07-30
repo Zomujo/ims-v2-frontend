@@ -17,6 +17,7 @@ import { cn, generateColor } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
 import useFetchData from "@features/shared/hooks/use-fetch-data";
 import { SellingCategoriesResponse } from "@features/shared/types/dashboard.types";
+import { CacheKey } from "@/lib/cache/cache-data";
 
 interface ChartData {
   name: string;
@@ -36,7 +37,7 @@ export default function DashboardSellingCategories() {
       getSellingCategories({
         dateRange: selectedDateRange as DateRangeQueryOptions,
       }),
-    cacheKey: `dashboard-selling-categories`,
+    cacheKey: CacheKey.DashboardSellingCategories,
     deps: [selectedDateRange],
   });
 

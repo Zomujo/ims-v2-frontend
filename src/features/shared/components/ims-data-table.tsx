@@ -40,7 +40,6 @@ export function IMSDataTable<TData, TValue>({
   const { isConnected } = useGlobalNotifications();
   const computedData = useMemo(() => {
     if (!isConnected) {
-      console.log("currentPage", currentPage, data);
       const startIndex = (currentPage - 1) * 10;
       const endIndex = startIndex + 10;
       return data.slice(startIndex, endIndex);
@@ -129,6 +128,7 @@ export function IMSDataTable<TData, TValue>({
           className="pb-40 md:pb-28"
           totalPages={totalPages}
           setPage={(page) => setCurrentPage(page)}
+          clientPage={currentPage}
         />
       )}
     </div>
