@@ -93,14 +93,16 @@ export default function useFetchData<T>({
               return true;
             }
             if (key === "search") {
-              if (
-                searchField &&
-                item.hasOwnProperty(searchField) &&
-                item[searchField] != null
-              ) {
-                return String(item[searchField])
-                  .toLowerCase()
-                  .includes(String(value).toLowerCase());
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              const getNestedValue = (obj: any, path: string) =>
+                path.split(".").reduce((acc, part) => acc && acc[part], obj);
+              if (searchField) {
+                const nestedValue = getNestedValue(item, searchField);
+                if (nestedValue != null) {
+                  return String(nestedValue)
+                    .toLowerCase()
+                    .includes(String(value).toLowerCase());
+                }
               }
               return true;
             }

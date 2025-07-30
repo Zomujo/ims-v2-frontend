@@ -9,6 +9,7 @@ import { Skeleton } from "../ui/skeleton";
 import { DatePicker } from "@features/ui/date-picker";
 import { format } from "date-fns";
 import useFetchData from "@features/shared/hooks/use-fetch-data";
+import { CacheKey } from "@/lib/cache/cache-data";
 
 export const DashboardDailySales = () => {
   const [startDate, setStartDate] = useState<Date>(() => {
@@ -26,7 +27,7 @@ export const DashboardDailySales = () => {
         startDate: startDate.toISOString(),
         endDate: endDate.toISOString(),
       }),
-    cacheKey: `dashboard-daily-sales`,
+    cacheKey: CacheKey.DashboardDailySales,
     deps: [startDate, endDate],
   });
 
