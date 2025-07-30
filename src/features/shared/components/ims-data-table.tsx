@@ -19,6 +19,8 @@ import {
 import { DynamicPagination } from "./pagination";
 import { Skeleton } from "@/features/ui/skeleton";
 import { cn } from "@/lib/utils";
+import { useMemo, useState } from "react";
+import { useGlobalNotifications } from "@features/notifications/notifications-context";
 
 // Define props for the DataTable component
 type DataTableProps<TData, TValue> = {
@@ -34,8 +36,19 @@ export function IMSDataTable<TData, TValue>({
   totalPages,
   isLoading,
 }: Readonly<DataTableProps<TData, TValue>>) {
+  const [currentPage, setCurrentPage] = useState(1);
+  const { isConnected } = useGlobalNotifications();
+  const computedData = useMemo(() => {
+    if (!isConnected) {
+      console.log("currentPage", currentPage, data);
+      const startIndex = (currentPage - 1) * 10;
+      const endIndex = startIndex + 10;
+      return data.slice(startIndex, endIndex);
+    }
+    return data;
+  }, [data, currentPage, isConnected]);
   const table = useReactTable({
-    data,
+    data: computedData,
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
@@ -112,7 +125,11 @@ export function IMSDataTable<TData, TValue>({
         </TableBody>
       </Table>
       {!!totalPages && (
-        <DynamicPagination className="pb-40 md:pb-28" totalPages={totalPages} />
+        <DynamicPagination
+          className="pb-40 md:pb-28"
+          totalPages={totalPages}
+          setPage={(page) => setCurrentPage(page)}
+        />
       )}
     </div>
   );
