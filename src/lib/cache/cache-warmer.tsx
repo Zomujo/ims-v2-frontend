@@ -9,6 +9,7 @@ import {
   getLeastSellingItems,
   getSalePaymentMethod,
   getSalesTrend,
+  getSellingCategories,
   getTopSellingItems,
 } from "@features/shared/actions/dashboard.actions";
 import { useCacheProgress } from "@/lib/cache/cache-progress-context";
@@ -17,14 +18,16 @@ import {
   getItemsExpiry,
 } from "@features/shared/actions/items.actions";
 import { DATE_RANGE } from "@features/layout/search-with-filter/search-with-filter.data";
+import { CACHE_PAGE_SIZE, CacheKey } from "@/lib/cache/cache-data";
+import { getItemCategories } from "@features/shared/actions/item-categories.actions";
 
 const PREFETCH_TARGETS = [
   {
-    key: "dashboard-sale-payment-method-this_month",
+    key: CacheKey.DashboardSalePaymentMethod,
     fetcher: () => getSalePaymentMethod({ dateRange: "this_month" }),
   },
   {
-    key: "dashboard-general",
+    key: CacheKey.DashboardGeneral,
     fetcher: () =>
       getGeneralOverview({
         startDate: (() => {
@@ -36,7 +39,7 @@ const PREFETCH_TARGETS = [
       }),
   },
   {
-    key: "dashboard-stock-items",
+    key: CacheKey.DashboardStockItems,
     fetcher: () =>
       getItems({
         status: "LOW",
@@ -44,7 +47,7 @@ const PREFETCH_TARGETS = [
       }),
   },
   {
-    key: "dashboard-expiring-items",
+    key: CacheKey.DashboardExpiringItems,
     fetcher: () =>
       getItemsExpiry({
         pageSize: "5",
@@ -53,31 +56,45 @@ const PREFETCH_TARGETS = [
       }),
   },
   {
-    key: "dashboard-top-selling-items",
+    key: CacheKey.DashboardTopSellingItems,
     fetcher: () =>
       getTopSellingItems({
         dateRange: DATE_RANGE.THIS_MONTH,
       }),
   },
   {
-    key: "dashboard-least-selling-items",
+    key: CacheKey.DashboardLeastSellingItems,
     fetcher: () =>
       getLeastSellingItems({
         dateRange: DATE_RANGE.THIS_MONTH,
       }),
   },
   {
-    key: "dashboard-sales-trend",
+    key: CacheKey.DashboardSalesTrend,
     fetcher: () =>
       getSalesTrend({
         dateRange: DATE_RANGE.THIS_MONTH,
       }),
   },
   {
-    key: "items-list",
+    key: CacheKey.DashboardSellingCategories,
+    fetcher: () =>
+      getSellingCategories({
+        dateRange: DATE_RANGE.THIS_MONTH,
+      }),
+  },
+  {
+    key: CacheKey.ItemsList,
     fetcher: () =>
       getItems({
-        pageSize: "100",
+        pageSize: CACHE_PAGE_SIZE,
+      }),
+  },
+  {
+    key: CacheKey.CategoriesList,
+    fetcher: () =>
+      getItemCategories({
+        pageSize: CACHE_PAGE_SIZE,
       }),
   },
 ];

@@ -27,6 +27,7 @@ import {
 import Link from "next/link";
 import { DatePickerWithRange } from "@features/ui/date-picker";
 import useFetchData from "@features/shared/hooks/use-fetch-data";
+import { CacheKey } from "@/lib/cache/cache-data";
 
 const stockLevelCategories: {
   label: string;
@@ -108,7 +109,7 @@ const DashboardGeneral = () => {
         endDate: date.to.toISOString(),
         startDate: date.from?.toISOString(),
       }),
-    cacheKey: `dashboard-general`,
+    cacheKey: CacheKey.DashboardGeneral,
     deps: [date],
   });
 
@@ -120,7 +121,7 @@ const DashboardGeneral = () => {
         status: currentStockLevelView,
         pageSize: "5",
       }),
-    cacheKey: `dashboard-stock-items`,
+    cacheKey: CacheKey.DashboardStockItems,
     deps: [currentStockLevelView],
   });
   const stockItems = stockItemsData?.rows ?? [];
@@ -134,7 +135,7 @@ const DashboardGeneral = () => {
         orderBy: "expiryDate",
         orderDirection: "ASC",
       }),
-    cacheKey: "dashboard-expiring-items",
+    cacheKey: CacheKey.DashboardExpiringItems,
   });
   const expiringItems = expiringItemsData?.rows ?? [];
 

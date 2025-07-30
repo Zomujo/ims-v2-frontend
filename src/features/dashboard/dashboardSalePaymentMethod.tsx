@@ -19,6 +19,7 @@ import { cn, generateColor } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
 import useFetchData from "@features/shared/hooks/use-fetch-data";
 import { TopSelling } from "@features/shared/types/dashboard.types";
+import { CacheKey } from "@/lib/cache/cache-data";
 
 interface ChartData {
   category: string;
@@ -39,7 +40,7 @@ export default function DashboardSalePaymentMethod() {
       getSalePaymentMethod({
         dateRange: selectedDateRange as DateRangeQueryOptions,
       }),
-    cacheKey: `dashboard-sale-payment-method`,
+    cacheKey: CacheKey.DashboardSalePaymentMethod,
     deps: [selectedDateRange],
   });
 

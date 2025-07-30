@@ -19,6 +19,7 @@ import DashboardBaseCard from "@features/dashboard/dashboardBaseCard";
 import { Skeleton } from "../ui/skeleton";
 import Link from "next/link";
 import useFetchData from "@features/shared/hooks/use-fetch-data";
+import { CacheKey } from "@/lib/cache/cache-data";
 
 type TopLeastChart = {
   items: string;
@@ -46,7 +47,7 @@ export default function DashboardSellingItems() {
       getTopSellingItems({
         dateRange: selectedTopSellingDateRange as DateRangeQueryOptions,
       }),
-    cacheKey: `dashboard-top-selling-items`,
+    cacheKey: CacheKey.DashboardTopSellingItems,
     deps: [selectedTopSellingDateRange],
   });
 
@@ -68,7 +69,7 @@ export default function DashboardSellingItems() {
         getLeastSellingItems({
           dateRange: selectedLeastSellingDateRange as DateRangeQueryOptions,
         }),
-      cacheKey: `dashboard-least-selling-items`,
+      cacheKey: CacheKey.DashboardLeastSellingItems,
       deps: [selectedLeastSellingDateRange],
     });
 
