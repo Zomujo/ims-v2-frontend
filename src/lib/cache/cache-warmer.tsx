@@ -8,6 +8,7 @@ import {
   getGeneralOverview,
   getLeastSellingItems,
   getSalePaymentMethod,
+  getSalesTrend,
   getTopSellingItems,
 } from "@features/shared/actions/dashboard.actions";
 import { useCacheProgress } from "@/lib/cache/cache-progress-context";
@@ -63,6 +64,20 @@ const PREFETCH_TARGETS = [
     fetcher: () =>
       getLeastSellingItems({
         dateRange: DATE_RANGE.THIS_MONTH,
+      }),
+  },
+  {
+    key: "dashboard-sales-trend",
+    fetcher: () =>
+      getSalesTrend({
+        dateRange: DATE_RANGE.THIS_MONTH,
+      }),
+  },
+  {
+    key: "items-list",
+    fetcher: () =>
+      getItems({
+        pageSize: "100",
       }),
   },
 ];

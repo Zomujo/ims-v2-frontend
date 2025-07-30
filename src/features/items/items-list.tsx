@@ -37,6 +37,7 @@ export default function ItemsList() {
     fetchFn: getItems,
     arrayQueries: ["categories"],
     cacheKey: "items-list",
+    searchField: "itemFullName",
   });
   const items = data?.rows ?? [];
   const {
