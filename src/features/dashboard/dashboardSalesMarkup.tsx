@@ -13,6 +13,7 @@ import { formatValue } from "@/lib/utils";
 import { Skeleton } from "@features/ui/skeleton";
 import useFetchData from "@features/shared/hooks/use-fetch-data";
 import { SalesMarkupResponse } from "@features/shared/types/dashboard.types";
+import { CacheKey } from "@/lib/cache/cache-data";
 
 interface ChartData {
   name: string;
@@ -31,7 +32,7 @@ export default function DashboardSalesMarkup() {
       getSaleInsuranceMarkup({
         dateRange: selectedDateRange as DateRangeQueryOptions,
       }),
-    cacheKey: `dashboard-sales-markup-${selectedDateRange}`,
+    cacheKey: CacheKey.DashboardSalesMarkup,
     deps: [selectedDateRange],
   });
 

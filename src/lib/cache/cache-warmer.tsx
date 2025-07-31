@@ -8,6 +8,7 @@ import {
   getDailySales,
   getGeneralOverview,
   getLeastSellingItems,
+  getSaleInsuranceMarkup,
   getSalePaymentMethod,
   getSalesTrend,
   getSellingCategories,
@@ -22,6 +23,8 @@ import { DATE_RANGE } from "@features/layout/search-with-filter/search-with-filt
 import { CACHE_PAGE_SIZE, CacheKey } from "@/lib/cache/cache-data";
 import { getItemCategories } from "@features/shared/actions/item-categories.actions";
 import { getStockAdjustments } from "@features/shared/actions/stock-adjustments.actions";
+import { getItemOrders } from "@features/shared/actions/item-orders.actions";
+import { getSuppliers } from "@features/shared/actions/supplier.actions";
 
 const PREFETCH_TARGETS = [
   {
@@ -98,6 +101,13 @@ const PREFETCH_TARGETS = [
       }),
   },
   {
+    key: CacheKey.DashboardSalesMarkup,
+    fetcher: () =>
+      getSaleInsuranceMarkup({
+        dateRange: DATE_RANGE.THIS_MONTH,
+      }),
+  },
+  {
     key: CacheKey.ItemsList,
     fetcher: () =>
       getItems({
@@ -122,6 +132,20 @@ const PREFETCH_TARGETS = [
     key: CacheKey.ExpiryItemList,
     fetcher: () =>
       getItemsExpiry({
+        pageSize: CACHE_PAGE_SIZE,
+      }),
+  },
+  {
+    key: CacheKey.ItemOrdersList,
+    fetcher: () =>
+      getItemOrders({
+        pageSize: CACHE_PAGE_SIZE,
+      }),
+  },
+  {
+    key: CacheKey.SuppliersList,
+    fetcher: () =>
+      getSuppliers({
         pageSize: CACHE_PAGE_SIZE,
       }),
   },
