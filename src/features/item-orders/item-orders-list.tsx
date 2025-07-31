@@ -28,6 +28,7 @@ import { useEffect, useState } from "react";
 import LoadingOverlay from "@features/ui/loadingOverlay";
 import { useSessionData } from "@/hooks/useSessionData";
 import { PermissionModules } from "@features/shared/types/auth-action.types";
+import { CacheKey } from "@/lib/cache/cache-data";
 
 type ItemOrdersListProps = {
   items: IdData[];
@@ -41,6 +42,8 @@ export default function ItemOrdersList({
   const { canWrite, canDelete } = useSessionData();
   const { data, loading, refetch } = useFetchData({
     fetchFn: getItemOrders,
+    cacheKey: CacheKey.ItemOrdersList,
+    searchField: "item.name",
   });
   const itemOrders = data?.rows ?? [];
   const {

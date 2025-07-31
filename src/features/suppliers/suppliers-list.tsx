@@ -29,10 +29,15 @@ import {
 } from "../shared/types/auth-action.types";
 import { GetSuppliersResponse } from "../shared/types/action.types";
 import { useSessionData } from "@/hooks/useSessionData";
+import { CacheKey } from "@/lib/cache/cache-data";
 
 export default function SuppliersList() {
   const { canWrite, canDelete } = useSessionData();
-  const { data, loading } = useFetchData({ fetchFn: getSuppliers });
+  const { data, loading } = useFetchData({
+    fetchFn: getSuppliers,
+    cacheKey: CacheKey.SuppliersList,
+    searchField: "name",
+  });
   const suppliers = data?.rows ?? [];
   const [modalActionProperties, setModalActionProperties] = useState({
     label: "Delete",
