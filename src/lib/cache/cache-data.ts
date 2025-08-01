@@ -19,6 +19,9 @@ export enum CacheKey {
   SalesItemList = "sales-item-list",
   DepartmentRequestList = "department-request-list",
   AuditLogsList = "audit-logs-list",
+  DepartmentManagementSettings = "department-management-settings",
+  ManageUsersSettings = "manage-users-settings",
+  NotificationSettings = "notification-settings",
 }
 
 export const CACHE_PAGE_SIZE = "100";

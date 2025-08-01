@@ -13,6 +13,7 @@ import {
 import { Badge } from "../ui/badge";
 import { settingsSidebarNavItems } from "./settings.data";
 import { useSessionData } from "@/hooks/useSessionData";
+import { useGlobalNotifications } from "@features/notifications/notifications-context";
 
 export function SettingsSidebar() {
   const { hasPermission } = useSessionData();
@@ -42,6 +43,10 @@ export function SettingsFromActions({
   className?: string;
   setEditFormAction: Dispatch<SetStateAction<boolean>>;
 }>) {
+  const { isConnected } = useGlobalNotifications();
+  if (!isConnected) {
+    return null;
+  }
   return (
     <div className={cn("absolute top-0 right-0 flex gap-4", className)}>
       {!editFormAction && (
@@ -88,6 +93,10 @@ export function SettingsCreateButton({
   label,
   state,
 }: Readonly<{ label: string; state: string }>) {
+  const { isConnected } = useGlobalNotifications();
+  if (!isConnected) {
+    return null;
+  }
   return (
     <ButtonLink
       href={{ query: { state } }}

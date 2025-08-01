@@ -33,6 +33,11 @@ import {
   getDepartmentRequests,
 } from "@features/shared/actions/department-request.actions";
 import { getAuditLogs } from "@features/shared/actions/activity.actions";
+import {
+  getDepartmentsAction,
+  getUsersAction,
+} from "@features/shared/actions/settings.actions";
+import { findSettings } from "@features/shared/actions/user.actions";
 
 const PREFETCH_TARGETS = [
   {
@@ -198,6 +203,24 @@ const PREFETCH_TARGETS = [
       getAuditLogs({
         pageSize: CACHE_PAGE_SIZE,
       }),
+  },
+  {
+    key: CacheKey.DepartmentManagementSettings,
+    fetcher: () =>
+      getDepartmentsAction({
+        pageSize: CACHE_PAGE_SIZE,
+      }),
+  },
+  {
+    key: CacheKey.ManageUsersSettings,
+    fetcher: () =>
+      getUsersAction({
+        pageSize: CACHE_PAGE_SIZE,
+      }),
+  },
+  {
+    key: CacheKey.NotificationSettings,
+    fetcher: () => findSettings(),
   },
 ];
 
