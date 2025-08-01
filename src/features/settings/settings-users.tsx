@@ -40,6 +40,7 @@ import { defaultPermissions } from "./settings.data";
 import { ManageUsersSettingsProps } from "./settings.types";
 import useFetchData from "@features/shared/hooks/use-fetch-data";
 import { useSessionData } from "@/hooks/useSessionData";
+import { CacheKey } from "@/lib/cache/cache-data";
 
 type ManageUsersSettingsFormProps = {
   defaultValues?: z.infer<typeof newUserSettingsSchema> | null;
@@ -50,7 +51,11 @@ export default function ManageUsersSettings({
   roles,
 }: Readonly<ManageUsersSettingsProps>) {
   const { canWrite } = useSessionData();
-  const { data, loading, refetch } = useFetchData({ fetchFn: getUsersAction });
+  const { data, loading, refetch } = useFetchData({
+    fetchFn: getUsersAction,
+    cacheKey: CacheKey.ManageUsersSettings,
+    searchField: "fullName",
+  });
   const users = data?.data.rows ?? [];
   const [modalActionProperties, setModalActionProperties] = useState({
     label: "Deactivate",

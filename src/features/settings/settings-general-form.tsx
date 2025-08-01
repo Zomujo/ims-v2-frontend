@@ -22,6 +22,7 @@ import {
   handleEmailChangeOtp,
   readImgFile,
 } from "./settings.utils";
+import { useGlobalNotifications } from "@features/notifications/notifications-context";
 
 type SettingsFormData = z.infer<typeof generalSettingsSchema>;
 export function GeneralSettingsAccountForm({
@@ -193,6 +194,7 @@ export function SettingsEditAvatarForm({
   imgURL = null,
   fullName = "",
 }: Readonly<PropsWithChildren<{ imgURL: string | null; fullName: string }>>) {
+  const { isConnected } = useGlobalNotifications();
   const [imgFile, setImgFile] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -242,6 +244,7 @@ export function SettingsEditAvatarForm({
           startIcon={<Icon icon="hugeicons:edit-01" />}
           className="text-xs"
           size="sm"
+          disabled={!isConnected}
           onClick={() => fileInputRef.current?.click()}
         >
           Edit

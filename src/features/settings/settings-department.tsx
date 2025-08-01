@@ -25,10 +25,15 @@ import { DepartmentFormProps } from "./settings.types";
 import useFetchData from "@features/shared/hooks/use-fetch-data";
 import { useSessionData } from "@/hooks/useSessionData";
 import { PermissionModules } from "@features/shared/types/auth-action.types";
+import { CacheKey } from "@/lib/cache/cache-data";
 
 export function DepartmentManagementSettings() {
   const { canWrite, canDelete } = useSessionData();
-  const { data, loading } = useFetchData({ fetchFn: getDepartmentsAction });
+  const { data, loading } = useFetchData({
+    fetchFn: getDepartmentsAction,
+    cacheKey: CacheKey.DepartmentManagementSettings,
+    searchField: "name",
+  });
   const departments = data?.data.rows ?? [];
   const {
     state,

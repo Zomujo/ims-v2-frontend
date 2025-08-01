@@ -9,6 +9,9 @@ import {
 } from "@features/shared/actions/user.actions";
 import LoadingOverlay from "@features/ui/loadingOverlay";
 import { handleRequestState } from "@/lib/utils";
+import useFetchData from "@features/shared/hooks/use-fetch-data";
+import { CacheKey } from "@/lib/cache/cache-data";
+import { useGlobalNotifications } from "@features/notifications/notifications-context";
 
 const emailNotificationOptions = [
   {
@@ -39,6 +42,7 @@ type EmailNotificationOptionsId =
 export default function SettingsNotification() {
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [emailNotification, setEmailNotification] = useState(true);
+  const { isConnected } = useGlobalNotifications();
   const [emailNotificationOptionsState, setEmailNotificationOptionsState] =
     useState<Record<EmailNotificationOptionsId, boolean>>({
       departmentRequests: true,
@@ -46,7 +50,10 @@ export default function SettingsNotification() {
       lowStocks: true,
       outOfStock: true,
     });
-  const [isLoading, setIsLoading] = useState(true);
+  const { data, loading } = useFetchData({
+    fetchFn: findSettings,
+    cacheKey: CacheKey.NotificationSettings,
+  });
 
   const submitEmailNotificationOptions = async () => {
     if (timeoutRef.current) {
@@ -71,37 +78,31 @@ export default function SettingsNotification() {
   };
 
   useEffect(() => {
-    const getEmailNotificationOptions = async () => {
-      setIsLoading(true);
-      const { data } = await findSettings();
-      if (data) {
-        const {
-          emailItemLowStocks,
-          emailItemOutOfStock,
-          emailDepartmentRequests,
-          emailItemStocked,
-        } = data;
-        setEmailNotificationOptionsState({
-          departmentRequests: emailDepartmentRequests,
-          restocked: emailItemStocked,
-          lowStocks: emailItemLowStocks,
-          outOfStock: emailItemOutOfStock,
-        });
-        const atLeastOneTrue =
-          emailItemLowStocks ||
-          emailItemOutOfStock ||
-          emailDepartmentRequests ||
-          emailItemStocked;
-        setEmailNotification(atLeastOneTrue);
-      }
-      setIsLoading(false);
-    };
-    void getEmailNotificationOptions();
-  }, []);
+    if (data?.data) {
+      const {
+        emailItemLowStocks,
+        emailItemOutOfStock,
+        emailDepartmentRequests,
+        emailItemStocked,
+      } = data?.data;
+      setEmailNotificationOptionsState({
+        departmentRequests: emailDepartmentRequests,
+        restocked: emailItemStocked,
+        lowStocks: emailItemLowStocks,
+        outOfStock: emailItemOutOfStock,
+      });
+      const atLeastOneTrue =
+        emailItemLowStocks ||
+        emailItemOutOfStock ||
+        emailDepartmentRequests ||
+        emailItemStocked;
+      setEmailNotification(atLeastOneTrue);
+    }
+  }, [data]);
 
   return (
     <div>
-      {isLoading ? (
+      {loading ? (
         <LoadingOverlay />
       ) : (
         <div className="flex flex-col">
@@ -120,6 +121,7 @@ export default function SettingsNotification() {
               <Switch
                 checked={emailNotification}
                 size={"xl"}
+                disabled={!isConnected}
                 onClick={() => {
                   setEmailNotification((prev) => {
                     if (prev) {
@@ -142,7 +144,7 @@ export default function SettingsNotification() {
                   <div key={id} className="flex gap-3">
                     <Checkbox
                       id="terms-2"
-                      disabled={!emailNotification}
+                      disabled={!isConnected || !emailNotification}
                       checked={emailNotificationOptionsState[id]}
                       onClick={() => {
                         setEmailNotificationOptionsState((prev) => ({

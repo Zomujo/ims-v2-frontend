@@ -6,30 +6,19 @@ import {
 } from "../shared/actions/settings.actions";
 import { toast } from "sonner";
 import LoadingOverlay from "../ui/loadingOverlay";
+import { useGlobalNotifications } from "@features/notifications/notifications-context";
+import useFetchData from "@features/shared/hooks/use-fetch-data";
+import { CacheKey } from "@/lib/cache/cache-data";
 
 const SettingsExpiry = () => {
   const [intervalQuantity, setIntervalQuantity] = useState<number | string>(0);
   const [intervalUnit, setIntervalUnit] = useState("days");
   const [loading, setLoading] = useState(false);
-  const [showLoadingLayer, setShowLoadingLayer] = useState(false);
-
-  const fetchSettingsExpiry = async () => {
-    setShowLoadingLayer(true);
-    try {
-      const response = await getExpirySettings();
-
-      const { data } = response;
-
-      if (data) {
-        setIntervalQuantity(data.intervalQuantity);
-        setIntervalUnit(data.intervalUnit);
-      }
-    } catch (err) {
-      toast.error("Failed to fetch settings");
-    } finally {
-      setShowLoadingLayer(false);
-    }
-  };
+  const { isConnected } = useGlobalNotifications();
+  const { data, loading: showLoadingLayer } = useFetchData({
+    fetchFn: getExpirySettings,
+    cacheKey: CacheKey.NotificationSettings,
+  });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,7 +29,7 @@ const SettingsExpiry = () => {
         intervalUnit,
       });
       toast.success("Settings updated successfully!");
-    } catch (err) {
+    } catch {
       toast.error("Failed to update settings");
     } finally {
       setLoading(false);
@@ -48,8 +37,12 @@ const SettingsExpiry = () => {
   };
 
   useEffect(() => {
-    fetchSettingsExpiry();
-  }, []);
+    if (data?.data) {
+      const { data: intervalData } = data;
+      setIntervalQuantity(intervalData.intervalQuantity);
+      setIntervalUnit(intervalData.intervalUnit);
+    }
+  }, [data]);
 
   return (
     <>
@@ -79,6 +72,7 @@ const SettingsExpiry = () => {
                 id="intervalQuantity"
                 type="number"
                 min={1}
+                disabled={!isConnected}
                 required
                 className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-indigo-400 focus:outline-none md:w-1/2 lg:w-1/3"
                 value={intervalQuantity}
@@ -94,6 +88,7 @@ const SettingsExpiry = () => {
                 Interval Unit
               </label>
               <select
+                disabled={!isConnected}
                 id="intervalUnit"
                 className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-indigo-400 focus:outline-none md:w-1/2 lg:w-1/3"
                 value={intervalUnit}
@@ -108,7 +103,7 @@ const SettingsExpiry = () => {
             <div>
               <button
                 type="submit"
-                disabled={loading}
+                disabled={!isConnected || loading}
                 className="inline-flex items-center justify-center rounded-lg bg-indigo-600 px-6 py-2 text-white transition hover:bg-indigo-700 disabled:opacity-50"
               >
                 {loading ? "Saving..." : "Save Changes"}
