@@ -22,6 +22,7 @@ export enum CacheKey {
   DepartmentManagementSettings = "department-management-settings",
   ManageUsersSettings = "manage-users-settings",
   NotificationSettings = "notification-settings",
+  Notifications = "notifications",
 }
 
 export const CACHE_PAGE_SIZE = "100";

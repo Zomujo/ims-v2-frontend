@@ -16,6 +16,8 @@ import {
   markNotificationsAsRead,
 } from "@features/shared/actions/notifications.actions";
 import { toast } from "sonner";
+import localforage from "localforage";
+import { CacheKey } from "@/lib/cache/cache-data";
 
 interface GlobalNotificationsContextType {
   notifications: NotificationPayload[];
@@ -76,6 +78,7 @@ export function GlobalNotificationsProvider({
         } else {
           setNotifications((prev) => [...prev, ...uniqueNotifications]);
         }
+        void localforage.setItem(CacheKey.Notifications, notifications);
       }
 
       return uniqueNotifications.length;
@@ -85,6 +88,17 @@ export function GlobalNotificationsProvider({
 
   const loadInitialNotifications = useCallback(async () => {
     if (!userId || initialLoadRef.current) return;
+
+    if (!isConnected) {
+      const cachedNotifications = await localforage.getItem<
+        NotificationPayload[]
+      >(CacheKey.Notifications);
+      if (cachedNotifications) {
+        setNotifications(notifications);
+        notificationIdsRef.current = new Set(notifications.map((n) => n.id));
+        return;
+      }
+    }
 
     setIsLoading(true);
     setError(null);
@@ -112,7 +126,7 @@ export function GlobalNotificationsProvider({
     } finally {
       setIsLoading(false);
     }
-  }, [userId, addNotificationsNoDuplicates]);
+  }, [userId, addNotificationsNoDuplicates, isConnected]);
 
   const loadMore = useCallback(async () => {
     if (!userId || isLoading || isLoadingMore || !hasMore) return;
