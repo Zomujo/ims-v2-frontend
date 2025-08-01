@@ -39,6 +39,7 @@ import { Input } from "@features/ui/input";
 import { Textarea } from "@features/ui/textarea";
 import useImsSearchParams from "@features/shared/hooks/use-ims-search-params";
 import { UI_STATE } from "@/lib/constant";
+import { CacheKey } from "@/lib/cache/cache-data";
 
 type DepartmentRequestProps = {
   items: IdData[];
@@ -57,6 +58,7 @@ export default function DepartmentRequestList({
       role === UserRole.CentralAdmin
         ? getDepartmentRequests
         : getDepartmentItemRequests,
+    cacheKey: `${CacheKey.DepartmentRequestList}-${role}`,
   });
 
   const requests = data?.rows ?? [];

@@ -1,17 +1,18 @@
 "use client";
 import { ScrollArea } from "../ui/scroll-area";
 import { ReportAccordion } from "./report-accordion";
+import { ReportId } from "@features/reports/reports.data";
 
 export default function ReportsList() {
   const inventoryReportData = [
     {
-      id: "stock-level-report",
+      id: ReportId.StockLevelReport,
       name: "Stock Level Report",
       quantity: "",
     },
 
     {
-      id: "Stock-movement-report",
+      id: ReportId.StockMovementReport,
       name: "Expiry report",
       quantity: "",
     },
@@ -19,7 +20,7 @@ export default function ReportsList() {
 
   const salesReportData = [
     {
-      id: "earnings-overview",
+      id: ReportId.EarningsOverviewReport,
       name: "Sales Level Report",
       quantity: "",
     },

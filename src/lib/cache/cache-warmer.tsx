@@ -25,6 +25,14 @@ import { getItemCategories } from "@features/shared/actions/item-categories.acti
 import { getStockAdjustments } from "@features/shared/actions/stock-adjustments.actions";
 import { getItemOrders } from "@features/shared/actions/item-orders.actions";
 import { getSuppliers } from "@features/shared/actions/supplier.actions";
+import { getSales } from "@features/shared/actions/sales.actions";
+import { getSalesItemsAction } from "@features/shared/actions/sales.action";
+import { UserRole } from "@features/shared/types/auth-action.types";
+import {
+  getDepartmentItemRequests,
+  getDepartmentRequests,
+} from "@features/shared/actions/department-request.actions";
+import { getAuditLogs } from "@features/shared/actions/activity.actions";
 
 const PREFETCH_TARGETS = [
   {
@@ -146,6 +154,48 @@ const PREFETCH_TARGETS = [
     key: CacheKey.SuppliersList,
     fetcher: () =>
       getSuppliers({
+        pageSize: CACHE_PAGE_SIZE,
+      }),
+  },
+  {
+    key: CacheKey.SalesList,
+    fetcher: () =>
+      getSales({
+        pageSize: CACHE_PAGE_SIZE,
+      }),
+  },
+  {
+    key: CacheKey.SalesItemList,
+    fetcher: () =>
+      getSalesItemsAction({
+        pageSize: CACHE_PAGE_SIZE,
+      }),
+  },
+  {
+    key: `${CacheKey.DepartmentRequestList}-${UserRole.CentralAdmin}`,
+    fetcher: () =>
+      getDepartmentRequests({
+        pageSize: CACHE_PAGE_SIZE,
+      }),
+  },
+  {
+    key: `${CacheKey.DepartmentRequestList}-${UserRole.DepartmentAdmin}`,
+    fetcher: () =>
+      getDepartmentItemRequests({
+        pageSize: CACHE_PAGE_SIZE,
+      }),
+  },
+  {
+    key: `${CacheKey.DepartmentRequestList}-${UserRole.Pharmacist}`,
+    fetcher: () =>
+      getDepartmentItemRequests({
+        pageSize: CACHE_PAGE_SIZE,
+      }),
+  },
+  {
+    key: CacheKey.AuditLogsList,
+    fetcher: () =>
+      getAuditLogs({
         pageSize: CACHE_PAGE_SIZE,
       }),
   },
