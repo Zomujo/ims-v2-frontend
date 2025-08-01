@@ -15,12 +15,16 @@ import { useSessionData } from "@/hooks/useSessionData";
 import { PermissionModules } from "@features/shared/types/auth-action.types";
 import useImsSearchParams from "@features/shared/hooks/use-ims-search-params";
 import { ColumnDef } from "@tanstack/react-table";
+import { CacheKey } from "@/lib/cache/cache-data";
 
 export default function SalesList() {
   const { setSearchParams, getSearchParams } = useImsSearchParams();
   const { canWrite, canDelete } = useSessionData();
   const router = useRouter();
-  const { data, loading, refetch } = useFetchData({ fetchFn: getSales });
+  const { data, loading, refetch } = useFetchData({
+    fetchFn: getSales,
+    cacheKey: CacheKey.SalesList,
+  });
   const [, , removeSalesItems] = useLocalStorage(salesItemLocalStorageKey, []);
   const sales = data?.rows ?? [];
   const {

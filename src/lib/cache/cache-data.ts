@@ -15,6 +15,10 @@ export enum CacheKey {
   ExpiryItemList = "expiry-item-list",
   ItemOrdersList = "item-orders-list",
   SuppliersList = "suppliers-list",
+  SalesList = "sales-list",
+  SalesItemList = "sales-item-list",
+  DepartmentRequestList = "department-request-list",
+  AuditLogsList = "audit-logs-list",
 }
 
 export const CACHE_PAGE_SIZE = "100";

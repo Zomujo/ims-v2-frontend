@@ -21,6 +21,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { endOfMonth, format } from "date-fns";
 import { useParams } from "next/navigation";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { ReportId } from "@features/reports/reports.data";
 
 const ReportDetails = () => {
   const [itemCount, setItemCount] = useState(0);
@@ -39,13 +40,13 @@ const ReportDetails = () => {
   const { setSearchParams, removeSearchParams } = useImsSearchParams();
 
   const routeParams = useMemo(() => {
-    const reportId = params["report-id"];
+    const reportId = params["report-id"] as ReportId;
     switch (reportId) {
-      case "stock-level-report":
+      case ReportId.StockLevelReport:
         setReportType("Stock Level Report");
         return { category: "items", id: "stock-level" };
 
-      case "earnings-overview":
+      case ReportId.EarningsOverviewReport:
         setReportType("Sales Level Report");
         return { category: "sales", id: "periodic-sales" };
       default:
@@ -56,7 +57,6 @@ const ReportDetails = () => {
 
   const { data, loading: isLoading } = useFetchData({
     fetchFn: getCategorizedReport,
-    cacheKey: "report-details",
     routeParams,
   });
 
@@ -117,7 +117,7 @@ const ReportDetails = () => {
 
     if (reportType === "Sales Level Report") {
       if (data?.data) {
-        const { rows, analytics } = data?.data as unknown as SalesReportInfo;
+        const { analytics } = data?.data as unknown as SalesReportInfo;
 
         const {
           totalSales,
@@ -137,14 +137,14 @@ const ReportDetails = () => {
             title: "TOTAL ITEMS SOLD",
             value: salesData,
             percentage: percentageChange,
-            isNegative: changeType === "DECREASED" ? true : false,
+            isNegative: changeType === "DECREASED",
             type: "number",
           },
           {
             title: "TOTAL REVENUE",
             value: revenueData,
             percentage: revenuePercentageType,
-            isNegative: revenueChangeType === "DECREASED" ? true : false,
+            isNegative: revenueChangeType === "DECREASED",
             type: "number",
           },
         ]);

@@ -6,9 +6,13 @@ import usePageCRUD from "../shared/hooks/use-page-crud";
 import { ScrollArea } from "../ui/scroll-area";
 import { auditLogsTableColumns } from "@features/audit-logs/audit-logs.data";
 import { getAuditLogs } from "@features/shared/actions/activity.actions";
+import { CacheKey } from "@/lib/cache/cache-data";
 
 export default function AuditLogsList() {
-  const { data, loading } = useFetchData({ fetchFn: getAuditLogs });
+  const { data, loading } = useFetchData({
+    fetchFn: getAuditLogs,
+    cacheKey: CacheKey.AuditLogsList,
+  });
   const auditLogs = data?.rows ?? [];
   const { state, isEditMode, handleRemoveQueryparam } = usePageCRUD({
     data: auditLogs,
