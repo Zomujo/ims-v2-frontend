@@ -28,6 +28,8 @@ import LoadingOverlay from "@features/ui/loadingOverlay";
 import { useCategories } from "@/hooks/useCategories";
 import { useSessionData } from "@/hooks/useSessionData";
 import { PermissionModules } from "@features/shared/types/auth-action.types";
+import { useOnlineStatus } from "@features/shared/hooks/useOnlineStatus";
+import { API_ENDPOINTS } from "@/lib/api-constants";
 
 export default function ItemsList() {
   const { canWrite, canDelete } = useSessionData();
@@ -118,6 +120,7 @@ export function ItemForm({
   const [isLoading, setIsLoading] = useState(false);
   const { removeSearchParams } = useImsSearchParams();
   const [currentStep, setCurrentStep] = useState(1);
+  const { handleRequests, isOnline } = useOnlineStatus();
   const totalSteps = 2;
 
   const form = useHookForm({
@@ -138,6 +141,15 @@ export function ItemForm({
   }, [form]);
 
   const handleSubmit = async (data: unknown) => {
+    if (!isOnline) {
+      handleRequests(
+        isEditMode && itemId
+          ? API_ENDPOINTS.ITEM.replace(":id", itemId)
+          : API_ENDPOINTS.ITEMS,
+        data,
+      );
+      return;
+    }
     const onItemData = data as z.infer<typeof itemFormSchema>;
     const res = isEditMode
       ? updateItem(itemId ?? "", onItemData)

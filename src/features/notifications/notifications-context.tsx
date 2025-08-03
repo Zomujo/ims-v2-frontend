@@ -18,6 +18,7 @@ import {
 import { toast } from "sonner";
 import localforage from "localforage";
 import { CacheKey } from "@/lib/cache/cache-data";
+import { useOnlineStatus } from "@features/shared/hooks/useOnlineStatus";
 
 interface GlobalNotificationsContextType {
   notifications: NotificationPayload[];
@@ -46,6 +47,7 @@ export function GlobalNotificationsProvider({
   children,
   enableToasts = true,
 }: GlobalNotificationsProviderProps) {
+  useOnlineStatus();
   const { userId } = useSessionData();
   const [notifications, setNotifications] = useState<NotificationPayload[]>([]);
   const [isConnected, setIsConnected] = useState(false);
