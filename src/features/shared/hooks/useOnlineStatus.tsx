@@ -1,3 +1,4 @@
+"use client";
 import { useEffect, useState } from "react";
 import localforage from "localforage";
 import { CacheKey } from "@/lib/cache/cache-data";
@@ -47,14 +48,27 @@ export function useOnlineStatus() {
   );
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
+
     const handleOnline = async () => {
+      console.log("[useOnlineStatus] You are back online");
       setIsOnline(true);
       await sendPendingRequestsToQueue();
     };
-    const handleOffline = () => setIsOnline(false);
+    const handleOffline = () => {
+      console.log("[useOnlineStatus] No internet connectivity detected");
+      setIsOnline(false);
+    };
 
     window.addEventListener("online", handleOnline);
     window.addEventListener("offline", handleOffline);
+
+    // Initial log for current status
+    if (navigator.onLine) {
+      console.log("[useOnlineStatus] Initial: online");
+    } else {
+      console.log("[useOnlineStatus] Initial: offline");
+    }
 
     return () => {
       window.removeEventListener("online", handleOnline);
