@@ -23,6 +23,8 @@ import { categoryFormSchema } from "./categories.schemas";
 import { ITEMS_CATEGORIES_STATUS } from "@features/shared/types/action.types";
 import { useSessionData } from "@/hooks/useSessionData";
 import { PermissionModules } from "@features/shared/types/auth-action.types";
+import { useOnlineStatus } from "../shared/hooks/useOnlineStatus";
+import { API_ENDPOINTS } from "@/lib/api-constants";
 
 export default function CategoriesList() {
   const { canWrite, canDelete } = useSessionData();
@@ -42,9 +44,20 @@ export default function CategoriesList() {
     handleEditBtnClicked,
     handleRemoveQueryparam,
   } = usePageCRUD({ data: itemCategories });
+  const { handleRequests, isOnline } = useOnlineStatus();
 
   const handleDelete = async () => {
     const id = getId(CRUDACTION.DELETE);
+
+    if (!isOnline) {
+      handleRequests(
+        API_ENDPOINTS.ITEM_CATEGORY.replace(":id", id),
+        "",
+        "DELETE",
+      );
+      return;
+    }
+
     const res = deleteItemCategory(id);
     handleRequestState({ res, loadingMsg: "Deleting category...." });
     await res;
@@ -107,8 +120,20 @@ function CategoriesForm({
     },
   });
   const isEditMode = !!categoryName;
+  const { handleRequests, isOnline } = useOnlineStatus();
 
   const handleSubmit = async (data: unknown) => {
+    if (!isOnline) {
+      handleRequests(
+        isEditMode && categoryId
+          ? API_ENDPOINTS.ITEM_CATEGORIES.replace(":id", categoryId)
+          : API_ENDPOINTS.ITEM_CATEGORIES,
+        data,
+        isEditMode ? "PATCH" : "POST",
+      );
+      return;
+    }
+
     const categoryData = data as z.infer<typeof categoryFormSchema>;
     const res = isEditMode
       ? updateItemCategory(categoryId ?? "", categoryData)
