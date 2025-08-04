@@ -29,6 +29,8 @@ import LoadingOverlay from "@features/ui/loadingOverlay";
 import { useSessionData } from "@/hooks/useSessionData";
 import { PermissionModules } from "@features/shared/types/auth-action.types";
 import { CacheKey } from "@/lib/cache/cache-data";
+import { API_ENDPOINTS } from "@/lib/api-constants";
+import { useOnlineStatus } from "@features/shared/hooks/useOnlineStatus";
 
 type ItemOrdersListProps = {
   items: IdData[];
@@ -45,6 +47,7 @@ export default function ItemOrdersList({
     cacheKey: CacheKey.ItemOrdersList,
     searchField: "item.name",
   });
+  const { handleRequests, isOnline } = useOnlineStatus();
   const itemOrders = data?.rows ?? [];
   const {
     state,
@@ -59,6 +62,14 @@ export default function ItemOrdersList({
 
   const handleDelete = async () => {
     const id = getId(CRUDACTION.DELETE);
+    if (!isOnline) {
+      handleRequests(
+        API_ENDPOINTS.ITEM_ORDER.replace(":id", id),
+        undefined,
+        "DELETE",
+      );
+      return;
+    }
     const res = deleteItemOrder(id);
     handleRequestState({ res, loadingMsg: "Deleting item order...." });
     res.then(() => {
@@ -160,8 +171,19 @@ export function ItemOrdersForm({
     resolver: orderFormSchema,
     mode: "onTouched",
   });
+  const { handleRequests, isOnline } = useOnlineStatus();
 
   const handleSubmit = async (data: unknown) => {
+    if (!isOnline) {
+      handleRequests(
+        isEditMode && itemOrderId
+          ? API_ENDPOINTS.ITEM_ORDER.replace(":id", itemOrderId)
+          : API_ENDPOINTS.ITEM_ORDER,
+        data,
+        isEditMode ? "PATCH" : "POST",
+      );
+      return;
+    }
     setIsSubmitting(true);
     const orderData = data as z.infer<typeof orderFormSchema>;
     const res =
