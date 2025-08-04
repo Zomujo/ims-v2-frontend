@@ -8,18 +8,12 @@ import { useGlobalNotifications } from "@features/notifications/notifications-co
 import useImsSearchParams from "@features/shared/hooks/use-ims-search-params";
 import { UI_STATE } from "@/lib/constant";
 import { UseFormReturn } from "react-hook-form";
-
-type Method = "POST" | "PATCH" | "PUT" | "DELETE";
-interface Headers {
-  Authorization: string;
-}
-export interface SyncPayloadDto {
-  method: Method;
-  url: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  body?: any;
-  headers: Headers;
-}
+import { handleRequestState } from "@/lib/utils";
+import {
+  Method,
+  sendPendingRequests,
+  SyncPayloadDto,
+} from "@features/shared/actions/sync.actions";
 
 export async function pushPendingRequest(request: SyncPayloadDto) {
   const existingPendingRequests: SyncPayloadDto[] =
@@ -28,27 +22,32 @@ export async function pushPendingRequest(request: SyncPayloadDto) {
   await localforage.setItem(CacheKey.PendingRequests, existingPendingRequests);
 }
 
-async function sendPendingRequestsToQueue() {
-  const pending =
-    (await localforage.getItem<SyncPayloadDto[]>(CacheKey.PendingRequests)) ||
-    [];
-  if (pending.length === 0) return;
-
-  await fetch("/api/bullmq/sync", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ requests: pending }),
-  });
-
-  await localforage.setItem(CacheKey.PendingRequests, []);
-}
-
 export function useOnlineStatus() {
   const { isConnected } = useGlobalNotifications();
   const { userId } = useSessionData();
   const { removeSearchParams } = useImsSearchParams();
+
+  async function sendPendingRequestsToQueue() {
+    const pending =
+      (await localforage.getItem<SyncPayloadDto[]>(CacheKey.PendingRequests)) ||
+      [];
+    if (pending.length === 0) return;
+
+    const res = sendPendingRequests({
+      data: pending,
+    });
+
+    handleRequestState({
+      res: res as unknown as Promise<Record<string, unknown>>,
+      loadingMsg: "Syncing saved requests during offline...",
+      successMsg: "Saved requests synced successfully.",
+      errorMsg: "Failed to sync saved requests.",
+    });
+
+    res.then(async () => {
+      await localforage.setItem(CacheKey.PendingRequests, []);
+    });
+  }
 
   useEffect(() => {
     if (isConnected) {

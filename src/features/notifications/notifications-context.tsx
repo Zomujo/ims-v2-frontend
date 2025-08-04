@@ -89,17 +89,6 @@ export function GlobalNotificationsProvider({
   const loadInitialNotifications = useCallback(async () => {
     if (!userId || initialLoadRef.current) return;
 
-    if (!isConnected) {
-      const cachedNotifications = await localforage.getItem<
-        NotificationPayload[]
-      >(CacheKey.Notifications);
-      if (cachedNotifications) {
-        setNotifications(notifications);
-        notificationIdsRef.current = new Set(notifications.map((n) => n.id));
-        return;
-      }
-    }
-
     setIsLoading(true);
     setError(null);
 
@@ -121,8 +110,22 @@ export function GlobalNotificationsProvider({
         setError("Failed to load notifications");
       }
     } catch (err) {
-      console.error("Error fetching initial notifications:", err);
-      setError("Failed to load notifications");
+      if (!isConnected) {
+        const cachedNotifications = await localforage.getItem<
+          NotificationPayload[]
+        >(CacheKey.Notifications);
+        if (cachedNotifications) {
+          setNotifications(notifications);
+          notificationIdsRef.current = new Set(notifications.map((n) => n.id));
+          return;
+        } else {
+          console.error("Error fetching initial notifications:", err);
+          setError("Failed to load notifications");
+        }
+      } else {
+        console.error("Error fetching initial notifications:", err);
+        setError("Failed to load notifications");
+      }
     } finally {
       setIsLoading(false);
     }
