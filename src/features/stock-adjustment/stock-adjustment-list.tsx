@@ -129,7 +129,7 @@ export function StockAdjustmentForm({
     if (!isOnline) {
       handleRequests(
         id
-          ? API_ENDPOINTS.STOCK_ADJUSTMENTS.replace(":id", id)
+          ? API_ENDPOINTS.STOCK_ADJUSTMENT.replace(":id", id)
           : API_ENDPOINTS.STOCK_ADJUSTMENTS,
         data,
         id ? "PATCH" : "POST",

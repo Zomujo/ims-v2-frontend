@@ -178,7 +178,7 @@ export function ItemOrdersForm({
       handleRequests(
         isEditMode && itemOrderId
           ? API_ENDPOINTS.ITEM_ORDER.replace(":id", itemOrderId)
-          : API_ENDPOINTS.ITEM_ORDER,
+          : API_ENDPOINTS.ITEM_ORDERS,
         data,
         isEditMode ? "PATCH" : "POST",
       );
