@@ -65,7 +65,7 @@ export function useOnlineStatus() {
   ) => {
     if (!isConnected) {
       void pushPendingRequest({
-        url: `/api${url}`,
+        url: `/api/v1${url}`,
         method,
         body,
         headers: {
