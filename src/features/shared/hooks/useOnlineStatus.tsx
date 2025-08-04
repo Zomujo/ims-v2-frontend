@@ -1,21 +1,19 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import localforage from "localforage";
 import { CacheKey } from "@/lib/cache/cache-data";
 import { toast } from "sonner";
 import { useSessionData } from "@/hooks/useSessionData";
-
-type Method = "POST" | "PATCH" | "PUT" | "DELETE";
-interface Headers {
-  Authorization: string;
-}
-export interface SyncPayloadDto {
-  method: Method;
-  url: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  body?: any;
-  headers: Headers;
-}
+import { useGlobalNotifications } from "@features/notifications/notifications-context";
+import useImsSearchParams from "@features/shared/hooks/use-ims-search-params";
+import { UI_STATE } from "@/lib/constant";
+import { UseFormReturn } from "react-hook-form";
+import { handleRequestState } from "@/lib/utils";
+import {
+  Method,
+  sendPendingRequests,
+  SyncPayloadDto,
+} from "@features/shared/actions/sync.actions";
 
 export async function pushPendingRequest(request: SyncPayloadDto) {
   const existingPendingRequests: SyncPayloadDto[] =
@@ -24,61 +22,48 @@ export async function pushPendingRequest(request: SyncPayloadDto) {
   await localforage.setItem(CacheKey.PendingRequests, existingPendingRequests);
 }
 
-async function sendPendingRequestsToQueue() {
-  const pending =
-    (await localforage.getItem<SyncPayloadDto[]>(CacheKey.PendingRequests)) ||
-    [];
-  if (pending.length === 0) return;
-
-  await fetch("/api/bullmq/sync", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ requests: pending }),
-  });
-
-  await localforage.setItem(CacheKey.PendingRequests, []);
-}
-
 export function useOnlineStatus() {
+  const { isConnected } = useGlobalNotifications();
   const { userId } = useSessionData();
-  const [isOnline, setIsOnline] = useState(
-    typeof navigator !== "undefined" ? navigator.onLine : true,
-  );
+  const { removeSearchParams } = useImsSearchParams();
+
+  async function sendPendingRequestsToQueue() {
+    const pending =
+      (await localforage.getItem<SyncPayloadDto[]>(CacheKey.PendingRequests)) ||
+      [];
+    if (pending.length === 0) return;
+
+    const res = sendPendingRequests({
+      data: pending,
+    });
+
+    handleRequestState({
+      res: res as unknown as Promise<Record<string, unknown>>,
+      loadingMsg: "Syncing saved requests during offline...",
+      successMsg: "Saved requests synced successfully.",
+      errorMsg: "Failed to sync saved requests.",
+    });
+
+    res.then(async () => {
+      await localforage.setItem(CacheKey.PendingRequests, []);
+    });
+  }
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
-
-    const handleOnline = async () => {
-      console.log("[useOnlineStatus] You are back online");
-      setIsOnline(true);
-      await sendPendingRequestsToQueue();
-    };
-    const handleOffline = () => {
-      console.log("[useOnlineStatus] No internet connectivity detected");
-      setIsOnline(false);
-    };
-
-    window.addEventListener("online", handleOnline);
-    window.addEventListener("offline", handleOffline);
-
-    // Initial log for current status
-    if (navigator.onLine) {
-      console.log("[useOnlineStatus] Initial: online");
-    } else {
-      console.log("[useOnlineStatus] Initial: offline");
+    if (isConnected) {
+      void sendPendingRequestsToQueue();
     }
+  }, [isConnected]);
 
-    return () => {
-      window.removeEventListener("online", handleOnline);
-      window.removeEventListener("offline", handleOffline);
-    };
-  }, []);
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleRequests = (url: string, body: any, method: Method = "POST") => {
-    if (!isOnline) {
+  const handleRequests = (
+    url: string,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    body: any,
+    method: Method = "POST",
+    removeStateSearchParam = true,
+    form?: UseFormReturn,
+  ) => {
+    if (!isConnected) {
       void pushPendingRequest({
         url: `/api${url}`,
         method,
@@ -87,12 +72,19 @@ export function useOnlineStatus() {
           Authorization: `Bearer ${userId}`,
         },
       });
+      if (removeStateSearchParam) {
+        removeSearchParams(UI_STATE);
+      }
+
+      if (form) {
+        form.reset();
+      }
       toast.warning("You are currently offline. Your request will be queued.");
     }
   };
 
   return {
-    isOnline,
+    isOnline: isConnected,
     handleRequests,
   };
 }

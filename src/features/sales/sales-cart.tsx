@@ -28,6 +28,9 @@ import { isSalesEditMode } from "./sales.utils";
 import LoadingOverlay from "@features/ui/loadingOverlay";
 import { getBatchesNoPaginate } from "@features/shared/actions/items.actions";
 import { MultiSelect } from "@features/ui/multiSelect";
+import { useOnlineStatus } from "@features/shared/hooks/useOnlineStatus";
+import { API_ENDPOINTS } from "@/lib/api-constants";
+import { API_ENDPOINTS_OLD } from "@/lib/constant";
 
 const handleSalesItem = (saleItems: SaleItem, isEditMode?: boolean) => {
   return {
@@ -46,6 +49,7 @@ export default function SalesCart() {
   >(salesItemLocalStorageKey, []);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const { handleRequests, isOnline } = useOnlineStatus();
 
   const form = useHookForm({
     resolver: salesCartSchema,
@@ -167,9 +171,29 @@ export default function SalesCart() {
   }, []);
 
   const handleSubmit = async (data: unknown) => {
-    setIsSubmitting(true);
     const patientCardId = getSearchParams(patientIdKey);
     const dataWithPatientId = { ...(data as SaleCartFormData), patientCardId };
+    if (!isOnline) {
+      handleRequests(
+        isEditMode
+          ? API_ENDPOINTS.SALE.replace(":id", salesId as string)
+          : API_ENDPOINTS_OLD.SALES,
+        isEditMode
+          ? {
+              ...dataWithPatientId,
+              insured: dataWithPatientId.insured === "true",
+            }
+          : {
+              ...dataWithPatientId,
+              insured:
+                (dataWithPatientId as { insured: "true" | "false" }).insured ===
+                "true",
+            },
+        isEditMode ? "PATCH" : "POST",
+      );
+      return;
+    }
+    setIsSubmitting(true);
     const action = isEditMode
       ? updateSale(salesId as string, dataWithPatientId)
       : createSaleAction(dataWithPatientId);

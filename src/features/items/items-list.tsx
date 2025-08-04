@@ -33,6 +33,7 @@ import { API_ENDPOINTS } from "@/lib/api-constants";
 
 export default function ItemsList() {
   const { canWrite, canDelete } = useSessionData();
+  const { handleRequests, isOnline } = useOnlineStatus();
   const { categories } = useCategories();
   const router = useRouter();
   const { data, loading, refetch } = useFetchData({
@@ -55,6 +56,14 @@ export default function ItemsList() {
 
   const handleDelete = async () => {
     const id = getId(CRUDACTION.DELETE);
+    if (!isOnline) {
+      handleRequests(
+        API_ENDPOINTS.ITEM.replace(":id", id),
+        undefined,
+        "DELETE",
+      );
+      return;
+    }
     const res = deleteItem(id);
     handleRequestState({ res, loadingMsg: "Deleting item...." });
     res.then(() => {

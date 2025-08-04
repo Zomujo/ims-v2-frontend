@@ -134,6 +134,10 @@ export const API_ENDPOINTS = {
 
   // Department
   DEPARTMENTS_NO_PAGINATE: "/departments/no-paginate",
+
+  // Sync
+  SYNC: "/sync",
+  SYNC_ACTION: "/sync/:id",
 } as const;
 
 export const API_ENDPOINT_TAGS = {

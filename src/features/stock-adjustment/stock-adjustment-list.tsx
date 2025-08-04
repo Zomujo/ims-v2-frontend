@@ -26,6 +26,8 @@ import { stockAdjustmentSchema } from "./stock-adjustment.schemas";
 import { useSessionData } from "@/hooks/useSessionData";
 import { PermissionModules } from "@features/shared/types/auth-action.types";
 import { CacheKey } from "@/lib/cache/cache-data";
+import { useOnlineStatus } from "@features/shared/hooks/useOnlineStatus";
+import { API_ENDPOINTS } from "@/lib/api-constants";
 
 type StockAdjustmentListProps = {
   items: IdData[];
@@ -34,6 +36,7 @@ export default function StockAdjustmentList({
   items,
 }: Readonly<StockAdjustmentListProps>) {
   const { canWrite, canDelete } = useSessionData();
+  const { handleRequests, isOnline } = useOnlineStatus();
   const { data, loading } = useFetchData({
     fetchFn: getStockAdjustments,
     cacheKey: CacheKey.StockAdjustmentList,
@@ -53,6 +56,14 @@ export default function StockAdjustmentList({
 
   const handleDelete = async () => {
     const id = getId(CRUDACTION.DELETE);
+    if (!isOnline) {
+      handleRequests(
+        API_ENDPOINTS.STOCK_ADJUSTMENT.replace(":id", id),
+        undefined,
+        "DELETE",
+      );
+      return;
+    }
     const res = deleteStockAdjustment(id);
     handleRequestState({ res, loadingMsg: "Deleting stock adjustment...." });
     res.then(() => {
@@ -110,10 +121,21 @@ export function StockAdjustmentForm({
     mode: "onTouched",
     resolver: stockAdjustmentSchema,
   });
+  const { handleRequests, isOnline } = useOnlineStatus();
 
   const handleSubmit = async (data: unknown) => {
-    const oneStockAdjustment = data as z.infer<typeof stockAdjustmentSchema>;
     const id = stockAdjustment?.id;
+    const oneStockAdjustment = data as z.infer<typeof stockAdjustmentSchema>;
+    if (!isOnline) {
+      handleRequests(
+        id
+          ? API_ENDPOINTS.STOCK_ADJUSTMENT.replace(":id", id)
+          : API_ENDPOINTS.STOCK_ADJUSTMENTS,
+        data,
+        id ? "PATCH" : "POST",
+      );
+      return;
+    }
     const res = id
       ? updateStockAdjustment(id, oneStockAdjustment)
       : createStockAdjustment(oneStockAdjustment);
