@@ -5,8 +5,8 @@ import { CacheKey } from "@/lib/cache/cache-data";
 import { toast } from "sonner";
 import { useSessionData } from "@/hooks/useSessionData";
 import { useGlobalNotifications } from "@features/notifications/notifications-context";
-import useImsSearchParams from "@features/shared/hooks/use-ims-search-params";
-import { UI_STATE } from "@/lib/constant";
+// import useImsSearchParams from "@features/shared/hooks/use-ims-search-params";
+// import { UI_STATE } from "@/lib/constant";
 import { UseFormReturn } from "react-hook-form";
 import { handleRequestState } from "@/lib/utils";
 import {
@@ -25,7 +25,7 @@ export async function pushPendingRequest(request: SyncPayloadDto) {
 export function useOnlineStatus() {
   const { isConnected } = useGlobalNotifications();
   const { userId } = useSessionData();
-  const { removeSearchParams } = useImsSearchParams();
+  // const { removeSearchParams } = useImsSearchParams();
 
   async function sendPendingRequestsToQueue() {
     const pending =
@@ -72,9 +72,9 @@ export function useOnlineStatus() {
           Authorization: `Bearer ${userId}`,
         },
       });
-      if (removeStateSearchParam) {
-        removeSearchParams(UI_STATE);
-      }
+      // if (removeStateSearchParam) {
+      //   removeSearchParams(UI_STATE);
+      // }
 
       if (form) {
         form.reset();
