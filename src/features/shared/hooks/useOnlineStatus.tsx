@@ -80,7 +80,7 @@ export function useOnlineStatus() {
   const handleRequests = (url: string, body: any, method: Method = "POST") => {
     if (!isOnline) {
       void pushPendingRequest({
-        url: `/api/${url}`,
+        url: `/api${url}`,
         method,
         body,
         headers: {

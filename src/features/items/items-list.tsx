@@ -69,7 +69,7 @@ export default function ItemsList() {
   };
 
   return (
-    <div className="roundd-2xl mt-2 h-[calc(100%-15rem)] bg-white pr-4 sm:h-[calc(100%-10rem)]">
+    <div className="round-2xl mt-2 h-[calc(100%-15rem)] bg-white pr-4 sm:h-[calc(100%-10rem)]">
       <CrudPage
         moduleName="items"
         data={items}
@@ -147,6 +147,7 @@ export function ItemForm({
           ? API_ENDPOINTS.ITEM.replace(":id", itemId)
           : API_ENDPOINTS.ITEMS,
         data,
+        isEditMode ? "PATCH" : "POST",
       );
       return;
     }
