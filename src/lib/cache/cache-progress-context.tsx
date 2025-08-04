@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useContext, useState, ReactNode } from "react";
+import { useOnlineStatus } from "@features/shared/hooks/useOnlineStatus";
 
 interface ProgressState {
   total: number;
@@ -22,6 +23,7 @@ const initialProgressState = { total: 0, cached: 0, percent: 0 };
 export function CacheProgressProvider({ children }: { children: ReactNode }) {
   const [dataProgress, setDataProgress] =
     useState<ProgressState>(initialProgressState);
+  useOnlineStatus();
 
   return (
     <CacheProgressContext.Provider

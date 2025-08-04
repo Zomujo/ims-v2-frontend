@@ -1,9 +1,13 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import localforage from "localforage";
 import { CacheKey } from "@/lib/cache/cache-data";
 import { toast } from "sonner";
 import { useSessionData } from "@/hooks/useSessionData";
+import { useGlobalNotifications } from "@features/notifications/notifications-context";
+import useImsSearchParams from "@features/shared/hooks/use-ims-search-params";
+import { UI_STATE } from "@/lib/constant";
+import { UseFormReturn } from "react-hook-form";
 
 type Method = "POST" | "PATCH" | "PUT" | "DELETE";
 interface Headers {
@@ -42,43 +46,25 @@ async function sendPendingRequestsToQueue() {
 }
 
 export function useOnlineStatus() {
+  const { isConnected } = useGlobalNotifications();
   const { userId } = useSessionData();
-  const [isOnline, setIsOnline] = useState(
-    typeof navigator !== "undefined" ? navigator.onLine : true,
-  );
+  const { removeSearchParams } = useImsSearchParams();
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
-
-    const handleOnline = async () => {
-      console.log("[useOnlineStatus] You are back online");
-      setIsOnline(true);
-      await sendPendingRequestsToQueue();
-    };
-    const handleOffline = () => {
-      console.log("[useOnlineStatus] No internet connectivity detected");
-      setIsOnline(false);
-    };
-
-    window.addEventListener("online", handleOnline);
-    window.addEventListener("offline", handleOffline);
-
-    // Initial log for current status
-    if (navigator.onLine) {
-      console.log("[useOnlineStatus] Initial: online");
-    } else {
-      console.log("[useOnlineStatus] Initial: offline");
+    if (isConnected) {
+      void sendPendingRequestsToQueue();
     }
+  }, [isConnected]);
 
-    return () => {
-      window.removeEventListener("online", handleOnline);
-      window.removeEventListener("offline", handleOffline);
-    };
-  }, []);
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleRequests = (url: string, body: any, method: Method = "POST") => {
-    if (!isOnline) {
+  const handleRequests = (
+    url: string,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    body: any,
+    method: Method = "POST",
+    removeStateSearchParam = true,
+    form?: UseFormReturn,
+  ) => {
+    if (!isConnected) {
       void pushPendingRequest({
         url: `/api${url}`,
         method,
@@ -87,12 +73,19 @@ export function useOnlineStatus() {
           Authorization: `Bearer ${userId}`,
         },
       });
+      if (removeStateSearchParam) {
+        removeSearchParams(UI_STATE);
+      }
+
+      if (form) {
+        form.reset();
+      }
       toast.warning("You are currently offline. Your request will be queued.");
     }
   };
 
   return {
-    isOnline,
+    isOnline: isConnected,
     handleRequests,
   };
 }
