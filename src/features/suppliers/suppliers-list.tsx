@@ -96,7 +96,10 @@ export default function SuppliersList() {
           ? API_ENDPOINTS.SUPPLIER.replace(":id", id)
           : `${API_ENDPOINTS.SUPPLIERS}/${id}/${action}`,
         undefined,
-        action === CRUDACTION.DELETE ? "DELETE" : "PATCH",
+        {
+          method: action === CRUDACTION.DELETE ? "DELETE" : "PATCH",
+          removeSearchParams,
+        },
       );
       return;
     }
@@ -246,7 +249,7 @@ function SupplierForm({ supplierId }: Readonly<SupplierFormProps>) {
           ? API_ENDPOINTS.SUPPLIER.replace(":id", supplierId)
           : API_ENDPOINTS.SUPPLIERS,
         data,
-        isEditMode ? "PATCH" : "POST",
+        { method: isEditMode ? "PATCH" : "POST", form, removeSearchParams },
       );
       return;
     }

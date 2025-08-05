@@ -57,11 +57,10 @@ export default function ItemsList() {
   const handleDelete = async () => {
     const id = getId(CRUDACTION.DELETE);
     if (!isOnline) {
-      handleRequests(
-        API_ENDPOINTS.ITEM.replace(":id", id),
-        undefined,
-        "DELETE",
-      );
+      handleRequests(API_ENDPOINTS.ITEM.replace(":id", id), undefined, {
+        method: "DELETE",
+        removeSearchParams,
+      });
       return;
     }
     const res = deleteItem(id);
@@ -156,7 +155,11 @@ export function ItemForm({
           ? API_ENDPOINTS.ITEM.replace(":id", itemId)
           : API_ENDPOINTS.ITEMS,
         data,
-        isEditMode ? "PATCH" : "POST",
+        {
+          method: isEditMode ? "PATCH" : "POST",
+          removeSearchParams: removeSearchParams,
+          form,
+        },
       );
       return;
     }

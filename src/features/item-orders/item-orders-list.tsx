@@ -63,11 +63,9 @@ export default function ItemOrdersList({
   const handleDelete = async () => {
     const id = getId(CRUDACTION.DELETE);
     if (!isOnline) {
-      handleRequests(
-        API_ENDPOINTS.ITEM_ORDER.replace(":id", id),
-        undefined,
-        "DELETE",
-      );
+      handleRequests(API_ENDPOINTS.ITEM_ORDER.replace(":id", id), undefined, {
+        method: "DELETE",
+      });
       return;
     }
     const res = deleteItemOrder(id);
@@ -180,7 +178,11 @@ export function ItemOrdersForm({
           ? API_ENDPOINTS.ITEM_ORDER.replace(":id", itemOrderId)
           : API_ENDPOINTS.ITEM_ORDERS,
         data,
-        isEditMode ? "PATCH" : "POST",
+        {
+          method: isEditMode ? "PATCH" : "POST",
+          removeSearchParams,
+          form,
+        },
       );
       return;
     }
