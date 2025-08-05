@@ -5,8 +5,7 @@ import { CacheKey } from "@/lib/cache/cache-data";
 import { toast } from "sonner";
 import { useSessionData } from "@/hooks/useSessionData";
 import { useGlobalNotifications } from "@features/notifications/notifications-context";
-// import useImsSearchParams from "@features/shared/hooks/use-ims-search-params";
-// import { UI_STATE } from "@/lib/constant";
+import { UI_STATE } from "@/lib/constant";
 import { UseFormReturn } from "react-hook-form";
 import { handleRequestState } from "@/lib/utils";
 import {
@@ -46,7 +45,6 @@ export async function pushPendingRequest(request: SyncPayloadDto) {
 export function useOnlineStatus() {
   const { isConnected } = useGlobalNotifications();
   const { userId } = useSessionData();
-  // const { removeSearchParams } = useImsSearchParams();
 
   async function sendPendingRequestsToQueue() {
     const pending =
@@ -79,9 +77,15 @@ export function useOnlineStatus() {
     url: string,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     body: any,
-    method: Method = "POST",
-    removeStateSearchParam = true,
-    form?: UseFormReturn,
+    {
+      method = "POST",
+      removeSearchParams,
+      form,
+    }: {
+      method?: Method;
+      removeSearchParams?: (key: string) => void;
+      form?: UseFormReturn;
+    } = {},
   ) => {
     if (!isConnected) {
       void pushPendingRequest({
@@ -92,9 +96,9 @@ export function useOnlineStatus() {
           Authorization: `Bearer ${userId}`,
         },
       });
-      // if (removeStateSearchParam) {
-      //   removeSearchParams(UI_STATE);
-      // }
+      if (removeSearchParams) {
+        removeSearchParams(UI_STATE);
+      }
 
       if (form) {
         form.reset();

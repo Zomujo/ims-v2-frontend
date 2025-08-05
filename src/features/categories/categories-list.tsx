@@ -52,8 +52,10 @@ export default function CategoriesList() {
     if (!isOnline) {
       handleRequests(
         API_ENDPOINTS.ITEM_CATEGORY.replace(":id", id),
-        "",
-        "DELETE",
+        undefined,
+        {
+          method: "DELETE",
+        },
       );
       return;
     }
@@ -129,7 +131,11 @@ function CategoriesForm({
           ? API_ENDPOINTS.ITEM_CATEGORIES.replace(":id", categoryId)
           : API_ENDPOINTS.ITEM_CATEGORIES,
         data,
-        isEditMode ? "PATCH" : "POST",
+        {
+          form,
+          method: isEditMode ? "PATCH" : "POST",
+          removeSearchParams,
+        },
       );
       return;
     }

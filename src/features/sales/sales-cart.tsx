@@ -189,7 +189,7 @@ export default function SalesCart() {
                 (dataWithPatientId as { insured: "true" | "false" }).insured ===
                 "true",
             },
-        isEditMode ? "PATCH" : "POST",
+        { method: isEditMode ? "PATCH" : "POST" },
       );
       return;
     }

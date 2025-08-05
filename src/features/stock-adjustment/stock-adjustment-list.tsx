@@ -60,7 +60,7 @@ export default function StockAdjustmentList({
       handleRequests(
         API_ENDPOINTS.STOCK_ADJUSTMENT.replace(":id", id),
         undefined,
-        "DELETE",
+        { method: "DELETE" },
       );
       return;
     }
@@ -132,7 +132,7 @@ export function StockAdjustmentForm({
           ? API_ENDPOINTS.STOCK_ADJUSTMENT.replace(":id", id)
           : API_ENDPOINTS.STOCK_ADJUSTMENTS,
         data,
-        id ? "PATCH" : "POST",
+        { method: id ? "PATCH" : "POST", removeSearchParams, form },
       );
       return;
     }
