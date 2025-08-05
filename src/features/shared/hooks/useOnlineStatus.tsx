@@ -15,6 +15,27 @@ import {
   SyncPayloadDto,
 } from "@features/shared/actions/sync.actions";
 
+// A simple singleton to manage the sync process and prevent race conditions.
+const createSyncManager = () => {
+  let isSyncing = false;
+
+  return {
+    run: async (syncFn: () => Promise<void>) => {
+      if (isSyncing) {
+        return;
+      }
+      isSyncing = true;
+      try {
+        await syncFn();
+      } finally {
+        isSyncing = false;
+      }
+    },
+  };
+};
+
+const syncManager = createSyncManager();
+
 export async function pushPendingRequest(request: SyncPayloadDto) {
   const existingPendingRequests: SyncPayloadDto[] =
     (await localforage.getItem(CacheKey.PendingRequests)) || [];
@@ -44,14 +65,13 @@ export function useOnlineStatus() {
       errorMsg: "Failed to sync saved requests.",
     });
 
-    res.then(async () => {
-      await localforage.setItem(CacheKey.PendingRequests, []);
-    });
+    await res;
+    await localforage.setItem(CacheKey.PendingRequests, []);
   }
 
   useEffect(() => {
     if (isConnected) {
-      void sendPendingRequestsToQueue();
+      void syncManager.run(sendPendingRequestsToQueue);
     }
   }, [isConnected]);
 
