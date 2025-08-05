@@ -15,6 +15,8 @@ import {
   SyncPayloadDto,
 } from "@features/shared/actions/sync.actions";
 
+let isSyncing = false;
+
 export async function pushPendingRequest(request: SyncPayloadDto) {
   const existingPendingRequests: SyncPayloadDto[] =
     (await localforage.getItem(CacheKey.PendingRequests)) || [];
@@ -28,11 +30,15 @@ export function useOnlineStatus() {
   // const { removeSearchParams } = useImsSearchParams();
 
   async function sendPendingRequestsToQueue() {
+    if (isSyncing) return;
+
     const pending =
       (await localforage.getItem<SyncPayloadDto[]>(CacheKey.PendingRequests)) ||
       [];
-    if (pending.length === 0) return;
-
+    if (pending.length === 0) {
+      return;
+    }
+    isSyncing = true;
     const res = sendPendingRequests({
       data: pending,
     });
@@ -44,9 +50,13 @@ export function useOnlineStatus() {
       errorMsg: "Failed to sync saved requests.",
     });
 
-    res.then(async () => {
-      await localforage.setItem(CacheKey.PendingRequests, []);
-    });
+    res
+      .then(async () => {
+        await localforage.setItem(CacheKey.PendingRequests, []);
+      })
+      .finally(() => {
+        isSyncing = false;
+      });
   }
 
   useEffect(() => {
