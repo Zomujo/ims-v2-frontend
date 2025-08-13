@@ -26,7 +26,6 @@ export const IdProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const savedId = localStorage.getItem(LOCAL_STORAGE_KEY_ID);
     const savedTitle = localStorage.getItem(LOCAL_STORAGE_KEY_TITLE);
-    console.log("Saved ID:", savedTitle);
     if (savedId) setIdState(savedId);
     if (savedTitle) setTitle(savedTitle);
   }, []);

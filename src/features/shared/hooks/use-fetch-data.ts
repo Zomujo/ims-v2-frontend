@@ -185,7 +185,7 @@ export default function useFetchData<T>({
     const state = searchParams.get("state");
 
     if (
-      (state === "create" || state === "edit") &&
+      (state === "create" || state === "edit" || state === "delete") &&
       oldSearchParamsString !== undefined
     ) {
       const newParamsCopy = new URLSearchParams(newSearchParamsString);

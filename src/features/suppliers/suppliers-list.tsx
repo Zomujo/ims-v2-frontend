@@ -142,7 +142,10 @@ export default function SuppliersList() {
       state={state}
       isEditMode={isEditMode}
       openModal={openModal}
-      closeModal={() => setOpenModal(false)}
+      closeModal={() => {
+        handleRemoveQueryparam(false);
+        setOpenModal(false);
+      }}
       alertModalOnChange={false}
       actions={(item) => [
         {
