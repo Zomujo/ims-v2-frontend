@@ -142,7 +142,10 @@ export default function SuppliersList() {
       state={state}
       isEditMode={isEditMode}
       openModal={openModal}
-      closeModal={() => setOpenModal(false)}
+      closeModal={() => {
+        handleRemoveQueryparam(false);
+        setOpenModal(false);
+      }}
       alertModalOnChange={false}
       actions={(item) => [
         {
@@ -222,7 +225,6 @@ function SupplierForm({ supplierId }: Readonly<SupplierFormProps>) {
     const stepFieldMap: Record<number, string[]> = {
       1: [
         "name",
-        "brandTradeName",
         "supplierType",
         "minimumOrderQuantity",
         "leadTime",
@@ -235,7 +237,6 @@ function SupplierForm({ supplierId }: Readonly<SupplierFormProps>) {
         "phoneNumber",
         "email",
         "physicalAddress",
-        "mailingAddress",
       ],
     };
     const fields = stepFieldMap[currentStep];
