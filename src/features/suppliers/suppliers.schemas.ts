@@ -34,7 +34,6 @@ export const supplierSchema = z.object({
     .transform(convertTelToGH),
   email: z.string().email("Invalid email address").min(1, "Email is required"),
   physicalAddress: z.string().min(1, "Physical Address is required"),
-  mailingAddress: z.string().optional(),
 
   // Step 3: Payment Details
   paymentType: z.union([z.literal("Bank"), z.literal("Mobile Money")], {

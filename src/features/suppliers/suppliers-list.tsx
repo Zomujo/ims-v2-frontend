@@ -237,7 +237,6 @@ function SupplierForm({ supplierId }: Readonly<SupplierFormProps>) {
         "phoneNumber",
         "email",
         "physicalAddress",
-        "mailingAddress",
       ],
     };
     const fields = stepFieldMap[currentStep];

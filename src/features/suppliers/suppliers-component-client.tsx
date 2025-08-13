@@ -34,6 +34,24 @@ const mockPaymentTypes = [
   // { value: 'Cash', label: 'Cash' }, // Removed 'Cash' as it's not in the AddSupplier type union
 ];
 
+const departmentOptions = [
+  { value: "Sales", label: "Sales" },
+  { value: "Account Management", label: "Account Management" },
+  { value: "Customer Service", label: "Customer Service" },
+  { value: "Billing", label: "Billing" },
+  { value: "Accounts Receivable", label: "Accounts Receivable" },
+  { value: "Shipping", label: "Shipping" },
+  { value: "Logistics", label: "Logistics" },
+  { value: "Returns", label: "Returns" },
+  { value: "Quality Assurance", label: "Quality Assurance" },
+  { value: "Compliance", label: "Compliance" },
+  { value: "Regulatory Affairs", label: "Regulatory Affairs" },
+  { value: "Contracts", label: "Contracts" },
+  { value: "Legal", label: "Legal" },
+  { value: "Marketing", label: "Marketing" },
+  { value: "Technical Support", label: "Technical Support" },
+];
+
 const mockBankNames = [
   { value: "ghana_commercial_bank", label: "Ghana Commercial Bank" },
   { value: "stanbic_bank", label: "Stanbic Bank" },
@@ -213,25 +231,28 @@ export const SupplierFormInputs = ({
           />
           <HookFormField
             formControl={control}
-            name="department" // Matches AddSupplier type
-            label="Department" // Matches UI
+            name="department"
+            label="Department"
             renderInput={({ field }) => (
-              <Input
-                {...field}
-                className="focus-visible:ring-ims-blue-300 bg-white"
-                placeholder="Enter department"
+              <ImsSelect
+                showNone={false}
+                options={departmentOptions}
+                moduleName="department"
+                onChange={field.onChange}
+                value={field.value}
+                className="focus-visible:ring-ims-blue-300 !h-11 bg-white"
               />
             )}
           />
         </div>
         <HookFormField
           formControl={control}
-          name="phoneNumber" // Matches AddSupplier type
-          label="Phone number" // Matches UI
+          name="phoneNumber"
+          label="Phone number"
           renderInput={({ field }) => (
             <Input
               {...field}
-              type="tel" // Use tel type for phone numbers
+              type="tel"
               className="focus-visible:ring-ims-blue-300 bg-white"
               placeholder="555 553 8672"
             />
@@ -239,8 +260,8 @@ export const SupplierFormInputs = ({
         />
         <HookFormField
           formControl={control}
-          name="email" // Matches AddSupplier type
-          label="Email" // Matches UI
+          name="email"
+          label="Email"
           renderInput={({ field }) => (
             <Input
               {...field}
@@ -254,18 +275,6 @@ export const SupplierFormInputs = ({
           formControl={control}
           name="physicalAddress" // Matches AddSupplier type
           label="Physical Address" // Matches UI
-          renderInput={({ field }) => (
-            <Input
-              {...field}
-              className="focus-visible:ring-ims-blue-300 bg-white"
-              placeholder="Enter address"
-            />
-          )}
-        />
-        <HookFormField
-          formControl={control}
-          name="mailingAddress" // Matches AddSupplier type
-          label="Mailing Address" // Matches UI
           renderInput={({ field }) => (
             <Input
               {...field}

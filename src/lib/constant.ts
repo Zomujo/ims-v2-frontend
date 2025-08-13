@@ -269,3 +269,9 @@ export const months = [
   "November",
   "December",
 ];
+
+export const BACK_BUTTON = {
+  [PAGE_ROUTES.ITEM_BATCHES.VIEW]: {
+    route: PAGE_ROUTES.ITEMS.VIEW,
+  },
+};
