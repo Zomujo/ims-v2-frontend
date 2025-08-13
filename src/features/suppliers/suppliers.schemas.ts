@@ -13,7 +13,6 @@ const convertTelToGH = (tel: string) => {
 export const supplierSchema = z.object({
   // Step 1: Supplier details (Mapping AddSupplier fields to UI steps)
   name: z.string().min(1, "Supplier name is required"),
-  brandTradeName: z.string().optional(),
   supplierType: z.string().min(1, "Supplier type is required"),
   minimumOrderQuantity: z.preprocess(
     (val) => Number(val),

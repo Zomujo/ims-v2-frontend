@@ -18,6 +18,9 @@ const mockLeadTimes = [
   { value: "1-3d", label: "1-3 Days" },
   { value: "5-7d", label: "5-7 Days" },
   { value: "1-2w", label: "1-2 Weeks" },
+  { value: "3-4w", label: "3-4 Weeks" },
+  { value: "1-2m", label: "1-2 Months" },
+  { value: "3-6m", label: "3-6 Months" },
 ];
 
 const mockDeliveryMethods = [
@@ -120,18 +123,6 @@ export const SupplierFormInputs = ({
               {...field}
               className="focus-visible:ring-ims-blue-300 bg-white"
               placeholder="Eg: MDS Pharmaceuticals Ltd."
-            />
-          )}
-        />
-        <HookFormField
-          formControl={control}
-          name="brandTradeName" // Matches AddSupplier type
-          label="Brand/Trade name" // Matches UI
-          renderInput={({ field }) => (
-            <Input
-              {...field}
-              className="focus-visible:ring-ims-blue-300 bg-white"
-              placeholder="Eg. paracetamol"
             />
           )}
         />

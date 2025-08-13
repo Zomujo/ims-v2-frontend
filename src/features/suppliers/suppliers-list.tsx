@@ -225,7 +225,6 @@ function SupplierForm({ supplierId }: Readonly<SupplierFormProps>) {
     const stepFieldMap: Record<number, string[]> = {
       1: [
         "name",
-        "brandTradeName",
         "supplierType",
         "minimumOrderQuantity",
         "leadTime",
