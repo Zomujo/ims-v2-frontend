@@ -23,6 +23,7 @@ type ImsSelectProps = {
   showNone?: boolean;
   noResultsText?: string;
   showSearch?: boolean;
+  loading?: boolean;
 };
 
 export function ImsSelect({
@@ -35,6 +36,7 @@ export function ImsSelect({
   showNone = true,
   showSearch = false,
   noResultsText = "No results found.",
+  loading,
   ...props
 }: Readonly<ImsSelectProps>) {
   const [searchTerm, setSearchTerm] = React.useState("");
@@ -51,13 +53,17 @@ export function ImsSelect({
 
   return (
     <Select
-      disabled={disabled}
+      disabled={disabled || loading}
       defaultValue={defaultValue}
       onValueChange={onChange}
       {...props}
     >
       <SelectTrigger className={cn("w-full outline-none", className)}>
-        <SelectValue placeholder={`Select ${moduleName}...`} />
+        <SelectValue
+          placeholder={
+            loading ? "Loading... Please wait" : `Select ${moduleName}...`
+          }
+        />
       </SelectTrigger>
 
       <SelectContent>

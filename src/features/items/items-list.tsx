@@ -30,10 +30,12 @@ import { useSessionData } from "@/hooks/useSessionData";
 import { PermissionModules } from "@features/shared/types/auth-action.types";
 import { useOnlineStatus } from "@features/shared/hooks/useOnlineStatus";
 import { API_ENDPOINTS } from "@/lib/api-constants";
+import { useId } from "@/lib/providers/id-context";
 
 export default function ItemsList() {
   const { canWrite, canDelete } = useSessionData();
   const { handleRequests, isOnline } = useOnlineStatus();
+  const { setId } = useId();
   const { categories } = useCategories();
   const router = useRouter();
   const { data, loading, refetch } = useFetchData({
@@ -72,8 +74,9 @@ export default function ItemsList() {
     await res;
   };
 
-  const handleViewBatches = (id: string) => {
-    router.push(PAGE_ROUTES.ITEMS.BATCHES.replace(":itemId", id));
+  const handleViewBatches = (id: string, title: string) => {
+    setId(id, title);
+    router.push(PAGE_ROUTES.ITEMS.BATCHES);
   };
 
   return (
@@ -99,7 +102,7 @@ export default function ItemsList() {
           {
             label: "view batches",
             icon: "solar:box-bold-duotone",
-            action: () => handleViewBatches(item.id),
+            action: () => handleViewBatches(item.id, item.name),
           },
           {
             label: "delete",

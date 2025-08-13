@@ -16,6 +16,7 @@ import {
 } from "@features/shared/actions/dashboard.actions";
 import { useCacheProgress } from "@/lib/cache/cache-progress-context";
 import {
+  getItemBatches,
   getItems,
   getItemsExpiry,
 } from "@features/shared/actions/items.actions";
@@ -24,7 +25,10 @@ import { CACHE_PAGE_SIZE, CacheKey } from "@/lib/cache/cache-data";
 import { getItemCategories } from "@features/shared/actions/item-categories.actions";
 import { getStockAdjustments } from "@features/shared/actions/stock-adjustments.actions";
 import { getItemOrders } from "@features/shared/actions/item-orders.actions";
-import { getSuppliers } from "@features/shared/actions/supplier.actions";
+import {
+  getSuppliers,
+  getSuppliersNoPaginate,
+} from "@features/shared/actions/supplier.actions";
 import { getSales } from "@features/shared/actions/sales.actions";
 import { getSalesItemsAction } from "@features/shared/actions/sales.action";
 import { UserRole } from "@features/shared/types/auth-action.types";
@@ -126,6 +130,8 @@ const PREFETCH_TARGETS = [
       getItems({
         pageSize: CACHE_PAGE_SIZE,
       }),
+    deepKey: CacheKey.ItemBatchesList,
+    deepFetcher: getItemBatches,
   },
   {
     key: CacheKey.CategoriesList,
@@ -161,6 +167,10 @@ const PREFETCH_TARGETS = [
       getSuppliers({
         pageSize: CACHE_PAGE_SIZE,
       }),
+  },
+  {
+    key: CacheKey.SuppliersNoPaginate,
+    fetcher: () => getSuppliersNoPaginate(),
   },
   {
     key: CacheKey.SalesList,
@@ -240,11 +250,26 @@ export function CacheWarmer() {
 
       for (const target of PREFETCH_TARGETS) {
         try {
-          const cachedData = await localforage.getItem(target.key);
-          if (!cachedData) {
-            const data = await target.fetcher();
-            await localforage.setItem(target.key, data);
-            console.log(`Successfully pre-cached data for: ${target.key}`);
+          const data = await target.fetcher();
+          await localforage.setItem(target.key, data);
+          console.log(`Successfully pre-cached data for: ${target.key}`);
+          if (target.deepFetcher) {
+            console.log("Fetching deep data for:", target.key);
+            if (data && "rows" in data) {
+              const rows = data.rows || [];
+              for (const row of rows) {
+                if ("id" in row && row.id) {
+                  const deepData = await target.deepFetcher(row.id);
+                  await localforage.setItem(
+                    `${target.deepKey}-${row.id}`,
+                    deepData,
+                  );
+                  console.log(
+                    `Successfully pre-cached deep data for: ${target.deepKey}-${row.id}`,
+                  );
+                }
+              }
+            }
           }
         } catch (error) {
           console.error(`Failed to pre-cache data for ${target.key}:`, error);

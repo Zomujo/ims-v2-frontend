@@ -19,6 +19,7 @@ type FetchDataProps<T> = {
   arrayQueries?: string[];
   routeParams?: Record<string, string>;
   cacheKey?: string;
+  cacheKeyId?: string;
   searchField?: string;
 };
 
@@ -33,6 +34,7 @@ export default function useFetchData<T>({
   arrayQueries = [],
   routeParams,
   cacheKey,
+  cacheKeyId,
   searchField,
 }: FetchDataProps<T>) {
   const [loading, setLoading] = useState(false);
@@ -47,7 +49,10 @@ export default function useFetchData<T>({
     let cachedData: T | null = null;
 
     if (cacheKey) {
-      cachedData = await localforage.getItem<T>(cacheKey);
+      const cacheKeyWithId = `${cacheKey}-${cacheKeyId}`;
+      cachedData = await localforage.getItem<T>(
+        cacheKeyId ? cacheKeyWithId : cacheKey,
+      );
       if (cachedData) {
         if (
           typeof cachedData === "object" &&
