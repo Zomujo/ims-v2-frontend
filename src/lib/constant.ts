@@ -60,9 +60,12 @@ export const PAGE_ROUTES = {
   ITEMS: {
     VIEW: "/items",
     CREATE: "?state=create",
-    BATCHES: "/items/:itemId/batches",
+    BATCHES: "/items/batches",
   },
-  ITEM_BATCHES: "/batches",
+  ITEM_BATCHES: {
+    VIEW: "/items/batches",
+    CREATE: "?state=create",
+  },
   SUPPLIERS: {
     VIEW: "/suppliers",
     CREATE: "?state=create",

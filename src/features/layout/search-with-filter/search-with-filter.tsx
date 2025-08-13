@@ -22,14 +22,11 @@ import { useGlobalNotifications } from "@features/notifications/notifications-co
 export default function SearchWithFilter() {
   const [exporting, setExporting] = useState<ExportType | null>(null);
   const params = useParams();
-  const isSlugs = !!params.slugs;
   const pathName = usePathname();
   const { hasActionPermission, role } = useSessionData();
   const searchParams = useSearchParams();
-  const btnData =
-    actionButtonData[isSlugs ? PAGE_ROUTES.ITEM_BATCHES : pathName];
-  const exportBtnData =
-    exportActionButtonData[isSlugs ? PAGE_ROUTES.ITEM_BATCHES : pathName];
+  const btnData = actionButtonData[pathName];
+  const exportBtnData = exportActionButtonData[pathName];
   const { isConnected } = useGlobalNotifications();
 
   const checkRole = useCallback(

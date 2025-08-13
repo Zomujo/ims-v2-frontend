@@ -21,38 +21,33 @@ import useFetchData from "../shared/hooks/use-fetch-data";
 import useHookForm from "../shared/hooks/use-hook-form";
 import useImsSearchParams from "../shared/hooks/use-ims-search-params";
 import usePageCRUD from "../shared/hooks/use-page-crud";
-import {
-  BatchResponseDto,
-  IdData,
-  OneItem,
-} from "../shared/types/action.types";
+import { BatchResponseDto } from "../shared/types/action.types";
 import { CRUDACTION } from "../shared/types/utitls.types";
 import { Input } from "../ui/input";
 import { itemBatchesTableColumns } from "./items.data";
 import { amountTypes, itemBatchFormSchema } from "./items.schemas";
 import { usePageHeading } from "@/hooks/usePageHeading";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useSessionData } from "@/hooks/useSessionData";
 import { PermissionModules } from "@features/shared/types/auth-action.types";
 import LoadingOverlay from "@features/ui/loadingOverlay";
 import { Info } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@features/ui/tooltip";
+import { useId } from "@/lib/providers/id-context";
+import { CacheKey } from "@/lib/cache/cache-data";
+import { getSuppliersNoPaginate } from "@features/shared/actions/supplier.actions";
+import { useOnlineStatus } from "@features/shared/hooks/useOnlineStatus";
+import { API_ENDPOINTS } from "@/lib/api-constants";
 
-type ItemBatchesListProps = {
-  itemId?: string;
-  batchId?: string;
-  suppliers: IdData[];
-  oneItem?: OneItem;
-};
-export default function ItemBatchesList({
-  itemId,
-  suppliers,
-  oneItem,
-}: Readonly<ItemBatchesListProps>) {
+export default function ItemBatchesList() {
+  const { id: itemId, title } = useId();
   const { canWrite } = useSessionData();
+  const { handleRequests, isOnline } = useOnlineStatus();
   const { updateCustomHeading } = usePageHeading();
   const { data, loading } = useFetchData({
     fetchFn: (params) => getItemBatches(itemId ?? "", params),
+    cacheKey: CacheKey.ItemBatchesList,
+    cacheKeyId: itemId,
   });
   const itemBatches = data?.rows ?? [];
 
@@ -70,13 +65,24 @@ export default function ItemBatchesList({
 
   useEffect(() => {
     updateCustomHeading({
-      title: `${oneItem?.name} batches`,
-      description: `Manage ${oneItem?.name} batches`,
+      title: `${title} batches`,
+      description: `Manage ${title} batches`,
     });
-  }, []);
+  }, [title]);
 
   const handleMarkupRemoval = async () => {
     const id = getId(CRUDACTION.DELETE);
+    if (!isOnline) {
+      handleRequests(
+        API_ENDPOINTS.BATCH_MARKUP.replace(":batchId", id),
+        undefined,
+        {
+          method: "DELETE",
+          removeSearchParams,
+        },
+      );
+      return;
+    }
     const res = removalMarkupFromBatch(id);
     handleRequestState({
       res,
@@ -120,30 +126,34 @@ export default function ItemBatchesList({
           },
         ]}
       >
-        <ItemBatchesForm
-          batchId={batch?.id}
-          suppliers={suppliers}
-          itemId={itemId}
-        />
+        <ItemBatchesForm batchId={batch?.id} itemId={itemId} />
       </CrudPage>
     </ScrollArea>
   );
 }
 
-function ItemBatchesForm({
-  suppliers,
-  batchId,
-  itemId,
-}: Readonly<ItemBatchesListProps>) {
+type ItemBatchesFormProps = {
+  batchId?: string;
+  itemId?: string;
+};
+function ItemBatchesForm({ batchId, itemId }: ItemBatchesFormProps) {
+  const { data: suppliers, loading } = useFetchData({
+    fetchFn: getSuppliersNoPaginate,
+    cacheKey: CacheKey.SuppliersNoPaginate,
+  });
   const { removeSearchParams } = useImsSearchParams();
   const form = useHookForm({
     resolver: itemBatchFormSchema,
     mode: "onTouched",
   });
-  const supplierOptions = suppliers.map((supplier) => ({
-    value: supplier.id,
-    label: supplier.name,
-  }));
+  const supplierOptions = useMemo(
+    () =>
+      suppliers?.map((supplier) => ({
+        value: supplier.id,
+        label: supplier.name,
+      })),
+    [suppliers],
+  );
 
   const [useBoxes, setUseBoxes] = useState(false);
   const [insuranceMarkup, setInsuranceMarkup] = useState(false);
@@ -151,6 +161,7 @@ function ItemBatchesForm({
   const [itemsPerBox, setItemsPerBox] = useState<number>();
   const [isLoadingBatch, setIsLoadingBatch] = useState(false);
   const [batch, setBatch] = useState<BatchResponseDto>();
+  const { handleRequests, isOnline } = useOnlineStatus();
 
   const setMarkupData = (checked: boolean) => {
     if (checked) {
@@ -210,6 +221,25 @@ function ItemBatchesForm({
 
   const handleSubmit = async (data: unknown) => {
     const oneBatchData = data as z.infer<typeof itemBatchFormSchema>;
+    if (!isOnline) {
+      handleRequests(
+        batchId
+          ? API_ENDPOINTS.ITEM_EDIT_BATCH.replace(":id", batchId)
+          : API_ENDPOINTS.ITEMS_ADD_BATCH,
+        batchId
+          ? oneBatchData
+          : {
+              ...oneBatchData,
+              itemId: itemId ?? "",
+            },
+        {
+          method: batchId ? "PATCH" : "POST",
+          removeSearchParams: removeSearchParams,
+          form,
+        },
+      );
+      return;
+    }
     const res = batchId
       ? updateBatch(batchId, oneBatchData)
       : addBatch({ ...oneBatchData, itemId: itemId ?? "" });
@@ -333,8 +363,9 @@ function ItemBatchesForm({
               label="Supplier"
               renderInput={({ field }) => (
                 <ImsSelect
-                  options={supplierOptions}
+                  options={supplierOptions ?? []}
                   showNone={false}
+                  loading={loading}
                   moduleName="supplier"
                   {...field}
                   className="focus-visible:ring-ims-blue-300 !h-11 bg-white"

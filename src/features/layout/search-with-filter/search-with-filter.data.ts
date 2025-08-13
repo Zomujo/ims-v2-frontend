@@ -81,7 +81,7 @@ export const actionButtonData = {
     icon: "solar:jar-of-pills-bold-duotone",
     permission: `${PermissionModules.ITEMS}:${PermissionActions.READ}`,
   },
-  [PAGE_ROUTES.ITEM_BATCHES]: {
+  [PAGE_ROUTES.ITEM_BATCHES.VIEW]: {
     label: "Add New Batch",
     href: PAGE_ROUTES.ITEMS.CREATE,
     icon: "solar:jar-of-pills-bold-duotone",
