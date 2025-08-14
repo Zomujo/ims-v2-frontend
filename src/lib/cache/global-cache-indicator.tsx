@@ -4,12 +4,15 @@ import { useCacheProgress } from "./cache-progress-context";
 import { Progress } from "@features/ui/progress";
 import { useEffect, useState } from "react";
 import { useGlobalNotifications } from "@features/notifications/notifications-context";
+import { Button } from "@features/ui/button";
+import { Download, X } from "lucide-react";
 
 export function GlobalCacheIndicator() {
   const { dataProgress } = useCacheProgress();
   const { isConnected } = useGlobalNotifications();
   const [isComplete, setIsComplete] = useState(false);
   const [assetCustomTracker, setAssetCustomTracker] = useState(0);
+  const [isMinimized, setIsMinimized] = useState(true);
 
   const isDataCachingDone = dataProgress.percent >= 100;
 
@@ -32,8 +35,28 @@ export function GlobalCacheIndicator() {
     return null;
   }
 
+  if (isMinimized) {
+    return (
+      <Button
+        size="icon"
+        className="fixed right-4 bottom-4 z-50 h-14 w-14 rounded-full shadow-lg"
+        onClick={() => setIsMinimized(false)}
+      >
+        <Download className="h-6 w-6 animate-bounce" />
+      </Button>
+    );
+  }
+
   return (
     <div className="bg-card animate-in fade-in-90 fixed right-4 bottom-4 z-50 w-72 rounded-lg border p-4 shadow-lg">
+      <Button
+        variant="ghost"
+        size="icon"
+        className="absolute top-2 right-2 h-6 w-6"
+        onClick={() => setIsMinimized(true)}
+      >
+        <X className="h-4 w-4" />
+      </Button>
       {!isComplete && (
         <div>
           <p className="mb-1 text-sm font-medium">
