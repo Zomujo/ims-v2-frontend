@@ -1,16 +1,20 @@
 import { CrudPageProps } from "@/features/settings/settings.types";
 import { PropsWithChildren } from "react";
 import { CRUDACTION } from "../types/utitls.types";
-import ImsAlertModal from "./ims-alert-modal";
 import { ImsButton } from "./ims-button";
 import { IMSDataTable } from "./ims-data-table";
-import { ImsSheet } from "./ims-sheet";
 import ImsDropdownMenu from "./ims-drop-down-menu";
 import { Button } from "@/features/ui/button";
 import { MoreHorizontal } from "lucide-react";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { ColumnDef } from "@tanstack/react-table";
 import { cn } from "@/lib/utils";
+import dynamic from "next/dynamic";
+
+const ImsSheet = dynamic(() =>
+  import("./ims-sheet").then((mod) => mod.ImsSheet),
+);
+const ImsAlertModal = dynamic(() => import("./ims-alert-modal"));
 
 export default function CrudPage<T>({
   children,
