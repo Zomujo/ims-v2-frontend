@@ -113,7 +113,6 @@ export async function getItemBatches(id: string, params?: GenerateQueryParams) {
       params ?? {},
     ),
     method: "GET",
-    cache: "force-cache",
     headers: {},
     next: { tags: [API_ENDPOINT_TAGS.ITEMS_BATCHES] },
   };
