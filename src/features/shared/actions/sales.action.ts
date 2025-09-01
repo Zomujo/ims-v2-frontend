@@ -36,7 +36,6 @@ export const getSalesPatientListAction = async (
     next: {
       tags: [queryParams],
     },
-    cache: "force-cache",
   });
   return res.data;
 };

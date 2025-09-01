@@ -12,6 +12,7 @@ import useHookForm from "../shared/hooks/use-hook-form";
 import { Input } from "../ui/input";
 import { AuthForm } from "./auth-components-client";
 import { forgotPasswordSchema } from "./auth.schemas";
+import { toast } from "sonner";
 
 export function ForgotPasswordForm() {
   const router = useRouter();
@@ -26,7 +27,11 @@ export function ForgotPasswordForm() {
     const email = (data as z.infer<typeof forgotPasswordSchema>).email;
     const res = authForgotPasswordSendMailAction(email);
     handleRequestState({ res, loadingMsg: "Sending verification code..." });
-    res.then(() => {
+    res.then((response) => {
+      if (response.error) {
+        toast.error(response.error);
+        return;
+      }
       router.push(`${AUTH_PAGE_ROUTES.FORGOT_PASSWORD_VERIFY}?email=${email}`);
     });
     await res;
