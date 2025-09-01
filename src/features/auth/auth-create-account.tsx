@@ -16,8 +16,10 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { authCreateAccountAction } from "@features/shared/actions/auth.action";
 import { z } from "zod";
+import { useRouter } from "next/navigation";
 
 export function CreateAccountForm() {
+  const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const form = useHookForm({
     resolver: createAccountSchema,
@@ -31,11 +33,15 @@ export function CreateAccountForm() {
     const userData = data as AuthAccountCreationProps;
     try {
       setIsSubmitting(true);
-      await authCreateAccountAction(userData);
+      const response = await authCreateAccountAction(userData);
+      if ("error" in response) {
+        throw new Error(response.error);
+      }
       form.reset();
       toast.success(
         "You account has been created successfully. You can now log in.",
       );
+      router.push(AUTH_PAGE_ROUTES.CREATE_ACCOUNT);
     } catch (error) {
       if (error instanceof Error) {
         toast.error(error.message);

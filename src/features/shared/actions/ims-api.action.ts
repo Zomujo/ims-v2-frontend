@@ -61,8 +61,23 @@ export const imsApiWithoutAuth = async <T>({
   next,
   cache,
 }: FetchApi) => {
-  const response = await fetchApi({ url, method, body, headers, cache, next });
-  return fetchJson<T>(response);
+  try {
+    const response = await fetchApi({
+      url,
+      method,
+      body,
+      headers,
+      cache,
+      next,
+    });
+    return fetchJson<T>(response);
+  } catch (e) {
+    console.error("IMS API Error:", e);
+    return {
+      data: null,
+      error: e instanceof Error ? e.message : "An unknown error occurred",
+    } as T;
+  }
 };
 
 const fetchJson = async <T>(response: Response): Promise<T> => {

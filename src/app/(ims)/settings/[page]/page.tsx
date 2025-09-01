@@ -20,8 +20,8 @@ import {
   Department,
   UserRoles,
 } from "@features/shared/types/settings-action.types";
-import SettingsNotification from "@features/settings/settings-notification";
-import SettingsExpiry from "@/features/settings/settings-expiry";
+import { Suspense } from "react";
+import dynamic from "next/dynamic";
 
 type SettingPages = {
   params: Promise<{ page: string }>;
@@ -29,6 +29,21 @@ type SettingPages = {
 };
 
 const pageWithDrawerUI = ["departments", "users"];
+
+const DynamicGeneralSettings = dynamic(() => Promise.resolve(GeneralSettings));
+const DynamicSecuritySettings = dynamic(() =>
+  Promise.resolve(SecuritySettings),
+);
+const DynamicDepartmentSettings = dynamic(() =>
+  Promise.resolve(DepartmentSettings),
+);
+const DynamicUsersSettings = dynamic(() => Promise.resolve(UsersSettings));
+const DynamicSettingsNotification = dynamic(
+  () => import("@features/settings/settings-notification"),
+);
+const DynamicSettingsExpiry = dynamic(
+  () => import("@/features/settings/settings-expiry"),
+);
 
 export default async function SettingsPages({
   params,
@@ -53,19 +68,21 @@ export default async function SettingsPages({
             label={createBtnLabel[page as keyof typeof createBtnLabel]}
           />
         )}
-        <SettingsPage />
+        <Suspense fallback={<div>Loading...</div>}>
+          <SettingsPage />
+        </Suspense>
       </PermissionProvider>
     </section>
   );
 }
 
 const renderSettingsPage = {
-  general: GeneralSettings,
-  security: SecuritySettings,
-  departments: DepartmentSettings,
-  users: UsersSettings,
-  notifications: SettingsNotification,
-  expiry: SettingsExpiry,
+  general: DynamicGeneralSettings,
+  security: DynamicSecuritySettings,
+  departments: DynamicDepartmentSettings,
+  users: DynamicUsersSettings,
+  notifications: DynamicSettingsNotification,
+  expiry: DynamicSettingsExpiry,
   default: () => <div>Page not found</div>,
 } as const;
 const createBtnLabel = {

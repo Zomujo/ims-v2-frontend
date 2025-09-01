@@ -58,19 +58,23 @@ export const authCreateAccountAction = async ({
   facilityPassword,
   fullName,
 }: AuthAccountCreationProps) => {
-  await imsApiWithoutAuth<AuthLoginActionResponse>({
-    url: API_ENDPOINTS_OLD.CREATE_ACCOUNT,
-    method: "POST",
-    body: JSON.stringify({
-      email,
-      password,
-      facility: {
-        name: facilityName,
-        password: facilityPassword,
-      },
-      fullName,
-    } as AuthCreateAccountActionApiBody),
-  });
+  try {
+    return await imsApiWithoutAuth<AuthApiStandardResponse>({
+      url: API_ENDPOINTS_OLD.CREATE_ACCOUNT,
+      method: "POST",
+      body: JSON.stringify({
+        email,
+        password,
+        facility: {
+          name: facilityName,
+          password: facilityPassword,
+        },
+        fullName,
+      } as AuthCreateAccountActionApiBody),
+    });
+  } catch (error) {
+    return error as AuthApiStandardResponse;
+  }
 };
 
 export const authChangePasswordAction = async ({
