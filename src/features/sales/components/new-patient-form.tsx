@@ -48,7 +48,7 @@ export default function NewPatientForm() {
           variant="imsPrimary"
           type="submit"
         >
-          Save patinet
+          Save patient
         </ImsButton>
       }
       RenderInputs={

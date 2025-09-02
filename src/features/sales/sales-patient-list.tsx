@@ -34,9 +34,8 @@ export default function SalesPatientList({
     fetchFn: getSalesPatientListAction,
     cacheKey: CacheKey.PatientsList,
   });
-  const patients = useMemo(() => {
-    console.log("data", data);
-    return (
+  const patients = useMemo(
+    () =>
       data?.map((patient) => {
         return {
           value: patient.cardIdentificationNumber,
@@ -50,10 +49,11 @@ export default function SalesPatientList({
               </span>
             </div>
           ),
+          searchBy: patient.name,
         };
-      }) ?? []
-    );
-  }, [data]);
+      }) ?? [],
+    [data],
+  );
 
   const state = getSearchParams("state");
 
