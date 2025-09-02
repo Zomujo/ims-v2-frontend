@@ -6,10 +6,12 @@ import ImsDropdownMenu from "@/features/shared/components/ims-drop-down-menu";
 import { ImsPopover } from "@/features/shared/components/ims-popover";
 import { PAGE_ROUTES } from "@/lib/constant";
 import { cn, getInitials } from "@/lib/utils";
-import { BellIcon, EllipsisIcon, SettingsIcon } from "lucide-react";
+import { BellIcon, Download, EllipsisIcon, SettingsIcon } from "lucide-react";
 import { useSessionData } from "@/hooks/useSessionData";
 import RealtimeNotifications from "@features/notifications/notifications";
 import { useGlobalNotifications } from "@features/notifications/notifications-context";
+import { useCacheProgress } from "@/lib/cache/cache-progress-context";
+import { Button } from "@features/ui/button";
 
 export function NotificationButton() {
   const { unreadCount, isConnected } = useGlobalNotifications();
@@ -42,6 +44,7 @@ export function NotificationButton() {
 
 export function UserProfileButton() {
   const { profileImage, fullName } = useSessionData();
+  const { startCaching } = useCacheProgress();
 
   return (
     <ImsDropdownMenu
@@ -59,6 +62,19 @@ export function UserProfileButton() {
         </div>
       }
       menuItems={[
+        {
+          id: "download-offline",
+          node: (
+            <Button
+              variant={"ghost"}
+              onClick={startCaching}
+              className="flex w-full justify-start rounded-none p-0 py-6 pl-3"
+            >
+              <Download className="mr-2 h-4 w-4" />
+              Download for Offline
+            </Button>
+          ),
+        },
         {
           id: "settings",
           node: (

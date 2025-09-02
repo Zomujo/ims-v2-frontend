@@ -1,19 +1,16 @@
 "use client";
-import { formateCurrency, handleRequestState } from "@/lib/utils";
-import { Icon } from "@iconify/react/dist/iconify.js";
+import { handleRequestState } from "@/lib/utils";
 import { useParams } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { lazy, Suspense, useEffect, useMemo, useState } from "react";
 import { useFieldArray } from "react-hook-form";
 import { useIsClient, useLocalStorage } from "usehooks-ts";
 import { createSaleAction } from "../shared/actions/sales.action";
 import { getSale, updateSale } from "../shared/actions/sales.actions";
 import HookFormField from "../shared/components/hook-form-filed";
 import { ImsButton } from "../shared/components/ims-button";
-import ImsDropdownMenu from "../shared/components/ims-drop-down-menu";
 import { ImsForm } from "../shared/components/ims-forms";
 import { ImsSelect } from "../shared/components/ims-select";
 import useHookForm from "../shared/hooks/use-hook-form";
-import useImsSearchParams from "../shared/hooks/use-ims-search-params";
 import { SaleItem } from "../shared/types/sales-action.types";
 import { ScrollArea } from "../ui/scroll-area";
 import { Textarea } from "../ui/textarea";
@@ -23,14 +20,29 @@ import {
   salesItemLocalStorageKey,
 } from "./sales.data";
 import { salesCartSchema } from "./sales.schemas";
-import { SaleCardTypes, SaleCartFormData } from "./sales.types";
+import { SaleCartFormData } from "./sales.types";
 import { isSalesEditMode } from "./sales.utils";
-import LoadingOverlay from "@features/ui/loadingOverlay";
-import { getBatchesNoPaginate } from "@features/shared/actions/items.actions";
-import { MultiSelect } from "@features/ui/multiSelect";
 import { useOnlineStatus } from "@features/shared/hooks/useOnlineStatus";
 import { API_ENDPOINTS } from "@/lib/api-constants";
 import { API_ENDPOINTS_OLD } from "@/lib/constant";
+import { Skeleton } from "@features/ui/skeleton";
+
+const LoadingOverlay = lazy(() => import("@features/ui/loadingOverlay"));
+const MultiSelect = lazy(() =>
+  import("@features/ui/multiSelect").then((module) => ({
+    default: module.MultiSelect,
+  })),
+);
+const SaleCard = lazy(() =>
+  import("./sales-cart-cards").then((module) => ({
+    default: module.SaleCard,
+  })),
+);
+const SaleCartSummery = lazy(() =>
+  import("./sales-cart-cards").then((module) => ({
+    default: module.SaleCartSummery,
+  })),
+);
 
 const handleSalesItem = (saleItems: SaleItem, isEditMode?: boolean) => {
   return {
@@ -38,12 +50,13 @@ const handleSalesItem = (saleItems: SaleItem, isEditMode?: boolean) => {
     quantity: isEditMode ? saleItems.quantity : 1,
   };
 };
-const patientIdKey = "patientId";
-export default function SalesCart() {
+type SalesCartProps = {
+  patientCardId?: string;
+};
+export default function SalesCart({ patientCardId }: SalesCartProps) {
   const salesId = useParams().id;
   const isEditMode = isSalesEditMode(salesId);
   const isClient = useIsClient();
-  const { getSearchParams, removeSearchParams } = useImsSearchParams();
   const [addedSalesItems, setSalesItems, removeSalesItems] = useLocalStorage<
     SaleItem[]
   >(salesItemLocalStorageKey, []);
@@ -171,7 +184,6 @@ export default function SalesCart() {
   }, []);
 
   const handleSubmit = async (data: unknown) => {
-    const patientCardId = getSearchParams(patientIdKey);
     const dataWithPatientId = { ...(data as SaleCartFormData), patientCardId };
     if (!isOnline) {
       handleRequests(
@@ -207,7 +219,6 @@ export default function SalesCart() {
       //   nhisCoveredAmount,
       // );
       removeSalesItems();
-      removeSearchParams(patientIdKey);
       form.reset();
       setIsSubmitting(false);
     });
@@ -229,7 +240,11 @@ export default function SalesCart() {
 
   return (
     <ScrollArea className="relative h-[99%] w-full flex-[0.4] rounded-xl border bg-white py-5">
-      {isLoading && <LoadingOverlay />}
+      {isLoading && (
+        <Suspense>
+          <LoadingOverlay />
+        </Suspense>
+      )}
       <ImsForm
         className="gap-y-0 px-4 py-2 pb-2"
         form={form}
@@ -240,17 +255,19 @@ export default function SalesCart() {
             <h2 className="absolute inset-x-0 top-0 rounded-xl bg-white px-6 py-2 font-bold">
               Sale Cart ( {addedSalesItems?.length} )
             </h2>
-            <MultiSelect
-              options={paymentTypeOptionsBuilder}
-              onValueChange={(value) =>
-                form.setValue("paymentType", value, { shouldValidate: true })
-              }
-              defaultValue={paymentType}
-              value={paymentType}
-              disabled={allHaveNHIS}
-              animation={2}
-              variant="inverted"
-            />
+            <Suspense fallback={<Skeleton className="h-11 w-full" />}>
+              <MultiSelect
+                options={paymentTypeOptionsBuilder}
+                onValueChange={(value) =>
+                  form.setValue("paymentType", value, { shouldValidate: true })
+                }
+                defaultValue={paymentType}
+                value={paymentType}
+                disabled={allHaveNHIS}
+                animation={2}
+                variant="inverted"
+              />
+            </Suspense>
             <HookFormField
               formControl={form.control}
               name="insured"
@@ -277,17 +294,19 @@ export default function SalesCart() {
                   label=""
                   renderInput={({ field }) => {
                     return (
-                      <SaleCard
-                        remove={remove}
-                        salesItem={{
-                          ...salesItemBuilder(
-                            (item as unknown as SaleItem).batchId,
-                          ),
-                        }}
-                        index={index}
-                        quantity={field.value}
-                        onChange={field.onChange}
-                      />
+                      <Suspense fallback={<Skeleton className="h-28 w-full" />}>
+                        <SaleCard
+                          remove={remove}
+                          salesItem={{
+                            ...salesItemBuilder(
+                              (item as unknown as SaleItem).batchId,
+                            ),
+                          }}
+                          index={index}
+                          quantity={field.value}
+                          onChange={field.onChange}
+                        />
+                      </Suspense>
                     );
                   }}
                 />
@@ -305,10 +324,12 @@ export default function SalesCart() {
                 />
               )}
             />
-            <SaleCartSummery
-              amountTotal={amountSubtotal}
-              nhisCoveredAmount={nhisCoveredAmount}
-            />
+            <Suspense fallback={<Skeleton className="h-24 w-full" />}>
+              <SaleCartSummery
+                amountTotal={amountSubtotal}
+                nhisCoveredAmount={nhisCoveredAmount}
+              />
+            </Suspense>
           </>
         }
         RenderActions={
@@ -325,168 +346,5 @@ export default function SalesCart() {
         }
       />
     </ScrollArea>
-  );
-}
-
-function SaleCard({
-  salesItem,
-  remove,
-  onChange,
-  index,
-  quantity,
-}: Readonly<SaleCardTypes>) {
-  const [addedSalesItems, setAddedSalesItems] = useLocalStorage<SaleItem[]>(
-    salesItemLocalStorageKey,
-    [],
-  );
-  const [alternativeBatchMessage, setAlternativeBatchMessage] = useState<
-    string | null
-  >(null);
-
-  const handleItemDelete = () => {
-    remove(index);
-    setAddedSalesItems(
-      addedSalesItems.filter(
-        (addedSalesItem) => addedSalesItem.batchId !== salesItem.batchId,
-      ),
-    );
-  };
-
-  useEffect(() => {
-    const checkForAlternativeBatch = async () => {
-      const { validity: saleItemValidity, id: itemId } = salesItem;
-      if (!saleItemValidity || !itemId) return;
-
-      try {
-        const batches = await getBatchesNoPaginate(itemId);
-        if (batches && batches.length > 0) {
-          const alternativeBatches = batches.filter(({ validity, id }) => {
-            const currentDate = new Date().toISOString();
-            return (
-              validity < saleItemValidity &&
-              validity > currentDate &&
-              id !== salesItem.batchId
-            );
-          });
-
-          if (alternativeBatches.length > 0) {
-            const soonestBatch = alternativeBatches.sort((a, b) =>
-              a.validity.localeCompare(b.validity),
-            )[0];
-
-            const expiryDate = new Date(
-              soonestBatch.validity,
-            ).toLocaleDateString();
-            setAlternativeBatchMessage(
-              `⚠️ Alternative batch available: Batch #${soonestBatch.batchNumber} expires on ${expiryDate} (sooner than current batch). Consider using this batch first to minimize waste.`,
-            );
-          }
-        }
-      } catch (error) {
-        console.error("Error checking alternative batches:", error);
-      }
-    };
-    void checkForAlternativeBatch();
-  }, []);
-
-  const activeAddedSalesItem = addedSalesItems.find(
-    (item) => item.batchId === salesItem.batchId,
-  );
-
-  const getSellingPrice = () => {
-    const totalSellingPrice =
-      (activeAddedSalesItem?.item?.sellingPrice ?? 0) * quantity;
-    return formateCurrency(totalSellingPrice);
-  };
-
-  const handleAdd = () => {
-    onChange(quantity + 1);
-  };
-  const handleSubtract = () => {
-    if (quantity === 1) return;
-    onChange(quantity - 1);
-  };
-
-  return (
-    <div className="space-y-4 rounded-2xl border p-4 text-xs">
-      <div className="flex w-full items-center justify-between">
-        <span>{activeAddedSalesItem?.item?.name}</span>
-        <ImsDropdownMenu
-          trigger={
-            <button
-              onClick={(e) => e.preventDefault()}
-              type="button"
-              className="flex h-6 w-6 items-center justify-center rounded-full bg-[#FEF2F2] text-red-600 hover:bg-red-400 hover:text-white"
-            >
-              <Icon icon="solar:trash-bin-minimalistic-bold-duotone" />
-            </button>
-          }
-          menuItems={[
-            {
-              id: "delete",
-              varient: "destructive",
-              node: (
-                <button
-                  onClick={handleItemDelete}
-                  className="w-full"
-                  type="button"
-                >
-                  Delete
-                </button>
-              ),
-            },
-          ]}
-        />
-      </div>
-      <div className="flex w-full items-center justify-between">
-        <span>{getSellingPrice()}</span>
-        <div className="flex gap-2">
-          <button
-            onClick={handleSubtract}
-            type="button"
-            className="flex h-4 w-4 cursor-pointer items-center justify-center bg-slate-200"
-          >
-            <Icon icon="ic:outline-minus" className="text-sm" />
-          </button>
-          <span className="w-4 text-center font-bold">{quantity}</span>
-          <button
-            onClick={handleAdd}
-            type="button"
-            className="flex h-4 w-4 cursor-pointer items-center justify-center bg-slate-200"
-          >
-            <Icon icon="mynaui:plus-solid" className="text-sm" />
-          </button>
-        </div>
-      </div>
-      <span className="mt-2 text-xs text-red-400">
-        {alternativeBatchMessage && alternativeBatchMessage}
-      </span>
-    </div>
-  );
-}
-
-function SaleCartSummery({
-  nhisCoveredAmount,
-  amountTotal,
-}: Readonly<{
-  nhisCoveredAmount: number;
-  amountTotal: number;
-}>) {
-  return (
-    <div className="space-y-1 text-xs">
-      <h2 className="py-2 font-bold">Summary</h2>
-      <p className="flex justify-between">
-        <span>Subtotal</span>
-        <span>{formateCurrency(amountTotal ?? 0)}</span>
-      </p>
-      <p className="flex justify-between">
-        <span>NHIS Covered</span>
-        <span>{formateCurrency(nhisCoveredAmount)}</span>
-      </p>
-      <p className="flex justify-between py-4 font-bold">
-        <span>Total</span>
-        <span>{formateCurrency(amountTotal - nhisCoveredAmount)}</span>
-      </p>
-    </div>
   );
 }

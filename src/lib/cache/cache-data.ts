@@ -19,6 +19,7 @@ export enum CacheKey {
   SuppliersNoPaginate = "suppliers-no-paginate",
   SalesList = "sales-list",
   SalesItemList = "sales-item-list",
+  PatientsList = "patients-list",
   DepartmentRequestList = "department-request-list",
   AuditLogsList = "audit-logs-list",
   DepartmentManagementSettings = "department-management-settings",
@@ -26,6 +27,7 @@ export enum CacheKey {
   NotificationSettings = "notification-settings",
   Notifications = "notifications",
   PendingRequests = "pending-requests",
+  LastCacheTime = "last-cache-time",
 }
 
 export const CACHE_PAGE_SIZE = "100";
