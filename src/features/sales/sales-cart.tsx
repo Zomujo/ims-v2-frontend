@@ -93,7 +93,6 @@ export default function SalesCart({ patientCardId }: SalesCartProps) {
       amountSubtotal: 0,
       nhisCoveredAmount: 0,
     };
-
     if (!formSalesItems) {
       return totals;
     }
@@ -111,7 +110,12 @@ export default function SalesCart({ patientCardId }: SalesCartProps) {
     }
 
     return totals;
-  }, [formSalesItems, addedSalesItemsMap, hasActiveNHIS]);
+  }, [
+    formSalesItems,
+    addedSalesItemsMap,
+    hasActiveNHIS,
+    JSON.stringify(formSalesItems),
+  ]);
 
   const allHaveNHIS = useMemo(() => {
     return (

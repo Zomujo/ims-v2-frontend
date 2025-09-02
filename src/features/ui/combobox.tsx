@@ -18,6 +18,7 @@ type ComboboxProps = {
   items: {
     value: string;
     label: string | ReactNode;
+    searchBy?: string;
   }[];
   value?: string;
   placeholder?: string;
@@ -38,7 +39,6 @@ export function Combobox({
   className,
   moduleName,
   children,
-  onChange,
   onSelected,
   onOpenChange,
 }: Readonly<PropsWithChildren<ComboboxProps>>) {
@@ -71,18 +71,18 @@ export function Combobox({
         </PopoverTrigger>
         <PopoverContent className="p-0">
           <Command>
-            <CommandInput
-              placeholder={selectPlaceholder}
-              className="h-9"
-              onValueChange={onChange}
-            />
+            <CommandInput placeholder={selectPlaceholder} className="h-9" />
             <CommandList>
               <CommandEmpty>No {moduleName ?? "item"} found.</CommandEmpty>
               <CommandGroup>
-                {items.map((item) => (
+                {items.map(({ searchBy, value: itemValue, label }) => (
                   <CommandItem
-                    key={item.value}
-                    value={item.value}
+                    key={itemValue}
+                    value={
+                      typeof label === "string"
+                        ? label
+                        : (searchBy ?? itemValue)
+                    }
                     onSelect={(currentValue) => {
                       const newValue =
                         currentValue === value ? "" : currentValue;
@@ -90,11 +90,11 @@ export function Combobox({
                       onSelected?.(newValue);
                     }}
                   >
-                    {item.label}
+                    {label}
                     <Check
                       className={cn(
                         "ml-auto",
-                        value === item.value ? "opacity-100" : "opacity-0",
+                        value === itemValue ? "opacity-100" : "opacity-0",
                       )}
                     />
                   </CommandItem>
