@@ -28,6 +28,8 @@ export enum CacheKey {
   Notifications = "notifications",
   PendingRequests = "pending-requests",
   LastCacheTime = "last-cache-time",
+  ItemsCategoriesNoPaginate = "items-categories-no-paginate",
+  ItemsNoPaginate = "items-no-paginate",
 }
 
 export const CACHE_PAGE_SIZE = "100";
