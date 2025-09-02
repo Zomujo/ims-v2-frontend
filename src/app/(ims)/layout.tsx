@@ -5,7 +5,6 @@ import { SidebarProvider } from "@/features/ui/sidebar";
 import { PropsWithChildren } from "react";
 import { PageHeadingProvider } from "@/hooks/usePageHeading";
 import { GlobalNotificationsProvider } from "@features/notifications/notifications-context";
-import { CacheWarmer } from "@/lib/cache/cache-warmer";
 import { GlobalCacheIndicator } from "@/lib/cache/global-cache-indicator";
 import { CacheProgressProvider } from "@/lib/cache/cache-progress-context";
 
@@ -14,7 +13,6 @@ export default function EntryLayout({ children }: Readonly<PropsWithChildren>) {
     <>
       <GlobalNotificationsProvider enableToasts={true}>
         <CacheProgressProvider>
-          <CacheWarmer />
           <SidebarProvider>
             <HeaderLayout />
             <SidebarLayout />

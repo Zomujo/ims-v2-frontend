@@ -1,65 +1,62 @@
 "use client";
-import { getAgeFromDate, handleRequestState } from "@/lib/utils";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import { useEffect } from "react";
-import { useDebounceCallback } from "usehooks-ts";
-import { z } from "zod";
 import {
-  createNewPatientAction,
-  getSalesPatientListAction,
-} from "../shared/actions/sales.action";
-import HookFormField from "../shared/components/hook-form-filed";
-import { ImsButton } from "../shared/components/ims-button";
-import { ImsForm } from "../shared/components/ims-forms";
+  useEffect,
+  useMemo,
+  lazy,
+  Suspense,
+  Dispatch,
+  SetStateAction,
+} from "react";
+import { getSalesPatientListAction } from "../shared/actions/sales.action";
 import { ImsSheet } from "../shared/components/ims-sheet";
 import useFetchData from "../shared/hooks/use-fetch-data";
-import useHookForm from "../shared/hooks/use-hook-form";
 import useImsSearchParams from "../shared/hooks/use-ims-search-params";
 import { CRUDACTION } from "../shared/types/utitls.types";
 import { Button } from "../ui/button";
 import { Combobox } from "../ui/combobox";
-import { Input } from "../ui/input";
-import { newPatientSchema } from "./sales.schemas";
-import { UI_STATE } from "@/lib/constant";
+import { CacheKey } from "@/lib/cache/cache-data";
 
-const searchParamKey = "patientSearch";
-const patientIDKey = "patientId";
-export default function SalesPatientList() {
+const NewPatientForm = lazy(() => import("./components/new-patient-form"));
+
+type SalesPatientLIstProps = {
+  patientId: string | undefined;
+  setPatientIdAction: Dispatch<SetStateAction<string | undefined>>;
+};
+
+export default function SalesPatientList({
+  setPatientIdAction,
+  patientId,
+}: SalesPatientLIstProps) {
   const { setSearchParams, removeSearchParams, getSearchParams } =
     useImsSearchParams();
   const { data } = useFetchData({
     fetchFn: getSalesPatientListAction,
+    cacheKey: CacheKey.PatientsList,
   });
-  const patients =
-    data?.map((patient) => {
-      return {
-        value: patient.cardIdentificationNumber,
-        label: (
-          <div className="flex flex-col items-start">
-            <span className="text-sm font-semibold text-gray-800">
-              {patient.name}
-            </span>
-            <span className="text-xs text-gray-500">
-              {patient.cardIdentificationNumber}
-            </span>
-          </div>
-        ),
-      };
-    }) ?? [];
+  const patients = useMemo(() => {
+    console.log("data", data);
+    return (
+      data?.map((patient) => {
+        return {
+          value: patient.cardIdentificationNumber,
+          label: (
+            <div className="flex flex-col items-start">
+              <span className="text-sm font-semibold text-gray-800">
+                {patient.name}
+              </span>
+              <span className="text-xs text-gray-500">
+                {patient.cardIdentificationNumber}
+              </span>
+            </div>
+          ),
+        };
+      }) ?? []
+    );
+  }, [data]);
 
-  const selectedValue = getSearchParams(patientIDKey);
   const state = getSearchParams("state");
 
-  const handleOnChange = useDebounceCallback((value: string, key: string) => {
-    if (!value) {
-      removeSearchParams(key);
-      return;
-    }
-    setSearchParams({ key, value });
-  }, 500);
-  const handleRemoveQueryparam = () => {
-    removeSearchParams("state");
-  };
   const handleAddNewPatient = () => {
     setSearchParams({ key: "state", value: CRUDACTION.CREATE });
   };
@@ -74,13 +71,9 @@ export default function SalesPatientList() {
       <Combobox
         placeholder="Search patient..."
         items={patients}
-        value={selectedValue}
+        value={patientId ?? ""}
         onSelected={(value) => {
-          handleOnChange(value, patientIDKey);
-          removeSearchParams(searchParamKey);
-        }}
-        onChange={(e) => {
-          handleOnChange(e, searchParamKey);
+          setPatientIdAction(value);
         }}
       >
         <div className="w-full border-t">
@@ -96,106 +89,14 @@ export default function SalesPatientList() {
       </Combobox>
       <ImsSheet
         open={state === CRUDACTION.CREATE}
-        onOpenChange={handleRemoveQueryparam}
+        onOpenChange={() => removeSearchParams("state")}
         title={"New Patient"}
         description={"Create new patient"}
       >
-        <NewPatientForm />
+        <Suspense fallback={<div>Loading...</div>}>
+          <NewPatientForm />
+        </Suspense>
       </ImsSheet>
     </div>
-  );
-}
-
-function NewPatientForm() {
-  const { removeSearchParams } = useImsSearchParams();
-  const form = useHookForm({
-    resolver: newPatientSchema,
-    defaultValues: {
-      name: "",
-      cardIdentificationNumber: "",
-      dateOfBirth: "",
-    },
-  });
-
-  const handleSubmit = async (data: unknown) => {
-    const res = createNewPatientAction(
-      data as z.infer<typeof newPatientSchema>,
-    );
-    res.then(() => {
-      form.reset();
-      removeSearchParams(UI_STATE);
-    });
-    handleRequestState({ res, loadingMsg: "Creating new patient..." });
-    await res;
-  };
-
-  const dateOfBirth = form.watch("dateOfBirth");
-  return (
-    <ImsForm
-      className="overflow-y-auto [&>*]:px-4"
-      inputSectionClassName="overflow-y-auto"
-      form={form}
-      handleAuthSubmit={handleSubmit}
-      RenderActions={
-        <ImsButton
-          isLoading={form.formState.isSubmitting}
-          isLoadingLabel="Adding new patient..."
-          variant="imsPrimary"
-          type="submit"
-        >
-          Save patinet
-        </ImsButton>
-      }
-      RenderInputs={
-        <>
-          <HookFormField
-            formControl={form.control}
-            name="name"
-            label="Full Name"
-            renderInput={({ field }) => {
-              return (
-                <Input
-                  {...field}
-                  className="focus-visible:ring-ims-blue-300 bg-white"
-                  type="text"
-                  placeholder="eg. John Doe"
-                />
-              );
-            }}
-          />
-          <HookFormField
-            formControl={form.control}
-            name="cardIdentificationNumber"
-            label="National Health Insurance Scheme Number"
-            renderInput={({ field }) => (
-              <Input
-                {...field}
-                className="focus-visible:ring-ims-blue-300 bg-white"
-                type="text"
-                placeholder="NHIS number"
-              />
-            )}
-          />
-          <HookFormField
-            formControl={form.control}
-            name="dateOfBirth"
-            label="Date of Birth"
-            renderInput={({ field }) => (
-              <Input
-                {...field}
-                className="focus-visible:ring-ims-blue-300 flex h-11 flex-col justify-between bg-white pt-2.5"
-                placeholder="Select date of birth"
-                type="date"
-              />
-            )}
-          />
-          {!!dateOfBirth && (
-            <span className="text-gray-600">
-              Age: {getAgeFromDate(dateOfBirth)} years
-            </span>
-          )}
-        </>
-      }
-    />
   );
 }

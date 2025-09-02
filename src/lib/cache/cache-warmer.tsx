@@ -1,9 +1,5 @@
 "use client";
 
-import { useEffect } from "react";
-import localforage from "localforage";
-import { useGlobalNotifications } from "@/features/notifications/notifications-context";
-
 import {
   getDailySales,
   getGeneralOverview,
@@ -14,7 +10,6 @@ import {
   getSellingCategories,
   getTopSellingItems,
 } from "@features/shared/actions/dashboard.actions";
-import { useCacheProgress } from "@/lib/cache/cache-progress-context";
 import {
   getItemBatches,
   getItems,
@@ -30,7 +25,10 @@ import {
   getSuppliersNoPaginate,
 } from "@features/shared/actions/supplier.actions";
 import { getSales } from "@features/shared/actions/sales.actions";
-import { getSalesItemsAction } from "@features/shared/actions/sales.action";
+import {
+  getSalesItemsAction,
+  getSalesPatientListAction,
+} from "@features/shared/actions/sales.action";
 import { UserRole } from "@features/shared/types/auth-action.types";
 import {
   getDepartmentItemRequests,
@@ -43,7 +41,7 @@ import {
 } from "@features/shared/actions/settings.actions";
 import { findSettings } from "@features/shared/actions/user.actions";
 
-const PREFETCH_TARGETS = [
+export const PREFETCH_TARGETS = [
   {
     key: CacheKey.DashboardSalePaymentMethod,
     fetcher: () => getSalePaymentMethod({ dateRange: "this_month" }),
@@ -232,63 +230,12 @@ const PREFETCH_TARGETS = [
     key: CacheKey.NotificationSettings,
     fetcher: () => findSettings(),
   },
+  {
+    key: CacheKey.PatientsList,
+    fetcher: () => getSalesPatientListAction(),
+  },
 ];
 
 export function CacheWarmer() {
-  const { isConnected } = useGlobalNotifications();
-  const { setDataProgress } = useCacheProgress();
-
-  useEffect(() => {
-    const prefetchAllData = async () => {
-      if (!isConnected) return;
-
-      console.log("Starting proactive data cache warming...");
-      let cachedCount = 0;
-      const totalToCache = PREFETCH_TARGETS.length;
-
-      setDataProgress({ total: totalToCache, cached: 0, percent: 0 });
-
-      for (const target of PREFETCH_TARGETS) {
-        try {
-          const data = await target.fetcher();
-          await localforage.setItem(target.key, data);
-          console.log(`Successfully pre-cached data for: ${target.key}`);
-          if (target.deepFetcher) {
-            console.log("Fetching deep data for:", target.key);
-            if (data && "rows" in data) {
-              const rows = data.rows || [];
-              for (const row of rows) {
-                if ("id" in row && row.id) {
-                  const deepData = await target.deepFetcher(row.id);
-                  await localforage.setItem(
-                    `${target.deepKey}-${row.id}`,
-                    deepData,
-                  );
-                  console.log(
-                    `Successfully pre-cached deep data for: ${target.deepKey}-${row.id}`,
-                  );
-                }
-              }
-            }
-          }
-        } catch (error) {
-          console.error(`Failed to pre-cache data for ${target.key}:`, error);
-        } finally {
-          cachedCount++;
-          const percent = (cachedCount / totalToCache) * 100;
-          setDataProgress({
-            total: totalToCache,
-            cached: cachedCount,
-            percent,
-          });
-        }
-      }
-
-      console.log("Data cache warming complete.");
-    };
-
-    void prefetchAllData();
-  }, [isConnected, setDataProgress]);
-
   return null;
 }

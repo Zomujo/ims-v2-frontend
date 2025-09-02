@@ -2,7 +2,7 @@
 
 import { PAGE_ROUTES } from "@/lib/constant";
 import { handleRequestState } from "@/lib/utils";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { deleteItem, getItems } from "../shared/actions/items.actions";
 import CrudPage from "../shared/components/crud-page";
 import useFetchData from "../shared/hooks/use-fetch-data";
@@ -18,6 +18,7 @@ import { API_ENDPOINTS } from "@/lib/api-constants";
 import { useId } from "@/lib/providers/id-context";
 import dynamic from "next/dynamic";
 import LoadingOverlay from "@features/ui/loadingOverlay";
+import { useEffect, useState } from "react";
 
 const ItemForm = dynamic(
   () => import("./item-form").then((mod) => mod.ItemForm),
@@ -27,11 +28,13 @@ const ItemForm = dynamic(
 );
 
 export default function ItemsList() {
+  const [isPreparing, setIsPreparing] = useState(true);
   const { canWrite, canDelete } = useSessionData();
   const { handleRequests, isOnline } = useOnlineStatus();
   const { setId } = useId();
   const { categories } = useCategories();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { data, loading, refetch } = useFetchData({
     fetchFn: getItems,
     arrayQueries: ["categories"],
@@ -73,8 +76,18 @@ export default function ItemsList() {
     router.push(PAGE_ROUTES.ITEMS.BATCHES);
   };
 
+  useEffect(() => {
+    const itemId = searchParams.get("itemId");
+    const itemName = searchParams.get("itemName");
+    if (itemId && itemName) {
+      handleViewBatches(itemId, itemName);
+    }
+    setIsPreparing(false);
+  }, [searchParams]);
+
   return (
     <div className="round-2xl mt-2 h-[calc(100%-15rem)] bg-white pr-4 sm:h-[calc(100%-10rem)]">
+      {isPreparing && <LoadingOverlay />}
       <CrudPage
         moduleName="items"
         data={items}

@@ -2,81 +2,30 @@
 
 import { useCacheProgress } from "./cache-progress-context";
 import { Progress } from "@features/ui/progress";
-import { useEffect, useState } from "react";
 import { useGlobalNotifications } from "@features/notifications/notifications-context";
-import { Button } from "@features/ui/button";
-import { Download, X } from "lucide-react";
+import { DownloadCloud } from "lucide-react";
 
 export function GlobalCacheIndicator() {
-  const { dataProgress } = useCacheProgress();
+  const { dataProgress, isCaching, cachingMessage } = useCacheProgress();
   const { isConnected } = useGlobalNotifications();
-  const [isComplete, setIsComplete] = useState(false);
-  const [assetCustomTracker, setAssetCustomTracker] = useState(0);
-  const [isMinimized, setIsMinimized] = useState(true);
 
-  const isDataCachingDone = dataProgress.percent >= 100;
-
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      setAssetCustomTracker((prev) => {
-        const next = prev + Math.floor(Math.random() * 10) + 1;
-        if (next >= 100) {
-          setIsComplete(true);
-          clearInterval(intervalId);
-        }
-        return next >= 100 ? 100 : next;
-      });
-    }, 5000);
-
-    return () => clearInterval(intervalId);
-  }, []);
-
-  if (!isConnected || (isComplete && isDataCachingDone)) {
+  if (!isConnected || !isCaching) {
     return null;
   }
 
-  if (isMinimized) {
-    return (
-      <Button
-        size="icon"
-        className="fixed right-4 bottom-4 z-50 h-14 w-14 rounded-full shadow-lg"
-        onClick={() => setIsMinimized(false)}
-      >
-        <Download className="h-6 w-6 animate-bounce" />
-      </Button>
-    );
-  }
-
   return (
-    <div className="bg-card animate-in fade-in-90 fixed right-4 bottom-4 z-50 w-72 rounded-lg border p-4 shadow-lg">
-      <Button
-        variant="ghost"
-        size="icon"
-        className="absolute top-2 right-2 h-6 w-6"
-        onClick={() => setIsMinimized(true)}
-      >
-        <X className="h-4 w-4" />
-      </Button>
-      {!isComplete && (
-        <div>
-          <p className="mb-1 text-sm font-medium">
-            Preparing app for offline use...
-          </p>
-          <Progress value={assetCustomTracker} className="w-full" />
-          <p className="text-muted-foreground mt-1 text-right text-xs">
-            {Math.round(assetCustomTracker)}%
-          </p>
-        </div>
-      )}
-      {!isDataCachingDone && (
-        <div className={!isComplete ? "mt-3" : ""}>
-          <p className="mb-1 text-sm font-medium">Caching initial data...</p>
+    <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-black/80 backdrop-blur-sm">
+      <div className="bg-card w-full max-w-md rounded-lg p-8 text-center shadow-2xl">
+        <DownloadCloud className="text-primary mx-auto h-16 w-16 animate-bounce" />
+        <h2 className="mt-4 text-2xl font-bold">Downloading for Offline Use</h2>
+        <p className="text-muted-foreground mt-2">{cachingMessage}</p>
+        <div className="mt-6">
           <Progress value={dataProgress.percent} className="w-full" />
-          <p className="text-muted-foreground mt-1 text-right text-xs">
+          <p className="text-muted-foreground mt-2 text-right text-sm">
             {Math.round(dataProgress.percent)}%
           </p>
         </div>
-      )}
+      </div>
     </div>
   );
 }
