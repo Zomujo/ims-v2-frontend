@@ -16,8 +16,6 @@ import { Button } from "@features/ui/button";
 export function NotificationButton() {
   const { unreadCount, isConnected } = useGlobalNotifications();
 
-  console.log("NotificationButton render", { unreadCount, isConnected });
-
   return (
     <ImsPopover
       className="relative cursor-pointer rounded-full bg-gray-100 p-2 text-gray-500 hover:bg-gray-200"
