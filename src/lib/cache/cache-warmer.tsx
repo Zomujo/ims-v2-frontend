@@ -14,10 +14,14 @@ import {
   getItemBatches,
   getItems,
   getItemsExpiry,
+  getItemsNoPaginate,
 } from "@features/shared/actions/items.actions";
 import { DATE_RANGE } from "@features/layout/search-with-filter/search-with-filter.data";
 import { CACHE_PAGE_SIZE, CacheKey } from "@/lib/cache/cache-data";
-import { getItemCategories } from "@features/shared/actions/item-categories.actions";
+import {
+  getItemCategories,
+  getItemCategoriesNoPaginate,
+} from "@features/shared/actions/item-categories.actions";
 import { getStockAdjustments } from "@features/shared/actions/stock-adjustments.actions";
 import { getItemOrders } from "@features/shared/actions/item-orders.actions";
 import {
@@ -233,6 +237,14 @@ export const PREFETCH_TARGETS = [
   {
     key: CacheKey.PatientsList,
     fetcher: () => getSalesPatientListAction(),
+  },
+  {
+    key: CacheKey.ItemsCategoriesNoPaginate,
+    fetcher: () => getItemCategoriesNoPaginate(),
+  },
+  {
+    key: CacheKey.ItemsNoPaginate,
+    fetcher: () => getItemsNoPaginate(),
   },
 ];
 
