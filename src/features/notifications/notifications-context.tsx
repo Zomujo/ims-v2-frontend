@@ -48,7 +48,9 @@ export function GlobalNotificationsProvider({
 }: GlobalNotificationsProviderProps) {
   const { userId } = useSessionData();
   const [notifications, setNotifications] = useState<NotificationPayload[]>([]);
-  const [isConnected, setIsConnected] = useState(false);
+  const [isConnected, setIsConnected] = useState(
+    typeof navigator !== "undefined" && navigator.onLine,
+  );
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isLoadingMore, setIsLoadingMore] = useState(false);

@@ -82,6 +82,7 @@ export default function useFetchData<T>({
       });
     });
     const isOffline = typeof navigator !== "undefined" && !navigator.onLine;
+    console.log("Is connected", isConnected);
     if (isOffline || !isConnected) {
       if (
         coldData &&
