@@ -14,7 +14,7 @@ import { ImsForm } from "../shared/components/ims-forms";
 import useFetchData from "../shared/hooks/use-fetch-data";
 import useHookForm from "../shared/hooks/use-hook-form";
 import usePageCRUD from "../shared/hooks/use-page-crud";
-import { IdData, ItemOrderStatus } from "../shared/types/action.types";
+import { ItemOrderStatus } from "../shared/types/action.types";
 import { CRUDACTION } from "../shared/types/utitls.types";
 import { ScrollArea } from "../ui/scroll-area";
 import { ItemOrdersInputs } from "./item-orders-component-client";
@@ -31,16 +31,12 @@ import { PermissionModules } from "@features/shared/types/auth-action.types";
 import { CacheKey } from "@/lib/cache/cache-data";
 import { API_ENDPOINTS } from "@/lib/api-constants";
 import { useOnlineStatus } from "@features/shared/hooks/useOnlineStatus";
+import { useItems } from "@/hooks/useItems";
+import { useSuppliers } from "@/hooks/useSuppliers";
 
-type ItemOrdersListProps = {
-  items: IdData[];
-  suppliers: IdData[];
-};
-
-export default function ItemOrdersList({
-  items,
-  suppliers,
-}: Readonly<ItemOrdersListProps>) {
+export default function ItemOrdersList() {
+  const { items } = useItems();
+  const { suppliers } = useSuppliers();
   const { canWrite, canDelete } = useSessionData();
   const { data, loading, refetch } = useFetchData({
     fetchFn: getItemOrders,
