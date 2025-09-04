@@ -71,9 +71,9 @@ const urlsToPrecache = [
   "/settings/users",
   "/settings/notifications",
   "/settings/expiry",
-  "/stock-level-report",
-  "/stock-movement-report",
-  "/earnings-overview",
+  "/reports/stock-level-report",
+  "/reports/stock-movement-report",
+  "/reports/earnings-overview",
 ] as const;
 
 self.addEventListener("install", (event) => {

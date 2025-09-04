@@ -1,28 +1,22 @@
+"use client";
 import { getInitials } from "@/lib/utils";
 import { ImsAvatar } from "../shared/components/ims-avatar";
 import { Badge } from "../ui/badge";
 import { SettingsEditAvatarForm } from "./settings-general-form";
+import { useSessionData } from "@/hooks/useSessionData";
 
-type UserAvatarGeneralSettingsProps = {
-  fullName: string;
-  email: string;
-  role: string;
-  imageUrl: string;
-};
-
-export async function UserAvatarGeneralSettings({
-  fullName,
-  email,
-  role,
-  imageUrl,
-}: Readonly<UserAvatarGeneralSettingsProps>) {
+export function UserAvatarGeneralSettings() {
+  const { fullName, profileImage, role, email } = useSessionData();
   return (
     <div className="mt-10 flex items-center gap-x-4">
-      <SettingsEditAvatarForm fullName={fullName} imgURL={imageUrl}>
+      <SettingsEditAvatarForm
+        fullName={fullName ?? ""}
+        imgURL={profileImage ?? ""}
+      >
         <ImsAvatar
-          src={imageUrl}
-          alt={fullName}
-          fallback={getInitials(fullName)}
+          src={profileImage ?? ""}
+          alt={fullName ?? ""}
+          fallback={getInitials(fullName ?? "")}
           className="h-16 w-16"
         />
       </SettingsEditAvatarForm>

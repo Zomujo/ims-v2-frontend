@@ -53,6 +53,8 @@ export const useSessionData = () => {
   const role = user?.role;
   const profileImage = user?.imageUrl;
   const permissions = user?.permissions;
+  const email = user?.email;
+  const phoneNumber = user?.phoneNumber;
 
   const hasPermission = (permission: string) => {
     const permissionKeys = permissions?.map((item) => item.split(":")[0]);
@@ -92,8 +94,10 @@ export const useSessionData = () => {
     canWrite,
     canDelete,
     firstName,
+    email,
     token,
     userId,
     updateUserStatus,
+    phoneNumber,
   };
 };
