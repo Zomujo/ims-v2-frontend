@@ -23,25 +23,19 @@ import {
   readImgFile,
 } from "./settings.utils";
 import { useGlobalNotifications } from "@features/notifications/notifications-context";
+import { useSessionData } from "@/hooks/useSessionData";
 
 type SettingsFormData = z.infer<typeof generalSettingsSchema>;
-export function GeneralSettingsAccountForm({
-  fullName,
-  email,
-  phoneNumber,
-}: Readonly<{
-  fullName: string;
-  email: string;
-  phoneNumber: string;
-}>) {
+export function GeneralSettingsAccountForm() {
+  const { fullName, email, phoneNumber } = useSessionData();
   const [editForm, setEditForm] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
   const form = useHookForm({
     resolver: generalSettingsSchema,
     defaultValues: {
-      email,
-      fullName,
-      phoneNumber,
+      email: email ?? "",
+      fullName: fullName ?? "",
+      phoneNumber: phoneNumber ?? "",
       otpCode: "",
     },
     mode: "onTouched",

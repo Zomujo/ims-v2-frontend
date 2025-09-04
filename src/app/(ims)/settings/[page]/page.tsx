@@ -4,7 +4,6 @@ import { DepartmentManagementSettings } from "@/features/settings/settings-depar
 import { GeneralSettingsAccountForm } from "@/features/settings/settings-general-form";
 import SettingsSecurityForm from "@/features/settings/settings-security-form";
 import ManageUsersSettings from "@/features/settings/settings-users";
-import { authUserProfileAction } from "@/features/shared/actions/auth.action";
 import {
   getDepartmentsAction,
   getRolesAction,
@@ -91,21 +90,10 @@ const createBtnLabel = {
 } as const;
 
 async function GeneralSettings() {
-  const imsUserProfile = await authUserProfileAction();
-
   return (
     <div className="flex flex-col gap-y-14">
-      <UserAvatarGeneralSettings
-        fullName={imsUserProfile.fullName ?? ""}
-        imageUrl={imsUserProfile.imageUrl ?? ""}
-        role={imsUserProfile.role ?? ""}
-        email={imsUserProfile?.email ?? ""}
-      />
-      <GeneralSettingsAccountForm
-        fullName={imsUserProfile.fullName ?? ""}
-        email={imsUserProfile?.email ?? ""}
-        phoneNumber={imsUserProfile.phoneNumber ?? ""}
-      />
+      <UserAvatarGeneralSettings />
+      <GeneralSettingsAccountForm />
     </div>
   );
 }

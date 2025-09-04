@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import AccessImage from "@public/images/access.png";
 
 export default function Contact() {
   return (
@@ -51,7 +52,7 @@ export default function Contact() {
         </div>
       </div>
       <Image
-        src="/images/access.png"
+        src={AccessImage}
         alt="pharmacist"
         width={734}
         height={562}
