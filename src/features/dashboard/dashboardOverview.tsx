@@ -1,33 +1,22 @@
 "use client";
-import { lazy, Suspense } from "react";
 import DashboardGeneral from "@features/dashboard/dashboardGeneral";
-const DashboardSellingItems = lazy(() => import("./dashboardSellingItems"));
-const DashboardSalesTend = lazy(
-  () => import("@features/dashboard/dashboardSalesTend"),
-);
-const DashboardDailySales = lazy(() => import("./dashboardDailySales"));
-const DashboardSellingCategories = lazy(
-  () => import("@features/dashboard/dashboardSellingCategories"),
-);
-const DashboardSalePaymentMethod = lazy(
-  () => import("@features/dashboard/dashboardSalePaymentMethod"),
-);
-const DashboardSalesMarkup = lazy(
-  () => import("@features/dashboard/dashboardSalesMarkup"),
-);
+import DashboardSellingItems from "./dashboardSellingItems";
+import DashboardSalesTend from "@features/dashboard/dashboardSalesTend";
+import DashboardDailySales from "./dashboardDailySales";
+import DashboardSellingCategories from "@features/dashboard/dashboardSellingCategories";
+import DashboardSalePaymentMethod from "@features/dashboard/dashboardSalePaymentMethod";
+import DashboardSalesMarkup from "@features/dashboard/dashboardSalesMarkup";
 
 const DashboardOverview = () => {
   return (
     <div className="overflow-scroll">
       <DashboardGeneral />
-      <Suspense fallback={<div>Loading...</div>}>
-        <DashboardSellingItems />
-        <DashboardSalesTend />
-        <DashboardSellingCategories />
-        <DashboardDailySales />
-        <DashboardSalePaymentMethod />
-        <DashboardSalesMarkup />
-      </Suspense>
+      <DashboardSellingItems />
+      <DashboardSalesTend />
+      <DashboardSellingCategories />
+      <DashboardDailySales />
+      <DashboardSalePaymentMethod />
+      <DashboardSalesMarkup />
     </div>
   );
 };
