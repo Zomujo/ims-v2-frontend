@@ -1,11 +1,4 @@
-import {
-  ReactNode,
-  useCallback,
-  useMemo,
-  useState,
-  lazy,
-  Suspense,
-} from "react";
+import { ReactNode, useCallback, useMemo, useState } from "react";
 import { DateRange } from "react-day-picker";
 import { cn, formatValue, scrollToSection } from "@/lib/utils";
 import { MoveDownRight, MoveUpRight } from "lucide-react";
@@ -24,9 +17,8 @@ import styles from "./dashboard.module.css";
 import { DatePickerWithRange } from "@features/ui/date-picker";
 import useFetchData from "@features/shared/hooks/use-fetch-data";
 import { CacheKey } from "@/lib/cache/cache-data";
-
-const StockLevelItems = lazy(() => import("./stockLevelItems"));
-const ExpiringItemsList = lazy(() => import("./expiringItemsList"));
+import StockLevelItems from "./stockLevelItems";
+import ExpiringItemsList from "./expiringItemsList";
 
 const stockLevelCategories: {
   label: string;
@@ -219,31 +211,25 @@ const DashboardGeneral = () => {
                       Out of stock
                     </TabsTrigger>
                   </TabsList>
-                  <Suspense fallback={null}>
-                    <StockLevelItems
-                      currentStockLevelView={currentStockLevelView}
-                      showSeeMoreLinkOnly={true}
-                    />
-                  </Suspense>
+                  <StockLevelItems
+                    currentStockLevelView={currentStockLevelView}
+                    showSeeMoreLinkOnly={true}
+                  />
                 </div>
                 <TabsContent
                   onClick={() => setCurrentStockLevelView("OUT_OF_STOCK")}
                   value="LOW_STOCK"
                 >
-                  <Suspense fallback={<ItemsListSkeleton />}>
-                    <StockLevelItems
-                      currentStockLevelView={currentStockLevelView}
-                      stockColor={stockColor}
-                    />
-                  </Suspense>
+                  <StockLevelItems
+                    currentStockLevelView={currentStockLevelView}
+                    stockColor={stockColor}
+                  />
                 </TabsContent>
                 <TabsContent value="OUT_OF_STOCK">
-                  <Suspense fallback={<ItemsListSkeleton />}>
-                    <StockLevelItems
-                      currentStockLevelView={currentStockLevelView}
-                      stockColor={stockColor}
-                    />
-                  </Suspense>
+                  <StockLevelItems
+                    currentStockLevelView={currentStockLevelView}
+                    stockColor={stockColor}
+                  />
                 </TabsContent>
               </Tabs>
             </div>
@@ -298,9 +284,7 @@ const DashboardGeneral = () => {
           }
           className="pb-0"
         >
-          <Suspense fallback={<ItemsListSkeleton />}>
-            <ExpiringItemsList stockColor={stockColor} />
-          </Suspense>
+          <ExpiringItemsList stockColor={stockColor} />
         </BaseCard>
       </div>
     </div>
