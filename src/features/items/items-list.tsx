@@ -16,19 +16,10 @@ import { PermissionModules } from "@features/shared/types/auth-action.types";
 import { useOnlineStatus } from "@features/shared/hooks/useOnlineStatus";
 import { API_ENDPOINTS } from "@/lib/api-constants";
 import { useId } from "@/lib/providers/id-context";
-import dynamic from "next/dynamic";
-import LoadingOverlay from "@features/ui/loadingOverlay";
-import { useEffect, useState } from "react";
-
-const ItemForm = dynamic(
-  () => import("./item-form").then((mod) => mod.ItemForm),
-  {
-    loading: () => <LoadingOverlay />,
-  },
-);
+import { useEffect } from "react";
+import { ItemForm } from "./item-form";
 
 export default function ItemsList() {
-  const [isPreparing, setIsPreparing] = useState(true);
   const { canWrite, canDelete } = useSessionData();
   const { handleRequests, isOnline } = useOnlineStatus();
   const { setId } = useId();
@@ -82,12 +73,10 @@ export default function ItemsList() {
     if (itemId && itemName) {
       handleViewBatches(itemId, itemName);
     }
-    setIsPreparing(false);
   }, [searchParams]);
 
   return (
     <div className="round-2xl mt-2 h-[calc(100%-15rem)] bg-white pr-4 sm:h-[calc(100%-10rem)]">
-      {isPreparing && <LoadingOverlay />}
       <CrudPage
         moduleName="items"
         data={items}
