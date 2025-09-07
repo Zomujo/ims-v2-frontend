@@ -9,12 +9,8 @@ import { MoreHorizontal } from "lucide-react";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { ColumnDef } from "@tanstack/react-table";
 import { cn } from "@/lib/utils";
-import dynamic from "next/dynamic";
-
-const ImsSheet = dynamic(() =>
-  import("./ims-sheet").then((mod) => mod.ImsSheet),
-);
-const ImsAlertModal = dynamic(() => import("./ims-alert-modal"));
+import { ImsSheet } from "./ims-sheet";
+import ImsAlertModal from "./ims-alert-modal";
 
 export default function CrudPage<T>({
   children,

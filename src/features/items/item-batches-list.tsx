@@ -19,18 +19,7 @@ import { useId } from "@/lib/providers/id-context";
 import { CacheKey } from "@/lib/cache/cache-data";
 import { useOnlineStatus } from "@features/shared/hooks/useOnlineStatus";
 import { API_ENDPOINTS } from "@/lib/api-constants";
-import dynamic from "next/dynamic";
-import LoadingOverlay from "@features/ui/loadingOverlay";
-
-const ItemBatchesForm = dynamic(
-  () =>
-    import("./item-batches-form").then((mod) => ({
-      default: mod.ItemBatchesForm,
-    })),
-  {
-    loading: () => <LoadingOverlay />,
-  },
-);
+import { ItemBatchesForm } from "./item-batches-form";
 
 export default function ItemBatchesList() {
   const { id: itemId, title } = useId();
