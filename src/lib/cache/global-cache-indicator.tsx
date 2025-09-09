@@ -17,8 +17,6 @@ export function GlobalCacheIndicator() {
   useEffect(() => {
     if (isDataCachingDone && isCaching) {
       setIsFinalizing(true);
-    } else {
-      setIsFinalizing(false);
     }
   }, [isDataCachingDone, isCaching]);
 
@@ -35,6 +33,7 @@ export function GlobalCacheIndicator() {
         setFinalizingProgress(customProgress);
         if (customProgress >= 100) {
           clearInterval(timer);
+          setIsFinalizing(false); // Hide component when finalizing is done
         }
       }, interval);
 
@@ -44,7 +43,7 @@ export function GlobalCacheIndicator() {
     }
   }, [isFinalizing]);
 
-  if (!isConnected || !isCaching) {
+  if (!isConnected || (!isCaching && !isFinalizing)) {
     return null;
   }
 
