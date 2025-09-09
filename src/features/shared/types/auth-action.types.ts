@@ -55,6 +55,11 @@ export type AuthActionProps = {
   accountIdentifier: string;
 };
 
+export interface IResetPassword {
+  username: string;
+  newPassword: string;
+}
+
 export type AuthAccountCreationProps = Omit<
   AuthActionProps,
   "code" | "refreshToken" | "newPassword"

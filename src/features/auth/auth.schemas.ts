@@ -44,10 +44,10 @@ export const createAccountSchema = z
   });
 
 export const forgotPasswordSchema = z.object({
-  email: z
+  username: z.string().min(1, { message: "Please enter your username" }),
+  contact: z
     .string()
-    .min(1, { message: "Please enter your email address" })
-    .email({ message: "Please enter a valid email address" }),
+    .min(1, { message: "Please enter your email or phone number" }),
 });
 
 export const verifyCodeSchema = z.object({

@@ -28,7 +28,7 @@ export const API_ENDPOINTS = {
   AUTH_USER: "/auth/user",
   AUTH_SESSIONS: "/auth/sessions",
   AUTH_REFRESH: "/auth/refresh",
-  AUTH_FORGOT_PASSWORD_SEND_MAIL: "/auth/forgot-password/send-mail",
+  AUTH_FORGOT_PASSWORD_SEND_MAIL: "/auth/forgot-password/send",
   AUTH_FORGOT_PASSWORD_VALIDATE_CODE: "/auth/forgot-password/validate-code",
   AUTH_FORGOT_PASSWORD_RESET: "/auth/forgot-password/reset",
   AUTH_VERIFICATION_SEND_MAIL: "/auth/verification/send-mail",
