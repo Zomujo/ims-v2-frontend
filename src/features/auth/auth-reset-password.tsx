@@ -1,7 +1,7 @@
 "use client";
 
 import { AUTH_PAGE_ROUTES, PAGE_ROUTES } from "@/lib/constant";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { Control } from "react-hook-form";
 import { z } from "zod";
 import {
@@ -21,8 +21,6 @@ import { toast } from "sonner";
 export function ResetPasswordForm() {
   const { updateUserStatus } = useSessionData();
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const username = searchParams.get("username");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const form = useHookForm({
     resolver: resetPasswordSchema,
@@ -33,6 +31,8 @@ export function ResetPasswordForm() {
   });
 
   const handleSubmitFn = async (data: unknown) => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const username = searchParams.get("username");
     const loadingToast = toast.loading("Resetting password...");
     const { password: newPassword } = data as z.infer<
       typeof resetPasswordSchema
