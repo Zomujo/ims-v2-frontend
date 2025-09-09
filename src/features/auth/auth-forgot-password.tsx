@@ -19,20 +19,23 @@ export function ForgotPasswordForm() {
   const form = useHookForm({
     resolver: forgotPasswordSchema,
     defaultValues: {
-      email: "",
+      username: "",
+      contact: "",
     },
   });
 
   const handleSubmitFn = async (data: unknown) => {
-    const email = (data as z.infer<typeof forgotPasswordSchema>).email;
-    const res = authForgotPasswordSendMailAction(email);
+    const { username, contact } = data as z.infer<typeof forgotPasswordSchema>;
+    const res = authForgotPasswordSendMailAction({ username, contact });
     handleRequestState({ res, loadingMsg: "Sending verification code..." });
     res.then((response) => {
       if (response.error) {
         toast.error(response.error);
         return;
       }
-      router.push(`${AUTH_PAGE_ROUTES.FORGOT_PASSWORD_VERIFY}?email=${email}`);
+      router.push(
+        `${AUTH_PAGE_ROUTES.FORGOT_PASSWORD_VERIFY}?username=${username}&contact=${contact}`,
+      );
     });
     await res;
   };
@@ -51,19 +54,34 @@ export function ForgotPasswordForm() {
 
 function AuthLoginInputs({ control }: Readonly<{ control: Control }>) {
   return (
-    <HookFormField
-      formControl={control}
-      name="email"
-      label="Email"
-      renderInput={({ field }) => (
-        <Input
-          {...field}
-          className="focus-visible:ring-ims-blue-300 bg-white"
-          type="email"
-          placeholder="Email"
-        />
-      )}
-    />
+    <>
+      <HookFormField
+        formControl={control}
+        name="username"
+        label="Username"
+        renderInput={({ field }) => (
+          <Input
+            {...field}
+            className="focus-visible:ring-ims-blue-300 bg-white"
+            type="text"
+            placeholder="Username"
+          />
+        )}
+      />
+      <HookFormField
+        formControl={control}
+        name="contact"
+        label="Email or Phone Number"
+        renderInput={({ field }) => (
+          <Input
+            {...field}
+            className="focus-visible:ring-ims-blue-300 bg-white"
+            type="text"
+            placeholder="Email or Phone Number"
+          />
+        )}
+      />
+    </>
   );
 }
 

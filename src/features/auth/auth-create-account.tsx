@@ -41,7 +41,7 @@ export function CreateAccountForm() {
       toast.success(
         "You account has been created successfully. You can now log in.",
       );
-      router.push(AUTH_PAGE_ROUTES.CREATE_ACCOUNT);
+      router.push(AUTH_PAGE_ROUTES.LOG_IN);
     } catch (error) {
       if (error instanceof Error) {
         toast.error(error.message);
