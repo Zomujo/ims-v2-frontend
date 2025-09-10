@@ -13,7 +13,6 @@ const convertTelToGH = (tel: string) => {
 export const supplierSchema = z.object({
   // Step 1: Supplier details (Mapping AddSupplier fields to UI steps)
   name: z.string().min(1, "Supplier name is required"),
-  brandTradeName: z.string().optional(),
   supplierType: z.string().min(1, "Supplier type is required"),
   minimumOrderQuantity: z.preprocess(
     (val) => Number(val),
@@ -35,7 +34,6 @@ export const supplierSchema = z.object({
     .transform(convertTelToGH),
   email: z.string().email("Invalid email address").min(1, "Email is required"),
   physicalAddress: z.string().min(1, "Physical Address is required"),
-  mailingAddress: z.string().optional(),
 
   // Step 3: Payment Details
   paymentType: z.union([z.literal("Bank"), z.literal("Mobile Money")], {

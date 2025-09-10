@@ -28,7 +28,7 @@ export const API_ENDPOINTS = {
   AUTH_USER: "/auth/user",
   AUTH_SESSIONS: "/auth/sessions",
   AUTH_REFRESH: "/auth/refresh",
-  AUTH_FORGOT_PASSWORD_SEND_MAIL: "/auth/forgot-password/send-mail",
+  AUTH_FORGOT_PASSWORD_SEND_MAIL: "/auth/forgot-password/send",
   AUTH_FORGOT_PASSWORD_VALIDATE_CODE: "/auth/forgot-password/validate-code",
   AUTH_FORGOT_PASSWORD_RESET: "/auth/forgot-password/reset",
   AUTH_VERIFICATION_SEND_MAIL: "/auth/verification/send-mail",
@@ -106,6 +106,7 @@ export const API_ENDPOINTS = {
   SALE_EXPORT: "/sales/export",
   SALE_ITEMS: "/sales/:id/items",
   SALE_RETURN: "/sales/return/:id",
+  SALES_LEVEL_REPORT: "/sales/export/periodic-sales",
 
   // Patient
   PATIENTS: "/patients",
@@ -133,6 +134,10 @@ export const API_ENDPOINTS = {
 
   // Department
   DEPARTMENTS_NO_PAGINATE: "/departments/no-paginate",
+
+  // Sync
+  SYNC: "/sync",
+  SYNC_ACTION: "/sync/:id",
 } as const;
 
 export const API_ENDPOINT_TAGS = {

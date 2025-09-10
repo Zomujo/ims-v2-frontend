@@ -3,7 +3,6 @@
 import { AUTH_PAGE_ROUTES } from "@/lib/constant";
 import Link from "next/link";
 import { Control } from "react-hook-form";
-import { z } from "zod";
 import HookFormField from "../shared/components/hook-form-filed";
 import { ImsButton } from "../shared/components/ims-button";
 import useHookForm from "../shared/hooks/use-hook-form";
@@ -16,8 +15,11 @@ import { AuthAccountCreationProps } from "@features/shared/types/auth-action.typ
 import { useState } from "react";
 import { toast } from "sonner";
 import { authCreateAccountAction } from "@features/shared/actions/auth.action";
+import { z } from "zod";
+import { useRouter } from "next/navigation";
 
 export function CreateAccountForm() {
+  const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const form = useHookForm({
     resolver: createAccountSchema,
@@ -28,13 +30,18 @@ export function CreateAccountForm() {
 
   const handleSubmitFn = async (data: unknown) => {
     const loadingToast = toast.loading("Creating account...");
+    const userData = data as AuthAccountCreationProps;
     try {
       setIsSubmitting(true);
-      await authCreateAccountAction(data as AuthAccountCreationProps);
+      const response = await authCreateAccountAction(userData);
+      if ("error" in response) {
+        throw new Error(response.error);
+      }
       form.reset();
       toast.success(
-        "We have sent you a verification email. Please check your inbox.",
+        "You account has been created successfully. You can now log in.",
       );
+      router.push(AUTH_PAGE_ROUTES.LOG_IN);
     } catch (error) {
       if (error instanceof Error) {
         toast.error(error.message);

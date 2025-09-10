@@ -1,6 +1,5 @@
-import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
+import { ReactNode, useCallback, useMemo, useState } from "react";
 import { DateRange } from "react-day-picker";
-import { format } from "date-fns";
 import { cn, formatValue, scrollToSection } from "@/lib/utils";
 import { MoveDownRight, MoveUpRight } from "lucide-react";
 import { getGeneralOverview } from "@features/shared/actions/dashboard.actions";
@@ -15,13 +14,11 @@ import {
 import { Skeleton } from "@features/ui/skeleton";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@features/ui/tooltip";
 import styles from "./dashboard.module.css";
-import {
-  getItems,
-  getItemsExpiry,
-} from "@features/shared/actions/items.actions";
-import { ExpiryItemsDto, ItemsDto } from "@features/shared/types/action.types";
-import Link from "next/link";
 import { DatePickerWithRange } from "@features/ui/date-picker";
+import useFetchData from "@features/shared/hooks/use-fetch-data";
+import { CacheKey } from "@/lib/cache/cache-data";
+import StockLevelItems from "./stockLevelItems";
+import ExpiringItemsList from "./expiringItemsList";
 
 const stockLevelCategories: {
   label: string;
@@ -89,66 +86,30 @@ const DashboardGeneral = () => {
   const today = new Date();
   const threeMonthsAgo = new Date(today);
   threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
-  const [data, setData] = useState<GeneralResponse>();
   const [date, setDate] = useState<Required<DateRange>>({
     from: threeMonthsAgo,
     to: today,
   });
-  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [currentStockLevelView, setCurrentStockLevelView] =
     useState<Exclude<StockLevel, "STOCKED">>("LOW");
-  const [isLoadingStock, setIsLoadingStock] = useState(true);
-  const [stockItems, setStockItems] = useState<ItemsDto[]>([]);
-  const [expiringItems, setExpiringItems] = useState<ExpiryItemsDto[]>([]);
-  const [isLoadingExpiring, setIsLoadingExpiring] = useState(true);
-
-  useEffect(() => {
-    const fetchGeneralOverview = async () => {
-      setIsLoading(true);
-      const generalResponse = await getGeneralOverview({
+  const { data, loading: isLoading } = useFetchData<
+    GeneralResponse | undefined
+  >({
+    fetchFn: () =>
+      getGeneralOverview({
         endDate: date.to.toISOString(),
         startDate: date.from?.toISOString(),
-      });
-      if (generalResponse) {
-        setData(generalResponse);
-      }
-      setIsLoading(false);
-    };
-    void fetchGeneralOverview();
-  }, [date]);
+      }),
+    cacheKey: CacheKey.DashboardGeneral,
+    deps: [date],
+  });
 
-  const fetchStockItems = async () => {
-    setIsLoadingStock(true);
-    const stockResponse = await getItems({
-      status: currentStockLevelView,
-      pageSize: "5",
-    });
-    if (stockResponse) {
-      setStockItems(stockResponse.rows);
-    }
-    setIsLoadingStock(false);
-  };
-
-  useEffect(() => {
-    void fetchStockItems();
+  const stockColor = useMemo(() => {
+    const category = stockLevelCategories.find(({ value }) =>
+      value.includes(currentStockLevelView),
+    );
+    return category?.bgColor ?? "bg-gray-400";
   }, [currentStockLevelView]);
-
-  const fetchExpiringItems = async () => {
-    setIsLoadingExpiring(true);
-    const expiringResponse = await getItemsExpiry({
-      pageSize: "5",
-      orderBy: "expiryDate",
-      orderDirection: "ASC",
-    });
-    if (expiringResponse) {
-      setExpiringItems(expiringResponse.rows);
-    }
-    setIsLoadingExpiring(false);
-  };
-
-  useEffect(() => {
-    void fetchExpiringItems();
-  }, []);
 
   const stockLevelPercentage = useCallback(
     (level: StockLevel) => {
@@ -165,82 +126,6 @@ const DashboardGeneral = () => {
       return (levelStockMap[level] / totalStock) * 100;
     },
     [data],
-  );
-
-  const stockColor = useMemo(() => {
-    const category = stockLevelCategories.find(({ value }) =>
-      value.includes(currentStockLevelView),
-    );
-    return category?.bgColor ?? "bg-gray-400";
-  }, [currentStockLevelView]);
-
-  const stockLevelItems = isLoadingStock ? (
-    <ItemsListSkeleton />
-  ) : stockItems.length > 0 ? (
-    <div className="space-y-3">
-      {stockItems.map(({ totalStock, name }) => (
-        <div
-          key={`${name}-${totalStock}`}
-          className="flex items-center justify-between text-sm"
-        >
-          <div className="flex items-center gap-x-2">
-            <span className={cn("h-3.5 w-1.5 rounded-md", stockColor)}></span>
-            <span className="text-gray-600">{name}</span>
-          </div>
-          <span className="font-medium text-[#111111]">{totalStock}</span>
-        </div>
-      ))}
-    </div>
-  ) : (
-    <div className="flex h-24 items-center justify-center">
-      <p className="text-sm text-gray-500">No items to display.</p>
-    </div>
-  );
-
-  const expiringItemsList = isLoadingExpiring ? (
-    <ItemsListSkeleton />
-  ) : expiringItems.length > 0 ? (
-    <div className="mt-2 mb-5 space-y-3">
-      {expiringItems.map(({ item, validity, batchNumber }) => {
-        const expiryDate = new Date(validity);
-        const expiryToday = new Date();
-        expiryToday.setHours(0, 0, 0, 0);
-
-        const diffTime = expiryDate.getTime() - expiryToday.getTime();
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-        const getTextColor = () => {
-          if (diffDays < 0) {
-            return "text-red-500";
-          }
-          if (diffDays <= 60) {
-            return "text-orange-500";
-          }
-          return "text-[#111111]";
-        };
-
-        return (
-          <div
-            key={`${item.name}-${validity}`}
-            className="flex items-center justify-between"
-          >
-            <div className="flex items-center gap-x-2">
-              <span className={cn("h-3.5 w-1.5 rounded-md", stockColor)}></span>
-              <span className="text-sm text-gray-600">
-                {item.name} ({batchNumber})
-              </span>
-            </div>
-            <span className={cn("text-xs font-medium", getTextColor())}>
-              {format(expiryDate, "LLL dd, y")}
-            </span>
-          </div>
-        );
-      })}
-    </div>
-  ) : (
-    <div className="flex h-24 items-center justify-center">
-      <p className="text-sm text-gray-500">No expiring items to display.</p>
-    </div>
   );
 
   return (
@@ -326,23 +211,25 @@ const DashboardGeneral = () => {
                       Out of stock
                     </TabsTrigger>
                   </TabsList>
-                  {stockItems.length > 0 && (
-                    <Link
-                      className="hover:text-gray-600 hover:underline"
-                      href={`/items?status=${currentStockLevelView}`}
-                    >
-                      See more
-                    </Link>
-                  )}
+                  <StockLevelItems
+                    currentStockLevelView={currentStockLevelView}
+                    showSeeMoreLinkOnly={true}
+                  />
                 </div>
                 <TabsContent
                   onClick={() => setCurrentStockLevelView("OUT_OF_STOCK")}
                   value="LOW_STOCK"
                 >
-                  {stockLevelItems}
+                  <StockLevelItems
+                    currentStockLevelView={currentStockLevelView}
+                    stockColor={stockColor}
+                  />
                 </TabsContent>
                 <TabsContent value="OUT_OF_STOCK">
-                  {stockLevelItems}
+                  <StockLevelItems
+                    currentStockLevelView={currentStockLevelView}
+                    stockColor={stockColor}
+                  />
                 </TabsContent>
               </Tabs>
             </div>
@@ -397,19 +284,7 @@ const DashboardGeneral = () => {
           }
           className="pb-0"
         >
-          <>
-            <div className="my-2 flex place-self-end self-end">
-              {expiringItems.length > 0 && (
-                <Link
-                  className="hover:text-gray-600 hover:underline"
-                  href={`/expiry`}
-                >
-                  See more
-                </Link>
-              )}
-            </div>
-            {expiringItemsList}
-          </>
+          <ExpiringItemsList stockColor={stockColor} />
         </BaseCard>
       </div>
     </div>
@@ -535,7 +410,7 @@ const ChartSkeleton = () => (
   </div>
 );
 
-const ItemsListSkeleton = () => (
+export const ItemsListSkeleton = () => (
   <div className="space-y-3 pt-2">
     {[...Array(5)].map((_, i) => (
       <div key={i} className="flex items-center justify-between">

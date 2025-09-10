@@ -8,11 +8,14 @@ import useFetchData from "../shared/hooks/use-fetch-data";
 import usePageCRUD from "../shared/hooks/use-page-crud";
 import { ScrollArea } from "../ui/scroll-area";
 import { expiryItemsTableColumns } from "@features/expiry/expiry-items.data";
+import { CacheKey } from "@/lib/cache/cache-data";
 
 export default function ExpiryItemsList() {
   const router = useRouter();
   const { data, loading } = useFetchData({
     fetchFn: getItemsExpiry,
+    cacheKey: CacheKey.ExpiryItemList,
+    searchField: "item.name",
   });
   const expiryItems = data?.rows ?? [];
   const { state, isEditMode, handleRemoveQueryparam } = usePageCRUD({

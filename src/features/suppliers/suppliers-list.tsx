@@ -29,11 +29,19 @@ import {
 } from "../shared/types/auth-action.types";
 import { GetSuppliersResponse } from "../shared/types/action.types";
 import { useSessionData } from "@/hooks/useSessionData";
+import { CacheKey } from "@/lib/cache/cache-data";
+import { useOnlineStatus } from "@features/shared/hooks/useOnlineStatus";
+import { API_ENDPOINTS } from "@/lib/api-constants";
 
 export default function SuppliersList() {
   const { canWrite, canDelete } = useSessionData();
-  const { data, loading } = useFetchData({ fetchFn: getSuppliers });
+  const { data, loading } = useFetchData({
+    fetchFn: getSuppliers,
+    cacheKey: CacheKey.SuppliersList,
+    searchField: "name",
+  });
   const suppliers = data?.rows ?? [];
+  const { handleRequests, isOnline } = useOnlineStatus();
   const [modalActionProperties, setModalActionProperties] = useState({
     label: "Delete",
     crudAction: CRUDACTION.DELETE,
@@ -82,6 +90,20 @@ export default function SuppliersList() {
   const handleModalAction = async (action: CRUDACTION) => {
     const id = getId(action);
 
+    if (!isOnline) {
+      handleRequests(
+        action === CRUDACTION.DELETE
+          ? API_ENDPOINTS.SUPPLIER.replace(":id", id)
+          : `${API_ENDPOINTS.SUPPLIERS}/${id}/${action}`,
+        undefined,
+        {
+          method: action === CRUDACTION.DELETE ? "DELETE" : "PATCH",
+          removeSearchParams,
+        },
+      );
+      return;
+    }
+
     const res =
       action === CRUDACTION.DELETE
         ? deleteSupplier(id)
@@ -120,7 +142,10 @@ export default function SuppliersList() {
       state={state}
       isEditMode={isEditMode}
       openModal={openModal}
-      closeModal={() => setOpenModal(false)}
+      closeModal={() => {
+        handleRemoveQueryparam(false);
+        setOpenModal(false);
+      }}
       alertModalOnChange={false}
       actions={(item) => [
         {
@@ -175,13 +200,14 @@ function SupplierForm({ supplierId }: Readonly<SupplierFormProps>) {
 
   const { loading } = useFetchData({
     fetchFn: async () => getSupplier(supplierId ?? ""),
-    exercuteOnMount: !!supplierId,
+    executeOnMount: !!supplierId,
     deps: [supplierId],
     onSuccess: (data) => {
       const supplierData = data.data ?? {};
       form.reset({ ...supplierData });
     },
   });
+  const { handleRequests, isOnline } = useOnlineStatus();
 
   const totalSteps = 3;
 
@@ -199,7 +225,6 @@ function SupplierForm({ supplierId }: Readonly<SupplierFormProps>) {
     const stepFieldMap: Record<number, string[]> = {
       1: [
         "name",
-        "brandTradeName",
         "supplierType",
         "minimumOrderQuantity",
         "leadTime",
@@ -212,7 +237,6 @@ function SupplierForm({ supplierId }: Readonly<SupplierFormProps>) {
         "phoneNumber",
         "email",
         "physicalAddress",
-        "mailingAddress",
       ],
     };
     const fields = stepFieldMap[currentStep];
@@ -220,6 +244,16 @@ function SupplierForm({ supplierId }: Readonly<SupplierFormProps>) {
   }, [currentStep, form]);
 
   const handleSubmit = async (data: unknown) => {
+    if (!isOnline) {
+      handleRequests(
+        isEditMode && supplierId
+          ? API_ENDPOINTS.SUPPLIER.replace(":id", supplierId)
+          : API_ENDPOINTS.SUPPLIERS,
+        data,
+        { method: isEditMode ? "PATCH" : "POST", form, removeSearchParams },
+      );
+      return;
+    }
     setIsLoading(true);
     const oneSupplier = data as z.infer<typeof supplierSchema>;
     const res = isEditMode

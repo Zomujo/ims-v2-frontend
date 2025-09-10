@@ -1,5 +1,6 @@
 import { cn } from "@/lib/utils";
 import { Icon } from "@iconify/react/dist/iconify.js";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 type ReportAccordionType = {
@@ -28,6 +29,7 @@ export const ReportAccordion = ({
   const filteredReports = reportReference.filter((item) =>
     item.name.toLowerCase().includes(searchTerm.toLowerCase()),
   );
+  const router = useRouter();
 
   useEffect(() => {
     setShowDropdown(openAccordion);
@@ -85,7 +87,8 @@ export const ReportAccordion = ({
             filteredReports.map(({ name, id, quantity, total }, index) => (
               <div
                 key={id + index}
-                className="mt-[12px] flex rounded-xl border px-[18px] py-[23px]"
+                className="mt-[12px] flex cursor-pointer rounded-xl border px-[18px] py-[23px]"
+                onClick={() => router.push(`reports/${id}`)}
               >
                 <div className="w-[36%] font-medium text-[#415be6]">
                   <p className="truncate pr-4">{name}</p>

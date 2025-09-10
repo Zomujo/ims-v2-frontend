@@ -3,11 +3,13 @@ import {
   CrudAction,
   GenerateQueryParams,
   HandleRequestState,
+  WeekDay,
 } from "@/features/shared/types/utitls.types";
 import { clsx, type ClassValue } from "clsx";
 import { toast } from "sonner";
 import { twMerge } from "tailwind-merge";
 import { FieldValues, UseFormWatch } from "react-hook-form";
+import { addDays, format, isSameMonth } from "date-fns";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -70,6 +72,7 @@ export const generateUrlWithQueryParams = (
   baseUrl: string,
   params: GenerateQueryParams,
   arrayParams?: string,
+  routeParams?: Record<string, string>,
 ) => {
   const searchParams = new URLSearchParams();
 
@@ -84,7 +87,15 @@ export const generateUrlWithQueryParams = (
       searchParams.append(key, value);
     });
   }
-  return baseUrl + "?" + searchParams.toString();
+  let url = baseUrl;
+
+  if (routeParams) {
+    Object.entries(routeParams).forEach(([key, value]) => {
+      url = url.replace(`:${key}`, value);
+    });
+  }
+
+  return url + "?" + searchParams.toString();
 };
 
 export const updateRouteHashFragment = (fragment: string | null) => {
@@ -288,3 +299,53 @@ export const camelCaseToSentence = (camelCaseStr: string): string => {
     .toLowerCase()
     .replace(/^./, (str) => str.toUpperCase());
 };
+
+export const getAgeFromDate = (date: string | Date): number => {
+  const year = new Date(date).getFullYear();
+  const currentYear = new Date().getFullYear();
+  return Math.abs(currentYear - year);
+};
+
+/**
+ * Generates an array of 8 consecutive days starting from a given date.
+ *
+ * Each day includes the date object, a short weekday name, and a flag
+ * indicating whether the date is part of the same month as the selected date.
+ *
+ * @param {Date} currentWeekStart - The starting date of the week (usually a Sunday or Monday).
+ * @param {Date} selectedDate - The date used to determine the current month for comparison.
+ * @returns {WeekDay[]} Array of day objects representing the week.
+ */
+
+export function generateWeekDays(
+  currentWeekStart: Date,
+  selectedDate: Date,
+): WeekDay[] {
+  const days: WeekDay[] = [];
+
+  for (let i = 0; i < 8; i++) {
+    const day = addDays(currentWeekStart, i);
+    days.push({
+      date: day,
+      day: format(day, "EEE"),
+      isCurrentMonth: isSameMonth(day, selectedDate),
+    });
+  }
+  return days;
+}
+
+/*
+ * Checks if the difference between the current time and the given date stamp exceeds the specified time limit in hours.
+ * @param dateStamp - The date to compare against the current time.
+ * @param timeLimitInHours - The time limit in hours to check the difference against. Defaults to 24 hours.
+ * @returns `true` if the difference exceeds the time limit, otherwise `false`.
+ */
+export function timeDifferenceChecker(
+  dateStamp: Date | string,
+  timeLimitInHours = 24,
+): boolean {
+  const timeToCheck = new Date(dateStamp).getTime();
+  const currentTime = new Date().getTime();
+  const hoursDifference = Math.abs(currentTime - timeToCheck) / 36e5;
+  return hoursDifference > timeLimitInHours;
+}

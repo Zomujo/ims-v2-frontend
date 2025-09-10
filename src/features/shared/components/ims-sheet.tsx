@@ -41,6 +41,7 @@ export function ImsSheet({
     <Sheet modal open={open} onOpenChange={onOpenChange}>
       {trigger && <SheetTrigger asChild>{trigger}</SheetTrigger>}
       <SheetContent
+        onPointerDownOutside={($event) => $event.preventDefault()}
         className={cn("inset-y-2 h-[98%] rounded-2xl md:max-w-md", className)}
         side={direction}
       >

@@ -8,7 +8,7 @@ import {
   ChartTooltip,
 } from "../ui/chart";
 import { DATE_RANGE } from "../layout/search-with-filter/search-with-filter.data";
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import {
   getLeastSellingItems,
   getTopSellingItems,
@@ -18,13 +18,13 @@ import { SellingItemsResponse } from "../shared/types/dashboard.types";
 import DashboardBaseCard from "@features/dashboard/dashboardBaseCard";
 import { Skeleton } from "../ui/skeleton";
 import Link from "next/link";
+import useFetchData from "@features/shared/hooks/use-fetch-data";
+import { CacheKey } from "@/lib/cache/cache-data";
 
 type TopLeastChart = {
   items: string;
   desktop: number;
 };
-const topChartData: TopLeastChart[] = [];
-const leastChartData: TopLeastChart[] = [];
 
 const topSellingChartConfig = {
   desktop: {
@@ -36,50 +36,54 @@ const topSellingChartConfig = {
 export default function DashboardSellingItems() {
   const [selectedTopSellingDateRange, setSelectedTopSellingDateRange] =
     useState<DATE_RANGE>(DATE_RANGE.THIS_MONTH);
-  const [isLoading, setIsLoading] = useState(false);
 
   const [selectedLeastSellingDateRange, setSelectedLeastSellingDateRange] =
     useState<DATE_RANGE>(DATE_RANGE.THIS_MONTH);
-  const [isLeastItemsChartLoading, setIsLeastItemsChartLoading] =
-    useState(false);
 
-  useEffect(() => {
-    async function fetchTopSellingItems() {
-      setIsLoading(true);
-      const {
-        items: { names, quantities },
-      } = (await getTopSellingItems({
+  const { data: topSellingData, loading: isLoading } = useFetchData<
+    SellingItemsResponse | undefined
+  >({
+    fetchFn: () =>
+      getTopSellingItems({
         dateRange: selectedTopSellingDateRange as DateRangeQueryOptions,
-      })) as SellingItemsResponse;
-      topChartData.length = 0;
-      if (names && quantities) {
-        names.forEach((name, index) =>
-          topChartData.push({ items: name, desktop: quantities[index] }),
-        );
-      }
-      setIsLoading(false);
-    }
-    void fetchTopSellingItems();
-  }, [selectedTopSellingDateRange]);
+      }),
+    cacheKey: CacheKey.DashboardTopSellingItems,
+    deps: [selectedTopSellingDateRange],
+  });
 
-  useEffect(() => {
-    async function fetchLeastSellingItems() {
-      setIsLeastItemsChartLoading(true);
-      const {
-        items: { names, quantities },
-      } = (await getLeastSellingItems({
-        dateRange: selectedLeastSellingDateRange as DateRangeQueryOptions,
-      })) as SellingItemsResponse;
-      leastChartData.length = 0;
-      if (names && quantities) {
-        names.forEach((name, index) =>
-          leastChartData.push({ items: name, desktop: quantities[index] }),
-        );
-      }
-      setIsLeastItemsChartLoading(false);
+  const topChartData = useMemo(() => {
+    const data: TopLeastChart[] = [];
+    const names = topSellingData?.items?.names;
+    const quantities = topSellingData?.items?.quantities;
+    if (names && quantities) {
+      names.forEach((name, index) =>
+        data.push({ items: name, desktop: quantities[index] }),
+      );
     }
-    void fetchLeastSellingItems();
-  }, [selectedLeastSellingDateRange]);
+    return data;
+  }, [topSellingData]);
+
+  const { data: leastSellingData, loading: isLeastItemsChartLoading } =
+    useFetchData<SellingItemsResponse | undefined>({
+      fetchFn: () =>
+        getLeastSellingItems({
+          dateRange: selectedLeastSellingDateRange as DateRangeQueryOptions,
+        }),
+      cacheKey: CacheKey.DashboardLeastSellingItems,
+      deps: [selectedLeastSellingDateRange],
+    });
+
+  const leastChartData = useMemo(() => {
+    const data: TopLeastChart[] = [];
+    const names = leastSellingData?.items?.names;
+    const quantities = leastSellingData?.items?.quantities;
+    if (names && quantities) {
+      names.forEach((name, index) =>
+        data.push({ items: name, desktop: quantities[index] }),
+      );
+    }
+    return data;
+  }, [leastSellingData]);
 
   return (
     <div className="flex flex-col justify-between overflow-y-auto xl:flex-row">

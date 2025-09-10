@@ -7,12 +7,15 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/features/ui/chart";
-import React, { useEffect, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { DATE_RANGE } from "@features/layout/search-with-filter/search-with-filter.data";
 import { getSalesTrend } from "@features/shared/actions/dashboard.actions";
 import { DateRangeQueryOptions } from "@features/shared/types/utitls.types";
 import { Skeleton } from "../ui/skeleton";
 import DashboardBaseCard from "@features/dashboard/dashboardBaseCard";
+import useFetchData from "@features/shared/hooks/use-fetch-data";
+import { SalesTrend } from "@features/shared/types/dashboard.types";
+import { CacheKey } from "@/lib/cache/cache-data";
 
 const chartConfig = {
   desktop: {
@@ -30,36 +33,37 @@ export default function DashboardSalesTrend() {
   const [selectedDateRange, setSelectedDateRange] = useState<DATE_RANGE>(
     DATE_RANGE.THIS_MONTH,
   );
-  const [chartData, setChartData] = useState<ChartData[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  useEffect(() => {
-    const fetchSalesTrend = async () => {
-      setIsLoading(true);
-      const salesTrendResponse = await getSalesTrend({
+  const { data: salesTrendResponse, loading: isLoading } = useFetchData<
+    SalesTrend | undefined
+  >({
+    fetchFn: () =>
+      getSalesTrend({
         dateRange: selectedDateRange as DateRangeQueryOptions,
-      });
-      if (salesTrendResponse) {
-        const { dates, quantities } = salesTrendResponse.trend;
-        if (dates && quantities) {
-          const convertedData = dates.map((date, index) => {
-            const formattedDate = new Date(date).toLocaleDateString("en-US", {
-              month: "short",
-              day: "numeric",
-            });
-            return {
-              date: formattedDate,
-              quantity: quantities[index],
-            };
-          });
+      }),
+    cacheKey: CacheKey.DashboardSalesTrend,
+    deps: [selectedDateRange],
+  });
 
-          setChartData(convertedData);
-        }
+  const chartData = useMemo(() => {
+    const data: ChartData[] = [];
+    if (salesTrendResponse) {
+      const { dates, quantities } = salesTrendResponse.trend;
+      if (dates && quantities) {
+        return dates.map((date, index) => {
+          const formattedDate = new Date(date).toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+          });
+          return {
+            date: formattedDate,
+            quantity: quantities[index],
+          };
+        });
       }
-      setIsLoading(false);
-    };
-    void fetchSalesTrend();
-  }, [selectedDateRange]);
+    }
+    return data;
+  }, [salesTrendResponse]);
 
   return (
     <DashboardBaseCard

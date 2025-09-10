@@ -31,3 +31,10 @@ export const newUserSettingsSchema = z.object({
   permissions: z.array(z.string()),
   id: z.string().optional(),
 });
+
+export const settingsExpirySchema = z.object({
+  intervalQuantity: z
+    .number({ required_error: "Required" })
+    .min(1, "Must be greater than 0"),
+  intervalUnit: z.enum(["days", "weeks", "months"]),
+});

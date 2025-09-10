@@ -1,3 +1,4 @@
+import { ViewMode } from "@/features/shared/types/action.types";
 import { PermissionModules } from "@/features/shared/types/auth-action.types";
 
 export const API_ENDPOINTS_OLD = {
@@ -32,6 +33,7 @@ export const API_ENDPOINTS_OLD = {
   SALES: "/sales",
   SALES_ITEMS: "/sales/items",
   PATIENTS: "/patients",
+  SETTINGS_EXPIRY: "/user/settings/expiry",
 };
 
 export const AUTH_PAGE_ROUTES = {
@@ -58,9 +60,12 @@ export const PAGE_ROUTES = {
   ITEMS: {
     VIEW: "/items",
     CREATE: "?state=create",
-    BATCHES: "/items/:itemId/batches",
+    BATCHES: "/items/batches",
   },
-  ITEM_BATCHES: "/batches",
+  ITEM_BATCHES: {
+    VIEW: "/items/batches",
+    CREATE: "?state=create",
+  },
   SUPPLIERS: {
     VIEW: "/suppliers",
     CREATE: "?state=create",
@@ -85,6 +90,7 @@ export const PAGE_ROUTES = {
     CREATE: "?state=create",
   },
   REPORTS: "/reports",
+  REPORTS_SALES_LEVEL: "/reports/earnings-overview",
   AUDIT_LOGS: "/audit-logs",
 };
 
@@ -225,3 +231,47 @@ export const stockAdjustmentReasons = [
     value: "Stock Regularization (Initial Balancing)",
   },
 ];
+
+export const calendarOption: { mode: ViewMode; label: string }[] = [
+  {
+    mode: "day",
+    label: "Day",
+  },
+  {
+    mode: "this_week",
+    label: "This week",
+  },
+  {
+    mode: "month",
+    label: "Month",
+  },
+  {
+    mode: "last_three_months",
+    label: "Last Three Months",
+  },
+  {
+    mode: "this_year",
+    label: "This year",
+  },
+] as const;
+
+export const months = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+
+export const BACK_BUTTON = {
+  [PAGE_ROUTES.ITEM_BATCHES.VIEW]: {
+    route: PAGE_ROUTES.ITEMS.VIEW,
+  },
+};

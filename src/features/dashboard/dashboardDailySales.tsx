@@ -1,5 +1,5 @@
 "use client";
-import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
+import React, { Dispatch, SetStateAction, useMemo, useState } from "react";
 import DashboardBaseCard from "./dashboardBaseCard";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "../ui/chart";
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
@@ -8,13 +8,10 @@ import { DailySalesResponse } from "../shared/types/dashboard.types";
 import { Skeleton } from "../ui/skeleton";
 import { DatePicker } from "@features/ui/date-picker";
 import { format } from "date-fns";
+import useFetchData from "@features/shared/hooks/use-fetch-data";
+import { CacheKey } from "@/lib/cache/cache-data";
 
 export const DashboardDailySales = () => {
-  const [chartData, setChartData] = useState<
-    { hour: string; startDate: number; endDate: number }[]
-  >([]);
-
-  const [isSalesLoading, setSalesLoading] = useState(false);
   const [startDate, setStartDate] = useState<Date>(() => {
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
@@ -22,27 +19,39 @@ export const DashboardDailySales = () => {
   });
   const [endDate, setEndDate] = useState<Date>(new Date());
 
-  useEffect(() => {
-    async function fetchDailySales() {
-      setSalesLoading(true);
-      chartData.length = 0;
-      const start = startDate.toISOString();
-      const end = endDate.toISOString();
-      const { sales } = (await getDailySales({
-        startDate: start,
-        endDate: end,
-      })) as DailySalesResponse;
+  const { data: salesResponse, loading: isSalesLoading } = useFetchData<
+    DailySalesResponse | undefined
+  >({
+    fetchFn: () =>
+      getDailySales({
+        startDate: startDate.toISOString(),
+        endDate: endDate.toISOString(),
+      }),
+    cacheKey: CacheKey.DashboardDailySales,
+    deps: [startDate, endDate],
+  });
 
-      const salesChartData = (sales.hours ?? []).map((hour, index) => ({
+  const chartData = useMemo(() => {
+    if (!salesResponse) return [];
+
+    const start = startDate.toISOString();
+    const end = endDate.toISOString();
+    const { sales } = salesResponse;
+
+    const startDateKey = start.split("T")[0];
+    const endDateKey = end.split("T")[0];
+
+    if (sales && sales.hours && sales[startDateKey] && sales[endDateKey]) {
+      return sales.hours.map((hour, index) => ({
         hour,
-        startDate: sales[start.split("T")[0]][index],
-        endDate: sales[end.split("T")[0]][index],
+        startDate: sales[startDateKey][index],
+        endDate: sales[endDateKey][index],
       }));
-      setChartData(salesChartData);
-      setSalesLoading(false);
     }
-    void fetchDailySales();
-  }, [startDate, endDate]);
+
+    return [];
+  }, [salesResponse, startDate, endDate]);
+
   return (
     <div>
       <DashboardBaseCard

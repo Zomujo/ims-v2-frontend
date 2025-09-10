@@ -18,6 +18,9 @@ import {
 } from "@/features/ui/table";
 import { DynamicPagination } from "./pagination";
 import { Skeleton } from "@/features/ui/skeleton";
+import { cn } from "@/lib/utils";
+import { useMemo, useState } from "react";
+import { useGlobalNotifications } from "@features/notifications/notifications-context";
 
 // Define props for the DataTable component
 type DataTableProps<TData, TValue> = {
@@ -33,8 +36,18 @@ export function IMSDataTable<TData, TValue>({
   totalPages,
   isLoading,
 }: Readonly<DataTableProps<TData, TValue>>) {
+  const [currentPage, setCurrentPage] = useState(1);
+  const { isConnected } = useGlobalNotifications();
+  const computedData = useMemo(() => {
+    if (!isConnected) {
+      const startIndex = (currentPage - 1) * 10;
+      const endIndex = startIndex + 10;
+      return data.slice(startIndex, endIndex);
+    }
+    return data;
+  }, [data, currentPage, isConnected]);
   const table = useReactTable({
-    data,
+    data: computedData,
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
@@ -87,9 +100,13 @@ export function IMSDataTable<TData, TValue>({
                 data-state={row.getIsSelected() && "selected"}
                 className="h-18 rounded-xl py-5"
               >
-                {row.getVisibleCells().map((cell) => (
+                {row.getVisibleCells().map((cell, index, array) => (
                   <TableCell
-                    className="border-y first:rounded-l-2xl first:border-l first:pl-4 last:rounded-r-2xl last:border-r"
+                    className={cn(
+                      index === array.length - 1 &&
+                        "sticky right-0 z-10 bg-white",
+                      "border-y first:rounded-l-2xl first:border-l first:pl-4 last:rounded-r-2xl last:border-r",
+                    )}
                     key={cell.id}
                   >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -107,7 +124,12 @@ export function IMSDataTable<TData, TValue>({
         </TableBody>
       </Table>
       {!!totalPages && (
-        <DynamicPagination className="pb-40 md:pb-28" totalPages={totalPages} />
+        <DynamicPagination
+          className="pb-40 md:pb-28"
+          totalPages={totalPages}
+          setPage={(page) => setCurrentPage(page)}
+          clientPage={currentPage}
+        />
       )}
     </div>
   );

@@ -13,10 +13,13 @@ export const createAccountSchema = z
       .string()
       .min(1, { message: "Please enter your fullname" })
       .min(3, { message: "Full name should not be less than 3 characters" }),
-    email: z
-      .string()
-      .min(1, { message: "Please enter your email address" })
-      .email({ message: "Please enter a valid email address" }),
+    email: z.preprocess(
+      (val) => (val === "" ? undefined : val),
+      z
+        .string()
+        .email({ message: "Please enter a valid email address" })
+        .optional(),
+    ),
     password: z.string().min(1, { message: "Please enter your password" }),
     confirmPassword: z
       .string()
@@ -41,10 +44,10 @@ export const createAccountSchema = z
   });
 
 export const forgotPasswordSchema = z.object({
-  email: z
+  username: z.string().min(1, { message: "Please enter your username" }),
+  contact: z
     .string()
-    .min(1, { message: "Please enter your email address" })
-    .email({ message: "Please enter a valid email address" }),
+    .min(1, { message: "Please enter your email or phone number" }),
 });
 
 export const verifyCodeSchema = z.object({

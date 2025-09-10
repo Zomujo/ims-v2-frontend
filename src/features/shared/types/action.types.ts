@@ -255,7 +255,7 @@ export type ExpiryItemsDto = {
 
 export type CreateItemDto = {
   name: string;
-  brandName: string;
+  brandName?: string;
   costPrice?: number;
   sellingPrice?: number;
   dosageForm: string;
@@ -465,9 +465,11 @@ export type UpdateReportDto = {
 };
 
 export type GetSalesItemsDto = {
+  id: string;
   batchId: string;
   batchNumber: string;
   validity: string;
+  createdAt?: string;
   quantity: number;
   item: {
     name: string;
@@ -791,16 +793,18 @@ export type HealthCheckResponse = {
   >;
 };
 
+export interface Pagination<T> {
+  rows: T[];
+  total: number;
+  pageSize: number;
+  page: number;
+  nextPage: number | null;
+  prevPage: number | null;
+  totalPages: number;
+}
+
 export type PaginatedResponse<T> = {
-  data: {
-    rows: T[];
-    total: number;
-    pageSize: number;
-    page: number;
-    nextPage: number | null;
-    prevPage: number | null;
-    totalPages: number;
-  };
+  data: Pagination<T>;
   statusCode: number;
   message: string;
 };
@@ -829,6 +833,8 @@ export type ReportInfoDto = {
   item: Item;
   validity: string;
   quantity: string;
+  createdAt?: string;
+  id: string;
 };
 
 export type PeriodicSalesDto = {
@@ -845,4 +851,59 @@ export type TopSellingDto = {
   item: Item;
   totalQuantity: number;
   totalSales: number;
+};
+
+export type GetReportDetailsDto = {
+  date: string;
+  items: string;
+  amount: string;
+  quantity: string;
+  recordedBy: string;
+  status: string;
+};
+
+export type ViewMode =
+  | "day"
+  | "month"
+  | "this_year"
+  | "this_week"
+  | "last_three_months";
+
+export type CardData = {
+  title: string;
+  value: number;
+  percentage: number;
+  type: string;
+  isNegative: boolean;
+};
+
+export type SalesReportInfo = {
+  analytics: {
+    totalItems: TotalItems;
+    totalRevenue: TotalItems;
+    totalSales: number;
+  };
+  rows: SalesDto[];
+};
+
+type TotalItems = {
+  data: number;
+  changeType: string;
+  percentageChange: number;
+};
+
+export type SalesDto = {
+  id: string;
+  createdAt: Date;
+  createdBy: {
+    id: string;
+    fullName: string;
+  };
+  saleItems: {
+    itemName: string;
+    totalQuantity: number;
+    remainderItems: number;
+  };
+  status: string;
+  total: number;
 };

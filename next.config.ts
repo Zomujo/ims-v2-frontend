@@ -1,15 +1,30 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { NextConfig } from "next";
 
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const withPWA = require("@ducanh2912/next-pwa").default({
-  dest: "public",
-});
+const {
+  PHASE_DEVELOPMENT_SERVER,
+  PHASE_PRODUCTION_BUILD,
+} = require("next/constants");
 
-const nextConfig = {
-  eslint: {
-    dirs: ["src"],
-    ignoreDuringBuilds: true,
-  },
-} satisfies NextConfig;
+module.exports = async (phase: any) => {
+  // Your current or future configuration
 
-module.exports = withPWA(nextConfig);
+  const nextConfig = {
+    eslint: {
+      dirs: ["src"],
+      ignoreDuringBuilds: true,
+    },
+  } satisfies NextConfig;
+
+  if (phase === PHASE_DEVELOPMENT_SERVER || phase === PHASE_PRODUCTION_BUILD) {
+    const withSerwist = (await import("@serwist/next")).default({
+      swSrc: "public/service-worker/sw.ts",
+      swDest: "public/sw.js",
+      reloadOnOnline: true,
+    });
+    return withSerwist(nextConfig);
+  }
+
+  return nextConfig;
+};

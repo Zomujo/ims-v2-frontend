@@ -17,18 +17,17 @@ import { ImsButton } from "@features/shared/components/ims-button";
 import { exportFile } from "@features/shared/actions/export.actions";
 import { ImsPopover } from "@features/shared/components/ims-popover";
 import { ExportType } from "@features/shared/types/utitls.types";
+import { useGlobalNotifications } from "@features/notifications/notifications-context";
 
 export default function SearchWithFilter() {
   const [exporting, setExporting] = useState<ExportType | null>(null);
   const params = useParams();
-  const isSlugs = !!params.slugs;
   const pathName = usePathname();
   const { hasActionPermission, role } = useSessionData();
   const searchParams = useSearchParams();
-  const btnData =
-    actionButtonData[isSlugs ? PAGE_ROUTES.ITEM_BATCHES : pathName];
-  const exportBtnData =
-    exportActionButtonData[isSlugs ? PAGE_ROUTES.ITEM_BATCHES : pathName];
+  const btnData = actionButtonData[pathName];
+  const exportBtnData = exportActionButtonData[pathName];
+  const { isConnected } = useGlobalNotifications();
 
   const checkRole = useCallback(
     (roles: UserRole[] | undefined) => {
@@ -62,7 +61,7 @@ export default function SearchWithFilter() {
           .split("T")
           .join("_")
           .slice(0, 19);
-        link.download = `Stealth_${exportBtnData.fileName}_${timestamp}.${exportType}`;
+        link.download = `Stealth_${searchParams.get("exportFileName") || exportBtnData.fileName}_${timestamp}.${exportType}`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -81,10 +80,12 @@ export default function SearchWithFilter() {
     <div className="flex items-center gap-4 px-4 pt-1.5 max-xl:flex-wrap">
       {!btnData.hideSearch && <ImsSearchBar />}
       <div className="flex w-full flex-wrap justify-between gap-4">
-        <ImsFilters>
-          <FilterForms />
-        </ImsFilters>
-        <div className="flex items-center gap-2">
+        {!btnData.hideFilters && (
+          <ImsFilters>
+            <FilterForms />
+          </ImsFilters>
+        )}
+        <div className="z-50 ml-auto flex items-center gap-2">
           {btnData.href &&
             !pathName.includes(PAGE_ROUTES.REPORTS) &&
             hasActionPermission(btnData.permission ?? "") &&
@@ -101,7 +102,10 @@ export default function SearchWithFilter() {
             <ImsPopover
               triggerProps={{ asChild: true }}
               trigger={
-                <ImsButton startIcon={<Icon icon={exportBtnData.icon} />}>
+                <ImsButton
+                  disabled={!isConnected}
+                  startIcon={<Icon icon={exportBtnData.icon} />}
+                >
                   {exportBtnData.label}
                 </ImsButton>
               }

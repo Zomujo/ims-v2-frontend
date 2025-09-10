@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import { DATE_RANGE } from "@features/layout/search-with-filter/search-with-filter.data";
 import DashboardBaseCard from "@features/dashboard/dashboardBaseCard";
 import { getSaleInsuranceMarkup } from "@features/shared/actions/dashboard.actions";
@@ -11,6 +11,9 @@ import { Bar, BarChart, CartesianGrid, LabelList, XAxis } from "recharts";
 import { DateRangeQueryOptions } from "@features/shared/types/utitls.types";
 import { formatValue } from "@/lib/utils";
 import { Skeleton } from "@features/ui/skeleton";
+import useFetchData from "@features/shared/hooks/use-fetch-data";
+import { SalesMarkupResponse } from "@features/shared/types/dashboard.types";
+import { CacheKey } from "@/lib/cache/cache-data";
 
 interface ChartData {
   name: string;
@@ -18,43 +21,43 @@ interface ChartData {
   total: number;
 }
 export default function DashboardSalesMarkup() {
-  const [chartData, setChartData] = useState<ChartData[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [selectedDateRange, setSelectedDateRange] = useState<DATE_RANGE>(
     DATE_RANGE.THIS_MONTH,
   );
 
-  useEffect(() => {
-    const fetchSalesMarkup = async () => {
-      setIsLoading(true);
-      const response = await getSaleInsuranceMarkup({
+  const { data: response, loading: isLoading } = useFetchData<
+    SalesMarkupResponse | undefined
+  >({
+    fetchFn: () =>
+      getSaleInsuranceMarkup({
         dateRange: selectedDateRange as DateRangeQueryOptions,
-      });
+      }),
+    cacheKey: CacheKey.DashboardSalesMarkup,
+    deps: [selectedDateRange],
+  });
 
-      if (!response) {
-        setIsLoading(false);
-        return;
-      }
-      const { insured, notInsured } = response;
+  const chartData = useMemo<ChartData[]>(() => {
+    if (!response) {
+      return [];
+    }
+    const { insured, notInsured } = response;
 
-      if (insured && notInsured) {
-        setChartData([
-          {
-            name: "Insured Sales",
-            quantity: insured.quantity,
-            total: insured.total,
-          },
-          {
-            name: "Not Insured Sales",
-            quantity: notInsured.quantity,
-            total: notInsured.total,
-          },
-        ]);
-      }
-      setIsLoading(false);
-    };
-    void fetchSalesMarkup();
-  }, [selectedDateRange]);
+    if (insured && notInsured) {
+      return [
+        {
+          name: "Insured Sales",
+          quantity: insured.quantity,
+          total: insured.total,
+        },
+        {
+          name: "Not Insured Sales",
+          quantity: notInsured.quantity,
+          total: notInsured.total,
+        },
+      ];
+    }
+    return [];
+  }, [response]);
 
   return (
     <DashboardBaseCard

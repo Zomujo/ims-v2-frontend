@@ -17,12 +17,12 @@ export const imsApiWithAuth = async <T>({
   if (!session?.user?.tokens) {
     redirect(AUTH_PAGE_ROUTES.LOG_IN);
   }
-  const accessToken = session?.user?.tokens?.accessToken;
+  const userId = session?.user?.id;
   const response = await fetchApi({
     url,
     method,
     body,
-    headers: { ...headers, Authorization: `Bearer ${accessToken}` },
+    headers: { ...headers, Authorization: `Bearer ${userId}` },
     cache,
     next,
   });
@@ -41,12 +41,12 @@ export const imsApiWithAuthBlob = async ({
   if (!session?.user?.tokens) {
     redirect(AUTH_PAGE_ROUTES.LOG_IN);
   }
-  const accessToken = session?.user?.tokens?.accessToken;
+  const userId = session?.user?.id;
   const response = await fetchApi({
     url,
     method,
     body,
-    headers: { ...headers, Authorization: `Bearer ${accessToken}` },
+    headers: { ...headers, Authorization: `Bearer ${userId}` },
     cache,
     next,
   });
@@ -61,8 +61,23 @@ export const imsApiWithoutAuth = async <T>({
   next,
   cache,
 }: FetchApi) => {
-  const response = await fetchApi({ url, method, body, headers, cache, next });
-  return fetchJson<T>(response);
+  try {
+    const response = await fetchApi({
+      url,
+      method,
+      body,
+      headers,
+      cache,
+      next,
+    });
+    return fetchJson<T>(response);
+  } catch (e) {
+    console.error("IMS API Error:", e);
+    return {
+      data: null,
+      error: e instanceof Error ? e.message : "An unknown error occurred",
+    } as T;
+  }
 };
 
 const fetchJson = async <T>(response: Response): Promise<T> => {

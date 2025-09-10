@@ -1,10 +1,9 @@
-import { SettingsCreateButton } from "@/features/settings/settings-component-clinet";
+import { SettingsCreateButton } from "@/features/settings/settings-component-client";
 import { UserAvatarGeneralSettings } from "@/features/settings/settings-component-server";
 import { DepartmentManagementSettings } from "@/features/settings/settings-department";
 import { GeneralSettingsAccountForm } from "@/features/settings/settings-general-form";
 import SettingsSecurityForm from "@/features/settings/settings-security-form";
 import ManageUsersSettings from "@/features/settings/settings-users";
-import { authUserProfileAction } from "@/features/shared/actions/auth.action";
 import {
   getDepartmentsAction,
   getRolesAction,
@@ -20,7 +19,8 @@ import {
   Department,
   UserRoles,
 } from "@features/shared/types/settings-action.types";
-import SettingsNotification from "@features/settings/settings-notification";
+import { Suspense } from "react";
+import dynamic from "next/dynamic";
 
 type SettingPages = {
   params: Promise<{ page: string }>;
@@ -28,6 +28,21 @@ type SettingPages = {
 };
 
 const pageWithDrawerUI = ["departments", "users"];
+
+const DynamicGeneralSettings = dynamic(() => Promise.resolve(GeneralSettings));
+const DynamicSecuritySettings = dynamic(() =>
+  Promise.resolve(SecuritySettings),
+);
+const DynamicDepartmentSettings = dynamic(() =>
+  Promise.resolve(DepartmentSettings),
+);
+const DynamicUsersSettings = dynamic(() => Promise.resolve(UsersSettings));
+const DynamicSettingsNotification = dynamic(
+  () => import("@features/settings/settings-notification"),
+);
+const DynamicSettingsExpiry = dynamic(
+  () => import("@/features/settings/settings-expiry"),
+);
 
 export default async function SettingsPages({
   params,
@@ -43,7 +58,7 @@ export default async function SettingsPages({
     <section className="relative w-full overflow-y-auto rounded-2xl bg-white p-8">
       <PermissionProvider
         permission={page}
-        freePass={["general", "security", "notifications"]}
+        freePass={["general", "security", "notifications", "expiry"]}
       >
         <SettingsSearchWithFilter />
         {pageWithDrawerUI.includes(page) && hasPermission && (
@@ -52,18 +67,21 @@ export default async function SettingsPages({
             label={createBtnLabel[page as keyof typeof createBtnLabel]}
           />
         )}
-        <SettingsPage />
+        <Suspense fallback={<div>Loading...</div>}>
+          <SettingsPage />
+        </Suspense>
       </PermissionProvider>
     </section>
   );
 }
 
 const renderSettingsPage = {
-  general: GeneralSettings,
-  security: SecuritySettings,
-  departments: DepartmentSettings,
-  users: UsersSettings,
-  notifications: SettingsNotification,
+  general: DynamicGeneralSettings,
+  security: DynamicSecuritySettings,
+  departments: DynamicDepartmentSettings,
+  users: DynamicUsersSettings,
+  notifications: DynamicSettingsNotification,
+  expiry: DynamicSettingsExpiry,
   default: () => <div>Page not found</div>,
 } as const;
 const createBtnLabel = {
@@ -72,21 +90,10 @@ const createBtnLabel = {
 } as const;
 
 async function GeneralSettings() {
-  const imsUserProfile = await authUserProfileAction();
-
   return (
     <div className="flex flex-col gap-y-14">
-      <UserAvatarGeneralSettings
-        fullName={imsUserProfile.fullName ?? ""}
-        imageUrl={imsUserProfile.imageUrl ?? ""}
-        role={imsUserProfile.role ?? ""}
-        email={imsUserProfile?.email ?? ""}
-      />
-      <GeneralSettingsAccountForm
-        fullName={imsUserProfile.fullName ?? ""}
-        email={imsUserProfile?.email ?? ""}
-        phoneNumber={imsUserProfile.phoneNumber ?? ""}
-      />
+      <UserAvatarGeneralSettings />
+      <GeneralSettingsAccountForm />
     </div>
   );
 }

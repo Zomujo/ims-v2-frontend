@@ -11,22 +11,37 @@ import {
 import { cn } from "@/lib/utils";
 
 import { useRouter, useSearchParams } from "next/navigation";
+import { useGlobalNotifications } from "@features/notifications/notifications-context";
+import { useMemo } from "react";
 
 type DynamicPaginationProps = {
   totalPages: number;
   className?: string;
+  setPage: (page: number) => void;
+  clientPage?: number;
 };
 
 export function DynamicPagination({
   totalPages,
   className,
+  setPage,
+  clientPage,
 }: Readonly<DynamicPaginationProps>) {
   const searchParams = useSearchParams();
   const activePage = searchParams.get("page")
     ? +(searchParams.get("page") as string)
     : 1;
+  const { isConnected } = useGlobalNotifications();
 
-  const currentPage = Math.max(1, Math.min(activePage, totalPages));
+  const currentPage = useMemo(
+    () =>
+      isConnected
+        ? Math.max(1, Math.min(activePage, totalPages))
+        : clientPage
+          ? clientPage
+          : 1,
+    [isConnected, clientPage, activePage, totalPages],
+  );
 
   const router = useRouter();
 
@@ -62,10 +77,14 @@ export function DynamicPagination({
   };
 
   const onPageChange = (newPage: number) => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.set("page", newPage.toString());
+    if (isConnected) {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set("page", newPage.toString());
 
-    router.push(`?${params.toString()}`, { scroll: false });
+      router.push(`?${params.toString()}`, { scroll: false });
+    } else {
+      setPage(newPage);
+    }
   };
 
   const pageNumbers = getPageNumbers();

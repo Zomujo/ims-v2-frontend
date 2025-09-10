@@ -109,11 +109,17 @@ export async function getSalesReport() {
   return await imsApiWithAuth<PaginatedResponse<GetSaleDto>>(fetchOptions);
 }
 
-export async function getCategorizedReport(category: string, id: string) {
+export async function getCategorizedReport(
+  params?: GenerateQueryParams,
+  arraySearch?: string,
+  routeParams?: Record<string, string>,
+) {
   const fetchOptions: FetchApi = {
-    url: API_ENDPOINTS.CATEGORIZED_REPORT.replace(":id", id).replace(
-      ":category",
-      category,
+    url: generateUrlWithQueryParams(
+      API_ENDPOINTS.CATEGORIZED_REPORT,
+      params ?? {},
+      arraySearch,
+      routeParams,
     ),
     method: "GET",
     headers: {},

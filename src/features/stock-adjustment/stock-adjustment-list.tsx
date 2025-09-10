@@ -1,39 +1,36 @@
 "use client";
-import { UI_STATE } from "@/lib/constant";
+
 import { handleRequestState } from "@/lib/utils";
-import { useEffect } from "react";
-import { z } from "zod";
+import { lazy, Suspense } from "react";
 import {
-  createStockAdjustment,
   deleteStockAdjustment,
   getStockAdjustments,
-  updateStockAdjustment,
 } from "../shared/actions/stock-adjustments.actions";
 import CrudPage from "../shared/components/crud-page";
-import { ImsButton } from "../shared/components/ims-button";
-import { ImsForm } from "../shared/components/ims-forms";
 import useFetchData from "../shared/hooks/use-fetch-data";
-import useHookForm from "../shared/hooks/use-hook-form";
-import useImsSearchParams from "../shared/hooks/use-ims-search-params";
 import usePageCRUD from "../shared/hooks/use-page-crud";
-import { IdData, OneStockAdjustment } from "../shared/types/action.types";
 import { CRUDACTION } from "../shared/types/utitls.types";
 import { ScrollArea } from "../ui/scroll-area";
-import { StockAdjustmentFormInputs } from "./stock-adjustment-component-client";
 import { StockAdjustmentProvider } from "./stock-adjustment.context";
 import { stockAdjustmentTableColumns } from "./stock-adjustment.data";
-import { stockAdjustmentSchema } from "./stock-adjustment.schemas";
 import { useSessionData } from "@/hooks/useSessionData";
 import { PermissionModules } from "@features/shared/types/auth-action.types";
+import { CacheKey } from "@/lib/cache/cache-data";
+import { useOnlineStatus } from "@features/shared/hooks/useOnlineStatus";
+import { API_ENDPOINTS } from "@/lib/api-constants";
+import { useItems } from "@/hooks/useItems";
 
-type StockAdjustmentListProps = {
-  items: IdData[];
-};
-export default function StockAdjustmentList({
-  items,
-}: Readonly<StockAdjustmentListProps>) {
+const StockAdjustmentForm = lazy(() => import("./stock-adjustment-form"));
+
+export default function StockAdjustmentList() {
   const { canWrite, canDelete } = useSessionData();
-  const { data, loading } = useFetchData({ fetchFn: getStockAdjustments });
+  const { handleRequests, isOnline } = useOnlineStatus();
+  const { items } = useItems();
+  const { data, loading } = useFetchData({
+    fetchFn: getStockAdjustments,
+    cacheKey: CacheKey.StockAdjustmentList,
+    searchField: "reason",
+  });
   const stockAdjustments = data?.rows ?? [];
   const {
     state,
@@ -48,6 +45,14 @@ export default function StockAdjustmentList({
 
   const handleDelete = async () => {
     const id = getId(CRUDACTION.DELETE);
+    if (!isOnline) {
+      handleRequests(
+        API_ENDPOINTS.STOCK_ADJUSTMENT.replace(":id", id),
+        undefined,
+        { method: "DELETE" },
+      );
+      return;
+    }
     const res = deleteStockAdjustment(id);
     handleRequestState({ res, loadingMsg: "Deleting stock adjustment...." });
     res.then(() => {
@@ -86,73 +91,11 @@ export default function StockAdjustmentList({
         ]}
       >
         <StockAdjustmentProvider value={{ items }}>
-          <StockAdjustmentForm stockAdjustment={getData("edit")} />
+          <Suspense fallback={<div>Loading form...</div>}>
+            <StockAdjustmentForm stockAdjustment={getData("edit")} />
+          </Suspense>
         </StockAdjustmentProvider>
       </CrudPage>
     </ScrollArea>
-  );
-}
-
-type StockAdjustmentFormProps = {
-  stockAdjustment?: OneStockAdjustment;
-};
-
-export function StockAdjustmentForm({
-  stockAdjustment,
-}: Readonly<StockAdjustmentFormProps>) {
-  const { removeSearchParams } = useImsSearchParams();
-  const form = useHookForm({
-    mode: "onTouched",
-    resolver: stockAdjustmentSchema,
-  });
-
-  const handleSubmit = async (data: unknown) => {
-    const oneStockAdjustment = data as z.infer<typeof stockAdjustmentSchema>;
-    const id = stockAdjustment?.id;
-    const res = id
-      ? updateStockAdjustment(id, oneStockAdjustment)
-      : createStockAdjustment(oneStockAdjustment);
-    handleRequestState({
-      res,
-      loadingMsg: "Submitting stock adjustment....",
-    });
-    res.then(() => {
-      form.reset();
-      removeSearchParams(UI_STATE);
-    });
-    await res;
-  };
-
-  useEffect(() => {
-    if (!stockAdjustment) return;
-    form.reset({
-      itemId: stockAdjustment.item.id,
-      quantity: stockAdjustment.quantity,
-      reason: stockAdjustment.reason,
-      notes: stockAdjustment.notes,
-      batchId: stockAdjustment.batch.id,
-      type: stockAdjustment.type,
-    });
-  }, []);
-
-  return (
-    <ImsForm
-      className="overflow-y-auto [&>*]:px-4"
-      inputSectionClassName="overflow-y-auto"
-      form={form}
-      handleAuthSubmit={handleSubmit}
-      RenderActions={
-        <ImsButton
-          isLoading={form.formState.isSubmitting}
-          isLoadingLabel="Submitting..."
-          disabled={!form.formState.isValid || form.formState.isSubmitting}
-          variant="imsPrimary"
-          type="submit"
-        >
-          Submit
-        </ImsButton>
-      }
-      RenderInputs={<StockAdjustmentFormInputs control={form.control} />}
-    />
   );
 }

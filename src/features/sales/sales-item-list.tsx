@@ -11,10 +11,12 @@ import { salesItemLocalStorageKey, salesItemsColumns } from "./sales.data";
 import { useLocalStorage } from "usehooks-ts";
 import useFetchData from "../shared/hooks/use-fetch-data";
 import { getSalesItemsAction } from "../shared/actions/sales.action";
+import { CacheKey } from "@/lib/cache/cache-data";
 
 export default function SalesItemList() {
   const { data, loading } = useFetchData({
     fetchFn: getSalesItemsAction,
+    cacheKey: CacheKey.SalesItemList,
   });
   const salesItems = data?.rows ?? [];
   const [addedSalesItems, setSalesItem] = useLocalStorage<SaleItem[]>(
@@ -73,7 +75,7 @@ const getActionColumn = <TData, TValue>({
                 key={actionItem?.label}
                 onClick={() => actionItem?.action()}
                 variant="ghost"
-                className="w-max border p-0 text-xs"
+                className="w-max border bg-indigo-600 p-0 text-xs text-white"
               >
                 {isAdded ? (
                   <span className="px-4">Added</span>

@@ -16,7 +16,6 @@ import { FetchApi } from "../types/ims-api-action.types";
 import { GenerateQueryParams } from "../types/utitls.types";
 import { imsApiWithAuth } from "./ims-api.action";
 
-// Server Actions for /api/v1/stock-adjustments
 export async function createStockAdjustment(data: CreateStockAdjustmentDto) {
   const fetchOptions: FetchApi = {
     url: API_ENDPOINTS.STOCK_ADJUSTMENTS,
@@ -41,6 +40,7 @@ export async function getStockAdjustments(params?: GenerateQueryParams) {
     ),
     method: "GET",
     headers: {},
+    cache: "force-cache",
     next: { tags: [API_ENDPOINT_TAGS.STOCK_ADJUSTMENTS] },
   };
 
@@ -55,6 +55,7 @@ export async function getStockAdjustment(id: string) {
     url: API_ENDPOINTS.STOCK_ADJUSTMENT.replace(":id", id),
     method: "GET",
     headers: {},
+    cache: "force-cache",
     next: { tags: [API_ENDPOINT_TAGS.STOCK_ADJUSTMENTS] },
   };
 

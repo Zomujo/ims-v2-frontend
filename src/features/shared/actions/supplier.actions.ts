@@ -39,7 +39,6 @@ export async function getSuppliers(params?: GenerateQueryParams) {
     url: generateUrlWithQueryParams(API_ENDPOINTS.SUPPLIERS, params ?? {}),
     method: "GET",
     headers: {},
-    cache: "force-cache",
     next: { tags: [API_ENDPOINT_TAGS.SUPPLIERS] },
   };
 
@@ -53,7 +52,6 @@ export async function getSuppliersNoPaginate() {
     url: API_ENDPOINTS.SUPPLIERS_NO_PAGINATE,
     method: "GET",
     headers: {},
-    cache: "force-cache",
     next: { tags: [API_ENDPOINT_TAGS.SUPPLIERS_NO_PAGINATE] },
   };
 
@@ -66,7 +64,6 @@ export async function getSupplier(id: string) {
     url: API_ENDPOINTS.SUPPLIER.replace(":id", id),
     method: "GET",
     headers: {},
-    cache: "force-cache",
     next: { tags: [API_ENDPOINT_TAGS.SUPPLIERS] },
   };
 

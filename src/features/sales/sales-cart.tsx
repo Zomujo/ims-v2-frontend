@@ -1,20 +1,16 @@
 "use client";
-import { formateCurrency, handleRequestState } from "@/lib/utils";
-import { Icon } from "@iconify/react/dist/iconify.js";
+import { handleRequestState } from "@/lib/utils";
 import { useParams } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { lazy, Suspense, useEffect, useMemo, useState } from "react";
 import { useFieldArray } from "react-hook-form";
 import { useIsClient, useLocalStorage } from "usehooks-ts";
-import { z } from "zod";
 import { createSaleAction } from "../shared/actions/sales.action";
 import { getSale, updateSale } from "../shared/actions/sales.actions";
 import HookFormField from "../shared/components/hook-form-filed";
 import { ImsButton } from "../shared/components/ims-button";
-import ImsDropdownMenu from "../shared/components/ims-drop-down-menu";
 import { ImsForm } from "../shared/components/ims-forms";
 import { ImsSelect } from "../shared/components/ims-select";
 import useHookForm from "../shared/hooks/use-hook-form";
-import useImsSearchParams from "../shared/hooks/use-ims-search-params";
 import { SaleItem } from "../shared/types/sales-action.types";
 import { ScrollArea } from "../ui/scroll-area";
 import { Textarea } from "../ui/textarea";
@@ -24,30 +20,49 @@ import {
   salesItemLocalStorageKey,
 } from "./sales.data";
 import { salesCartSchema } from "./sales.schemas";
-import { SaleCardTypes } from "./sales.types";
+import { SaleCartFormData } from "./sales.types";
 import { isSalesEditMode } from "./sales.utils";
-import LoadingOverlay from "@features/ui/loadingOverlay";
-import { getBatchesNoPaginate } from "@features/shared/actions/items.actions";
-import { MultiSelect } from "@features/ui/multiSelect";
+import { useOnlineStatus } from "@features/shared/hooks/useOnlineStatus";
+import { API_ENDPOINTS } from "@/lib/api-constants";
+import { API_ENDPOINTS_OLD } from "@/lib/constant";
+import { Skeleton } from "@features/ui/skeleton";
 
-type SaleCartFormData = z.infer<typeof salesCartSchema>;
+const LoadingOverlay = lazy(() => import("@features/ui/loadingOverlay"));
+const MultiSelect = lazy(() =>
+  import("@features/ui/multiSelect").then((module) => ({
+    default: module.MultiSelect,
+  })),
+);
+const SaleCard = lazy(() =>
+  import("./sales-cart-cards").then((module) => ({
+    default: module.SaleCard,
+  })),
+);
+const SaleCartSummery = lazy(() =>
+  import("./sales-cart-cards").then((module) => ({
+    default: module.SaleCartSummery,
+  })),
+);
+
 const handleSalesItem = (saleItems: SaleItem, isEditMode?: boolean) => {
   return {
     batchId: saleItems.batchId,
     quantity: isEditMode ? saleItems.quantity : 1,
   };
 };
-const patientIdKey = "patientId";
-export default function SalesCart() {
+type SalesCartProps = {
+  patientCardId?: string;
+};
+export default function SalesCart({ patientCardId }: SalesCartProps) {
   const salesId = useParams().id;
   const isEditMode = isSalesEditMode(salesId);
   const isClient = useIsClient();
-  const { getSearchParams, removeSearchParams } = useImsSearchParams();
   const [addedSalesItems, setSalesItems, removeSalesItems] = useLocalStorage<
     SaleItem[]
   >(salesItemLocalStorageKey, []);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const { handleRequests, isOnline } = useOnlineStatus();
 
   const form = useHookForm({
     resolver: salesCartSchema,
@@ -78,7 +93,6 @@ export default function SalesCart() {
       amountSubtotal: 0,
       nhisCoveredAmount: 0,
     };
-
     if (!formSalesItems) {
       return totals;
     }
@@ -96,7 +110,12 @@ export default function SalesCart() {
     }
 
     return totals;
-  }, [formSalesItems, addedSalesItemsMap, hasActiveNHIS]);
+  }, [
+    formSalesItems,
+    addedSalesItemsMap,
+    hasActiveNHIS,
+    JSON.stringify(formSalesItems),
+  ]);
 
   const allHaveNHIS = useMemo(() => {
     return (
@@ -151,7 +170,7 @@ export default function SalesCart() {
       const response = await getSale(salesId as string);
       const saleData = response.data;
       if (!saleData) return;
-      const saleItems = saleData.saleItems as SaleItem[];
+      const saleItems = saleData.saleItems as unknown as SaleItem[];
       form.setValue("notes", saleData.notes, { shouldValidate: true });
       form.setValue("paymentType", saleData.paymentType);
       form.setValue(
@@ -169,22 +188,41 @@ export default function SalesCart() {
   }, []);
 
   const handleSubmit = async (data: unknown) => {
-    setIsSubmitting(true);
-    const patientCardId = getSearchParams(patientIdKey);
     const dataWithPatientId = { ...(data as SaleCartFormData), patientCardId };
+    if (!isOnline) {
+      handleRequests(
+        isEditMode
+          ? API_ENDPOINTS.SALE.replace(":id", salesId as string)
+          : API_ENDPOINTS_OLD.SALES,
+        isEditMode
+          ? {
+              ...dataWithPatientId,
+              insured: dataWithPatientId.insured === "true",
+            }
+          : {
+              ...dataWithPatientId,
+              insured:
+                (dataWithPatientId as { insured: "true" | "false" }).insured ===
+                "true",
+            },
+        { method: isEditMode ? "PATCH" : "POST" },
+      );
+      return;
+    }
+    setIsSubmitting(true);
     const action = isEditMode
       ? updateSale(salesId as string, dataWithPatientId)
       : createSaleAction(dataWithPatientId);
     handleRequestState({ res: action, loadingMsg: "Saving sales..." });
     action.then(() => {
-      printReceipt(
-        data as SaleCartFormData,
-        addedSalesItems,
-        amountSubtotal,
-        nhisCoveredAmount,
-      );
+      // TODO: We will not be using receipts for the pilot program
+      // printReceipt(
+      //   data as SaleCartFormData,
+      //   addedSalesItems,
+      //   amountSubtotal,
+      //   nhisCoveredAmount,
+      // );
       removeSalesItems();
-      removeSearchParams(patientIdKey);
       form.reset();
       setIsSubmitting(false);
     });
@@ -206,7 +244,11 @@ export default function SalesCart() {
 
   return (
     <ScrollArea className="relative h-[99%] w-full flex-[0.4] rounded-xl border bg-white py-5">
-      {isLoading && <LoadingOverlay />}
+      {isLoading && (
+        <Suspense>
+          <LoadingOverlay />
+        </Suspense>
+      )}
       <ImsForm
         className="gap-y-0 px-4 py-2 pb-2"
         form={form}
@@ -217,17 +259,19 @@ export default function SalesCart() {
             <h2 className="absolute inset-x-0 top-0 rounded-xl bg-white px-6 py-2 font-bold">
               Sale Cart ( {addedSalesItems?.length} )
             </h2>
-            <MultiSelect
-              options={paymentTypeOptionsBuilder}
-              onValueChange={(value) =>
-                form.setValue("paymentType", value, { shouldValidate: true })
-              }
-              defaultValue={paymentType}
-              value={paymentType}
-              disabled={allHaveNHIS}
-              animation={2}
-              variant="inverted"
-            />
+            <Suspense fallback={<Skeleton className="h-11 w-full" />}>
+              <MultiSelect
+                options={paymentTypeOptionsBuilder}
+                onValueChange={(value) =>
+                  form.setValue("paymentType", value, { shouldValidate: true })
+                }
+                defaultValue={paymentType}
+                value={paymentType}
+                disabled={allHaveNHIS}
+                animation={2}
+                variant="inverted"
+              />
+            </Suspense>
             <HookFormField
               formControl={form.control}
               name="insured"
@@ -254,17 +298,19 @@ export default function SalesCart() {
                   label=""
                   renderInput={({ field }) => {
                     return (
-                      <SaleCard
-                        remove={remove}
-                        salesItem={{
-                          ...salesItemBuilder(
-                            (item as unknown as SaleItem).batchId,
-                          ),
-                        }}
-                        index={index}
-                        quantity={field.value}
-                        onChange={field.onChange}
-                      />
+                      <Suspense fallback={<Skeleton className="h-28 w-full" />}>
+                        <SaleCard
+                          remove={remove}
+                          salesItem={{
+                            ...salesItemBuilder(
+                              (item as unknown as SaleItem).batchId,
+                            ),
+                          }}
+                          index={index}
+                          quantity={field.value}
+                          onChange={field.onChange}
+                        />
+                      </Suspense>
                     );
                   }}
                 />
@@ -282,10 +328,12 @@ export default function SalesCart() {
                 />
               )}
             />
-            <SaleCartSummery
-              amountTotal={amountSubtotal}
-              nhisCoveredAmount={nhisCoveredAmount}
-            />
+            <Suspense fallback={<Skeleton className="h-24 w-full" />}>
+              <SaleCartSummery
+                amountTotal={amountSubtotal}
+                nhisCoveredAmount={nhisCoveredAmount}
+              />
+            </Suspense>
           </>
         }
         RenderActions={
@@ -297,310 +345,10 @@ export default function SalesCart() {
             type="submit"
             className=" "
           >
-            {isEditMode ? "Update and Print Bill" : " Save and Print Bill"}
+            {isEditMode ? "Update Sale" : " Save Sale"}
           </ImsButton>
         }
       />
     </ScrollArea>
   );
 }
-
-function SaleCard({
-  salesItem,
-  remove,
-  onChange,
-  index,
-  quantity,
-}: Readonly<SaleCardTypes>) {
-  const [addedSalesItems, setAddedSalesItems] = useLocalStorage<SaleItem[]>(
-    salesItemLocalStorageKey,
-    [],
-  );
-  const [alternativeBatchMessage, setAlternativeBatchMessage] = useState<
-    string | null
-  >(null);
-
-  const handleItemDelete = () => {
-    remove(index);
-    setAddedSalesItems(
-      addedSalesItems.filter(
-        (addedSalesItem) => addedSalesItem.batchId !== salesItem.batchId,
-      ),
-    );
-  };
-
-  useEffect(() => {
-    const checkForAlternativeBatch = async () => {
-      const { validity: saleItemValidity, id: itemId } = salesItem;
-      if (!saleItemValidity || !itemId) return;
-
-      try {
-        const batches = await getBatchesNoPaginate(itemId);
-        if (batches && batches.length > 0) {
-          const alternativeBatches = batches.filter(({ validity, id }) => {
-            const currentDate = new Date().toISOString();
-            return (
-              validity < saleItemValidity &&
-              validity > currentDate &&
-              id !== salesItem.batchId
-            );
-          });
-
-          if (alternativeBatches.length > 0) {
-            const soonestBatch = alternativeBatches.sort((a, b) =>
-              a.validity.localeCompare(b.validity),
-            )[0];
-
-            const expiryDate = new Date(
-              soonestBatch.validity,
-            ).toLocaleDateString();
-            setAlternativeBatchMessage(
-              `⚠️ Alternative batch available: Batch #${soonestBatch.batchNumber} expires on ${expiryDate} (sooner than current batch). Consider using this batch first to minimize waste.`,
-            );
-          }
-        }
-      } catch (error) {
-        console.error("Error checking alternative batches:", error);
-      }
-    };
-    void checkForAlternativeBatch();
-  }, []);
-
-  const activeAddedSalesItem = addedSalesItems.find(
-    (item) => item.batchId === salesItem.batchId,
-  );
-
-  const getSellingPrice = () => {
-    const totalSellingPrice =
-      (activeAddedSalesItem?.item?.sellingPrice ?? 0) * quantity;
-    return formateCurrency(totalSellingPrice);
-  };
-
-  const handleAdd = () => {
-    onChange(quantity + 1);
-  };
-  const handleSubtract = () => {
-    if (quantity === 1) return;
-    onChange(quantity - 1);
-  };
-
-  return (
-    <div className="space-y-4 rounded-2xl border p-4 text-xs">
-      <div className="flex w-full items-center justify-between">
-        <span>{activeAddedSalesItem?.item?.name}</span>
-        <ImsDropdownMenu
-          trigger={
-            <button
-              onClick={(e) => e.preventDefault()}
-              type="button"
-              className="flex h-6 w-6 items-center justify-center rounded-full bg-[#FEF2F2] text-red-600 hover:bg-red-400 hover:text-white"
-            >
-              <Icon icon="solar:trash-bin-minimalistic-bold-duotone" />
-            </button>
-          }
-          menuItems={[
-            {
-              id: "delete",
-              varient: "destructive",
-              node: (
-                <button
-                  onClick={handleItemDelete}
-                  className="w-full"
-                  type="button"
-                >
-                  Delete
-                </button>
-              ),
-            },
-          ]}
-        />
-      </div>
-      <div className="flex w-full items-center justify-between">
-        <span>{getSellingPrice()}</span>
-        <div className="flex gap-2">
-          <button
-            onClick={handleSubtract}
-            type="button"
-            className="flex h-4 w-4 cursor-pointer items-center justify-center bg-slate-200"
-          >
-            <Icon icon="ic:outline-minus" className="text-sm" />
-          </button>
-          <span className="w-4 text-center font-bold">{quantity}</span>
-          <button
-            onClick={handleAdd}
-            type="button"
-            className="flex h-4 w-4 cursor-pointer items-center justify-center bg-slate-200"
-          >
-            <Icon icon="mynaui:plus-solid" className="text-sm" />
-          </button>
-        </div>
-      </div>
-      <span className="mt-2 text-xs text-red-400">
-        {alternativeBatchMessage && alternativeBatchMessage}
-      </span>
-    </div>
-  );
-}
-
-function SaleCartSummery({
-  nhisCoveredAmount,
-  amountTotal,
-}: Readonly<{
-  nhisCoveredAmount: number;
-  amountTotal: number;
-}>) {
-  return (
-    <div className="space-y-1 text-xs">
-      <h2 className="py-2 font-bold">Summary</h2>
-      <p className="flex justify-between">
-        <span>Subtotal</span>
-        <span>{formateCurrency(amountTotal ?? 0)}</span>
-      </p>
-      <p className="flex justify-between">
-        <span>NHIS Covered</span>
-        <span>{formateCurrency(nhisCoveredAmount)}</span>
-      </p>
-      <p className="flex justify-between py-4 font-bold">
-        <span>Total</span>
-        <span>{formateCurrency(amountTotal - nhisCoveredAmount)}</span>
-      </p>
-    </div>
-  );
-}
-
-const printReceipt = (
-  data: SaleCartFormData,
-  addedSalesItems: SaleItem[],
-  subTotal: number,
-  nhisAmount: number,
-) => {
-  const receiptContent = `
-    <html lang="en">
-      <head>
-        <title>Receipt</title>
-        <style>
-          @media print {
-            body { 
-              width: 90mm;
-              margin: 0;
-              padding: 0;
-            }
-          }
-          body {
-            font-family: 'Courier New', monospace;
-            padding: 10px;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            background-color: #fff;
-          }
-          .receipt-card {
-            width: 340px;
-            background: white;
-            padding: 10px;
-            border: 1px solid #000;
-          }
-          .header {
-            text-align: center;
-            border-bottom: 1px dashed #000;
-            padding-bottom: 10px;
-            margin-bottom: 10px;
-          }
-          .header h1 {
-            font-size: 18px;
-            margin: 5px 0;
-          }
-          .info {
-            font-size: 12px;
-            margin: 5px 0;
-          }
-          .items {
-            margin: 15px 0;
-            border-bottom: 1px dashed #000;
-            padding-bottom: 10px;
-          }
-          .item {
-            display: flex;
-            justify-content: space-between;
-            font-size: 12px;
-            margin: 5px 0;
-          }
-          .batch-id {
-            font-size: 8px;
-            color: #666;
-          }
-          .total {
-            font-weight: bold;
-            text-align: right;
-            font-size: 14px;
-            margin-top: 10px;
-          }
-          .footer {
-            text-align: center;
-            font-size: 10px;
-            margin-top: 20px;
-          }
-        </style>
-      </head>
-      <body>
-        <div class="receipt-card">
-          <div class="header">
-            <h1>SALES RECEIPT</h1>
-            <div class="info">Date: ${new Date().toLocaleString()}</div>
-            <div class="info">Payment: ${data.paymentType}</div>
-          </div>
-          
-          <div class="items">
-            ${data.saleItems
-              .map((item) => {
-                const saleItem = addedSalesItems.find(
-                  (sale) => sale.batchId === item.batchId,
-                );
-                const itemName = saleItem?.item?.name ?? "";
-                const price = saleItem?.item?.sellingPrice ?? 0;
-                const total = price * item.quantity;
-                return `
-                <div class="item">
-                  <div>
-                    ${itemName}
-                    <div class="batch-id">#${item.batchId}</div>
-                  </div>
-                  <div>
-                    ${item.quantity} x GHC ${price.toFixed(2)} = GHC ${total.toFixed(2)}
-                  </div>
-                </div>
-              `;
-              })
-              .join("")}
-          </div>
-
-          <div class="total">
-            NHIS Covered: GHC ${nhisAmount.toFixed(2)}<br />
-            TOTAL: GHC ${(subTotal - nhisAmount).toFixed(2)}
-          </div>
-
-          ${data.notes ? `<div class="info">Notes: ${data.notes}</div>` : ""}
-          
-          <div class="footer">
-            Thank you for your purchase!
-          </div>
-        </div>
-      </body>
-    </html>
-  `;
-
-  const receiptBlob = new Blob([receiptContent], { type: "text/html" });
-  const receiptUrl = URL.createObjectURL(receiptBlob);
-  const receiptWindow = window.open(
-    receiptUrl,
-    "Receipt",
-    "width=400,height=600",
-  );
-
-  if (receiptWindow) {
-    receiptWindow.addEventListener("load", () => {
-      receiptWindow.print();
-      URL.revokeObjectURL(receiptUrl);
-    });
-  }
-};

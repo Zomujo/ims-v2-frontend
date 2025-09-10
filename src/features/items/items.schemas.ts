@@ -3,7 +3,7 @@ import { capitalize } from "@/lib/utils";
 
 export const itemFormSchema = z.object({
   name: z.string().min(1, "Item name is required"),
-  brandName: z.string().min(1, "Brand name is required"),
+  brandName: z.string().optional(),
   dosageForm: z.string().min(1, "Dosage form is required"),
   strength: z
     .number()
@@ -25,7 +25,7 @@ export const itemFormSchema = z.object({
     .min(1, "Selling price must be non-negative and greater than 0"),
   sellingPriceMarkup: z
     .number()
-    .min(1, "Selling price markup must be non-negative and greater than 0"),
+    .min(0, "Selling price markup must be non-negative"),
   categoryId: z.string().min(1, "Category ID is required"),
 });
 
@@ -35,7 +35,24 @@ export type AmountType = (typeof amountTypes)[number];
 
 export const itemBatchFormSchema = z.object({
   quantity: z.number().min(1, "Quantity is required"),
-  validity: z.string().min(1, "Validity is required"),
+  validity: z
+    .string()
+    .min(1, "Validity is required")
+    .refine(
+      (val) => {
+        const [year, month] = val.split("-").map(Number);
+        const today = new Date();
+        const currentYear = today.getFullYear();
+        const currentMonth = today.getMonth() + 1;
+        return (
+          year > currentYear || (year === currentYear && month >= currentMonth)
+        );
+      },
+      {
+        message: "Expiry date cannot be in the past",
+      },
+    ),
+
   batchNumber: z.string().min(1, "Batch number is required"),
   supplierId: z.string().min(1, "Supplier ID is required"),
   markup: z

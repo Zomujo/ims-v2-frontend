@@ -38,6 +38,7 @@ export async function getItemRequests(params?: GenerateQueryParams) {
     url: generateUrlWithQueryParams(API_ENDPOINTS.ITEM_REQUESTS, params ?? {}),
     method: "GET",
     headers: {},
+    cache: "force-cache",
     next: { tags: [API_ENDPOINT_TAGS.ITEM_REQUESTS] },
   };
 
@@ -52,6 +53,7 @@ export async function getItemRequest(id: string) {
     url: API_ENDPOINTS.ITEM_REQUEST.replace(":id", id),
     method: "GET",
     headers: {},
+    cache: "force-cache",
     next: { tags: [API_ENDPOINT_TAGS.ITEM_REQUESTS] },
   };
 

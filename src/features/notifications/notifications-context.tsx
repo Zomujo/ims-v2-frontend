@@ -16,6 +16,8 @@ import {
   markNotificationsAsRead,
 } from "@features/shared/actions/notifications.actions";
 import { toast } from "sonner";
+import localforage from "localforage";
+import { CacheKey } from "@/lib/cache/cache-data";
 
 interface GlobalNotificationsContextType {
   notifications: NotificationPayload[];
@@ -46,7 +48,9 @@ export function GlobalNotificationsProvider({
 }: GlobalNotificationsProviderProps) {
   const { userId } = useSessionData();
   const [notifications, setNotifications] = useState<NotificationPayload[]>([]);
-  const [isConnected, setIsConnected] = useState(false);
+  const [isConnected, setIsConnected] = useState(
+    typeof navigator !== "undefined" && navigator.onLine,
+  );
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
@@ -76,6 +80,7 @@ export function GlobalNotificationsProvider({
         } else {
           setNotifications((prev) => [...prev, ...uniqueNotifications]);
         }
+        void localforage.setItem(CacheKey.Notifications, notifications);
       }
 
       return uniqueNotifications.length;
@@ -107,12 +112,26 @@ export function GlobalNotificationsProvider({
         setError("Failed to load notifications");
       }
     } catch (err) {
-      console.error("Error fetching initial notifications:", err);
-      setError("Failed to load notifications");
+      if (!isConnected) {
+        const cachedNotifications = await localforage.getItem<
+          NotificationPayload[]
+        >(CacheKey.Notifications);
+        if (cachedNotifications) {
+          setNotifications(notifications);
+          notificationIdsRef.current = new Set(notifications.map((n) => n.id));
+          return;
+        } else {
+          console.error("Error fetching initial notifications:", err);
+          setError("Failed to load notifications");
+        }
+      } else {
+        console.error("Error fetching initial notifications:", err);
+        setError("Failed to load notifications");
+      }
     } finally {
       setIsLoading(false);
     }
-  }, [userId, addNotificationsNoDuplicates]);
+  }, [userId, addNotificationsNoDuplicates, isConnected]);
 
   const loadMore = useCallback(async () => {
     if (!userId || isLoading || isLoadingMore || !hasMore) return;

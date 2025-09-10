@@ -10,8 +10,11 @@ import {
   AuthIMSLoginObj,
   AuthLoginActionResponse,
   AuthUserProfileActionResponse,
+  IResetPassword,
 } from "../types/auth-action.types";
 import { imsApiWithAuth, imsApiWithoutAuth } from "./ims-api.action";
+import { z } from "zod";
+import { API_ENDPOINTS } from "@/lib/api-constants";
 
 export const authUserProfileAction = async () => {
   const res = await imsApiWithAuth<AuthUserProfileActionResponse>({
@@ -58,19 +61,23 @@ export const authCreateAccountAction = async ({
   facilityPassword,
   fullName,
 }: AuthAccountCreationProps) => {
-  await imsApiWithoutAuth<AuthLoginActionResponse>({
-    url: API_ENDPOINTS_OLD.CREATE_ACCOUNT,
-    method: "POST",
-    body: JSON.stringify({
-      email,
-      password,
-      facility: {
-        name: facilityName,
-        password: facilityPassword,
-      },
-      fullName,
-    } as AuthCreateAccountActionApiBody),
-  });
+  try {
+    return await imsApiWithoutAuth<AuthApiStandardResponse>({
+      url: API_ENDPOINTS_OLD.CREATE_ACCOUNT,
+      method: "POST",
+      body: JSON.stringify({
+        email,
+        password,
+        facility: {
+          name: facilityName,
+          password: facilityPassword,
+        },
+        fullName,
+      } as AuthCreateAccountActionApiBody),
+    });
+  } catch (error) {
+    return error as AuthApiStandardResponse;
+  }
 };
 
 export const authChangePasswordAction = async ({
@@ -101,14 +108,22 @@ export const authRefreshTokenAction = async (
   }
 };
 
-export const authForgotPasswordSendMailAction = async (
-  email: AuthActionProps["email"],
-) => {
+export const authForgotPasswordSendMailAction = async ({
+  username,
+  contact,
+}: {
+  username: string;
+  contact: string;
+}) => {
   try {
+    const isEmail = z.string().email().safeParse(contact).success;
+    const body = isEmail
+      ? { username, email: contact }
+      : { username, phoneNumber: contact };
     return await imsApiWithoutAuth<AuthApiStandardResponse>({
-      url: API_ENDPOINTS_OLD.FORGOT_PASSWORD.SEND_MAIL,
+      url: API_ENDPOINTS.AUTH_FORGOT_PASSWORD_SEND_MAIL,
       method: "POST",
-      body: JSON.stringify({ email }),
+      body: JSON.stringify(body),
     });
   } catch (error) {
     return error as AuthApiStandardResponse;
@@ -128,14 +143,17 @@ export const authVerificationSendMailAction = async (email: string) => {
 };
 
 export const authForgotPasswordVerifyCodeAction = async ({
-  email,
   code,
-}: Pick<AuthActionProps, "email" | "code">) => {
+  username,
+}: {
+  username: string;
+  code: number;
+}) => {
   try {
     return await imsApiWithoutAuth<AuthApiStandardResponse>({
       url: API_ENDPOINTS_OLD.FORGOT_PASSWORD.VERIFY_TOKEN,
       method: "POST",
-      body: JSON.stringify({ email, code }),
+      body: JSON.stringify({ username, code }),
     });
   } catch (error) {
     return error as AuthApiStandardResponse;
@@ -143,14 +161,14 @@ export const authForgotPasswordVerifyCodeAction = async ({
 };
 
 export const authForgotPasswordResetPasswordAction = async ({
-  email,
+  username,
   newPassword,
-}: Pick<AuthActionProps, "email" | "newPassword">) => {
+}: IResetPassword) => {
   try {
     return await imsApiWithoutAuth<AuthApiStandardResponse>({
       url: API_ENDPOINTS_OLD.FORGOT_PASSWORD.RESET_PASSWORD,
       method: "PATCH",
-      body: JSON.stringify({ email, newPassword }),
+      body: JSON.stringify({ username, newPassword }),
     });
   } catch (error) {
     return error as AuthApiStandardResponse;

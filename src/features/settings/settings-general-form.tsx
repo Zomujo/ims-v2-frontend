@@ -14,7 +14,7 @@ import { ImsPopover } from "../shared/components/ims-popover";
 import useHookForm from "../shared/hooks/use-hook-form";
 import { Input } from "../ui/input";
 import { generalSettingsSchema } from "./settigns.schemas";
-import { SettingsFromActions } from "./settings-component-clinet";
+import { SettingsFromActions } from "./settings-component-client";
 import { settingsAccountInfoFields } from "./settings.data";
 import {
   handleAccountInfoChange,
@@ -22,25 +22,20 @@ import {
   handleEmailChangeOtp,
   readImgFile,
 } from "./settings.utils";
+import { useGlobalNotifications } from "@features/notifications/notifications-context";
+import { useSessionData } from "@/hooks/useSessionData";
 
 type SettingsFormData = z.infer<typeof generalSettingsSchema>;
-export function GeneralSettingsAccountForm({
-  fullName,
-  email,
-  phoneNumber,
-}: Readonly<{
-  fullName: string;
-  email: string;
-  phoneNumber: string;
-}>) {
+export function GeneralSettingsAccountForm() {
+  const { fullName, email, phoneNumber } = useSessionData();
   const [editForm, setEditForm] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
   const form = useHookForm({
     resolver: generalSettingsSchema,
     defaultValues: {
-      email,
-      fullName,
-      phoneNumber,
+      email: email ?? "",
+      fullName: fullName ?? "",
+      phoneNumber: phoneNumber ?? "",
       otpCode: "",
     },
     mode: "onTouched",
@@ -193,6 +188,7 @@ export function SettingsEditAvatarForm({
   imgURL = null,
   fullName = "",
 }: Readonly<PropsWithChildren<{ imgURL: string | null; fullName: string }>>) {
+  const { isConnected } = useGlobalNotifications();
   const [imgFile, setImgFile] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -242,6 +238,7 @@ export function SettingsEditAvatarForm({
           startIcon={<Icon icon="hugeicons:edit-01" />}
           className="text-xs"
           size="sm"
+          disabled={!isConnected}
           onClick={() => fileInputRef.current?.click()}
         >
           Edit

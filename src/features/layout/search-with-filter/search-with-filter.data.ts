@@ -55,6 +55,13 @@ export const exportActionButtonData = {
     icon: "solar:file-download-linear",
     permission: `${PermissionModules.SALES}:${PermissionActions.READ}`,
   },
+  [PAGE_ROUTES.REPORTS_SALES_LEVEL]: {
+    label: "Export Report",
+    fileName: "Sales",
+    endpoint: API_ENDPOINTS.SALES_LEVEL_REPORT,
+    icon: "solar:file-download-linear",
+    permission: `${PermissionModules.SALES}:${PermissionActions.READ}`,
+  },
 };
 
 export const actionButtonData = {
@@ -74,7 +81,7 @@ export const actionButtonData = {
     icon: "solar:jar-of-pills-bold-duotone",
     permission: `${PermissionModules.ITEMS}:${PermissionActions.READ}`,
   },
-  [PAGE_ROUTES.ITEM_BATCHES]: {
+  [PAGE_ROUTES.ITEM_BATCHES.VIEW]: {
     label: "Add New Batch",
     href: PAGE_ROUTES.ITEMS.CREATE,
     icon: "solar:jar-of-pills-bold-duotone",
@@ -121,6 +128,13 @@ export const actionButtonData = {
     icon: "solar:activity-bold-duotone",
     permission: `${PermissionModules.REPORTS}:${PermissionActions.READ}`,
     hideSearch: true,
+  },
+  [PAGE_ROUTES.REPORTS_SALES_LEVEL]: {
+    label: "Export Sales Level Report",
+    icon: "solar:file-download-linear",
+    permission: `${PermissionModules.SALES}:${PermissionActions.READ}`,
+    hideSearch: true,
+    hideFilters: true,
   },
 };
 
@@ -320,10 +334,10 @@ export const userRoleFilter = {
 
 export const todaySalesFilters = {
   key: "todaySales",
-  label: "Enable",
+  label: "Today's Sales",
   type: "boolean" as const,
   options: [],
-  defaultValue: false,
+  defaultValue: true,
 };
 
 export const requestStatusFilter = {
