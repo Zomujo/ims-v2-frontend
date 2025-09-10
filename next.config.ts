@@ -1,8 +1,12 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { PHASE_DEVELOPMENT_SERVER, PHASE_PRODUCTION_BUILD } from "next/constants";
+import {
+  PHASE_DEVELOPMENT_SERVER,
+  PHASE_PRODUCTION_BUILD,
+} from "next/constants";
 import type { NextConfig } from "next";
 
+// eslint-disable-next-line import/no-anonymous-default-export
 export default async (phase: string) => {
   const nextConfig: NextConfig = {
     eslint: {
