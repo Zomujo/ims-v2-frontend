@@ -5,6 +5,7 @@ import {
   PHASE_PRODUCTION_BUILD,
 } from "next/constants";
 import type { NextConfig } from "next";
+import withSerwist from "@serwist/next";
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default async (phase: string) => {
@@ -16,7 +17,6 @@ export default async (phase: string) => {
   };
 
   if (phase === PHASE_DEVELOPMENT_SERVER || phase === PHASE_PRODUCTION_BUILD) {
-    const { default: withSerwist } = await import("@serwist/next");
     return withSerwist({
       swSrc: "public/service-worker/sw.ts",
       swDest: "public/sw.js",
