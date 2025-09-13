@@ -134,8 +134,8 @@ export const SupplierFormInputs = ({
       <MultiStep currentStep={currentStep} step={1}>
         <HookFormField
           formControl={control}
-          name="name" // Matches AddSupplier type
-          label="Supplier name" // Matches UI
+          name="name"
+          label="Supplier name"
           renderInput={({ field }) => (
             <Input
               {...field}
@@ -146,8 +146,8 @@ export const SupplierFormInputs = ({
         />
         <HookFormField
           formControl={control}
-          name="supplierType" // Matches AddSupplier type
-          label="Supplier Type" // Matches UI
+          name="supplierType"
+          label="Supplier Type"
           renderInput={({ field }) => (
             <ImsSelect
               showNone={false}

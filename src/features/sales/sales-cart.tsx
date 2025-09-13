@@ -37,8 +37,12 @@ const handleSalesItem = (saleItems: SaleItem, isEditMode?: boolean) => {
 };
 type SalesCartProps = {
   patientCardId?: string;
+  addedToCartAction?: () => void;
 };
-export default function SalesCart({ patientCardId }: SalesCartProps) {
+export default function SalesCart({
+  patientCardId,
+  addedToCartAction,
+}: SalesCartProps) {
   const salesId = useParams().id;
   const isEditMode = isSalesEditMode(salesId);
   const isClient = useIsClient();
@@ -192,6 +196,8 @@ export default function SalesCart({ patientCardId }: SalesCartProps) {
             },
         { method: isEditMode ? "PATCH" : "POST" },
       );
+      addedToCartAction?.();
+      form.reset();
       return;
     }
     setIsSubmitting(true);
@@ -209,6 +215,7 @@ export default function SalesCart({ patientCardId }: SalesCartProps) {
       // );
       removeSalesItems();
       form.reset();
+      addedToCartAction?.();
       setIsSubmitting(false);
     });
     await action;
