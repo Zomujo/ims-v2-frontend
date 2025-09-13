@@ -94,12 +94,6 @@ export function PageHeadingProvider({ children }: { children: ReactNode }) {
     [],
   );
 
-  // Reset custom title/description on route change
-  // useEffect(() => {
-  //   setCustomTitle("");
-  //   setCustomDescription("");
-  // }, [pathname]);
-
   useEffect(() => {
     const paths = pathname.split("/");
     const titleFromPath = paths[3] ?? paths[2] ?? paths[1];
