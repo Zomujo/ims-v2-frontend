@@ -94,19 +94,34 @@ export function PageHeadingProvider({ children }: { children: ReactNode }) {
     [],
   );
 
+  // Reset custom title/description on route change
+  // useEffect(() => {
+  //   setCustomTitle("");
+  //   setCustomDescription("");
+  // }, [pathname]);
+
   useEffect(() => {
     const paths = pathname.split("/");
     const titleFromPath = paths[3] ?? paths[2] ?? paths[1];
     const headingMaps = { ...pageHeadingMap, ...settingPagesDescription };
-    const title =
-      headingMaps[titleFromPath as TitleFromPath]?.title ??
-      (customTitle ? customTitle : titleFromPath);
-    const description =
-      headingMaps[titleFromPath as TitleFromPath]?.description ??
-      (customDescription ? customDescription : "");
+    // Always prioritize mapped values, then custom, then fallback
+    let title: string;
+    let description: string;
+
+    if (headingMaps[titleFromPath as TitleFromPath]) {
+      title = headingMaps[titleFromPath as TitleFromPath].title;
+      description = headingMaps[titleFromPath as TitleFromPath].description;
+    } else if (customTitle || customDescription) {
+      title = customTitle || titleFromPath;
+      description = customDescription || "";
+    } else {
+      title = titleFromPath;
+      description = "";
+    }
+
     setPageTitle(title);
     setPageDescription(description);
-  }, [pathname, customTitle, customDescription, pageTitle, pageDescription]);
+  }, [pathname, customTitle, customDescription]);
 
   return (
     <PageHeadingContext.Provider
