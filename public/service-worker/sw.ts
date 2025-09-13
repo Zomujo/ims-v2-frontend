@@ -52,35 +52,36 @@ const urlsToPrecache = [
   "/reports/earnings-overview",
 ] as const;
 
-// TODO: Let's keep for now perhaps we might need it later
-// const sessionCachePlugins = [
-//   {
-//     // Ensure only successful responses cached, stripping no-store
-//     cacheWillUpdate: async ({ response }: any) => {
-//       if (!response || response.status !== 200) return null;
-//       const body = await response.clone().arrayBuffer();
-//       return new Response(body, {
-//         status: response.status,
-//         statusText: response.statusText,
-//         headers: { "Content-Type": "application/json" },
-//       });
-//     },
-//     // Provide cached or synthetic session when offline & no cache yet
-//     handlerDidError: async ({ request }: any) => {
-//       const cache = await caches.open("session-cache");
-//       const cached = await cache.match(request);
-//       if (cached) return cached;
-//       return new Response(
-//         JSON.stringify({
-//           user: { name: "Offline User" },
-//           expires: new Date(Date.now() + 30 * 60 * 1000).toISOString(),
-//           offline: true,
-//         }),
-//         { status: 200, headers: { "Content-Type": "application/json" } },
-//       );
-//     },
-//   },
-// ];
+const sessionCachePlugins = [
+  {
+    // Ensure only successful responses cached, stripping no-store
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    cacheWillUpdate: async ({ response }: any) => {
+      if (!response || response.status !== 200) return null;
+      const body = await response.clone().arrayBuffer();
+      return new Response(body, {
+        status: response.status,
+        statusText: response.statusText,
+        headers: { "Content-Type": "application/json" },
+      });
+    },
+    // Provide cached or synthetic session when offline & no cache yet
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    handlerDidError: async ({ request }: any) => {
+      const cache = await caches.open("session-cache");
+      const cached = await cache.match(request);
+      if (cached) return cached;
+      return new Response(
+        JSON.stringify({
+          user: { name: "Offline User" },
+          expires: new Date(Date.now() + 30 * 60 * 1000).toISOString(),
+          offline: true,
+        }),
+        { status: 200, headers: { "Content-Type": "application/json" } },
+      );
+    },
+  },
+];
 
 const serwist = new Serwist({
   precacheEntries: [...(self.__SW_MANIFEST || []), ...urlsToPrecache],
@@ -101,7 +102,7 @@ const serwist = new Serwist({
       matcher: ({ url }) => url.pathname.startsWith("/api/auth/session"),
       handler: new StaleWhileRevalidate({
         cacheName: "session-cache",
-        // plugins: sessionCachePlugins,
+        plugins: sessionCachePlugins,
       }),
     },
     {
