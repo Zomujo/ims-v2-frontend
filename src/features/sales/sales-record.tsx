@@ -27,7 +27,10 @@ export default function SalesRecord() {
         onOpenChange={() => setIsCartVisible(false)}
         open={isCartVisible}
       >
-        <SalesCart patientCardId={patientId} />
+        <SalesCart
+          patientCardId={patientId}
+          addedToCartAction={() => setIsCartVisible(false)}
+        />
       </ImsSheet>
 
       {!isCartVisible && (
