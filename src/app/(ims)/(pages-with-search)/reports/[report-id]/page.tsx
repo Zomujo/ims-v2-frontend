@@ -23,6 +23,8 @@ import { useParams } from "next/navigation";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { ReportId } from "@features/reports/reports.data";
 
+export const dynamic = "force-static";
+
 const ReportDetails = () => {
   const [itemCount, setItemCount] = useState(0);
   const [cardData, setCardData] = useState<CardData[]>([]);

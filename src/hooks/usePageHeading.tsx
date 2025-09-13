@@ -33,6 +33,30 @@ export const pageHeadingMap = {
     title: "Suppliers",
     description: "Manage your suppliers here.",
   },
+  sales: {
+    title: "Sales",
+    description: "View and manage your sales records.",
+  },
+  "department-requests": {
+    title: "Department Requests",
+    description: "Manage department requests here.",
+  },
+  "item-orders": {
+    title: "Item Orders",
+    description: "Manage your item orders here.",
+  },
+  "audit-logs": {
+    title: "Audit Logs",
+    description: "View system audit logs here.",
+  },
+  reports: {
+    title: "Reports",
+    description: "Generate and view reports here.",
+  },
+  tutorials: {
+    title: "Tutorials",
+    description: "Access tutorials and guides here.",
+  },
 };
 
 interface PageHeadingContextType {
@@ -74,15 +98,24 @@ export function PageHeadingProvider({ children }: { children: ReactNode }) {
     const paths = pathname.split("/");
     const titleFromPath = paths[3] ?? paths[2] ?? paths[1];
     const headingMaps = { ...pageHeadingMap, ...settingPagesDescription };
-    const title =
-      headingMaps[titleFromPath as TitleFromPath]?.title ??
-      (customTitle ? customTitle : titleFromPath);
-    const description =
-      headingMaps[titleFromPath as TitleFromPath]?.description ??
-      (customDescription ? customDescription : "");
+    // Always prioritize mapped values, then custom, then fallback
+    let title: string;
+    let description: string;
+
+    if (headingMaps[titleFromPath as TitleFromPath]) {
+      title = headingMaps[titleFromPath as TitleFromPath].title;
+      description = headingMaps[titleFromPath as TitleFromPath].description;
+    } else if (customTitle || customDescription) {
+      title = customTitle || titleFromPath;
+      description = customDescription || "";
+    } else {
+      title = titleFromPath;
+      description = "";
+    }
+
     setPageTitle(title);
     setPageDescription(description);
-  }, [pathname, customTitle, customDescription, pageTitle, pageDescription]);
+  }, [pathname, customTitle, customDescription]);
 
   return (
     <PageHeadingContext.Provider

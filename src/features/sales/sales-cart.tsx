@@ -1,7 +1,7 @@
 "use client";
 import { handleRequestState } from "@/lib/utils";
 import { useParams } from "next/navigation";
-import { lazy, Suspense, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useFieldArray } from "react-hook-form";
 import { useIsClient, useLocalStorage } from "usehooks-ts";
 import { createSaleAction } from "../shared/actions/sales.action";
@@ -25,24 +25,9 @@ import { isSalesEditMode } from "./sales.utils";
 import { useOnlineStatus } from "@features/shared/hooks/useOnlineStatus";
 import { API_ENDPOINTS } from "@/lib/api-constants";
 import { API_ENDPOINTS_OLD } from "@/lib/constant";
-import { Skeleton } from "@features/ui/skeleton";
-
-const LoadingOverlay = lazy(() => import("@features/ui/loadingOverlay"));
-const MultiSelect = lazy(() =>
-  import("@features/ui/multiSelect").then((module) => ({
-    default: module.MultiSelect,
-  })),
-);
-const SaleCard = lazy(() =>
-  import("./sales-cart-cards").then((module) => ({
-    default: module.SaleCard,
-  })),
-);
-const SaleCartSummery = lazy(() =>
-  import("./sales-cart-cards").then((module) => ({
-    default: module.SaleCartSummery,
-  })),
-);
+import LoadingOverlay from "@features/ui/loadingOverlay";
+import { MultiSelect } from "@features/ui/multiSelect";
+import { SaleCard, SaleCartSummery } from "./sales-cart-cards";
 
 const handleSalesItem = (saleItems: SaleItem, isEditMode?: boolean) => {
   return {
@@ -244,11 +229,7 @@ export default function SalesCart({ patientCardId }: SalesCartProps) {
 
   return (
     <ScrollArea className="relative h-[99%] w-full flex-[0.4] rounded-xl border bg-white py-5">
-      {isLoading && (
-        <Suspense>
-          <LoadingOverlay />
-        </Suspense>
-      )}
+      {isLoading && <LoadingOverlay />}
       <ImsForm
         className="gap-y-0 px-4 py-2 pb-2"
         form={form}
@@ -259,19 +240,17 @@ export default function SalesCart({ patientCardId }: SalesCartProps) {
             <h2 className="absolute inset-x-0 top-0 rounded-xl bg-white px-6 py-2 font-bold">
               Sale Cart ( {addedSalesItems?.length} )
             </h2>
-            <Suspense fallback={<Skeleton className="h-11 w-full" />}>
-              <MultiSelect
-                options={paymentTypeOptionsBuilder}
-                onValueChange={(value) =>
-                  form.setValue("paymentType", value, { shouldValidate: true })
-                }
-                defaultValue={paymentType}
-                value={paymentType}
-                disabled={allHaveNHIS}
-                animation={2}
-                variant="inverted"
-              />
-            </Suspense>
+            <MultiSelect
+              options={paymentTypeOptionsBuilder}
+              onValueChange={(value) =>
+                form.setValue("paymentType", value, { shouldValidate: true })
+              }
+              defaultValue={paymentType}
+              value={paymentType}
+              disabled={allHaveNHIS}
+              animation={2}
+              variant="inverted"
+            />
             <HookFormField
               formControl={form.control}
               name="insured"
@@ -298,19 +277,17 @@ export default function SalesCart({ patientCardId }: SalesCartProps) {
                   label=""
                   renderInput={({ field }) => {
                     return (
-                      <Suspense fallback={<Skeleton className="h-28 w-full" />}>
-                        <SaleCard
-                          remove={remove}
-                          salesItem={{
-                            ...salesItemBuilder(
-                              (item as unknown as SaleItem).batchId,
-                            ),
-                          }}
-                          index={index}
-                          quantity={field.value}
-                          onChange={field.onChange}
-                        />
-                      </Suspense>
+                      <SaleCard
+                        remove={remove}
+                        salesItem={{
+                          ...salesItemBuilder(
+                            (item as unknown as SaleItem).batchId,
+                          ),
+                        }}
+                        index={index}
+                        quantity={field.value}
+                        onChange={field.onChange}
+                      />
                     );
                   }}
                 />
@@ -328,12 +305,10 @@ export default function SalesCart({ patientCardId }: SalesCartProps) {
                 />
               )}
             />
-            <Suspense fallback={<Skeleton className="h-24 w-full" />}>
-              <SaleCartSummery
-                amountTotal={amountSubtotal}
-                nhisCoveredAmount={nhisCoveredAmount}
-              />
-            </Suspense>
+            <SaleCartSummery
+              amountTotal={amountSubtotal}
+              nhisCoveredAmount={nhisCoveredAmount}
+            />
           </>
         }
         RenderActions={

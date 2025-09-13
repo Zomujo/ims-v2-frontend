@@ -1,3 +1,4 @@
+"use client";
 import { HeaderLayout } from "@/features/layout/header/header-layout";
 import SidebarLayout from "@/features/layout/sidebar/sidebar-layout";
 import PageHeading from "@/features/shared/components/page-heading";

@@ -1,12 +1,10 @@
 "use client";
-import { lazy, Suspense, useState } from "react";
+import { useState } from "react";
 import { ImsButton } from "@features/shared/components/ims-button";
 import { ImsSheet } from "../shared/components/ims-sheet";
-import { Skeleton } from "@features/ui/skeleton";
-
-const SalesCart = lazy(() => import("./sales-cart"));
-const SalesItemList = lazy(() => import("./sales-item-list"));
-const SalesPatientList = lazy(() => import("./sales-patient-list"));
+import SalesCart from "./sales-cart";
+import SalesItemList from "./sales-item-list";
+import SalesPatientList from "./sales-patient-list";
 
 export default function SalesRecord() {
   const [isCartVisible, setIsCartVisible] = useState(false);
@@ -15,29 +13,21 @@ export default function SalesRecord() {
   return (
     <section className="relative flex h-[95%] w-full gap-x-3 rounded-2xl bg-white pb-20 md:pb-0">
       <div className="w-full space-y-4 overflow-x-auto overflow-y-hidden">
-        <Suspense fallback={<Skeleton className="h-40 w-full" />}>
-          <SalesPatientList
-            setPatientIdAction={setPatientId}
-            patientId={patientId}
-          />
-        </Suspense>
-        <Suspense fallback={<Skeleton className="h-full w-full" />}>
-          <SalesItemList />
-        </Suspense>
+        <SalesPatientList
+          setPatientIdAction={setPatientId}
+          patientId={patientId}
+        />
+        <SalesItemList />
       </div>
 
       <div className="hidden w-full max-w-md min-w-sm lg:block">
-        <Suspense fallback={<Skeleton className="h-full w-full" />}>
-          <SalesCart />
-        </Suspense>
+        <SalesCart />
       </div>
       <ImsSheet
         onOpenChange={() => setIsCartVisible(false)}
         open={isCartVisible}
       >
-        <Suspense fallback={<Skeleton className="h-full w-full" />}>
-          <SalesCart patientCardId={patientId} />
-        </Suspense>
+        <SalesCart patientCardId={patientId} />
       </ImsSheet>
 
       {!isCartVisible && (

@@ -40,13 +40,10 @@ import { Textarea } from "@features/ui/textarea";
 import useImsSearchParams from "@features/shared/hooks/use-ims-search-params";
 import { UI_STATE } from "@/lib/constant";
 import { CacheKey } from "@/lib/cache/cache-data";
+import { useItems } from "@/hooks/useItems";
 
-type DepartmentRequestProps = {
-  items: IdData[];
-};
-export default function DepartmentRequestList({
-  items,
-}: DepartmentRequestProps) {
+export default function DepartmentRequestList() {
+  const { items } = useItems();
   const { canWrite, canDelete, role } = useSessionData();
   const [openModal, setOpenModal] = useState(false);
   const [modalActionProperties, setModalActionProperties] = useState({
