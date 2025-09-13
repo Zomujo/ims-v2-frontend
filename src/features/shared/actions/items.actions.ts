@@ -47,7 +47,11 @@ export async function getItems(
   const fetchOptions: FetchApi = {
     url: generateUrlWithQueryParams(
       API_ENDPOINTS.ITEMS,
-      params ?? {},
+      {
+        ...params,
+        orderDirection: "ASC",
+        orderBy: "totalStock",
+      },
       arraySearch,
     ),
     method: "GET",

@@ -20,6 +20,7 @@ export default function PageHeading({
     titleFromPath.replace(/-/g, " "),
     "",
   );
+  console.log(title, description);
 
   return (
     <>
