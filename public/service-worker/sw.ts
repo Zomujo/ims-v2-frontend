@@ -11,31 +11,6 @@ declare global {
 
 declare const self: ServiceWorkerGlobalScope;
 
-const serwist = new Serwist({
-  precacheEntries: self.__SW_MANIFEST,
-  skipWaiting: true,
-  clientsClaim: true,
-  navigationPreload: true,
-  runtimeCaching: [
-    ...defaultCache,
-    {
-      matcher: ({ url }) => url.pathname.startsWith("/api/auth/session"),
-      handler: new NetworkFirst({
-        cacheName: "session-cache",
-        networkTimeoutSeconds: 2,
-      }),
-    },
-    {
-      matcher: ({ url }) =>
-        url.pathname.startsWith("/api/") &&
-        !url.pathname.startsWith("/api/auth/session"),
-      handler: new NetworkFirst({
-        cacheName: "api-cache",
-      }),
-    },
-  ],
-});
-
 const urlsToPrecache = [
   "/",
   "/dashboard",
@@ -76,14 +51,37 @@ const urlsToPrecache = [
   "/reports/earnings-overview",
 ] as const;
 
-self.addEventListener("install", (event) => {
-  const requestPromises = Promise.all(
-    urlsToPrecache.map(async (entry) => {
-      return serwist.handleRequest({ request: new Request(entry), event });
-    }),
-  );
-
-  event.waitUntil(requestPromises);
+const serwist = new Serwist({
+  precacheEntries: [...(self.__SW_MANIFEST || []), ...urlsToPrecache],
+  skipWaiting: true,
+  clientsClaim: true,
+  navigationPreload: true,
+  runtimeCaching: [
+    ...defaultCache,
+    // Cache navigation requests (HTML pages)
+    {
+      matcher: ({ request }) => request.mode === "navigate",
+      handler: new NetworkFirst({
+        cacheName: "pages-cache",
+        networkTimeoutSeconds: 2,
+      }),
+    },
+    {
+      matcher: ({ url }) => url.pathname.startsWith("/api/auth/session"),
+      handler: new NetworkFirst({
+        cacheName: "session-cache",
+        networkTimeoutSeconds: 2,
+      }),
+    },
+    {
+      matcher: ({ url }) =>
+        url.pathname.startsWith("/api/") &&
+        !url.pathname.startsWith("/api/auth/session"),
+      handler: new NetworkFirst({
+        cacheName: "api-cache",
+      }),
+    },
+  ],
 });
 
 serwist.addEventListeners();
