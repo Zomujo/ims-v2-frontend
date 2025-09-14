@@ -63,7 +63,7 @@ export const settingPagesDescription = {
   },
   expiry: {
     title: "Expiry",
-    description: "Expiry for the application",
+    description: "List of Expired and Near-Expiry Medicines",
   },
 } as const;
 
