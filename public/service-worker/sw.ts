@@ -3,6 +3,10 @@ import { PrecacheEntry, SerwistGlobalConfig } from "serwist";
 import { Serwist } from "serwist";
 import { NetworkFirst } from "serwist";
 import { StaleWhileRevalidate } from "serwist";
+import {
+  PermissionModules,
+  UserRole,
+} from "@features/shared/types/auth-action.types";
 
 declare global {
   interface ServiceWorkerGlobalScope extends SerwistGlobalConfig {
@@ -74,10 +78,15 @@ const sessionCachePlugins = [
       return new Response(
         JSON.stringify({
           user: {
-            name: "Offline User",
-            email: "offline@local",
-            role: "OFFLINE",
-            permissions: [],
+            id: "user-12345",
+            createdAt: "2025-09-14T12:00:00.000Z",
+            updatedAt: "2025-09-14T12:00:00.000Z",
+            imageUrl: null,
+            fullName: "Jane Doe",
+            email: "jane.doe@example.com",
+            departmentId: "dept-001",
+            role: UserRole.CentralAdmin,
+            permissions: Object.values(PermissionModules),
           },
           expires: new Date(Date.now() + 30 * 60 * 1000).toISOString(),
           offline: true,
