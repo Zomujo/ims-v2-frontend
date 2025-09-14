@@ -2,7 +2,6 @@ import { defaultCache } from "@serwist/next/worker";
 import { PrecacheEntry, SerwistGlobalConfig } from "serwist";
 import { Serwist } from "serwist";
 import { NetworkFirst } from "serwist";
-import { StaleWhileRevalidate } from "serwist";
 import {
   PermissionModules,
   UserRole,
@@ -134,9 +133,9 @@ const serwist = new Serwist({
     },
     {
       matcher: ({ url }) => url.pathname.startsWith("/api/auth/session"),
-      handler: new StaleWhileRevalidate({
+      handler: new NetworkFirst({
         cacheName: "session-cache",
-        plugins: sessionCachePlugins,
+        networkTimeoutSeconds: 3,
       }),
     },
     {
