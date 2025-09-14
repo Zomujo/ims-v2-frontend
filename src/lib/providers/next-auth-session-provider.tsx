@@ -6,7 +6,17 @@ const NextAuthSessionProvider = ({
   children,
   ...props
 }: SessionProviderProps) => {
-  return <SessionProvider {...props}>{children}</SessionProvider>;
+  return (
+    <SessionProvider
+      refetchOnWindowFocus={
+        typeof navigator !== "undefined" && navigator.onLine
+      }
+      refetchWhenOffline={false}
+      {...props}
+    >
+      {children}
+    </SessionProvider>
+  );
 };
 
 export default NextAuthSessionProvider;

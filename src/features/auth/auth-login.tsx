@@ -25,8 +25,12 @@ export function LoginForm() {
   });
 
   const handleSubmitFn = (data: unknown) => {
+    const { accountIdentifier, password } = data as z.infer<typeof loginSchema>;
     return handleAuth({
-      credentials: data as z.infer<typeof loginSchema>,
+      credentials: {
+        accountIdentifier: accountIdentifier.trim(),
+        password: password.trim(),
+      } as z.infer<typeof loginSchema>,
       routeFn: router.push,
       options: {
         authId: AUTH_OPTIONS_CONSTANTS.LOGIN,
