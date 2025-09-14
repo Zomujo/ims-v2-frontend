@@ -44,8 +44,10 @@ export default function useFetchData<T>({
   const searchParams = useSearchParams();
   const prevSearchParams = useRef<string>("");
   const { isConnected } = useGlobalNotifications();
+  const prevDepsRef = useRef<unknown[] | null>(null);
 
   const fetchData = async () => {
+    console.log("Hey there");
     let cachedData: T | null = null;
 
     if (cacheKey) {
@@ -82,7 +84,6 @@ export default function useFetchData<T>({
       });
     });
     const isOffline = typeof navigator !== "undefined" && !navigator.onLine;
-
     if (isOffline || !isConnected) {
       if (
         coldData &&
@@ -177,7 +178,13 @@ export default function useFetchData<T>({
   };
 
   useEffect(() => {
+    console.log("Dependencies", deps);
     if (!executeOnMount) return;
+
+    const depsChanged =
+      !prevDepsRef.current ||
+      prevDepsRef.current.length !== deps.length ||
+      prevDepsRef.current.some((d, i) => d !== deps[i]);
 
     const newSearchParamsString = searchParams.toString();
     const oldSearchParamsString = prevSearchParams.current;
@@ -195,11 +202,16 @@ export default function useFetchData<T>({
       newParamsCopy.delete("state");
       oldParamsCopy.delete("state");
 
-      if (newParamsCopy.toString() === oldParamsCopy.toString()) {
+      const paramsUnchanged =
+        newParamsCopy.toString() === oldParamsCopy.toString();
+
+      if (paramsUnchanged && !depsChanged) {
+        prevDepsRef.current = deps;
         return;
       }
     }
 
+    prevDepsRef.current = deps;
     void fetchData();
   }, [searchParams, ...deps]);
 
