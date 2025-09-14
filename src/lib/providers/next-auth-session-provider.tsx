@@ -8,9 +8,7 @@ const NextAuthSessionProvider = ({
 }: SessionProviderProps) => {
   return (
     <SessionProvider
-      refetchOnWindowFocus={
-        typeof navigator !== "undefined" && navigator.onLine
-      }
+      refetchOnWindowFocus={false}
       refetchWhenOffline={false}
       {...props}
     >
