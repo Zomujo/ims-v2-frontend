@@ -73,7 +73,12 @@ const sessionCachePlugins = [
       if (cached) return cached;
       return new Response(
         JSON.stringify({
-          user: { name: "Offline User" },
+          user: {
+            name: "Offline User",
+            email: "offline@local",
+            role: "OFFLINE",
+            permissions: [],
+          },
           expires: new Date(Date.now() + 30 * 60 * 1000).toISOString(),
           offline: true,
         }),
@@ -82,6 +87,26 @@ const sessionCachePlugins = [
     },
   },
 ];
+
+// WARM: ensure session is cached while online so first offline load works.
+// (Safe no-op if already cached or unauthenticated.)
+self.addEventListener("activate", (event) => {
+  event.waitUntil(
+    (async () => {
+      try {
+        const res = await fetch("/api/auth/session", {
+          credentials: "include",
+        });
+        if (res.ok) {
+          const cache = await caches.open("session-cache");
+          await cache.put("/api/auth/session", res.clone());
+        }
+      } catch {
+        // ignore
+      }
+    })(),
+  );
+});
 
 const serwist = new Serwist({
   precacheEntries: [...(self.__SW_MANIFEST || []), ...urlsToPrecache],
