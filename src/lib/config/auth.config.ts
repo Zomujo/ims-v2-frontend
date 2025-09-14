@@ -1,14 +1,11 @@
 /* eslint-disable no-param-reassign */
 
-import { isTokenExpired } from "@/features/auth/auth.utils";
-import { authRefreshTokenAction } from "@/features/shared/actions/auth.action";
 import {
   GetServerSidePropsContext,
   NextApiRequest,
   NextApiResponse,
 } from "next";
 import { getServerSession, NextAuthOptions } from "next-auth";
-import { JWT } from "next-auth/jwt";
 import { LoginCredentialsProvider } from "./auth.providers";
 
 export const AUTH_OPTIONS_CONSTANTS = {
@@ -18,8 +15,11 @@ export const AUTH_OPTIONS_CONSTANTS = {
 };
 
 export const authOptions = {
-  pages: {
-    signIn: "/auth/login",
+  pages: { signIn: "/auth/login" },
+  session: {
+    strategy: "jwt",
+    // Effectively "forever" (10 years)
+    maxAge: 10 * 365 * 24 * 60 * 60,
   },
   providers: [LoginCredentialsProvider()],
   callbacks: {
@@ -27,14 +27,11 @@ export const authOptions = {
       if (user) {
         token = { ...user };
       }
-
+      // Still allow manual status update if you use trigger: 'update'
       if (trigger === "update" && session) {
         token.status = session.status || token.status;
       }
-
-      if (!user && isTokenExpired(token.expiresAt)) {
-        token = await refreshToken(token);
-      }
+      // No refresh / expiry logic.
       return token;
     },
     async session({ session, token }) {
@@ -56,18 +53,4 @@ export function imsServerSession(
     | []
 ) {
   return getServerSession(...args, authOptions);
-}
-
-async function refreshToken(tokenObj: JWT) {
-  const refreshTokenResponse = await authRefreshTokenAction(
-    tokenObj.tokens.refreshToken,
-  );
-
-  return refreshToken
-    ? {
-        ...tokenObj,
-        expiresAt: refreshTokenResponse?.expiresAt ?? "",
-        tokens: { ...tokenObj.tokens, ...refreshToken },
-      }
-    : ({} as JWT);
 }
