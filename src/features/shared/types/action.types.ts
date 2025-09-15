@@ -473,7 +473,7 @@ export type GetSalesItemsDto = {
   quantity: number;
   item: {
     name: string;
-    brandName: string;
+    brandName?: string;
     sellingPrice: number;
   };
 };
