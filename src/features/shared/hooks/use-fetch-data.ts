@@ -51,10 +51,12 @@ export default function useFetchData<T>({
     let cachedData: T | null = null;
 
     if (cacheKey) {
+      console.log("Cache key", cacheKey);
       const cacheKeyWithId = `${cacheKey}-${cacheKeyId}`;
       cachedData = await localforage.getItem<T>(
         cacheKeyId ? cacheKeyWithId : cacheKey,
       );
+      console.log("Cached data", cachedData);
       if (cachedData) {
         if (
           typeof cachedData === "object" &&
@@ -142,6 +144,7 @@ export default function useFetchData<T>({
         arraySearchParams.toString(),
         routeParams,
       );
+      console.log("Fetched data", response);
       setColdData(response);
       setData(response);
       onSuccess?.(response);
