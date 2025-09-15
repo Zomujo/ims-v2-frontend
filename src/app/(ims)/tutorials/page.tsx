@@ -2,8 +2,6 @@
 import React, { useState } from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
 
-export const dynamic = "force-static";
-
 const Tutorials = () => {
   const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
