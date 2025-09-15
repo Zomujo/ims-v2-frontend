@@ -4,8 +4,6 @@ import PageHeading from "@/features/shared/components/page-heading";
 import { PermissionModules } from "@features/shared/types/auth-action.types";
 import { PermissionProvider } from "@/lib/providers/permission-provider";
 
-export const dynamic = "force-static";
-
 export default async function NewSalePage({
   params,
 }: {
