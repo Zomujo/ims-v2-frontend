@@ -4,6 +4,8 @@ import {
   NetworkFirst,
   PrecacheEntry,
   SerwistGlobalConfig,
+  NetworkOnly,
+  ExpirationPlugin,
 } from "serwist";
 
 declare global {
@@ -97,6 +99,18 @@ const serwist = new Serwist({
   clientsClaim: true,
   navigationPreload: true,
   runtimeCaching: [
+    {
+      matcher: /\/api\/auth\/.*/,
+      handler: new NetworkOnly({
+        plugins: [
+          new ExpirationPlugin({
+            maxEntries: 16,
+            maxAgeSeconds: 24 * 60 * 60, // 24 hours
+          }),
+        ],
+        networkTimeoutSeconds: 10,
+      }),
+    },
     ...defaultCache,
     {
       matcher: ({ request }) => request.mode === "navigate",
@@ -105,13 +119,13 @@ const serwist = new Serwist({
         networkTimeoutSeconds: 2,
       }),
     },
-    {
-      matcher: ({ url }) => url.pathname === "/api/auth/session",
-      handler: new NetworkFirst({
-        cacheName: "session-cache",
-        networkTimeoutSeconds: 3,
-      }),
-    },
+    // {
+    //   matcher: ({ url }) => url.pathname === "/api/auth/session",
+    //   handler: new NetworkFirst({
+    //     cacheName: "session-cache",
+    //     networkTimeoutSeconds: 3,
+    //   }),
+    // },
     {
       matcher: ({ url }) =>
         url.pathname.startsWith("/api/") &&
