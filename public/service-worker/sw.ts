@@ -1,11 +1,10 @@
 import { defaultCache } from "@serwist/next/worker";
-import { PrecacheEntry, SerwistGlobalConfig } from "serwist";
-import { Serwist } from "serwist";
-import { NetworkFirst } from "serwist";
 import {
-  PermissionModules,
-  UserRole,
-} from "@features/shared/types/auth-action.types";
+  Serwist,
+  NetworkFirst,
+  PrecacheEntry,
+  SerwistGlobalConfig,
+} from "serwist";
 
 declare global {
   interface ServiceWorkerGlobalScope extends SerwistGlobalConfig {
@@ -55,65 +54,41 @@ const urlsToPrecache = [
   "/reports/earnings-overview",
 ] as const;
 
-const sessionCachePlugins = [
-  {
-    // Ensure only successful responses cached, stripping no-store
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    cacheWillUpdate: async ({ response }: any) => {
-      if (!response || response.status !== 200) return null;
-      const body = await response.clone().arrayBuffer();
-      return new Response(body, {
-        status: response.status,
-        statusText: response.statusText,
-        headers: { "Content-Type": "application/json" },
-      });
-    },
-    // Provide cached or synthetic session when offline & no cache yet
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    handlerDidError: async ({ request }: any) => {
-      const cache = await caches.open("session-cache");
-      const cached = await cache.match(request);
-      if (cached) return cached;
-      return new Response(
-        JSON.stringify({
-          user: {
-            id: "user-12345",
-            createdAt: "2025-09-14T12:00:00.000Z",
-            updatedAt: "2025-09-14T12:00:00.000Z",
-            imageUrl: null,
-            fullName: "Jane Doe",
-            email: "jane.doe@example.com",
-            departmentId: "dept-001",
-            role: UserRole.CentralAdmin,
-            permissions: Object.values(PermissionModules),
-          },
-          expires: new Date(Date.now() + 30 * 60 * 1000).toISOString(),
-          offline: true,
-        }),
-        { status: 200, headers: { "Content-Type": "application/json" } },
-      );
-    },
-  },
-];
+// const sessionCachePlugins = [
+//   {
+//     // Cache only successful responses.
+//     // eslint-disable-next-line @typescript-eslint/no-explicit-any
+//     cacheWillUpdate: async ({ response }: any) => {
+//       if (!response || response.status !== 200) return null;
+//       const body = await response.clone().arrayBuffer();
+//       return new Response(body, {
+//         status: response.status,
+//         statusText: response.statusText,
+//         headers: { "Content-Type": "application/json" },
+//       });
+//     },
+//   },
+// ];
 
-// WARM: ensure session is cached while online so first offline load works.
-// (Safe no-op if already cached or unauthenticated.)
-self.addEventListener("activate", (event) => {
-  event.waitUntil(
-    (async () => {
-      try {
-        const res = await fetch("/api/auth/session", {
-          credentials: "include",
-        });
-        if (res.ok) {
-          const cache = await caches.open("session-cache");
-          await cache.put("/api/auth/session", res.clone());
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+self.addEventListener("message", (event: any) => {
+  if (event?.data?.type === "REFRESH_SESSION") {
+    event.waitUntil(
+      (async () => {
+        try {
+          const res = await fetch("/api/auth/session", {
+            credentials: "include",
+          });
+          if (res.ok) {
+            const cache = await caches.open("session-cache");
+            await cache.put("/api/auth/session", res.clone());
+          }
+        } catch {
+          // ignore
         }
-      } catch {
-        // ignore
-      }
-    })(),
-  );
+      })(),
+    );
+  }
 });
 
 const serwist = new Serwist({
@@ -123,7 +98,6 @@ const serwist = new Serwist({
   navigationPreload: true,
   runtimeCaching: [
     ...defaultCache,
-    // Cache navigation requests (HTML pages)
     {
       matcher: ({ request }) => request.mode === "navigate",
       handler: new NetworkFirst({
@@ -132,7 +106,7 @@ const serwist = new Serwist({
       }),
     },
     {
-      matcher: ({ url }) => url.pathname.startsWith("/api/auth/session"),
+      matcher: ({ url }) => url.pathname === "/api/auth/session",
       handler: new NetworkFirst({
         cacheName: "session-cache",
         networkTimeoutSeconds: 3,
