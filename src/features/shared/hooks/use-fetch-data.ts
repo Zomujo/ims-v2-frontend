@@ -61,10 +61,15 @@ export default function useFetchData<T>({
         if (
           typeof cachedData === "object" &&
           "total" in cachedData &&
-          "totalPages" in cachedData
+          "totalPages" in cachedData &&
+          "rows" in cachedData
         ) {
           cachedData = {
             ...cachedData,
+            rows: Array.isArray(cachedData.rows)
+              ? cachedData.rows.filter((item) => item !== null)
+              : cachedData.rows,
+            total: Number(cachedData.total),
             totalPages: Math.ceil(Number(cachedData.total) / 10),
           } as T;
         }
@@ -126,7 +131,7 @@ export default function useFetchData<T>({
         );
         setData({
           ...(coldData as object),
-          rows: filteredResults.filter(Boolean),
+          rows: filteredResults.filter((item) => item !== null),
           total: filteredResults.length,
           totalPages: Math.ceil(
             filteredResults.length / Number(queryParams.limit || 10),
