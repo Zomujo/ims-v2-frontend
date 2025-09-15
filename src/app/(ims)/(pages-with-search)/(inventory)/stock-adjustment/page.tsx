@@ -2,8 +2,6 @@ import StockAdjustmentList from "@/features/stock-adjustment/stock-adjustment-li
 import { PermissionProvider } from "@/lib/providers/permission-provider";
 import { PermissionModules } from "@features/shared/types/auth-action.types";
 
-export const dynamic = "force-static";
-
 export default async function page() {
   return (
     <PermissionProvider permission={PermissionModules.STOCK_ADJUSTMENT}>
