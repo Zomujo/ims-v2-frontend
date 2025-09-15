@@ -2,16 +2,9 @@
 import { SessionProvider, SessionProviderProps } from "next-auth/react";
 import React from "react";
 
-const NextAuthSessionProvider = ({
-  children,
-  ...props
-}: SessionProviderProps) => {
+const NextAuthSessionProvider = ({ children }: SessionProviderProps) => {
   return (
-    <SessionProvider
-      refetchOnWindowFocus={false}
-      refetchWhenOffline={false}
-      {...props}
-    >
+    <SessionProvider refetchOnWindowFocus={false} refetchWhenOffline={false}>
       {children}
     </SessionProvider>
   );
