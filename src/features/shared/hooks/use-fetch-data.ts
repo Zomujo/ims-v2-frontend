@@ -126,7 +126,7 @@ export default function useFetchData<T>({
         );
         setData({
           ...(coldData as object),
-          rows: filteredResults,
+          rows: filteredResults.filter(Boolean),
           total: filteredResults.length,
           totalPages: Math.ceil(
             filteredResults.length / Number(queryParams.limit || 10),
