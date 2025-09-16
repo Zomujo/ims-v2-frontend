@@ -95,7 +95,7 @@ export const helpTabs = [
   },
   {
     name: "USSD codes",
-    icon: "solar:video-frame-bold-duotone",
+    icon: "solar:phone-calling-bold-duotone",
     link: "/ussd-codes",
   },
 ];

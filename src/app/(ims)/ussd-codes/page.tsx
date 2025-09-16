@@ -2,9 +2,6 @@
 import { drugs } from "@/lib/constant";
 import React, { useState } from "react";
 
-// Paste extracted data here
-
-
 const DrugListPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -28,9 +25,9 @@ const DrugListPage = () => {
         <h3 className="mt-4 text-lg font-semibold text-gray-900">
           Simply dial{" "}
           <span className="text-xl font-bold tracking-wide text-blue-600">
-            *921*251# 
-          </span>
-          {" "}on your phone to access our services instantly!
+            *921*251#
+          </span>{" "}
+          on your phone to access our services instantly!
         </h3>
       </div>
 
