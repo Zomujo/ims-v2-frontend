@@ -24,6 +24,7 @@ export default function SalesList() {
   const { data, loading, refetch } = useFetchData({
     fetchFn: getSales,
     cacheKey: CacheKey.SalesList,
+    arrayQueries: ["ASC"],
   });
   const [, , removeSalesItems] = useLocalStorage(salesItemLocalStorageKey, []);
   const sales = data?.rows ?? [];
@@ -97,7 +98,7 @@ export default function SalesList() {
   );
 
   return (
-    <div className="roundd-2xl mt-2 h-[calc(100%-15rem)] bg-white pr-4 sm:h-[calc(100%-10rem)]">
+    <div className="mt-2 h-[calc(100%-15rem)] rounded-2xl bg-white pr-4 sm:h-[calc(100%-10rem)]">
       <CrudPage
         moduleName="sales"
         data={sales}
