@@ -36,7 +36,7 @@ export const supplierSchema = z.object({
   email: z
     .string()
     .optional()
-    .transform((val) => (val ? val : null)),
+    .transform((val) => (val ? val : undefined)),
   physicalAddress: z.string(),
 
   // Step 3: Payment Details
