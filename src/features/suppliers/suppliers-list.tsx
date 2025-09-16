@@ -223,21 +223,8 @@ function SupplierForm({ supplierId }: Readonly<SupplierFormProps>) {
 
   const isStepFilled = useCallback(() => {
     const stepFieldMap: Record<number, string[]> = {
-      1: [
-        "name",
-        "supplierType",
-        "minimumOrderQuantity",
-        "leadTime",
-        "deliveryMethod",
-      ],
-      2: [
-        "primaryContactName",
-        "jobTitle",
-        "department",
-        "phoneNumber",
-        "email",
-        "physicalAddress",
-      ],
+      1: ["name"],
+      2: ["phoneNumber"],
     };
     const fields = stepFieldMap[currentStep];
     return fields ? isStepValid(fields, form.watch()) : true;
