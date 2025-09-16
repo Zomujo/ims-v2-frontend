@@ -93,4 +93,9 @@ export const helpTabs = [
     icon: "solar:video-frame-bold-duotone",
     link: "/tutorials",
   },
+  {
+    name: "USSD codes",
+    icon: "solar:video-frame-bold-duotone",
+    link: "/ussd-codes",
+  },
 ];
