@@ -146,8 +146,8 @@ export const SupplierFormInputs = ({
         />
         <HookFormField
           formControl={control}
-          name="supplierType"
-          label="Supplier Type"
+          name="supplierType" // Matches AddSupplier type
+          label="Supplier Type (optional)" // Matches UI
           renderInput={({ field }) => (
             <ImsSelect
               showNone={false}
@@ -162,7 +162,7 @@ export const SupplierFormInputs = ({
         <HookFormField
           formControl={control}
           name="minimumOrderQuantity" // Matches AddSupplier type
-          label="Minimum order qty" // Matches UI
+          label="Minimum order qty (optional)" // Matches UI
           renderInput={({ field }) => (
             <Input
               type="number"
@@ -175,7 +175,7 @@ export const SupplierFormInputs = ({
         <HookFormField
           formControl={control}
           name="leadTime" // Matches AddSupplier type
-          label="Lead time" // Matches UI
+          label="Lead time (optional)" // Matches UI
           renderInput={({ field }) => (
             <ImsSelect
               showNone={false}
@@ -190,7 +190,7 @@ export const SupplierFormInputs = ({
         <HookFormField
           formControl={control}
           name="deliveryMethod" // Matches AddSupplier type
-          label="Delivery Method" // Matches UI
+          label="Delivery Method (optional)" // Matches UI
           renderInput={({ field }) => (
             <ImsSelect
               showNone={false}
@@ -207,7 +207,7 @@ export const SupplierFormInputs = ({
         <HookFormField
           formControl={control}
           name="primaryContactName" // Matches AddSupplier type
-          label="Primary Contact name" // Matches UI
+          label="Primary Contact name (optional)" // Matches UI
           renderInput={({ field }) => (
             <Input
               {...field}
@@ -220,7 +220,7 @@ export const SupplierFormInputs = ({
           <HookFormField
             formControl={control}
             name="jobTitle" // Matches AddSupplier type
-            label="Job Title" // Matches UI
+            label="Job Title (optional)" // Matches UI
             renderInput={({ field }) => (
               <Input
                 {...field}
@@ -232,7 +232,7 @@ export const SupplierFormInputs = ({
           <HookFormField
             formControl={control}
             name="department"
-            label="Department"
+            label="Department (optional)"
             renderInput={({ field }) => (
               <ImsSelect
                 showNone={false}
@@ -254,14 +254,14 @@ export const SupplierFormInputs = ({
               {...field}
               type="tel"
               className="focus-visible:ring-ims-blue-300 bg-white"
-              placeholder="555 553 8672"
+              placeholder="+233 55 553 8672"
             />
           )}
         />
         <HookFormField
           formControl={control}
           name="email"
-          label="Email"
+          label="Email (optional)"
           renderInput={({ field }) => (
             <Input
               {...field}
@@ -274,7 +274,7 @@ export const SupplierFormInputs = ({
         <HookFormField
           formControl={control}
           name="physicalAddress" // Matches AddSupplier type
-          label="Physical Address" // Matches UI
+          label="Physical Address (optional)" // Matches UI
           renderInput={({ field }) => (
             <Input
               {...field}
@@ -288,7 +288,7 @@ export const SupplierFormInputs = ({
         <HookFormField
           formControl={control}
           name="paymentType" // Matches AddSupplier type
-          label="Payment type" // Matches UI
+          label="Payment type (optional)" // Matches UI
           renderInput={({ field }) => (
             <ImsSelect
               options={mockPaymentTypes}
@@ -306,7 +306,7 @@ export const SupplierFormInputs = ({
             <HookFormField
               formControl={control}
               name="bankName" // Matches AddSupplier type
-              label="Bank name" // Matches UI
+              label="Bank name (optional)" // Matches UI
               renderInput={({ field }) => (
                 <ImsSelect
                   options={mockBankNames}
@@ -322,7 +322,7 @@ export const SupplierFormInputs = ({
               <HookFormField
                 formControl={control}
                 name="accountType" // Matches AddSupplier type
-                label="Account Type" // Matches UI
+                label="Account Type (optional)" // Matches UI
                 renderInput={({ field }) => (
                   <ImsSelect
                     options={mockAccountTypes}
@@ -337,7 +337,7 @@ export const SupplierFormInputs = ({
               <HookFormField
                 formControl={control}
                 name="accountNumber" // Matches AddSupplier type
-                label="Account number" // Matches UI
+                label="Account number (optional)" // Matches UI
                 renderInput={({ field }) => (
                   <Input
                     {...field}
@@ -386,7 +386,7 @@ export const SupplierFormInputs = ({
         <HookFormField
           formControl={control}
           name="currency" // Matches AddSupplier type
-          label="Currency" // Matches UI
+          label="Currency (optional)" // Matches UI
           renderInput={({ field }) => (
             <ImsSelect
               options={mockCurrencies}
@@ -401,7 +401,7 @@ export const SupplierFormInputs = ({
         <HookFormField
           formControl={control}
           name="paymentTerms" // Matches AddSupplier type
-          label="Payment Terms" // Matches UI
+          label="Payment Terms (optional)" // Matches UI
           renderInput={({ field }) => (
             <Textarea
               {...field}

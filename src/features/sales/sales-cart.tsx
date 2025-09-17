@@ -1,7 +1,7 @@
 "use client";
 import { handleRequestState } from "@/lib/utils";
 import { useParams } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { ReactNode, useEffect, useMemo, useState } from "react";
 import { useFieldArray } from "react-hook-form";
 import { useIsClient, useLocalStorage } from "usehooks-ts";
 import { createSaleAction } from "../shared/actions/sales.action";
@@ -38,10 +38,12 @@ const handleSalesItem = (saleItems: SaleItem, isEditMode?: boolean) => {
 type SalesCartProps = {
   patientCardId?: string;
   addedToCartAction?: () => void;
+  patientInfo?: string | ReactNode;
 };
 export default function SalesCart({
   patientCardId,
   addedToCartAction,
+  patientInfo,
 }: SalesCartProps) {
   const salesId = useParams().id;
   const isEditMode = isSalesEditMode(salesId);
@@ -247,6 +249,14 @@ export default function SalesCart({
             <h2 className="absolute inset-x-0 top-0 rounded-xl bg-white px-6 py-2 font-bold">
               Sale Cart ( {addedSalesItems?.length} )
             </h2>
+            {patientInfo && (
+              <div className="rounded-2xl border border-gray-200 bg-gray-50 p-4 shadow-sm">
+                <p className="text-sm font-medium text-gray-500">Patient</p>
+                <p className="text-ims-blue-300 mt-1 text-lg font-semibold">
+                  {patientInfo}
+                </p>
+              </div>
+            )}
             <MultiSelect
               options={paymentTypeOptionsBuilder}
               onValueChange={(value) =>

@@ -49,7 +49,7 @@ export const supplierDefaultValues = {
   name: "",
   brandTradeName: "",
   supplierType: "",
-  minimumOrderQuantity: undefined,
+  minimumOrderQuantity: 0,
   leadTime: "",
   deliveryMethod: "",
 

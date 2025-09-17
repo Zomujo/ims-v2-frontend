@@ -24,10 +24,11 @@ type ComboboxProps = {
   placeholder?: string;
   defaultValue?: string;
   className?: string;
+  dropdownClassName?: string;
   disabled?: boolean;
   moduleName?: string;
   onChange?: (value: string) => void;
-  onSelected?: (value: string) => void;
+  onSelected?: (value: string, label?: string | ReactNode) => void;
   onOpenChange?: (open: boolean) => void;
 };
 
@@ -41,6 +42,7 @@ export function Combobox({
   children,
   onSelected,
   onOpenChange,
+  dropdownClassName,
 }: Readonly<PropsWithChildren<ComboboxProps>>) {
   const [open, setOpen] = useState(false);
 
@@ -72,22 +74,18 @@ export function Combobox({
         <PopoverContent className="p-0">
           <Command>
             <CommandInput placeholder={selectPlaceholder} className="h-9" />
-            <CommandList>
+            <CommandList className={dropdownClassName}>
               <CommandEmpty>No {moduleName ?? "item"} found.</CommandEmpty>
               <CommandGroup>
                 {items.map(({ searchBy, value: itemValue, label }) => (
                   <CommandItem
                     key={itemValue}
-                    value={
-                      typeof label === "string"
-                        ? label
-                        : (searchBy ?? itemValue)
-                    }
+                    value={itemValue}
                     onSelect={(currentValue) => {
                       const newValue =
                         currentValue === value ? "" : currentValue;
                       setOpen(false);
-                      onSelected?.(newValue);
+                      onSelected?.(newValue, newValue && label);
                     }}
                   >
                     {label}

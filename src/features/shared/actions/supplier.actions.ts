@@ -19,7 +19,7 @@ import { CRUDACTION, GenerateQueryParams } from "../types/utitls.types";
 import { imsApiWithAuth } from "./ims-api.action";
 import { AuthApiStandardResponse } from "../types/auth-action.types";
 
-export async function addSupplier(data: CreateSupplierDto) {
+export async function addSupplier(data: Partial<CreateSupplierDto>) {
   const fetchOptions: FetchApi = {
     url: API_ENDPOINTS.SUPPLIERS,
     method: "POST",

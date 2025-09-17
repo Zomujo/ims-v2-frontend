@@ -163,7 +163,7 @@ export default function SidebarLayout() {
             {helpTabs.map((tab) => {
               return (
                 <SidebarMenu key={tab.name}>
-                  <SidebarMenuItem>
+                  <SidebarMenuItem className="mb-2">
                     <SidebarMenuButton asChild>
                       <ImsNavTab
                         href={tab.link ?? ""}

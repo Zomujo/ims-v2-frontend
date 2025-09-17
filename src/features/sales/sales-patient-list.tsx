@@ -7,6 +7,7 @@ import {
   Suspense,
   Dispatch,
   SetStateAction,
+  ReactNode,
 } from "react";
 import { getSalesPatientListAction } from "../shared/actions/sales.action";
 import { ImsSheet } from "../shared/components/ims-sheet";
@@ -22,11 +23,13 @@ const NewPatientForm = lazy(() => import("./components/new-patient-form"));
 type SalesPatientLIstProps = {
   patientId: string | undefined;
   setPatientIdAction: Dispatch<SetStateAction<string | undefined>>;
+  setPatientInfo?: Dispatch<SetStateAction<ReactNode | string>>;
 };
 
 export default function SalesPatientList({
   setPatientIdAction,
   patientId,
+  setPatientInfo,
 }: SalesPatientLIstProps) {
   const { setSearchParams, removeSearchParams, getSearchParams } =
     useImsSearchParams();
@@ -72,11 +75,13 @@ export default function SalesPatientList({
         placeholder="Search patient..."
         items={patients}
         value={patientId ?? ""}
-        onSelected={(value) => {
+        onSelected={(value, label) => {
           setPatientIdAction(value);
+          setPatientInfo?.(label);
         }}
+        dropdownClassName="pb-5"
       >
-        <div className="w-full border-t">
+        <div className="fixed bottom-0 left-0 w-full border-t bg-white">
           <Button
             onClick={handleAddNewPatient}
             variant="ghost"

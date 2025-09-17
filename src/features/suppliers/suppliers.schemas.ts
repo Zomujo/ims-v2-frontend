@@ -13,7 +13,7 @@ const convertTelToGH = (tel: string) => {
 export const supplierSchema = z.object({
   // Step 1: Supplier details (Mapping AddSupplier fields to UI steps)
   name: z.string().min(1, "Supplier name is required"),
-  supplierType: z.string().min(1, "Supplier type is required"),
+  supplierType: z.string().optional(),
   minimumOrderQuantity: z.preprocess(
     (val) => Number(val),
     z
@@ -21,31 +21,42 @@ export const supplierSchema = z.object({
       .min(0, "Minimum order quantity cannot be negative")
       .optional(),
   ),
-  leadTime: z.string().min(1, "Lead time is required"),
-  deliveryMethod: z.string().min(1, "Delivery method is required"),
+  leadTime: z.string().optional(),
+  deliveryMethod: z.string().optional(),
 
   // Step 2: Contact details
-  primaryContactName: z.string().min(1, "Primary contact name is required"),
-  jobTitle: z.string(),
-  department: z.string(),
+  primaryContactName: z.string().optional(),
+  jobTitle: z.string().optional(),
+  department: z.string().optional(),
   phoneNumber: z
     .string()
     .min(1, "Phone number is required")
-    .transform(convertTelToGH),
-  email: z.string().email("Invalid email address").min(1, "Email is required"),
-  physicalAddress: z.string().min(1, "Physical Address is required"),
+    .transform(convertTelToGH)
+    .optional(),
+  email: z
+    .string()
+    .optional()
+    .transform((val) => (val ? val : undefined)),
+  physicalAddress: z.string(),
 
   // Step 3: Payment Details
   paymentType: z.union([z.literal("Bank"), z.literal("Mobile Money")], {
     errorMap: () => ({ message: "Payment type is required" }),
   }),
-  currency: z.string().min(1, "Currency is required"),
-  paymentTerms: z.string().min(1, "Payment terms are required"),
+  currency: z.string().optional(),
+  paymentTerms: z.string().optional(),
   bankName: z.string().optional(),
   accountType: z.string().optional(),
   accountNumber: z.string().optional(),
   provider: z
     .union([z.literal("MTN"), z.literal("Vodafone"), z.literal("Airteltigo")])
     .optional(),
-  mobileMoneyPhoneNumber: z.string().transform(convertTelToGH).optional(),
+  mobileMoneyPhoneNumber: z
+    .string()
+    .optional()
+    .transform((val) => {
+      if (!val) return ""; // if undefined or empty
+      return val.length > 3 ? convertTelToGH(val) : "";
+    })
+    .optional(),
 });
