@@ -54,7 +54,7 @@ const urlsToPrecache = [
   "/reports/stock-level-report",
   "/reports/stock-movement-report",
   "/reports/earnings-overview",
-  '/ussd-codes'
+  "/ussd-codes",
 ] as const;
 
 // const sessionCachePlugins = [
