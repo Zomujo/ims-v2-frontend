@@ -10,6 +10,10 @@ import { getUsersNoPaginate } from "@features/shared/actions/admin.actions";
  * Hook to fetch and manage users.
  * It fetches users once and caches the result for any component that needs it.
  */
+
+// Module-level cache for users
+let usersCache: AuthIMSUserProfile[] | null = null;
+
 export function useUsers() {
   const [users, setUsers] = useState<AuthIMSUserProfile[]>([]);
   const [loading, setLoading] = useState(false);
@@ -18,12 +22,12 @@ export function useUsers() {
 
   useEffect(() => {
     if (!hasPermission(PermissionModules.USERS)) return;
-    if (!useUsers.cache) {
+    if (!usersCache) {
       setLoading(true);
       getUsersNoPaginate()
         .then((usersData) => {
           setUsers(usersData);
-          useUsers.cache = usersData;
+          usersCache = usersData;
         })
         .catch((err) => {
           setError(err);
@@ -33,7 +37,7 @@ export function useUsers() {
           setLoading(false);
         });
     } else {
-      setUsers(useUsers.cache);
+      setUsers(usersCache);
     }
   }, [hasPermission]);
 
@@ -43,7 +47,7 @@ export function useUsers() {
     try {
       const usersData = await getUsersNoPaginate();
       setUsers(usersData);
-      useUsers.cache = usersData;
+      usersCache = usersData;
       return usersData;
     } catch (err) {
       setError(err as Error);
@@ -56,5 +60,3 @@ export function useUsers() {
 
   return { users, loading, error, refetch };
 }
-
-useUsers.cache = null as AuthIMSUserProfile[] | null;
