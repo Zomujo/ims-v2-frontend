@@ -8,6 +8,10 @@ import { Department } from "@features/shared/types/settings-action.types";
  * Hook to fetch and manage departments.
  * It fetches departments once and caches the result for any component that needs it.
  */
+
+// Module-level cache for departments
+let departmentsCache: Department[] | null = null;
+
 export function useDepartments() {
   const [departments, setDepartments] = useState<Department[]>([]);
   const [loading, setLoading] = useState(false);
@@ -16,12 +20,12 @@ export function useDepartments() {
 
   useEffect(() => {
     if (!hasPermission(PermissionModules.DEPARTMENTS)) return;
-    if (!useDepartments.cache) {
+    if (!departmentsCache) {
       setLoading(true);
       getDepartmentsNoPaginate()
         .then((departmentsData) => {
           setDepartments(departmentsData);
-          useDepartments.cache = departmentsData;
+          departmentsCache = departmentsData;
         })
         .catch((err) => {
           setError(err);
@@ -31,7 +35,7 @@ export function useDepartments() {
           setLoading(false);
         });
     } else {
-      setDepartments(useDepartments.cache);
+      setDepartments(departmentsCache);
     }
   }, [hasPermission]);
 
@@ -41,7 +45,7 @@ export function useDepartments() {
     try {
       const departmentsData = await getDepartmentsNoPaginate();
       setDepartments(departmentsData);
-      useDepartments.cache = departmentsData;
+      departmentsCache = departmentsData;
       return departmentsData;
     } catch (err) {
       setError(err as Error);
@@ -54,5 +58,3 @@ export function useDepartments() {
 
   return { departments, loading, error, refetch };
 }
-
-useDepartments.cache = null as Department[] | null;
