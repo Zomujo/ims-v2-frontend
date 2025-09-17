@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 import { ImsButton } from "@features/shared/components/ims-button";
 import { ImsSheet } from "../shared/components/ims-sheet";
 import SalesCart from "./sales-cart";
@@ -9,6 +9,7 @@ import SalesPatientList from "./sales-patient-list";
 export default function SalesRecord() {
   const [isCartVisible, setIsCartVisible] = useState(false);
   const [patientId, setPatientId] = useState<string | undefined>(undefined);
+  const [patientInfo, setPatientInfo] = useState<string | ReactNode>("");
 
   return (
     <section className="relative flex h-[95%] w-full gap-x-3 rounded-2xl bg-white pb-20 md:pb-0">
@@ -16,12 +17,13 @@ export default function SalesRecord() {
         <SalesPatientList
           setPatientIdAction={setPatientId}
           patientId={patientId}
+          setPatientInfo={setPatientInfo}
         />
         <SalesItemList />
       </div>
 
       <div className="hidden w-full max-w-md min-w-sm lg:block">
-        <SalesCart />
+        <SalesCart patientCardId={patientId} patientInfo={patientInfo} />
       </div>
       <ImsSheet
         onOpenChange={() => setIsCartVisible(false)}
@@ -30,6 +32,7 @@ export default function SalesRecord() {
         <SalesCart
           patientCardId={patientId}
           addedToCartAction={() => setIsCartVisible(false)}
+          patientInfo={patientInfo}
         />
       </ImsSheet>
 

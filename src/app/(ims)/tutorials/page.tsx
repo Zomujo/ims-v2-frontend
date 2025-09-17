@@ -178,7 +178,8 @@ const Tutorials = () => {
                 key={selectedVideo.src}
                 className="w-full rounded-t-lg"
                 controls
-                autoPlay
+                preload="metadata"
+                poster={selectedVideo.src}
               >
                 <source src={selectedVideo.src} type="video/mp4" />
                 Your browser does not support the video tag.
