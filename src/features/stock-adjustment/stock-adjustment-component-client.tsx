@@ -12,6 +12,7 @@ import { Textarea } from "../ui/textarea";
 import { StockAdjustmentContext } from "./stock-adjustment.context";
 import LoadingOverlay from "@features/ui/loadingOverlay";
 import { stockAdjustmentReasons } from "@/lib/constant";
+import { CacheKey } from "@/lib/cache/cache-data";
 
 type StockAdjustmentFormInputsProps = {
   control: Control;
@@ -29,6 +30,8 @@ export function StockAdjustmentFormInputs({
   const selectedItemId = useWatch()["itemId"];
   const { data: batches, loading } = useFetchData({
     fetchFn: async () => getBatchesNoPaginate(selectedItemId),
+    cacheKeyId: selectedItemId,
+    cacheKey: CacheKey.ItemBatchesList,
     deps: [selectedItemId],
   });
   const itemOptions = items.map((item) => ({
