@@ -10,6 +10,7 @@ export default function SalesRecord() {
   const [isCartVisible, setIsCartVisible] = useState(false);
   const [patientId, setPatientId] = useState<string | undefined>(undefined);
   const [patientInfo, setPatientInfo] = useState<string | ReactNode>("");
+  const [refetchSales, setRefetchSales] = useState(false);
 
   return (
     <section className="relative flex h-[95%] w-full gap-x-3 rounded-2xl bg-white pb-20 md:pb-0">
@@ -19,11 +20,18 @@ export default function SalesRecord() {
           patientId={patientId}
           setPatientInfo={setPatientInfo}
         />
-        <SalesItemList />
+        <SalesItemList
+          refetchSales={refetchSales}
+          setRefetchSales={setRefetchSales}
+        />
       </div>
 
       <div className="hidden w-full max-w-md min-w-sm lg:block">
-        <SalesCart patientCardId={patientId} patientInfo={patientInfo} />
+        <SalesCart
+          patientCardId={patientId}
+          patientInfo={patientInfo}
+          setRefetchSales={setRefetchSales}
+        />
       </div>
       <ImsSheet
         onOpenChange={() => setIsCartVisible(false)}
@@ -33,6 +41,7 @@ export default function SalesRecord() {
           patientCardId={patientId}
           addedToCartAction={() => setIsCartVisible(false)}
           patientInfo={patientInfo}
+          setRefetchSales={setRefetchSales}
         />
       </ImsSheet>
 

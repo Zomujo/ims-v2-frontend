@@ -1,7 +1,14 @@
 "use client";
 import { handleRequestState } from "@/lib/utils";
 import { useParams } from "next/navigation";
-import { ReactNode, useEffect, useMemo, useState } from "react";
+import {
+  Dispatch,
+  ReactNode,
+  SetStateAction,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { useFieldArray } from "react-hook-form";
 import { useIsClient, useLocalStorage } from "usehooks-ts";
 import { createSaleAction } from "../shared/actions/sales.action";
@@ -39,11 +46,13 @@ type SalesCartProps = {
   patientCardId?: string;
   addedToCartAction?: () => void;
   patientInfo?: string | ReactNode;
+  setRefetchSales: Dispatch<SetStateAction<boolean>>;
 };
 export default function SalesCart({
   patientCardId,
   addedToCartAction,
   patientInfo,
+  setRefetchSales,
 }: SalesCartProps) {
   const salesId = useParams().id;
   const isEditMode = isSalesEditMode(salesId);
@@ -216,6 +225,7 @@ export default function SalesCart({
       //   nhisCoveredAmount,
       // );
       removeSalesItems();
+      setRefetchSales(true);
       form.reset();
       addedToCartAction?.();
       setIsSubmitting(false);
@@ -267,6 +277,7 @@ export default function SalesCart({
               disabled={allHaveNHIS}
               animation={2}
               variant="inverted"
+              labelName="Payment option"
             />
             <HookFormField
               formControl={form.control}

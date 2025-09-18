@@ -18,6 +18,7 @@ import { exportFile } from "@features/shared/actions/export.actions";
 import { ImsPopover } from "@features/shared/components/ims-popover";
 import { ExportType } from "@features/shared/types/utitls.types";
 import { useGlobalNotifications } from "@features/notifications/notifications-context";
+import { useOnlineStatus } from "@/features/shared/hooks/useOnlineStatus";
 
 export default function SearchWithFilter() {
   const [exporting, setExporting] = useState<ExportType | null>(null);
@@ -27,7 +28,7 @@ export default function SearchWithFilter() {
   const searchParams = useSearchParams();
   const btnData = actionButtonData[pathName];
   const exportBtnData = exportActionButtonData[pathName];
-  const { isConnected } = useGlobalNotifications();
+  const { isOnline } = useOnlineStatus();
 
   const checkRole = useCallback(
     (roles: UserRole[] | undefined) => {
@@ -103,7 +104,7 @@ export default function SearchWithFilter() {
               triggerProps={{ asChild: true }}
               trigger={
                 <ImsButton
-                  disabled={!isConnected}
+                  disabled={!isOnline}
                   startIcon={<Icon icon={exportBtnData.icon} />}
                 >
                   {exportBtnData.label}

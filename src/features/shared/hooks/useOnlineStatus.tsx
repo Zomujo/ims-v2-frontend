@@ -1,5 +1,5 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import localforage from "localforage";
 import { CacheKey } from "@/lib/cache/cache-data";
 import { toast } from "sonner";
@@ -43,7 +43,8 @@ export async function pushPendingRequest(request: SyncPayloadDto) {
 }
 
 export function useOnlineStatus() {
-  const { isConnected } = useGlobalNotifications();
+  //const { isConnected } = useGlobalNotifications();
+  const [isConnected, setIsConnected] = useState(navigator.onLine);
   const { userId } = useSessionData();
 
   async function sendPendingRequestsToQueue() {
@@ -72,6 +73,19 @@ export function useOnlineStatus() {
       void syncManager.run(sendPendingRequestsToQueue);
     }
   }, [isConnected]);
+
+  useEffect(() => {
+    const handleOnline = () => setIsConnected(true);
+    const handleOffline = () => setIsConnected(false);
+
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
+
+    return () => {
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
+    };
+  }, []);
 
   const handleRequests = (
     url: string,

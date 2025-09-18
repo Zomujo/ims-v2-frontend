@@ -19,6 +19,7 @@ type Category = {
 
 const Tutorials = () => {
   const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);
+  const firebaseS3bucket = process.env.NEXT_PUBLIC_FIREBASE_S3_STORAGE;
 
   const categories: Category[] = [
     {
@@ -29,7 +30,7 @@ const Tutorials = () => {
           id: 1,
           title: "Audit Logs",
           description: "Learn how to check activity audit logs",
-          src: "/videos/activities/Activities-Audit_logs .mp4",
+          src: `${firebaseS3bucket}IMS%20tutorial%20videos%2FActivities%20-%20Audit%20logs%20.mp4?alt=media&token=2688603f-9011-4bd8-96a4-a88895fc9a25`,
           icon: "mdi:file-search",
         },
       ],
@@ -41,37 +42,37 @@ const Tutorials = () => {
         {
           id: 1,
           title: "Overview",
-          src: "/videos/Inventory/1. Inventory - overview.mp4",
+          src: `${firebaseS3bucket}IMS%20tutorial%20videos%2F1.%20Inventory%20-%20overview.mp4?alt=media&token=13724a78-3f85-42d4-b066-cf342c10f9d9`,
           icon: "mdi:view-dashboard",
         },
         {
           id: 2,
           title: "Add Category",
-          src: "/videos/Inventory/2. Inventory - Add Category.mp4",
+          src: `${firebaseS3bucket}IMS%20tutorial%20videos%2F2.%20Inventory%20-%20Add%20Category.mp4?alt=media&token=90d9fbc0-2b53-4897-a7b3-6924b85bcdff`,
           icon: "mdi:shape",
         },
         {
           id: 3,
           title: "Add New Drug or Product",
-          src: "/videos/Inventory/3. Inventory - add new drug or medical product.mp4",
+          src: `${firebaseS3bucket}IMS%20tutorial%20videos%2F3.%20Inventory%20-%20add%20new%20drug%20or%20medical%20product.mp4?alt=media&token=d679902e-5afe-4431-848f-f439f37ff96a`,
           icon: "mdi:pill",
         },
         {
           id: 4,
           title: "Add New Batch",
-          src: "/videos/Inventory/4. Inventory - add new Batch.mp4",
+          src: `${firebaseS3bucket}IMS%20tutorial%20videos%2F4.%20Inventory%20-%20add%20new%20Batch.mp4?alt=media&token=77dee032-a4a2-45c2-a4d9-5b4e8795e7f6`,
           icon: "mdi:layers-plus",
         },
         {
           id: 5,
           title: "Stock Adjustment Overview",
-          src: "/videos/Inventory/5. Inventory - stock adjustment overview.mp4",
+          src: `${firebaseS3bucket}IMS%20tutorial%20videos%2F5.%20Inventory%20-%20stock%20adjustment%20overview.mp4?alt=media&token=0e5db502-b3f9-4afc-b499-8730ad6e9e5b`,
           icon: "mdi:warehouse",
         },
         {
           id: 6,
           title: "Expiry",
-          src: "/videos/Inventory/6. Inventory - expiry.mp4",
+          src: `${firebaseS3bucket}IMS%20tutorial%20videos%2F6.%20Inventory%20-%20expiry.mp4?alt=media&token=2b3f355b-efa8-42a8-a903-31a0274a6e9c`,
           icon: "mdi:calendar-alert",
         },
       ],
@@ -83,13 +84,13 @@ const Tutorials = () => {
         {
           id: 1,
           title: "Suppliers",
-          src: "/videos/Orders/1. Orders - suppliers.mp4",
+          src: `${firebaseS3bucket}IMS%20tutorial%20videos%2F1.%20Orders%20-%20suppliers.mp4?alt=media&token=f8ac803c-02fb-4194-a11b-f201c18a8a88`,
           icon: "mdi:truck",
         },
         {
           id: 2,
           title: "Items Orders",
-          src: "/videos/Orders/2. Orders - items orders.mp4",
+          src: `${firebaseS3bucket}IMS%20tutorial%20videos%2F2.%20Orders%20-%20items%20orders.mp4?alt=media&token=bf7796c7-681f-48b7-b69d-b1f757273128`,
           icon: "mdi:cart-arrow-down",
         },
       ],
@@ -101,7 +102,7 @@ const Tutorials = () => {
         {
           id: 1,
           title: "Dispense a Drug or Medical Record",
-          src: "/videos/Sales/Depense a drug or Medical record.mp4",
+          src: `${firebaseS3bucket}IMS%20tutorial%20videos%2FDepense%20a%20drug%20or%20Medical%20record.mp4?alt=media&token=0ba5fef9-a7d1-4d77-aa80-8455a8702f55`,
           icon: "mdi:medical-bag",
         },
       ],

@@ -56,8 +56,8 @@ const SettingsExpiry = () => {
 
           <p className="mb-10 max-w-2xl text-gray-500">
             Configure how expiry rules work across the platform. These settings
-            determine time intervals used for automatic cleanup, archiving, or
-            notifications.
+            determine time intervals you will be notified when your medical
+            product or drug expires notifications.
           </p>
 
           <form onSubmit={handleSubmit} className="max-w-2xl space-y-8">

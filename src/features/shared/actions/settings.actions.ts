@@ -104,7 +104,6 @@ export const getDepartmentsAction = async (
   return await imsApiWithAuth<GetDepartmentAPIResponse>({
     url: `${API_ENDPOINTS_OLD.DEPARTMENTS}${(searchParams ?? "") && "/?" + queryParams}`,
     method: "GET",
-    cache: "force-cache",
     next: {
       tags: [queryParams],
     },
@@ -163,7 +162,6 @@ export const getUsersAction = async (searchParams?: GenerateQueryParams) => {
   return await imsApiWithAuth<GetUsersAPIResponse>({
     url: `${API_ENDPOINTS_OLD.ADMIN.USERS}${searchParams ? "/?" + queryParams : ""}`,
     method: "GET",
-    cache: "force-cache",
     next: {
       tags: [queryParams],
     },
