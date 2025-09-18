@@ -1,7 +1,6 @@
 "use client";
 
 import { formateCurrency } from "@/lib/utils";
-import { Icon } from "@iconify/react/dist/iconify.js";
 import { useEffect, useState } from "react";
 import { useLocalStorage } from "usehooks-ts";
 import { getBatchesNoPaginate } from "../shared/actions/items.actions";
@@ -9,6 +8,7 @@ import ImsDropdownMenu from "../shared/components/ims-drop-down-menu";
 import { SaleItem } from "../shared/types/sales-action.types";
 import { salesItemLocalStorageKey } from "./sales.data";
 import { SaleCardTypes } from "./sales.types";
+import { Minus, Plus, Trash } from "lucide-react";
 
 export function SaleCard({
   salesItem,
@@ -100,7 +100,7 @@ export function SaleCard({
               type="button"
               className="flex h-6 w-6 items-center justify-center rounded-full bg-[#FEF2F2] text-red-600 hover:bg-red-400 hover:text-white"
             >
-              <Icon icon="solar:trash-bin-minimalistic-bold-duotone" />
+              <Trash size={"18"} className="text-sm" />
             </button>
           }
           menuItems={[
@@ -128,7 +128,7 @@ export function SaleCard({
             type="button"
             className="flex h-4 w-4 cursor-pointer items-center justify-center bg-slate-200"
           >
-            <Icon icon="ic:outline-minus" className="text-sm" />
+            <Minus className="text-sm" />
           </button>
           <span className="w-4 text-center font-bold">{quantity}</span>
           <button
@@ -136,7 +136,7 @@ export function SaleCard({
             type="button"
             className="flex h-4 w-4 cursor-pointer items-center justify-center bg-slate-200"
           >
-            <Icon icon="mynaui:plus-solid" className="text-sm" />
+            <Plus className="text-sm" />
           </button>
         </div>
       </div>

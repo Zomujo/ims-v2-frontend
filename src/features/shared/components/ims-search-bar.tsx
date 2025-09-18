@@ -32,7 +32,9 @@ export default function ImsSearchBar({
   );
 
   const handleClearSearch = (focus = true) => {
-    removeSearchParams(searchParamKey);
+    if (searchValue) {
+      removeSearchParams(searchParamKey);
+    }
     if (inputRef.current) {
       inputRef.current.value = "";
       if (focus) {
