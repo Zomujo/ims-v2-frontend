@@ -13,8 +13,9 @@ import { Input } from "../ui/input";
 import { AuthForm } from "./auth-components-client";
 import { forgotPasswordSchema } from "./auth.schemas";
 import { toast } from "sonner";
+import { authenticationProvider } from "@/lib/providers/authentication-provider";
 
-export function ForgotPasswordForm() {
+function ForgotPasswordForm() {
   const router = useRouter();
   const form = useHookForm({
     resolver: forgotPasswordSchema,
@@ -51,6 +52,8 @@ export function ForgotPasswordForm() {
     />
   );
 }
+
+export default authenticationProvider(ForgotPasswordForm);
 
 function AuthLoginInputs({ control }: Readonly<{ control: Control }>) {
   return (

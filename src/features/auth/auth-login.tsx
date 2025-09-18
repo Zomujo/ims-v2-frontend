@@ -1,6 +1,5 @@
 "use client";
 
-import { AUTH_OPTIONS_CONSTANTS } from "@/lib/config/auth.config";
 import { AUTH_PAGE_ROUTES, PAGE_ROUTES } from "@/lib/constant";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -12,9 +11,12 @@ import useHookForm from "../shared/hooks/use-hook-form";
 import { Input } from "../ui/input";
 import { AuthForm, RenderPasswordInput } from "./auth-components-client";
 import { loginSchema } from "./auth.schemas";
-import { handleAuth } from "./auth.utils";
+import { toast } from "sonner";
+import { authLoginAction } from "@features/shared/actions/auth.action";
+import { setImsSession } from "@/lib/config/ims-session";
+import { authenticationProvider } from "@/lib/providers/authentication-provider";
 
-export function LoginForm() {
+function LoginForm() {
   const router = useRouter();
   const form = useHookForm({
     resolver: loginSchema,
@@ -24,22 +26,30 @@ export function LoginForm() {
     },
   });
 
-  const handleSubmitFn = (data: unknown) => {
-    const { accountIdentifier, password } = data as z.infer<typeof loginSchema>;
-    return handleAuth({
-      credentials: {
-        accountIdentifier: accountIdentifier.trim(),
-        password: password.trim(),
-      } as z.infer<typeof loginSchema>,
-      routeFn: router.push,
-      options: {
-        authId: AUTH_OPTIONS_CONSTANTS.LOGIN,
-        routeTo: PAGE_ROUTES.DASHBOARD,
-        loadingMsg: "Logging in...",
-        successMsg: "Logged in successfully",
-        errorMsg: "Failed to login with provided credentials",
-      },
-    });
+  const handleSubmitFn = async (data: unknown) => {
+    const loadingToast = toast.loading("Creating account...");
+    const credentials = data as z.infer<typeof loginSchema>;
+    try {
+      const { data: loginData, error } = await authLoginAction(credentials);
+
+      if (error) {
+        throw new Error(error);
+      }
+
+      if (loginData) {
+        setImsSession(loginData);
+      }
+      toast.success("Authenticated successfully");
+      router.push(PAGE_ROUTES.DASHBOARD);
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error("Failed to authenticate with provided credentials");
+      }
+    } finally {
+      toast.dismiss(loadingToast);
+    }
   };
 
   return (
@@ -53,6 +63,8 @@ export function LoginForm() {
     />
   );
 }
+
+export default authenticationProvider(LoginForm);
 
 function AuthLoginInputs({ control }: Readonly<{ control: Control }>) {
   return (

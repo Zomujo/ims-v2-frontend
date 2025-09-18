@@ -13,8 +13,9 @@ import { AuthForm } from "./auth-components-client";
 import { verifyCodeSchema } from "./auth.schemas";
 import { useState } from "react";
 import { toast } from "sonner";
+import { authenticationProvider } from "@/lib/providers/authentication-provider";
 
-export function VerifyCodeForm() {
+function VerifyCodeForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const username = searchParams.get("username") ?? "";
@@ -62,6 +63,8 @@ export function VerifyCodeForm() {
     />
   );
 }
+
+export default authenticationProvider(VerifyCodeForm);
 
 function AuthLoginInputs({ control }: Readonly<{ control: Control }>) {
   return (

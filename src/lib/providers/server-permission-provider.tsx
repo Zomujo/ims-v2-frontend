@@ -2,27 +2,25 @@ import {
   PermissionActions,
   PermissionModules,
 } from "@/features/shared/types/auth-action.types";
-import { imsServerSession } from "@/lib/config/auth.config";
 import { hasActionPermissionHelper } from "@/lib/utils/permissions.utils";
+import { imsServerPermissions } from "@/lib/config/ims-server-session";
 
 export async function checkServerPermission(
   permission: PermissionModules | string,
 ) {
-  const session = await imsServerSession();
+  const permissions = await imsServerPermissions();
 
-  if (!session?.user?.permissions) {
+  if (!permissions) {
     return false;
   }
-  const permissionKeys = session.user.permissions.map(
-    (item) => item.split(":")[0],
-  );
+  const permissionKeys = permissions.map((item) => item.split(":")[0]);
   return permissionKeys.includes(permission);
 }
 
 export async function checkServerWritePermission(module: PermissionModules) {
-  const session = await imsServerSession();
+  const permissions = await imsServerPermissions();
   return hasActionPermissionHelper(
-    session?.user.permissions,
+    permissions ?? undefined,
     `${module}:${PermissionActions.WRITE}`,
   );
 }

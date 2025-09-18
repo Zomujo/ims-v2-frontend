@@ -4,8 +4,9 @@ import { ImsButton } from "@features/shared/components/ims-button";
 import { useState } from "react";
 import { authVerificationSendMailAction } from "@features/shared/actions/auth.action";
 import { handleRequestState } from "@/lib/utils";
+import { authenticationProvider } from "@/lib/providers/authentication-provider";
 
-export default function AuthTokenExpired() {
+function AuthTokenExpired() {
   const { encodedEmail } = useParams();
   const email = atob(decodeURIComponent(encodedEmail as string));
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -43,3 +44,5 @@ export default function AuthTokenExpired() {
     </div>
   );
 }
+
+export default authenticationProvider(AuthTokenExpired);

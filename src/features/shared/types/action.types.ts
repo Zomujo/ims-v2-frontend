@@ -7,6 +7,12 @@ export type ApiSuccessResponseDto<T = unknown> = {
   data?: T;
 };
 
+export type IMSApiStandardResponse<T = undefined> = {
+  message: string;
+  error?: string;
+  data: T;
+};
+
 export type ApiSuccessResponseNoData = {
   statusCode: number;
   message: string;

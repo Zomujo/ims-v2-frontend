@@ -1,7 +1,6 @@
 import { Toaster } from "@/features/ui/sonner";
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
-import NextAuthSessionProvider from "@/lib/providers/next-auth-session-provider";
 import { ReactNode } from "react";
 
 const APP_NAME = "Zomujo Stealth";
@@ -61,10 +60,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <NextAuthSessionProvider>
-          {children}
-          <Toaster position="top-right" />
-        </NextAuthSessionProvider>
+        {children}
+        <Toaster position="top-right" />
       </body>
     </html>
   );
