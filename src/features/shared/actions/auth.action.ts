@@ -32,8 +32,6 @@ export const authLoginAction = async ({
       body: JSON.stringify({ accountIdentifier, password }),
     });
 
-    console.log("Login Data:", loginData);
-
     if (error) {
       throw new Error(error);
     }
@@ -48,8 +46,6 @@ export const authLoginAction = async ({
       },
     });
 
-    console.log("Profile Data:", profileData);
-
     if (error) {
       throw new Error(error);
     }
@@ -59,8 +55,6 @@ export const authLoginAction = async ({
       ...profileData,
     } satisfies ImsSession;
 
-    console.log("Combined Session Data:", data);
-
     setImsSession(data);
 
     return {
@@ -68,7 +62,7 @@ export const authLoginAction = async ({
       message: "",
     };
   } catch (error) {
-    console.log("Error here", error);
+    console.error("Error here", error);
     return {
       error: String(error),
       data: undefined,

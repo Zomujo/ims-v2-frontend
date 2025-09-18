@@ -1,6 +1,4 @@
 "use client";
-import { cn } from "@/lib/utils";
-import { Icon } from "@iconify/react/dist/iconify.js";
 import { ColumnDef } from "@tanstack/react-table";
 import { CrudPageProps } from "../settings/settings.types";
 import { IMSDataTable } from "../shared/components/ims-data-table";
@@ -12,6 +10,7 @@ import { useLocalStorage } from "usehooks-ts";
 import useFetchData from "../shared/hooks/use-fetch-data";
 import { getSalesItemsAction } from "../shared/actions/sales.action";
 import { CacheKey } from "@/lib/cache/cache-data";
+import { Plus } from "lucide-react";
 
 export default function SalesItemList() {
   const { data, loading } = useFetchData({
@@ -81,12 +80,7 @@ const getActionColumn = <TData, TValue>({
                   <span className="px-4">Added</span>
                 ) : (
                   <>
-                    <Icon
-                      className={cn({
-                        "text-ims-red-300": actionItem?.type === "destructive",
-                      })}
-                      icon={actionItem?.icon ?? ""}
-                    />
+                    <Plus />
                     <span>{actionItem?.label}</span>
                   </>
                 )}
