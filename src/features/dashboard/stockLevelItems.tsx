@@ -6,6 +6,7 @@ import { StockLevel } from "@features/shared/types/dashboard.types";
 import { CacheKey } from "@/lib/cache/cache-data";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { useMemo } from "react";
 
 type StockLevelItemsProps = {
   currentStockLevelView: Exclude<StockLevel, "STOCKED">;
@@ -18,16 +19,48 @@ const StockLevelItems = ({
   stockColor,
   showSeeMoreLinkOnly = false,
 }: StockLevelItemsProps) => {
-  const { data: stockItemsData } = useFetchData<Pagination<ItemsDto>>({
+  const { data: stockItemsData, loading } = useFetchData<Pagination<ItemsDto>>({
     fetchFn: () =>
       getItems({
         status: currentStockLevelView,
         pageSize: "5",
       }),
-    cacheKey: CacheKey.DashboardStockItems,
+    cacheKey: `${CacheKey.DashboardStockItems}_${currentStockLevelView}`,
     deps: [currentStockLevelView],
   });
-  const stockItems = stockItemsData?.rows ?? [];
+
+  const stockItems = useMemo(
+    () => stockItemsData?.rows ?? [],
+    [stockItemsData],
+  );
+
+  const allItems = useMemo(
+    () => stockItems.every(({ status }) => status === currentStockLevelView),
+    [stockItems, currentStockLevelView],
+  );
+
+  if (loading || !allItems) {
+    if (showSeeMoreLinkOnly) {
+      return <div className="h-4 w-16 animate-pulse rounded bg-gray-200"></div>;
+    }
+
+    return (
+      <div className="space-y-3">
+        {Array.from({ length: 3 }).map((_, index) => (
+          <div
+            key={index}
+            className="flex items-center justify-between text-sm"
+          >
+            <div className="flex items-center gap-x-2">
+              <div className="h-3.5 w-1.5 animate-pulse rounded-md bg-gray-200"></div>
+              <div className="h-4 w-24 animate-pulse rounded bg-gray-200"></div>
+            </div>
+            <div className="h-4 w-8 animate-pulse rounded bg-gray-200"></div>
+          </div>
+        ))}
+      </div>
+    );
+  }
 
   if (showSeeMoreLinkOnly) {
     return stockItems.length > 0 ? (
