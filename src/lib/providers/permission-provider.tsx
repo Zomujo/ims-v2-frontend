@@ -40,15 +40,8 @@ export const PermissionProvider: React.FC<PermissionProviderProps> = ({
   children,
   freePass,
 }) => {
-  const { hasPermission, isLoading } = useSessionData();
+  const { hasPermission } = useSessionData();
 
-  if (isLoading) {
-    return (
-      <div className="mt-32 flex items-center justify-center">
-        <div className="h-16 w-16 animate-spin rounded-full border-t-2 border-b-2 border-gray-900"></div>
-      </div>
-    );
-  }
   if (!freePass?.includes(permission) && !hasPermission(permission)) {
     return <ForbiddenPage />;
   }

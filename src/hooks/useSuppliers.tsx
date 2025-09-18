@@ -10,20 +10,19 @@ import { getSuppliersNoPaginate } from "@features/shared/actions/supplier.action
  * It leverages useFetchData to provide robust caching and offline support.
  */
 export function useSuppliers() {
-  const { hasPermission, isLoading: isSessionLoading } = useSessionData();
+  const { hasPermission } = useSessionData();
   const canFetch = hasPermission(PermissionModules.ITEMS_ORDERS);
-  const shouldExecute = !isSessionLoading && canFetch;
 
   const { data, loading, error, refetch } = useFetchData<IdData[] | undefined>({
     fetchFn: getSuppliersNoPaginate,
     cacheKey: CacheKey.SuppliersNoPaginate,
-    executeOnMount: shouldExecute,
-    deps: [shouldExecute],
+    executeOnMount: canFetch,
+    deps: [canFetch],
   });
 
   return {
     suppliers: data ?? [],
-    loading: isSessionLoading || (shouldExecute && loading),
+    loading: canFetch && loading,
     error,
     refetch,
   };

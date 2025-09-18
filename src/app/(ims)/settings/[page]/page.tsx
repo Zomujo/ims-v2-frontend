@@ -117,7 +117,7 @@ async function UsersSettings() {
 
   if (!hasPermission) {
     return (
-      <PermissionProvider permission={PermissionModules.STOCK_ADJUSTMENT}>
+      <PermissionProvider permission={PermissionModules.USERS}>
         <div>This content will never be shown</div>
       </PermissionProvider>
     );

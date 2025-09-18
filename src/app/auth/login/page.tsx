@@ -2,7 +2,7 @@ import {
   AuthFormHeading,
   AuthHeader,
 } from "@/features/auth/auth-components-server";
-import { LoginForm } from "@/features/auth/auth-login";
+import LoginForm from "@/features/auth/auth-login";
 import { AUTH_PAGE_ROUTES } from "@/lib/constant";
 
 export default function Login() {

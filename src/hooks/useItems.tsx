@@ -10,20 +10,19 @@ import { getItemsNoPaginate } from "@features/shared/actions/items.actions";
  * It leverages useFetchData to provide robust caching and offline support.
  */
 export function useItems() {
-  const { hasPermission, isLoading: isSessionLoading } = useSessionData();
+  const { hasPermission } = useSessionData();
   const canFetch = hasPermission(PermissionModules.ITEMS);
-  const shouldExecute = !isSessionLoading && canFetch;
 
   const { data, loading, error, refetch } = useFetchData<IdData[] | undefined>({
     fetchFn: getItemsNoPaginate,
     cacheKey: CacheKey.ItemsNoPaginate,
-    executeOnMount: shouldExecute,
-    deps: [shouldExecute],
+    executeOnMount: canFetch,
+    deps: [canFetch],
   });
 
   return {
     items: data ?? [],
-    loading: isSessionLoading || (shouldExecute && loading),
+    loading: canFetch && loading,
     error,
     refetch,
   };

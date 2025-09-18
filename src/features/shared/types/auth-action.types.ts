@@ -65,7 +65,7 @@ export type AuthAccountCreationProps = Omit<
   "code" | "refreshToken" | "newPassword"
 >;
 
-export type AuthIMSLoginObj = {
+export type ImsSession = {
   id: string;
   status: UserStatus;
   facilityId: string;
@@ -77,7 +77,7 @@ export type AuthIMSLoginObj = {
 } & AuthIMSUserProfile;
 
 export type AuthLoginActionResponse = Pick<
-  IMSApiActionResponse<AuthIMSLoginObj>,
+  IMSApiActionResponse<ImsSession>,
   "data"
 >;
 

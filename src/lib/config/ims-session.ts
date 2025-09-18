@@ -1,0 +1,28 @@
+import { ImsSession } from "@features/shared/types/auth-action.types";
+
+export const SESSION_KEY = "ims_session_token";
+
+export const PERMISSION_KEY = "ims_permissions";
+
+export function getImsSession(): ImsSession | null {
+  if (typeof window === "undefined") return null;
+  const session = localStorage.getItem(SESSION_KEY);
+  return session ? (JSON.parse(session) as ImsSession) : null;
+}
+
+export function setImsSession(session: ImsSession) {
+  if (typeof window === "undefined") return;
+
+  localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+  document.cookie = `${SESSION_KEY}=${session.id}; path=/;`;
+  document.cookie = `${PERMISSION_KEY}=${encodeURIComponent(
+    JSON.stringify(session.permissions),
+  )}; path=/;`;
+}
+
+export function clearImsSession() {
+  if (typeof window === "undefined") return;
+  localStorage.removeItem(SESSION_KEY);
+  document.cookie = `${SESSION_KEY}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
+  window.location.reload();
+}

@@ -7,50 +7,73 @@ import {
   AuthActionProps,
   AuthApiStandardResponse,
   AuthCreateAccountActionApiBody,
-  AuthIMSLoginObj,
-  AuthLoginActionResponse,
-  AuthUserProfileActionResponse,
+  ImsSession,
   IResetPassword,
+  AuthIMSUserProfile,
 } from "../types/auth-action.types";
 import { imsApiWithAuth, imsApiWithoutAuth } from "./ims-api.action";
 import { z } from "zod";
 import { API_ENDPOINTS } from "@/lib/api-constants";
-
-export const authUserProfileAction = async () => {
-  const res = await imsApiWithAuth<AuthUserProfileActionResponse>({
-    url: API_ENDPOINTS_OLD.USER_PROFILE,
-    method: "GET",
-  });
-  return res?.data;
-};
+import { IMSApiStandardResponse } from "@features/shared/types/action.types";
+import { setImsSession } from "@/lib/config/ims-session";
 
 export const authLoginAction = async ({
   accountIdentifier,
   password,
-}: Pick<AuthActionProps, "accountIdentifier" | "password">) => {
+}: Pick<AuthActionProps, "accountIdentifier" | "password">): Promise<
+  IMSApiStandardResponse<ImsSession | undefined>
+> => {
   try {
-    const { data: loginData } =
-      await imsApiWithoutAuth<AuthLoginActionResponse>({
-        url: API_ENDPOINTS_OLD.LOGIN,
-        method: "POST",
-        body: JSON.stringify({ accountIdentifier, password }),
-      });
+    const { data: loginData, error } = await imsApiWithoutAuth<
+      IMSApiStandardResponse<ImsSession>
+    >({
+      url: API_ENDPOINTS_OLD.LOGIN,
+      method: "POST",
+      body: JSON.stringify({ accountIdentifier, password }),
+    });
 
-    const { data: profileData } =
-      await imsApiWithoutAuth<AuthUserProfileActionResponse>({
-        url: API_ENDPOINTS_OLD.USER_PROFILE,
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${loginData.tokens.accessToken}`,
-        },
-      });
+    console.log("Login Data:", loginData);
 
-    return {
+    if (error) {
+      throw new Error(error);
+    }
+
+    const { data: profileData } = await imsApiWithoutAuth<
+      IMSApiStandardResponse<AuthIMSUserProfile>
+    >({
+      url: API_ENDPOINTS_OLD.USER_PROFILE,
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${loginData.tokens.accessToken}`,
+      },
+    });
+
+    console.log("Profile Data:", profileData);
+
+    if (error) {
+      throw new Error(error);
+    }
+
+    const data = {
       ...loginData,
       ...profileData,
-    } satisfies AuthIMSLoginObj;
-  } catch {
-    return null;
+    } satisfies ImsSession;
+
+    console.log("Combined Session Data:", data);
+
+    setImsSession(data);
+
+    return {
+      data,
+      message: "",
+    };
+  } catch (error) {
+    console.log("Error here", error);
+    return {
+      error: String(error),
+      data: undefined,
+      message: "",
+    };
   }
 };
 
@@ -91,20 +114,6 @@ export const authChangePasswordAction = async ({
     });
   } catch (error) {
     return error as AuthApiStandardResponse;
-  }
-};
-
-export const authRefreshTokenAction = async (
-  refreshToken: AuthActionProps["refreshToken"],
-) => {
-  try {
-    const res = await imsApiWithoutAuth<AuthLoginActionResponse>({
-      url: API_ENDPOINTS_OLD.REFRESH_TOKEN + refreshToken,
-      method: "GET",
-    });
-    return res.data;
-  } catch {
-    return null;
   }
 };
 

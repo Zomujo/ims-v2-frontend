@@ -28,14 +28,13 @@ import { ChevronDown, Pill, X } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { generalTabs, helpTabs } from "./sidebar.data";
-import LoadingOverlay from "@features/ui/loadingOverlay";
 import { useSessionData } from "@/hooks/useSessionData";
 
 export default function SidebarLayout() {
   const [isPharmaOpen, setIsPharmaOpen] = useState(false);
   const { toggleSidebar } = useSidebar();
   const pathname = usePathname();
-  const { isLoading, facilityName, role } = useSessionData();
+  const { facilityName, role } = useSessionData();
   const { hasPermission } = useSessionData();
 
   const canShowCollapsible = (sub: { permission: string }[]) => {
@@ -49,7 +48,6 @@ export default function SidebarLayout() {
 
   return (
     <>
-      {isLoading && <LoadingOverlay />}
       <Sidebar
         className="h-full bg-white pr-0"
         variant="inset"
