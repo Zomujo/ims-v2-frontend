@@ -1,7 +1,5 @@
 "use client";
 import { useOnlineStatus } from "@features/shared/hooks/useOnlineStatus";
-import { PermissionModules } from "@features/shared/types/auth-action.types";
-import { useSessionData } from "@/hooks/useSessionData";
 import { API_ENDPOINTS } from "@/lib/api-constants";
 import { UI_STATE } from "@/lib/constant";
 import { handleRequestState } from "@/lib/utils";

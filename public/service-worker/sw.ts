@@ -7,6 +7,7 @@ import {
   NetworkOnly,
   ExpirationPlugin,
 } from "serwist";
+import { ITEMS_STATUS } from "@features/shared/types/action.types";
 
 declare global {
   interface ServiceWorkerGlobalScope extends SerwistGlobalConfig {
@@ -20,6 +21,8 @@ const urlsToPrecache = [
   "/",
   "/dashboard",
   "/items",
+  `/items?status=${ITEMS_STATUS.LOW}`,
+  `/items?status=${ITEMS_STATUS.OUT_OF_STOCK}`,
   "/items?state=create",
   "/items?state=edit",
   "/items/batches",
