@@ -40,7 +40,6 @@ export async function getStockAdjustments(params?: GenerateQueryParams) {
     ),
     method: "GET",
     headers: {},
-    cache: "force-cache",
     next: { tags: [API_ENDPOINT_TAGS.STOCK_ADJUSTMENTS] },
   };
 

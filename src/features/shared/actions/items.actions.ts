@@ -56,7 +56,6 @@ export async function getItems(
     ),
     method: "GET",
     headers: {},
-    cache: "force-cache",
     next: { tags: [API_ENDPOINT_TAGS.ITEMS] },
   };
 
