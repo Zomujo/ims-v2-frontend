@@ -1,60 +1,47 @@
-import { useSession } from "next-auth/react";
+"use client";
 import {
+  ImsSession,
   PermissionActions,
   PermissionModules,
   UserStatus,
 } from "@features/shared/types/auth-action.types";
 import { hasActionPermissionHelper } from "@/lib/utils/permissions.utils";
-import { useState, useEffect } from "react";
-import localforage from "localforage";
-import { Session } from "next-auth";
-
-localforage.config({
-  name: "zomujo-stealth-db",
-});
+import { useState, useEffect, useCallback } from "react";
+import {
+  clearImsSession,
+  getImsSession,
+  setImsSession,
+} from "@/lib/config/ims-session";
 
 export const useSessionData = () => {
-  const { data: networkSession, status, update } = useSession();
-  const [cachedSession, setCachedSession] = useState<Session | null>(null);
+  const [session, setSession] = useState<ImsSession | null>(getImsSession());
 
   useEffect(() => {
-    if (networkSession) {
-      if (JSON.stringify(networkSession) !== JSON.stringify(cachedSession)) {
-        setCachedSession(networkSession);
-        void localforage.setItem("session", networkSession);
-      }
-    }
-  }, [networkSession, cachedSession]);
-
-  useEffect(() => {
-    const loadCachedSession = async () => {
-      if (status !== "loading" && !networkSession) {
-        const savedSession = await localforage.getItem<Session>("session");
-        if (savedSession) {
-          setCachedSession(savedSession);
-        }
-      }
+    const handler = () => {
+      setSession(getImsSession());
     };
-    void loadCachedSession();
-  }, [status, networkSession]);
+    window.addEventListener("storage", handler);
+    return () => window.removeEventListener("storage", handler);
+  }, []);
 
-  const session = networkSession || cachedSession;
+  const setSessionState = useCallback((imsSession: ImsSession) => {
+    setImsSession(imsSession);
+    setSession(session);
+  }, []);
 
-  const user = session?.user;
-  const userId = user?.id;
-  const token = session?.user.tokens.accessToken;
+  const userId = session?.id;
+  const token = session?.tokens.accessToken;
 
-  const isLoading = status === "loading" && !cachedSession;
   const isAuthenticated = !!session;
 
-  const fullName = user?.fullName;
+  const fullName = session?.fullName;
   const firstName = fullName ? fullName.split(" ")[0] : "";
-  const facilityName = user?.facility?.name;
-  const role = user?.role;
-  const profileImage = user?.imageUrl;
-  const permissions = user?.permissions;
-  const email = user?.email;
-  const phoneNumber = user?.phoneNumber;
+  const facilityName = session?.facility?.name;
+  const role = session?.role;
+  const profileImage = session?.imageUrl;
+  const permissions = session?.permissions;
+  const email = session?.email;
+  const phoneNumber = session?.phoneNumber;
 
   const hasPermission = (permission: string) => {
     const permissionKeys = permissions?.map((item) => item.split(":")[0]);
@@ -70,19 +57,15 @@ export const useSessionData = () => {
   const canDelete = (module: PermissionModules) =>
     hasActionPermission(`${module}:${PermissionActions.DELETE}`);
 
-  const updateUserStatus = async (userStatus: UserStatus) => {
-    if (networkSession) {
-      await update({
-        status: userStatus,
-      });
-    } else {
-      console.log("Cannot update status while offline.");
+  const updateUserStatus = (status: UserStatus) => {
+    if (session) {
+      const updatedSession = { ...session, status };
+      setSessionState(updatedSession);
     }
   };
 
   return {
     session,
-    isLoading,
     isAuthenticated,
     facilityName,
     role,
@@ -97,7 +80,7 @@ export const useSessionData = () => {
     email,
     token,
     userId,
-    updateUserStatus,
     phoneNumber,
+    updateUserStatus,
   };
 };

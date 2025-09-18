@@ -17,8 +17,9 @@ import { useSessionData } from "@/hooks/useSessionData";
 import { UserStatus } from "@features/shared/types/auth-action.types";
 import { useState } from "react";
 import { toast } from "sonner";
+import { authenticationProvider } from "@/lib/providers/authentication-provider";
 
-export function ResetPasswordForm() {
+function ResetPasswordForm() {
   const { updateUserStatus } = useSessionData();
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -51,7 +52,7 @@ export function ResetPasswordForm() {
       }
 
       if (!username) {
-        await updateUserStatus(UserStatus.ACTIVE);
+        updateUserStatus(UserStatus.ACTIVE);
       }
 
       form.reset();
@@ -80,6 +81,8 @@ export function ResetPasswordForm() {
     />
   );
 }
+
+export default authenticationProvider(ResetPasswordForm, true);
 
 function AuthLoginInputs({ control }: Readonly<{ control: Control }>) {
   return (

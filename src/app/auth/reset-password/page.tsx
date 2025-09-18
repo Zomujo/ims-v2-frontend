@@ -2,7 +2,7 @@ import {
   AuthFormHeading,
   AuthHeader,
 } from "@/features/auth/auth-components-server";
-import { ResetPasswordForm } from "@/features/auth/auth-reset-password";
+import ResetPasswordForm from "@/features/auth/auth-reset-password";
 
 export default async function ResetPassword() {
   return (

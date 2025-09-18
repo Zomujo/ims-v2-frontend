@@ -1,9 +1,9 @@
-import { imsServerSession } from "@/lib/config/auth.config";
 import { ENV_VARIABLES } from "@/lib/config/env.config";
 import { AUTH_PAGE_ROUTES } from "@/lib/constant";
 import { redirect } from "next/navigation";
 import { FetchApi } from "../types/ims-api-action.types";
 import { headers as nextHeaders } from "next/headers";
+import { imsServerSession } from "@/lib/config/ims-server-session";
 
 export const imsApiWithAuth = async <T>({
   url,
@@ -13,11 +13,10 @@ export const imsApiWithAuth = async <T>({
   cache,
   next,
 }: FetchApi) => {
-  const session = await imsServerSession();
-  if (!session?.user?.tokens) {
+  const userId = await imsServerSession();
+  if (!userId) {
     redirect(AUTH_PAGE_ROUTES.LOG_IN);
   }
-  const userId = session?.user?.id;
   const response = await fetchApi({
     url,
     method,
@@ -37,11 +36,10 @@ export const imsApiWithAuthBlob = async ({
   cache,
   next,
 }: FetchApi) => {
-  const session = await imsServerSession();
-  if (!session?.user?.tokens) {
+  const userId = await imsServerSession();
+  if (userId) {
     redirect(AUTH_PAGE_ROUTES.LOG_IN);
   }
-  const userId = session?.user?.id;
   const response = await fetchApi({
     url,
     method,

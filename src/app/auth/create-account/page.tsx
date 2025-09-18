@@ -2,7 +2,7 @@ import {
   AuthFormHeading,
   AuthHeader,
 } from "@/features/auth/auth-components-server";
-import { CreateAccountForm } from "@/features/auth/auth-create-account";
+import CreateAccountForm from "@/features/auth/auth-create-account";
 import { AUTH_PAGE_ROUTES } from "@/lib/constant";
 
 export default function CreateAccount() {

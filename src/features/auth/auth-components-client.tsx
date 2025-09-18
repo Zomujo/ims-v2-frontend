@@ -7,9 +7,9 @@ import { Button } from "../ui/button";
 import { Form } from "../ui/form";
 import { Input } from "../ui/input";
 import { AuthFormProps, RenderPasswordInputProps } from "./auth.types";
-import { signOut } from "next-auth/react";
 import { ImsButton } from "../shared/components/ims-button";
 import { cn } from "@/lib/utils";
+import { clearImsSession } from "@/lib/config/ims-session";
 
 export function AuthForm({
   form,
@@ -51,7 +51,7 @@ export function GobackButton() {
 export function LogOutButton() {
   return (
     <ImsButton
-      onClick={() => signOut()}
+      onClick={() => clearImsSession()}
       startIcon={<LogOutIcon className="rotate-180" />}
       variant="ghost"
       className="flex w-full justify-start rounded-none p-0 py-6 pl-3 text-red-500 hover:bg-red-500 hover:text-white"

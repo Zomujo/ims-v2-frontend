@@ -47,16 +47,14 @@ export default function useFetchData<T>({
   const prevDepsRef = useRef<unknown[] | null>(null);
 
   const fetchData = async () => {
-    console.log("Hey there");
     let cachedData: T | null = null;
 
     if (cacheKey) {
-      console.log("Cache key", cacheKey);
       const cacheKeyWithId = `${cacheKey}-${cacheKeyId}`;
       cachedData = await localforage.getItem<T>(
         cacheKeyId ? cacheKeyWithId : cacheKey,
       );
-      console.log("Cached data", cachedData);
+
       if (cachedData) {
         if (
           typeof cachedData === "object" &&
@@ -149,7 +147,7 @@ export default function useFetchData<T>({
         arraySearchParams.toString(),
         routeParams,
       );
-      console.log("Fetched data", response);
+
       setColdData(response);
       setData(response);
       onSuccess?.(response);
@@ -186,7 +184,6 @@ export default function useFetchData<T>({
   };
 
   useEffect(() => {
-    console.log("Dependencies", deps);
     if (!executeOnMount) return;
 
     const depsChanged =
