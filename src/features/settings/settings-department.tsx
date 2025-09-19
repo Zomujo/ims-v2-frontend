@@ -26,9 +26,11 @@ import useFetchData from "@features/shared/hooks/use-fetch-data";
 import { useSessionData } from "@/hooks/useSessionData";
 import { PermissionModules } from "@features/shared/types/auth-action.types";
 import { CacheKey } from "@/lib/cache/cache-data";
+import { useOnlineStatus } from "@features/shared/hooks/useOnlineStatus";
 
 export function DepartmentManagementSettings() {
   const { canWrite, canDelete } = useSessionData();
+  const { isOnline } = useOnlineStatus();
   const { data, loading } = useFetchData({
     fetchFn: getDepartmentsAction,
     cacheKey: CacheKey.DepartmentManagementSettings,
@@ -81,13 +83,13 @@ export function DepartmentManagementSettings() {
             label: "edit",
             icon: "lucide:edit-2",
             action: () => handleEditBtnClicked(item),
-            hide: !canWrite(PermissionModules.DEPARTMENTS),
+            hide: !isOnline || !canWrite(PermissionModules.DEPARTMENTS),
           },
           {
             label: "delete",
             icon: "solar:trash-bin-trash-line-duotone",
             action: () => handleDeleteBtnClicked(item),
-            hide: !canDelete(PermissionModules.DEPARTMENTS),
+            hide: !isOnline || !canDelete(PermissionModules.DEPARTMENTS),
           },
         ]}
       >
