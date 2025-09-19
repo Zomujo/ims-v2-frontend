@@ -46,6 +46,57 @@ export default function useFetchData<T>({
   const { isConnected } = useGlobalNotifications();
   const prevDepsRef = useRef<unknown[] | null>(null);
 
+  // Add date range utility functions
+  const getDateRangeFilter = (dateRange: string) => {
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+    switch (dateRange) {
+      case "today":
+        return {
+          start: today,
+          end: new Date(today.getTime() + 24 * 60 * 60 * 1000 - 1),
+        };
+      case "this_week":
+        const startOfWeek = new Date(today);
+        startOfWeek.setDate(today.getDate() - today.getDay());
+        return {
+          start: startOfWeek,
+          end: new Date(startOfWeek.getTime() + 7 * 24 * 60 * 60 * 1000 - 1),
+        };
+      case "this_month":
+        return {
+          start: new Date(now.getFullYear(), now.getMonth(), 1),
+          end: new Date(
+            now.getFullYear(),
+            now.getMonth() + 1,
+            0,
+            23,
+            59,
+            59,
+            999,
+          ),
+        };
+      case "last_month":
+        return {
+          start: new Date(now.getFullYear(), now.getMonth() - 1, 1),
+          end: new Date(now.getFullYear(), now.getMonth(), 0, 23, 59, 59, 999),
+        };
+      case "last_three_months":
+        return {
+          start: new Date(now.getFullYear(), now.getMonth() - 3, 1),
+          end: new Date(now.getFullYear(), now.getMonth(), 0, 23, 59, 59, 999),
+        };
+      case "this_year":
+        return {
+          start: new Date(now.getFullYear(), 0, 1),
+          end: new Date(now.getFullYear(), 11, 31, 23, 59, 59, 999),
+        };
+      default:
+        return null;
+    }
+  };
+
   const fetchData = async () => {
     let cachedData: T | null = null;
 
@@ -104,6 +155,22 @@ export default function useFetchData<T>({
             if (!value) {
               return true;
             }
+
+            if (key === "dateRange" && value !== "") {
+              const dateFilter = getDateRangeFilter(value);
+              if (
+                dateFilter &&
+                item.hasOwnProperty("createdAt") &&
+                item.createdAt
+              ) {
+                const itemDate = new Date(item.createdAt);
+                return (
+                  itemDate >= dateFilter.start && itemDate <= dateFilter.end
+                );
+              }
+              return true;
+            }
+
             if (key === "search") {
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               const getNestedValue = (obj: any, path: string) =>

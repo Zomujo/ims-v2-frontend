@@ -17,6 +17,8 @@ declare global {
 
 declare const self: ServiceWorkerGlobalScope;
 
+const revision = crypto.randomUUID();
+
 const urlsToPrecache = [
   "/",
   "/dashboard",
@@ -58,6 +60,7 @@ const urlsToPrecache = [
   "/reports/stock-movement-report",
   "/reports/earnings-overview",
   "/ussd-codes",
+  "/~offline",
 ] as const;
 
 // const sessionCachePlugins = [
@@ -139,6 +142,16 @@ const serwist = new Serwist({
       }),
     },
   ],
+  fallbacks: {
+    entries: [
+      {
+        url: "/~offline",
+        matcher({ request }) {
+          return request.destination === "document";
+        },
+      },
+    ],
+  },
 });
 
 serwist.addEventListeners();
