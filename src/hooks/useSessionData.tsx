@@ -6,12 +6,8 @@ import {
   UserStatus,
 } from "@features/shared/types/auth-action.types";
 import { hasActionPermissionHelper } from "@/lib/utils/permissions.utils";
-import { useState, useEffect, useCallback } from "react";
-import {
-  clearImsSession,
-  getImsSession,
-  setImsSession,
-} from "@/lib/config/ims-session";
+import { useState, useEffect, useCallback, useMemo } from "react";
+import { getImsSession, setImsSession } from "@/lib/config/ims-session";
 
 export const useSessionData = () => {
   const [session, setSession] = useState<ImsSession | null>(getImsSession());
@@ -32,7 +28,7 @@ export const useSessionData = () => {
   const userId = session?.id;
   const token = session?.tokens.accessToken;
 
-  const isAuthenticated = !!session;
+  const isAuthenticated = useMemo(() => !!session, [session]);
 
   const fullName = session?.fullName;
   const firstName = fullName ? fullName.split(" ")[0] : "";
