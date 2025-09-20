@@ -12,6 +12,11 @@ import { Textarea } from "../ui/textarea";
 import { StockAdjustmentContext } from "./stock-adjustment.context";
 import LoadingOverlay from "@features/ui/loadingOverlay";
 import { stockAdjustmentReasons } from "@/lib/constant";
+import { CacheKey } from "@/lib/cache/cache-data";
+import {
+  BatchesNoPaginate,
+  Pagination,
+} from "@features/shared/types/action.types";
 
 type StockAdjustmentFormInputsProps = {
   control: Control;
@@ -29,13 +34,21 @@ export function StockAdjustmentFormInputs({
   const selectedItemId = useWatch()["itemId"];
   const { data: batches, loading } = useFetchData({
     fetchFn: async () => getBatchesNoPaginate(selectedItemId),
+    cacheKeyId: selectedItemId,
+    cacheKey: CacheKey.ItemBatchesList,
     deps: [selectedItemId],
   });
   const itemOptions = items.map((item) => ({
     value: item.id,
     label: item.name,
   }));
-  const batchOptions = (batches ?? []).map((batch) => ({
+  const batchOptions = (
+    Array.isArray(batches)
+      ? batches
+      : batches && "rows" in batches
+        ? (batches as Pagination<BatchesNoPaginate>).rows
+        : []
+  ).map((batch: Pick<BatchesNoPaginate, "id" | "batchNumber">) => ({
     value: batch.id,
     label: batch.batchNumber,
   }));

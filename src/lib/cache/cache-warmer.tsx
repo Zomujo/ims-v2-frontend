@@ -51,6 +51,22 @@ export const PREFETCH_TARGETS = [
     fetcher: () => getSalePaymentMethod({ dateRange: "this_month" }),
   },
   {
+    key: `${CacheKey.DashboardStockItems}_LOW`,
+    fetcher: () =>
+      getItems({
+        status: "LOW",
+        pageSize: "5",
+      }),
+  },
+  {
+    key: `${CacheKey.DashboardStockItems}_OUT_OF_STOCK`,
+    fetcher: () =>
+      getItems({
+        status: "OUT_OF_STOCK",
+        pageSize: "5",
+      }),
+  },
+  {
     key: CacheKey.DashboardGeneral,
     fetcher: () =>
       getGeneralOverview({
