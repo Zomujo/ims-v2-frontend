@@ -1,6 +1,8 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { GetSalesDto } from "../shared/types/action.types";
 import { SaleItem } from "../shared/types/sales-action.types";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@features/ui/tooltip";
+import { NotebookText } from "lucide-react";
 
 export const salesTableColumns: ColumnDef<GetSalesDto>[] = [
   {
@@ -38,6 +40,24 @@ export const salesTableColumns: ColumnDef<GetSalesDto>[] = [
         style: "currency",
         currency: "GHC",
       });
+    },
+  },
+  {
+    accessorKey: "icd_code",
+    header: "Diagnosis",
+    cell: ({ row: { original } }) => {
+      const icdCode = original.icd_code;
+      if (!icdCode) {
+        return "N/A";
+      }
+      return (
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <NotebookText />
+          </TooltipTrigger>
+          <TooltipContent>{icdCode}</TooltipContent>
+        </Tooltip>
+      );
     },
   },
   {

@@ -68,3 +68,8 @@ export interface WeekDay {
   day: string;
   isCurrentMonth: boolean;
 }
+
+export interface SelectOption {
+  label: string;
+  value: string;
+}

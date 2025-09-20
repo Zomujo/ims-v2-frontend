@@ -525,6 +525,7 @@ export type GetSalesDto = {
   notes?: string;
   saleNumber: string;
   paymentType: PaymentType[];
+  icd_code?: string;
   status: "PAID" | "UNPAID";
   total: number;
   id: string;

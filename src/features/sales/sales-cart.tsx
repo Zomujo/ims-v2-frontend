@@ -11,7 +11,7 @@ import {
 } from "react";
 import { useFieldArray } from "react-hook-form";
 import { useIsClient, useLocalStorage } from "usehooks-ts";
-import { createSaleAction } from "../shared/actions/sales.action";
+import { createSaleAction, getIcdCodes } from "../shared/actions/sales.action";
 import { getSale, updateSale } from "../shared/actions/sales.actions";
 import HookFormField from "../shared/components/hook-form-filed";
 import { ImsButton } from "../shared/components/ims-button";
@@ -19,6 +19,7 @@ import { ImsForm } from "../shared/components/ims-forms";
 import { ImsSelect } from "../shared/components/ims-select";
 import useHookForm from "../shared/hooks/use-hook-form";
 import { SaleItem } from "../shared/types/sales-action.types";
+import { SelectOption } from "../shared/types/utitls.types";
 import { ScrollArea } from "../ui/scroll-area";
 import { Textarea } from "../ui/textarea";
 import {
@@ -46,13 +47,13 @@ type SalesCartProps = {
   patientCardId?: string;
   addedToCartAction?: () => void;
   patientInfo?: string | ReactNode;
-  setRefetchSales: Dispatch<SetStateAction<boolean>>;
+  setRefetchSalesAction: Dispatch<SetStateAction<boolean>>;
 };
 export default function SalesCart({
   patientCardId,
   addedToCartAction,
   patientInfo,
-  setRefetchSales,
+  setRefetchSalesAction,
 }: SalesCartProps) {
   const salesId = useParams().id;
   const isEditMode = isSalesEditMode(salesId);
@@ -63,6 +64,9 @@ export default function SalesCart({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { handleRequests, isOnline } = useOnlineStatus();
+  const [searchIcdCode, setSearchIcdCodes] = useState("a");
+  const [icdCodeOption, setIcdCodeOption] = useState<SelectOption[]>([]);
+  const [isIcdApiSearchLoading, setIsIcdApiSearchLoading] = useState(false);
 
   const form = useHookForm({
     resolver: salesCartSchema,
@@ -71,6 +75,7 @@ export default function SalesCart({
       paymentType: [],
       notes: "",
       insured: "false",
+      icdCode: "",
     },
   });
 
@@ -187,6 +192,17 @@ export default function SalesCart({
     void fetchSaleData();
   }, []);
 
+  useEffect(() => {
+    async function fetchIcdCode() {
+      setIsIcdApiSearchLoading(true);
+      const res = (await getIcdCodes({
+        terms: searchIcdCode.length ? searchIcdCode : "a",
+      })) as SelectOption[];
+      setIcdCodeOption(res);
+      setIsIcdApiSearchLoading(false);
+    }
+    fetchIcdCode();
+  }, [searchIcdCode]);
   const handleSubmit = async (data: unknown) => {
     const dataWithPatientId = { ...(data as SaleCartFormData), patientCardId };
     if (!isOnline) {
@@ -225,7 +241,7 @@ export default function SalesCart({
       //   nhisCoveredAmount,
       // );
       removeSalesItems();
-      setRefetchSales(true);
+      setRefetchSalesAction(true);
       form.reset();
       addedToCartAction?.();
       setIsSubmitting(false);
@@ -278,6 +294,27 @@ export default function SalesCart({
               animation={2}
               variant="inverted"
               labelName="Payment option"
+            />
+            <HookFormField
+              formControl={form.control}
+              name="icdCode"
+              label="Diagnosis (ICD)"
+              renderInput={({ field }) => (
+                <ImsSelect
+                  showSearch={true}
+                  showNone={false}
+                  moduleName=" diagnosis (icd)"
+                  options={icdCodeOption}
+                  value={field.value}
+                  onChange={(value) => field.onChange(value)}
+                  className="focus-visible:ring-ims-blue-300 !h-11 bg-white"
+                  apiSearch={true}
+                  apiSearchChange={(value) => {
+                    setSearchIcdCodes(value);
+                  }}
+                  apiLoading={isIcdApiSearchLoading}
+                />
+              )}
             />
             <HookFormField
               formControl={form.control}

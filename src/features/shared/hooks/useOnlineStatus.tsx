@@ -4,7 +4,6 @@ import localforage from "localforage";
 import { CacheKey } from "@/lib/cache/cache-data";
 import { toast } from "sonner";
 import { useSessionData } from "@/hooks/useSessionData";
-import { useGlobalNotifications } from "@features/notifications/notifications-context";
 import { UI_STATE } from "@/lib/constant";
 import { UseFormReturn } from "react-hook-form";
 import { handleRequestState } from "@/lib/utils";
@@ -43,7 +42,6 @@ export async function pushPendingRequest(request: SyncPayloadDto) {
 }
 
 export function useOnlineStatus() {
-  //const { isConnected } = useGlobalNotifications();
   const [isConnected, setIsConnected] = useState(navigator.onLine);
   const { userId } = useSessionData();
 
