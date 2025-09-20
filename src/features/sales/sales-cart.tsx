@@ -194,12 +194,16 @@ export default function SalesCart({
 
   useEffect(() => {
     async function fetchIcdCode() {
-      setIsIcdApiSearchLoading(true);
-      const res = (await getIcdCodes({
-        terms: searchIcdCode.length ? searchIcdCode : "a",
-      })) as SelectOption[];
-      setIcdCodeOption(res);
-      setIsIcdApiSearchLoading(false);
+      try {
+        setIsIcdApiSearchLoading(true);
+        const res = (await getIcdCodes({
+          terms: searchIcdCode.length ? searchIcdCode : "a",
+        })) as SelectOption[];
+        setIcdCodeOption(res);
+        setIsIcdApiSearchLoading(false);
+      } catch {
+        setIcdCodeOption([]);
+      }
     }
     fetchIcdCode();
   }, [searchIcdCode]);
