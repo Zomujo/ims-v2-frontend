@@ -298,12 +298,12 @@ export default function SalesCart({
             <HookFormField
               formControl={form.control}
               name="icdCode"
-              label="ICD code"
+              label="Diagnosis (ICD)"
               renderInput={({ field }) => (
                 <ImsSelect
                   showSearch={true}
                   showNone={false}
-                  moduleName=" Icd code"
+                  moduleName=" diagnosis (icd)"
                   options={icdCodeOption}
                   value={field.value}
                   onChange={(value) => field.onChange(value)}
