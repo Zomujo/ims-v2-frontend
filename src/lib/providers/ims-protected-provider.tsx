@@ -10,11 +10,11 @@ export function ImsProtectedProvider({
 }: {
   children: ReactNode;
 }): JSX.Element {
-  const { isAuthenticated } = useSessionData();
+  const { isAuthenticated, isLoading } = useSessionData();
   const router = useRouter();
 
   useEffect(() => {
-    if (!isAuthenticated) {
+    if (!isAuthenticated && !isLoading) {
       router.push(AUTH_PAGE_ROUTES.LOG_IN);
     }
   }, [isAuthenticated]);
