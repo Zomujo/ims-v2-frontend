@@ -1,4 +1,3 @@
-// components/ui/data-table.tsx
 "use client";
 
 import {
@@ -22,7 +21,6 @@ import { cn } from "@/lib/utils";
 import { useMemo, useState } from "react";
 import { useGlobalNotifications } from "@features/notifications/notifications-context";
 
-// Define props for the DataTable component
 type DataTableProps<TData, TValue> = {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];

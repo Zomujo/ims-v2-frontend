@@ -93,7 +93,7 @@ export default function ItemsList() {
             label: "edit",
             icon: "lucide:edit-2",
             action: () => handleEditBtnClicked(item),
-            hide: !canWrite(PermissionModules.ITEMS),
+            hide: !isOnline || !canWrite(PermissionModules.ITEMS),
           },
           {
             label: "view batches",

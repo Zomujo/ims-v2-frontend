@@ -10,22 +10,21 @@ import { CacheKey } from "@/lib/cache/cache-data";
  * It leverages useFetchData to provide robust caching and offline support.
  */
 export function useCategories() {
-  const { hasPermission, isLoading: isSessionLoading } = useSessionData();
+  const { hasPermission } = useSessionData();
   const canFetch = hasPermission(PermissionModules.ITEMS_CATEGORIES);
-  const shouldExecute = !isSessionLoading && canFetch;
 
   const { data, loading, error, refetch } = useFetchData<
     ItemCategoryResponse[]
   >({
     fetchFn: getItemCategoriesNoPaginate,
     cacheKey: CacheKey.ItemsCategoriesNoPaginate,
-    executeOnMount: shouldExecute,
-    deps: [shouldExecute],
+    executeOnMount: canFetch,
+    deps: [canFetch],
   });
 
   return {
     categories: data ?? [],
-    loading: isSessionLoading || (shouldExecute && loading),
+    loading: loading && canFetch,
     error,
     refetch,
   };

@@ -8,10 +8,11 @@ import { PageHeadingProvider } from "@/hooks/usePageHeading";
 import { GlobalNotificationsProvider } from "@features/notifications/notifications-context";
 import { GlobalCacheIndicator } from "@/lib/cache/global-cache-indicator";
 import { CacheProgressProvider } from "@/lib/cache/cache-progress-context";
+import { ImsProtectedProvider } from "@/lib/providers/ims-protected-provider";
 
 export default function EntryLayout({ children }: Readonly<PropsWithChildren>) {
   return (
-    <>
+    <ImsProtectedProvider>
       <GlobalNotificationsProvider enableToasts={true}>
         <CacheProgressProvider>
           <SidebarProvider>
@@ -27,6 +28,6 @@ export default function EntryLayout({ children }: Readonly<PropsWithChildren>) {
           <GlobalCacheIndicator />
         </CacheProgressProvider>
       </GlobalNotificationsProvider>
-    </>
+    </ImsProtectedProvider>
   );
 }

@@ -211,10 +211,6 @@ const DashboardGeneral = () => {
                       Out of stock
                     </TabsTrigger>
                   </TabsList>
-                  <StockLevelItems
-                    currentStockLevelView={currentStockLevelView}
-                    showSeeMoreLinkOnly={true}
-                  />
                 </div>
                 <TabsContent
                   onClick={() => setCurrentStockLevelView("OUT_OF_STOCK")}

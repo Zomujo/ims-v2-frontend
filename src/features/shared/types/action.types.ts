@@ -7,6 +7,12 @@ export type ApiSuccessResponseDto<T = unknown> = {
   data?: T;
 };
 
+export type IMSApiStandardResponse<T = undefined> = {
+  message: string;
+  error?: string;
+  data: T;
+};
+
 export type ApiSuccessResponseNoData = {
   statusCode: number;
   message: string;
@@ -519,6 +525,7 @@ export type GetSalesDto = {
   notes?: string;
   saleNumber: string;
   paymentType: PaymentType[];
+  icd_code?: string;
   status: "PAID" | "UNPAID";
   total: number;
   id: string;

@@ -64,7 +64,6 @@ export const getSalesItemsAction = async (
     next: {
       tags: [queryParams],
     },
-    cache: "force-cache",
   });
   return res.data;
 };
@@ -96,5 +95,24 @@ export const deleteSaleAction = async (saleId: string) => {
     return res;
   } catch (error) {
     return error as AuthApiStandardResponse;
+  }
+};
+
+export const getIcdCodes = async (searchParam?: GenerateQueryParams) => {
+  try {
+    const queryParams = generateQueryParams(searchParam);
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_CLINICAL_TABLES}${API_ENDPOINTS_OLD.SALES_ICD_CODES}${searchParam ? "&" + queryParams : ""}`,
+      {
+        method: "GET",
+      },
+    );
+    const data = (await res.json()) as Array<Array<Array<string>>>;
+    return data[3].map((item) => ({
+      label: `${item[1]} ${item[0]}`,
+      value: `${item[1]} ${item[0]}`,
+    }));
+  } catch (error) {
+    return error;
   }
 };

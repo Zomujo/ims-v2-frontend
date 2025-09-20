@@ -8,12 +8,12 @@ import {
   SelectValue,
 } from "@/features/ui/select";
 import { cn } from "@/lib/utils";
+import { Loader2 } from "lucide-react";
+import { useDebounceCallback } from "usehooks-ts";
+import { SelectOption } from "@features/shared/types/utitls.types";
 
 type ImsSelectProps = {
-  options: {
-    value: string;
-    label: string;
-  }[];
+  options: SelectOption[];
   moduleName?: string;
   className?: string;
   defaultValue?: string;
@@ -24,6 +24,9 @@ type ImsSelectProps = {
   noResultsText?: string;
   showSearch?: boolean;
   loading?: boolean;
+  apiSearch?: boolean;
+  apiSearchChange?: (search: string) => void;
+  apiLoading?: boolean;
 };
 
 export function ImsSelect({
@@ -37,6 +40,9 @@ export function ImsSelect({
   showSearch = false,
   noResultsText = "No results found.",
   loading,
+  apiSearch = false,
+  apiSearchChange = () => {},
+  apiLoading = false,
   ...props
 }: Readonly<ImsSelectProps>) {
   const [searchTerm, setSearchTerm] = React.useState("");
@@ -51,6 +57,7 @@ export function ImsSelect({
     e.stopPropagation();
   };
 
+  const debounce = useDebounceCallback(apiSearchChange, 800);
   return (
     <Select
       disabled={disabled || loading}
@@ -68,30 +75,49 @@ export function ImsSelect({
 
       <SelectContent>
         {shouldShowSearch && (
-          <div className="px-2 py-2">
+          <div className="relative px-2 py-2">
             <input
               type="text"
               placeholder="Search..."
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                apiSearch && debounce?.(e.target.value);
+              }}
               onKeyDown={handleInputKeyDown}
               className="w-full rounded-md border px-2 py-1 text-sm outline-none focus:border-blue-500"
             />
+            {apiLoading && (
+              <Loader2 className="absolute top-1/2 right-2 mr-2 h-4 w-4 -translate-y-1/2 animate-spin text-blue-500" />
+            )}
           </div>
         )}
         <SelectGroup>
           {showNone && <SelectItem value="none">None</SelectItem>}
-          {filteredOptions.length > 0 ? (
-            filteredOptions.map((option) => (
-              <SelectItem key={option.value} value={option.value}>
-                {option.label}
-              </SelectItem>
-            ))
-          ) : (
-            <div className="px-4 py-2 text-sm text-gray-500">
-              {noResultsText}
-            </div>
-          )}
+          {!apiSearch &&
+            (filteredOptions.length > 0 ? (
+              filteredOptions.map((option) => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
+                </SelectItem>
+              ))
+            ) : (
+              <div className="px-4 py-2 text-sm text-gray-500">
+                {noResultsText}
+              </div>
+            ))}
+          {apiSearch &&
+            (options.length > 0 ? (
+              options.map((option) => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
+                </SelectItem>
+              ))
+            ) : (
+              <div className="px-4 py-2 text-sm text-gray-500">
+                {noResultsText}
+              </div>
+            ))}
         </SelectGroup>
       </SelectContent>
     </Select>

@@ -1,6 +1,4 @@
 "use client";
-import { cn } from "@/lib/utils";
-import { Icon } from "@iconify/react/dist/iconify.js";
 import { ColumnDef } from "@tanstack/react-table";
 import { CrudPageProps } from "../settings/settings.types";
 import { IMSDataTable } from "../shared/components/ims-data-table";
@@ -12,9 +10,17 @@ import { useLocalStorage } from "usehooks-ts";
 import useFetchData from "../shared/hooks/use-fetch-data";
 import { getSalesItemsAction } from "../shared/actions/sales.action";
 import { CacheKey } from "@/lib/cache/cache-data";
+import { Dispatch, SetStateAction, useEffect } from "react";
+import { Plus } from "lucide-react";
 
-export default function SalesItemList() {
-  const { data, loading } = useFetchData({
+export default function SalesItemList({
+  refetchSales,
+  setRefetchSales,
+}: {
+  refetchSales: boolean;
+  setRefetchSales: Dispatch<SetStateAction<boolean>>;
+}) {
+  const { data, loading, refetch } = useFetchData({
     fetchFn: getSalesItemsAction,
     cacheKey: CacheKey.SalesItemList,
   });
@@ -23,6 +29,13 @@ export default function SalesItemList() {
     salesItemLocalStorageKey,
     [],
   );
+
+  useEffect(() => {
+    if (refetchSales) {
+      refetch();
+      setRefetchSales(false);
+    }
+  }, [refetch]);
 
   return (
     <div className="h-full pt-4">
@@ -81,12 +94,7 @@ const getActionColumn = <TData, TValue>({
                   <span className="px-4">Added</span>
                 ) : (
                   <>
-                    <Icon
-                      className={cn({
-                        "text-ims-red-300": actionItem?.type === "destructive",
-                      })}
-                      icon={actionItem?.icon ?? ""}
-                    />
+                    <Plus />
                     <span>{actionItem?.label}</span>
                   </>
                 )}

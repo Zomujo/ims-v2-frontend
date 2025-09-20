@@ -7,6 +7,7 @@ import {
   NetworkOnly,
   ExpirationPlugin,
 } from "serwist";
+import { ITEMS_STATUS } from "@features/shared/types/action.types";
 
 declare global {
   interface ServiceWorkerGlobalScope extends SerwistGlobalConfig {
@@ -16,10 +17,14 @@ declare global {
 
 declare const self: ServiceWorkerGlobalScope;
 
+const revision = crypto.randomUUID();
+
 const urlsToPrecache = [
   "/",
   "/dashboard",
   "/items",
+  `/items?status=${ITEMS_STATUS.LOW}`,
+  `/items?status=${ITEMS_STATUS.OUT_OF_STOCK}`,
   "/items?state=create",
   "/items?state=edit",
   "/items/batches",
@@ -55,6 +60,7 @@ const urlsToPrecache = [
   "/reports/stock-movement-report",
   "/reports/earnings-overview",
   "/ussd-codes",
+  "/~offline",
 ] as const;
 
 // const sessionCachePlugins = [
@@ -136,6 +142,16 @@ const serwist = new Serwist({
       }),
     },
   ],
+  fallbacks: {
+    entries: [
+      {
+        url: "/~offline",
+        matcher({ request }) {
+          return request.destination === "document";
+        },
+      },
+    ],
+  },
 });
 
 serwist.addEventListeners();

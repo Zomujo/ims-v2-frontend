@@ -43,27 +43,29 @@ export const settingsSidebarNavItems = [
 export const settingPagesDescription = {
   general: {
     title: "General",
-    description: "General settings for the application",
+    description: "Configure basic preferences and application-wide settings.",
   },
   security: {
     title: "Security",
-    description: "Security settings for the application",
+    description:
+      "Manage authentication, access policies, and security controls.",
   },
   departments: {
     title: "Manage Departments",
-    description: "Manage departments for the application",
+    description:
+      "Organize and maintain department structures within the application.",
   },
   users: {
     title: "Manage Users & Roles",
-    description: "Manage users and roles for the application",
+    description: "Control user accounts, roles, and access permissions.",
   },
   notifications: {
     title: "Notifications",
-    description: "Notification settings for the application",
+    description: "Customize notification preferences and delivery methods.",
   },
   expiry: {
     title: "Expiry",
-    description: "List of Expired and Near-Expiry Medicines",
+    description: "Track, review, and manage expired or near-expiry medicines.",
   },
 } as const;
 

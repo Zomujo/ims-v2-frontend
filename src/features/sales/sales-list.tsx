@@ -28,7 +28,6 @@ export default function SalesList() {
   });
   const [, , removeSalesItems] = useLocalStorage(salesItemLocalStorageKey, []);
   const sales = data?.rows ?? [];
-  console.log("sales", sales);
   const {
     state,
     isEditMode,

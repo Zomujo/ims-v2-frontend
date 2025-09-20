@@ -10,22 +10,18 @@ import { Input } from "../ui/input";
 import { AuthForm, RenderPasswordInput } from "./auth-components-client";
 import { authCreateAccountInputsData } from "./auth.data";
 import { createAccountSchema } from "./auth.schemas";
-import { getFormDefaultValues } from "./auth.utils";
 import { AuthAccountCreationProps } from "@features/shared/types/auth-action.types";
 import { useState } from "react";
 import { toast } from "sonner";
 import { authCreateAccountAction } from "@features/shared/actions/auth.action";
-import { z } from "zod";
 import { useRouter } from "next/navigation";
+import { authenticationProvider } from "@/lib/providers/authentication-provider";
 
-export function CreateAccountForm() {
+function CreateAccountForm() {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const form = useHookForm({
     resolver: createAccountSchema,
-    defaultValues: getFormDefaultValues<z.infer<typeof createAccountSchema>>(
-      authCreateAccountInputsData,
-    ),
   });
 
   const handleSubmitFn = async (data: unknown) => {
@@ -65,6 +61,8 @@ export function CreateAccountForm() {
     />
   );
 }
+
+export default authenticationProvider(CreateAccountForm);
 
 function AuthCreateAccountInputs({ control }: Readonly<{ control: Control }>) {
   return (

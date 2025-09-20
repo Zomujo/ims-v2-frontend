@@ -34,6 +34,7 @@ export const API_ENDPOINTS_OLD = {
   SALES_ITEMS: "/sales/items",
   PATIENTS: "/patients",
   SETTINGS_EXPIRY: "/user/settings/expiry",
+  SALES_ICD_CODES: "/icd10cm/v3/search?sf=code,name",
 };
 
 export const AUTH_PAGE_ROUTES = {
