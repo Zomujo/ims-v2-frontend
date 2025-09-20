@@ -18,7 +18,8 @@ import { ImsButton } from "../shared/components/ims-button";
 import { ImsForm } from "../shared/components/ims-forms";
 import { ImsSelect } from "../shared/components/ims-select";
 import useHookForm from "../shared/hooks/use-hook-form";
-import { SaleItem, SelectOption } from "../shared/types/sales-action.types";
+import { SaleItem } from "../shared/types/sales-action.types";
+import { SelectOption } from "../shared/types/utitls.types";
 import { ScrollArea } from "../ui/scroll-area";
 import { Textarea } from "../ui/textarea";
 import {
@@ -46,13 +47,13 @@ type SalesCartProps = {
   patientCardId?: string;
   addedToCartAction?: () => void;
   patientInfo?: string | ReactNode;
-  setRefetchSales: Dispatch<SetStateAction<boolean>>;
+  setRefetchSalesAction: Dispatch<SetStateAction<boolean>>;
 };
 export default function SalesCart({
   patientCardId,
   addedToCartAction,
   patientInfo,
-  setRefetchSales,
+  setRefetchSalesAction,
 }: SalesCartProps) {
   const salesId = useParams().id;
   const isEditMode = isSalesEditMode(salesId);
@@ -65,7 +66,7 @@ export default function SalesCart({
   const { handleRequests, isOnline } = useOnlineStatus();
   const [searchIcdCode, setSearchIcdCodes] = useState("a");
   const [icdCodeOption, setIcdCodeOption] = useState<SelectOption[]>([]);
-  const [isApiSearchLoading, setIsApiSearchLoading] = useState(false);
+  const [isIcdApiSearchLoading, setIsIcdApiSearchLoading] = useState(false);
 
   const form = useHookForm({
     resolver: salesCartSchema,
@@ -193,12 +194,12 @@ export default function SalesCart({
 
   useEffect(() => {
     async function fetchIcdCode() {
-      setIsApiSearchLoading(true);
+      setIsIcdApiSearchLoading(true);
       const res = (await getIcdCodes({
         terms: searchIcdCode.length ? searchIcdCode : "a",
       })) as SelectOption[];
       setIcdCodeOption(res);
-      setIsApiSearchLoading(false);
+      setIsIcdApiSearchLoading(false);
     }
     fetchIcdCode();
   }, [searchIcdCode]);
@@ -240,7 +241,7 @@ export default function SalesCart({
       //   nhisCoveredAmount,
       // );
       removeSalesItems();
-      setRefetchSales(true);
+      setRefetchSalesAction(true);
       form.reset();
       addedToCartAction?.();
       setIsSubmitting(false);
@@ -311,7 +312,7 @@ export default function SalesCart({
                   apiSearchChange={(value) => {
                     setSearchIcdCodes(value);
                   }}
-                  apiLoading={isApiSearchLoading}
+                  apiLoading={isIcdApiSearchLoading}
                 />
               )}
             />

@@ -68,8 +68,3 @@ export type GetSalesAPIResponse = IMSApiActionPaginationResponse<Sale>;
 
 export type GetPatientsAPIResponse = IMSApiActionResponse<Patient[]>;
 export type GetSalesItemsAPIResponse = IMSApiActionPaginationResponse<SaleItem>;
-
-export type SelectOption = {
-  label: string;
-  value: string;
-};

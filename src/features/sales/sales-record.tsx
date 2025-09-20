@@ -30,7 +30,7 @@ export default function SalesRecord() {
         <SalesCart
           patientCardId={patientId}
           patientInfo={patientInfo}
-          setRefetchSales={setRefetchSales}
+          setRefetchSalesAction={setRefetchSales}
         />
       </div>
       <ImsSheet
@@ -41,7 +41,7 @@ export default function SalesRecord() {
           patientCardId={patientId}
           addedToCartAction={() => setIsCartVisible(false)}
           patientInfo={patientInfo}
-          setRefetchSales={setRefetchSales}
+          setRefetchSalesAction={setRefetchSales}
         />
       </ImsSheet>
 

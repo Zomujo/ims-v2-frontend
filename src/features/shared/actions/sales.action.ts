@@ -108,7 +108,10 @@ export const getIcdCodes = async (searchParam?: GenerateQueryParams) => {
       },
     );
     const data = (await res.json()) as Array<Array<Array<string>>>;
-    return data[3].map((item) => ({ label: item[0], value: item[0] }));
+    return data[3].map((item) => ({
+      label: `${item[1]} ${item[0]}`,
+      value: `${item[1]} ${item[0]}`,
+    }));
   } catch (error) {
     return error;
   }

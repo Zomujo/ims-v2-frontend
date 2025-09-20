@@ -10,12 +10,10 @@ import {
 import { cn } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
 import { useDebounceCallback } from "usehooks-ts";
+import { SelectOption } from "@features/shared/types/utitls.types";
 
 type ImsSelectProps = {
-  options: {
-    value: string;
-    label: string;
-  }[];
+  options: SelectOption[];
   moduleName?: string;
   className?: string;
   defaultValue?: string;
