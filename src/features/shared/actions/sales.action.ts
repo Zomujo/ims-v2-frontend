@@ -112,7 +112,7 @@ export const getIcdCodes = async (searchParam?: GenerateQueryParams) => {
       label: `${item[1]} ${item[0]}`,
       value: `${item[1]} ${item[0]}`,
     }));
-  } catch (error) {
-    return error;
+  } catch {
+    throw new Error("Failed to fetch ICD codes");
   }
 };
