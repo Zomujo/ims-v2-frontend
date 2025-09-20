@@ -30,6 +30,7 @@ export const salesCartSchema = z.object({
     )
     .min(1, { message: "Please add at least one payment type" }),
   notes: z.string().optional(),
+  icdCode: z.string(),
   saleItems: z
     .array(
       z.object({

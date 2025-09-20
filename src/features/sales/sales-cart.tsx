@@ -11,14 +11,14 @@ import {
 } from "react";
 import { useFieldArray } from "react-hook-form";
 import { useIsClient, useLocalStorage } from "usehooks-ts";
-import { createSaleAction } from "../shared/actions/sales.action";
+import { createSaleAction, getIcdCodes } from "../shared/actions/sales.action";
 import { getSale, updateSale } from "../shared/actions/sales.actions";
 import HookFormField from "../shared/components/hook-form-filed";
 import { ImsButton } from "../shared/components/ims-button";
 import { ImsForm } from "../shared/components/ims-forms";
 import { ImsSelect } from "../shared/components/ims-select";
 import useHookForm from "../shared/hooks/use-hook-form";
-import { SaleItem } from "../shared/types/sales-action.types";
+import { SaleItem, SelectOption } from "../shared/types/sales-action.types";
 import { ScrollArea } from "../ui/scroll-area";
 import { Textarea } from "../ui/textarea";
 import {
@@ -63,6 +63,9 @@ export default function SalesCart({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { handleRequests, isOnline } = useOnlineStatus();
+  const [searchIcdCode, setSearchIcdCodes] = useState("a");
+  const [icdCodeOption, setIcdCodeOption] = useState<SelectOption[]>([]);
+  const [isApiSearchLoading, setIsApiSearchLoading] = useState(false);
 
   const form = useHookForm({
     resolver: salesCartSchema,
@@ -71,6 +74,7 @@ export default function SalesCart({
       paymentType: [],
       notes: "",
       insured: "false",
+      icdCode: "",
     },
   });
 
@@ -187,6 +191,17 @@ export default function SalesCart({
     void fetchSaleData();
   }, []);
 
+  useEffect(() => {
+    async function fetchIcdCode() {
+      setIsApiSearchLoading(true);
+      const res = (await getIcdCodes({
+        terms: searchIcdCode.length ? searchIcdCode : "a",
+      })) as SelectOption[];
+      setIcdCodeOption(res);
+      setIsApiSearchLoading(false);
+    }
+    fetchIcdCode();
+  }, [searchIcdCode]);
   const handleSubmit = async (data: unknown) => {
     const dataWithPatientId = { ...(data as SaleCartFormData), patientCardId };
     if (!isOnline) {
@@ -278,6 +293,27 @@ export default function SalesCart({
               animation={2}
               variant="inverted"
               labelName="Payment option"
+            />
+            <HookFormField
+              formControl={form.control}
+              name="icdCode"
+              label="ICD code"
+              renderInput={({ field }) => (
+                <ImsSelect
+                  showSearch={true}
+                  showNone={false}
+                  moduleName=" Icd code"
+                  options={icdCodeOption}
+                  value={field.value}
+                  onChange={(value) => field.onChange(value)}
+                  className="focus-visible:ring-ims-blue-300 !h-11 bg-white"
+                  apiSearch={true}
+                  apiSearchChange={(value) => {
+                    setSearchIcdCodes(value);
+                  }}
+                  apiLoading={isApiSearchLoading}
+                />
+              )}
             />
             <HookFormField
               formControl={form.control}

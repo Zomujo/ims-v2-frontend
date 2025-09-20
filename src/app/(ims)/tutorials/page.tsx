@@ -167,17 +167,24 @@ const Tutorials = () => {
         ))}
 
         {selectedVideo && (
-          <div className="fixed inset-0 z-[50] flex items-center justify-center bg-black/75 p-4">
-            <div className="relative w-full max-w-4xl rounded-lg bg-white">
-              <button
-                onClick={() => setSelectedVideo(null)}
-                className="absolute -top-10 right-0 text-white hover:text-gray-300"
-              >
-                <Icon icon="mdi:close" className="h-6 w-6" />
-              </button>
+          <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
+            <div className="relative w-full max-w-4xl overflow-hidden rounded-2xl bg-white shadow-2xl">
+              {/* Header */}
+              <div className="flex items-center justify-between border-b border-gray-200 bg-gray-50 px-6 py-4">
+                <h2 className="text-lg font-semibold text-gray-900">
+                  {selectedVideo?.title || "Tutorial"}
+                </h2>
+                <button
+                  onClick={() => setSelectedVideo(null)}
+                  className="rounded-full p-1.5 text-gray-500 transition hover:bg-gray-200 hover:text-gray-800"
+                >
+                  <Icon icon="mdi:close" className="h-6 w-6" />
+                </button>
+              </div>
+
               <video
                 key={selectedVideo.src}
-                className="w-full rounded-t-lg"
+                className="max-h-[70vh] w-full bg-black"
                 controls
                 preload="metadata"
                 poster={selectedVideo.src}
@@ -185,10 +192,11 @@ const Tutorials = () => {
                 <source src={selectedVideo.src} type="video/mp4" />
                 Your browser does not support the video tag.
               </video>
-              <div className="p-4">
+
+              <div className="flex justify-end gap-3 border-t border-gray-200 bg-gray-50 px-6 py-4">
                 <button
                   onClick={() => setSelectedVideo(null)}
-                  className="mt-4 w-full rounded-md bg-red-600 px-4 py-2 text-white transition-colors duration-200 hover:bg-red-700"
+                  className="rounded-md bg-gray-200 px-5 py-2 text-sm font-medium text-gray-800 shadow-sm transition hover:bg-gray-300"
                 >
                   Close
                 </button>

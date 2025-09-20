@@ -43,8 +43,8 @@ export async function pushPendingRequest(request: SyncPayloadDto) {
 }
 
 export function useOnlineStatus() {
-  //const { isConnected } = useGlobalNotifications();
-  const [isConnected, setIsConnected] = useState(navigator.onLine);
+  const { isConnected } = useGlobalNotifications();
+  // const [isConnected, setIsConnected] = useState(navigator.onLine);
   const { userId } = useSessionData();
 
   async function sendPendingRequestsToQueue() {
@@ -74,18 +74,19 @@ export function useOnlineStatus() {
     }
   }, [isConnected]);
 
-  useEffect(() => {
-    const handleOnline = () => setIsConnected(true);
-    const handleOffline = () => setIsConnected(false);
+  //Todo:  research on the best approach
+  // useEffect(() => {
+  //   const handleOnline = () => setIsConnected(true);
+  //   const handleOffline = () => setIsConnected(false);
 
-    window.addEventListener("online", handleOnline);
-    window.addEventListener("offline", handleOffline);
+  //   window.addEventListener("online", handleOnline);
+  //   window.addEventListener("offline", handleOffline);
 
-    return () => {
-      window.removeEventListener("online", handleOnline);
-      window.removeEventListener("offline", handleOffline);
-    };
-  }, []);
+  //   return () => {
+  //     window.removeEventListener("online", handleOnline);
+  //     window.removeEventListener("offline", handleOffline);
+  //   };
+  // }, []);
 
   const handleRequests = (
     url: string,
