@@ -26,6 +26,7 @@ export const useSessionData = () => {
 
   const setSessionState = useCallback((imsSession: ImsSession) => {
     setSession(imsSession);
+    setIsLoading(false);
     setImsSession(imsSession);
   }, []);
 
