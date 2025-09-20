@@ -13,10 +13,11 @@ import { AuthForm, RenderPasswordInput } from "./auth-components-client";
 import { loginSchema } from "./auth.schemas";
 import { toast } from "sonner";
 import { authLoginAction } from "@features/shared/actions/auth.action";
-import { setImsSession } from "@/lib/config/ims-session";
 import { authenticationProvider } from "@/lib/providers/authentication-provider";
+import { useSessionData } from "@/hooks/useSessionData";
 
 function LoginForm() {
+  const { setSessionState } = useSessionData();
   const router = useRouter();
   const form = useHookForm({
     resolver: loginSchema,
@@ -27,7 +28,7 @@ function LoginForm() {
   });
 
   const handleSubmitFn = async (data: unknown) => {
-    const loadingToast = toast.loading("Creating account...");
+    const loadingToast = toast.loading("Authenticating...");
     const credentials = data as z.infer<typeof loginSchema>;
     try {
       const { data: loginData, error } = await authLoginAction(credentials);
@@ -37,7 +38,7 @@ function LoginForm() {
       }
 
       if (loginData) {
-        setImsSession(loginData);
+        setSessionState(loginData);
       }
       toast.success("Authenticated successfully");
       router.push(PAGE_ROUTES.DASHBOARD);

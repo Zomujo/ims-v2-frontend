@@ -13,7 +13,7 @@ import {
 import { Badge } from "../ui/badge";
 import { settingsSidebarNavItems } from "./settings.data";
 import { useSessionData } from "@/hooks/useSessionData";
-import { useGlobalNotifications } from "@features/notifications/notifications-context";
+import { useOnlineStatus } from "@features/shared/hooks/useOnlineStatus";
 
 export function SettingsSidebar() {
   const { hasPermission } = useSessionData();
@@ -43,8 +43,8 @@ export function SettingsFromActions({
   className?: string;
   setEditFormAction: Dispatch<SetStateAction<boolean>>;
 }>) {
-  const { isConnected } = useGlobalNotifications();
-  if (!isConnected) {
+  const { isOnline } = useOnlineStatus();
+  if (!isOnline) {
     return null;
   }
   return (
@@ -93,8 +93,8 @@ export function SettingsCreateButton({
   label,
   state,
 }: Readonly<{ label: string; state: string }>) {
-  const { isConnected } = useGlobalNotifications();
-  if (!isConnected) {
+  const { isOnline } = useOnlineStatus();
+  if (!isOnline) {
     return null;
   }
   return (

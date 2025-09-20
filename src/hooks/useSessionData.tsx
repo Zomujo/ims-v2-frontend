@@ -10,19 +10,24 @@ import { useState, useEffect, useCallback, useMemo } from "react";
 import { getImsSession, setImsSession } from "@/lib/config/ims-session";
 
 export const useSessionData = () => {
-  const [session, setSession] = useState<ImsSession | null>(getImsSession());
+  const [session, setSession] = useState<ImsSession | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const handler = () => {
-      setSession(getImsSession());
-    };
-    window.addEventListener("storage", handler);
-    return () => window.removeEventListener("storage", handler);
+    const initialSession = getImsSession();
+    setSession(initialSession);
+    setIsLoading(false);
+    // const handler = () => {
+    //   setSession(getImsSession());
+    // };
+    // window.addEventListener("storage", handler);
+    // return () => window.removeEventListener("storage", handler);
   }, []);
 
   const setSessionState = useCallback((imsSession: ImsSession) => {
+    setSession(imsSession);
+    setIsLoading(false);
     setImsSession(imsSession);
-    setSession(session);
   }, []);
 
   const userId = session?.id;
@@ -63,6 +68,7 @@ export const useSessionData = () => {
   return {
     session,
     isAuthenticated,
+    isLoading,
     facilityName,
     role,
     profileImage,
@@ -78,5 +84,6 @@ export const useSessionData = () => {
     userId,
     phoneNumber,
     updateUserStatus,
+    setSessionState,
   };
 };
