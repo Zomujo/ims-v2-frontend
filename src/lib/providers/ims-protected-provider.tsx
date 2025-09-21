@@ -14,10 +14,21 @@ export function ImsProtectedProvider({
   const router = useRouter();
 
   useEffect(() => {
-    if (!isAuthenticated && !isLoading) {
+    // Only redirect if we're not loading and not authenticated
+    if (!isLoading && !isAuthenticated) {
       router.push(AUTH_PAGE_ROUTES.LOG_IN);
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, isLoading, router]);
+
+  // Show loading or nothing while checking authentication
+  if (isLoading) {
+    return <></>;
+  }
+
+  // Only render children if authenticated
+  if (!isAuthenticated) {
+    return <></>;
+  }
 
   return <>{children}</>;
 }

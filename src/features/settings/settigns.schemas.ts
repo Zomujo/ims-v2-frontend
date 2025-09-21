@@ -22,10 +22,13 @@ export const newUserSettingsSchema = z.object({
     .string()
     .min(1, { message: "Please enter fullname" })
     .min(3, { message: "Full name should not be less than 3 characters" }),
-  email: z
-    .string()
-    .min(1, { message: "Please enter email address" })
-    .email({ message: "Please enter a valid email address" }),
+  email: z.preprocess(
+    (val) => (val === "" ? undefined : val),
+    z
+      .string()
+      .email({ message: "Please enter a valid email address" })
+      .optional(),
+  ),
   role: z.string().min(1, { message: "Please select a role" }),
   departmentId: z.string().optional(),
   permissions: z.array(z.string()),
