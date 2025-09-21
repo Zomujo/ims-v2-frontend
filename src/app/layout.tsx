@@ -2,6 +2,7 @@ import { Toaster } from "@/features/ui/sonner";
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { ReactNode } from "react";
+import { SessionProvider } from "@/lib/providers/session-provider";
 
 const APP_NAME = "Zomujo Stealth";
 const APP_DEFAULT_TITLE = "Zomujo Stealth - Inventory Management System";
@@ -60,7 +61,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        {children}
+        <SessionProvider>{children}</SessionProvider>
         <Toaster position="top-right" />
       </body>
     </html>

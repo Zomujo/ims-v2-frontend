@@ -1,34 +1,15 @@
 "use client";
 import {
-  ImsSession,
   PermissionActions,
   PermissionModules,
   UserStatus,
 } from "@features/shared/types/auth-action.types";
 import { hasActionPermissionHelper } from "@/lib/utils/permissions.utils";
-import { useState, useEffect, useCallback, useMemo } from "react";
-import { getImsSession, setImsSession } from "@/lib/config/ims-session";
+import { useCallback, useMemo } from "react";
+import { useSessionContext } from "@/lib/providers/session-provider";
 
 export const useSessionData = () => {
-  const [session, setSession] = useState<ImsSession | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const initialSession = getImsSession();
-    setSession(initialSession);
-    setIsLoading(false);
-    // const handler = () => {
-    //   setSession(getImsSession());
-    // };
-    // window.addEventListener("storage", handler);
-    // return () => window.removeEventListener("storage", handler);
-  }, []);
-
-  const setSessionState = useCallback((imsSession: ImsSession) => {
-    setSession(imsSession);
-    setIsLoading(false);
-    setImsSession(imsSession);
-  }, []);
+  const { session, isLoading, setSessionState } = useSessionContext();
 
   const userId = session?.id;
   const token = session?.tokens.accessToken;
@@ -58,12 +39,15 @@ export const useSessionData = () => {
   const canDelete = (module: PermissionModules) =>
     hasActionPermission(`${module}:${PermissionActions.DELETE}`);
 
-  const updateUserStatus = (status: UserStatus) => {
-    if (session) {
-      const updatedSession = { ...session, status };
-      setSessionState(updatedSession);
-    }
-  };
+  const updateUserStatus = useCallback(
+    (status: UserStatus) => {
+      if (session) {
+        const updatedSession = { ...session, status };
+        setSessionState(updatedSession);
+      }
+    },
+    [session, setSessionState],
+  );
 
   return {
     session,
