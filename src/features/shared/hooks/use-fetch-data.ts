@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { GenerateQueryParams } from "../types/utitls.types";
 import localforage from "localforage";
 import { useOnlineStatus } from "@features/shared/hooks/useOnlineStatus";
+import { notificationEvents } from "@/lib/events/notification-events";
 
 type FetchDataProps<T> = {
   fetchFn: (
@@ -21,6 +22,7 @@ type FetchDataProps<T> = {
   cacheKey?: string;
   cacheKeyId?: string;
   searchField?: string;
+  refetchOnNotification?: boolean;
 };
 
 export default function useFetchData<T>({
@@ -36,6 +38,7 @@ export default function useFetchData<T>({
   cacheKey,
   cacheKeyId,
   searchField,
+  refetchOnNotification = false,
 }: FetchDataProps<T>) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
@@ -286,6 +289,14 @@ export default function useFetchData<T>({
     prevDepsRef.current = deps;
     void fetchData();
   }, [searchParams, ...deps]);
+
+  useEffect(() => {
+    if (!refetchOnNotification) return;
+
+    return notificationEvents.subscribe(() => {
+      void fetchData();
+    });
+  }, [refetchOnNotification]);
 
   const refetch = () => {
     void fetchData();

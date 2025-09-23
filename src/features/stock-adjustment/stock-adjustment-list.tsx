@@ -30,6 +30,7 @@ export default function StockAdjustmentList() {
     fetchFn: getStockAdjustments,
     cacheKey: CacheKey.StockAdjustmentList,
     searchField: "reason",
+    refetchOnNotification: true,
   });
   const stockAdjustments = data?.rows ?? [];
   const {
