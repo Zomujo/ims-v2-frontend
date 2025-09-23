@@ -107,6 +107,60 @@ const Tutorials = () => {
         },
       ],
     },
+    {
+      name: "Offline",
+      icon: "mdi:wifi-off",
+      videos: [
+        {
+          id: 1,
+          title: "Overview",
+          src: `${firebaseS3bucket}IMS%20tutorial%20videos%2Foffline%20-%20overview.mp4?alt=media&token=e042a3ff-4d0b-48e1-b15d-83e29c1518ef`,
+          icon: "mdi:signal-off",
+        },
+      ],
+    },
+    {
+      name: "Report an Incident",
+      icon: "mdi:file-document-alert",
+      videos: [
+        {
+          id: 1,
+          title: "Report an incident",
+          src: `${firebaseS3bucket}IMS%20tutorial%20videos%2Freport%20an%20incident.mp4?alt=media&token=1b853ce2-0ae9-4ad8-8c4b-8cc72da4371f`,
+          icon: "mdi:alert-octagon",
+        },
+      ],
+    },
+    {
+      name: "Ussd ",
+      icon: "mdi:phone-outline",
+      videos: [
+        {
+          id: 1,
+          title: "Overview",
+          src: `${firebaseS3bucket}IMS%20tutorial%20videos%2Fussd-overview.MP4?alt=media&token=734f9ea9-9104-4d80-b4c9-b2c61e4fd102`,
+          icon: "mdi:view-dashboard",
+        },
+        {
+          id: 2,
+          title: "Query a drug",
+          src: `${firebaseS3bucket}IMS%20tutorial%20videos%2Fussd-query%20a%20drug.MP4?alt=media&token=930067aa-ac30-4372-8f32-15cee6ee70f4`,
+          icon: "mdi:pill",
+        },
+        {
+          id: 3,
+          title: "Dispense a drug",
+          src: `${firebaseS3bucket}IMS%20tutorial%20videos%2Fussd-dispense%20a%20drug.MP4?alt=media&token=f99c6b8c-66bb-4280-8761-93a18a432fcb`,
+          icon: "mdi:hand-coin",
+        },
+        {
+          id: 4,
+          title: "Stock a drug",
+          src: `${firebaseS3bucket}IMS%20tutorial%20videos%2Fussd-dispense%20a%20drug.MP4?alt=media&token=f99c6b8c-66bb-4280-8761-93a18a432fcb`,
+          icon: "mdi:package-variant",
+        },
+      ],
+    },
   ];
 
   return (
