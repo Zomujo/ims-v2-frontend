@@ -2,7 +2,7 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { GenerateQueryParams } from "../types/utitls.types";
 import localforage from "localforage";
-import { useGlobalNotifications } from "@features/notifications/notifications-context";
+import { useOnlineStatus } from "@features/shared/hooks/useOnlineStatus";
 
 type FetchDataProps<T> = {
   fetchFn: (
@@ -43,7 +43,7 @@ export default function useFetchData<T>({
   const [data, setData] = useState<T | null>(null);
   const searchParams = useSearchParams();
   const prevSearchParams = useRef<string>("");
-  const { isConnected } = useGlobalNotifications();
+  const { isOnline } = useOnlineStatus();
   const prevDepsRef = useRef<unknown[] | null>(null);
 
   // Add date range utility functions
@@ -140,7 +140,7 @@ export default function useFetchData<T>({
       });
     });
     const isOffline = typeof navigator !== "undefined" && !navigator.onLine;
-    if (isOffline || !isConnected) {
+    if (isOffline || !isOnline) {
       if (
         coldData &&
         typeof coldData === "object" &&
