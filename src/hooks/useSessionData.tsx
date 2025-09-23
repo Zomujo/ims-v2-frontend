@@ -12,6 +12,8 @@ export const useSessionData = () => {
   const { session, isLoading, setSessionState } = useSessionContext();
 
   const userId = session?.id;
+  const facilityId = session?.facility.id;
+  const departmentId = session?.departmentId;
   const token = session?.tokens.accessToken;
 
   const isAuthenticated = useMemo(() => !!session, [session]);
@@ -69,5 +71,7 @@ export const useSessionData = () => {
     phoneNumber,
     updateUserStatus,
     setSessionState,
+    facilityId,
+    departmentId,
   };
 };
