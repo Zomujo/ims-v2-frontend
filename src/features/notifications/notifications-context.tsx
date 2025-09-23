@@ -19,6 +19,7 @@ import { toast } from "sonner";
 import localforage from "localforage";
 import { CacheKey } from "@/lib/cache/cache-data";
 import { io, Socket } from "socket.io-client";
+import { notificationEvents } from "@/lib/events/notification-events";
 
 interface GlobalNotificationsContextType {
   notifications: NotificationPayload[];
@@ -197,6 +198,8 @@ export function GlobalNotificationsProvider({
 
           if (addedCount > 0) {
             console.log("New notification added via Socket.IO:", data.id);
+
+            notificationEvents.emit();
 
             if (enableToasts) {
               toast.info("New notification", {
