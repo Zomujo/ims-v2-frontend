@@ -18,6 +18,7 @@ import {
 import { toast } from "sonner";
 import localforage from "localforage";
 import { CacheKey } from "@/lib/cache/cache-data";
+import { io, Socket } from "socket.io-client";
 
 interface GlobalNotificationsContextType {
   notifications: NotificationPayload[];
@@ -46,7 +47,7 @@ export function GlobalNotificationsProvider({
   children,
   enableToasts = true,
 }: GlobalNotificationsProviderProps) {
-  const { userId } = useSessionData();
+  const { userId, facilityId, departmentId } = useSessionData();
   const [notifications, setNotifications] = useState<NotificationPayload[]>([]);
   const [isConnected, setIsConnected] = useState(
     typeof navigator !== "undefined" && navigator.onLine,
@@ -57,9 +58,10 @@ export function GlobalNotificationsProvider({
   const [currentPage, setCurrentPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
 
-  const eventSourceRef = useRef<EventSource | null>(null);
+  const socketRef = useRef<Socket | null>(null);
   const initialLoadRef = useRef(false);
   const notificationIdsRef = useRef<Set<string>>(new Set());
+  const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const addNotificationsNoDuplicates = useCallback(
     (
@@ -162,65 +164,79 @@ export function GlobalNotificationsProvider({
     addNotificationsNoDuplicates,
   ]);
 
-  // SSE connection
-  const connectSSE = useCallback(() => {
-    if (!userId || !initialLoadRef.current) return;
+  const connectSocket = useCallback(() => {
+    if (!facilityId || !initialLoadRef.current) return;
 
-    const url = `${process.env.NEXT_PUBLIC_IMS_API_URL}/notifications/stream?user=${userId}`;
+    const socketUrl = process.env.NEXT_PUBLIC_IMS_API_URL_BASE;
 
     try {
-      eventSourceRef.current = new EventSource(url);
+      socketRef.current = io(socketUrl!, {
+        transports: ["websocket"],
+        autoConnect: true,
+      });
 
-      eventSourceRef.current.onopen = () => {
-        console.log("Global SSE connection opened for notifications");
+      socketRef.current.on("connect", () => {
+        console.log("Global Socket.IO connection opened for notifications");
         setIsConnected(true);
         setError(null);
-      };
 
-      eventSourceRef.current.onmessage = (event) => {
+        const deptPart = departmentId ? `:${departmentId}:` : "";
+        const topic = `${facilityId}${deptPart}`;
+        socketRef.current?.emit("subscribe", { topic });
+        console.log(`Subscribed to topic: ${topic}`);
+
+        if (reconnectTimeoutRef.current) {
+          clearTimeout(reconnectTimeoutRef.current);
+          reconnectTimeoutRef.current = null;
+        }
+      });
+
+      socketRef.current.on("notification.new", (data: NotificationPayload) => {
         try {
-          const newNotification = JSON.parse(event.data) as NotificationPayload;
-
-          const addedCount = addNotificationsNoDuplicates(
-            [newNotification],
-            "prepend",
-          );
+          const addedCount = addNotificationsNoDuplicates([data], "prepend");
 
           if (addedCount > 0) {
-            console.log("New notification added via SSE:", newNotification.id);
+            console.log("New notification added via Socket.IO:", data.id);
 
             if (enableToasts) {
               toast.info("New notification", {
-                description: newNotification.message,
+                description: data.message,
                 duration: 7000,
                 position: "top-center",
               });
             }
           } else {
-            console.log("Duplicate notification ignored:", newNotification.id);
+            console.log("Duplicate notification ignored:", data.id);
           }
         } catch (error) {
-          console.error("Failed to parse notification:", error);
+          console.error("Failed to process notification:", error);
         }
-      };
+      });
 
-      eventSourceRef.current.onerror = (error) => {
-        console.error("Global SSE connection error:", error);
+      socketRef.current.on("disconnect", (reason) => {
+        console.log("Global Socket.IO connection closed:", reason);
         setIsConnected(false);
-        setError("Connection lost");
 
-        setTimeout(() => {
-          if (eventSourceRef.current?.readyState === EventSource.CLOSED) {
-            connectSSE();
-          }
-        }, 5000);
-      };
+        if (reason !== "io client disconnect" && !reconnectTimeoutRef.current) {
+          setError("Connection lost");
+          reconnectTimeoutRef.current = setTimeout(() => {
+            reconnectTimeoutRef.current = null;
+            socketRef.current?.connect();
+          }, 5000);
+        }
+      });
+
+      socketRef.current.on("connect_error", (error) => {
+        console.error("Global Socket.IO connection error:", error);
+        setIsConnected(false);
+        setError("Connection error");
+      });
     } catch (error) {
-      console.error("Failed to create global SSE connection:", error);
+      console.error("Failed to create global Socket.IO connection:", error);
       setIsConnected(false);
       setError("Failed to connect");
     }
-  }, [userId, enableToasts]);
+  }, [facilityId, departmentId, enableToasts, addNotificationsNoDuplicates]);
 
   useEffect(() => {
     if (!userId) return;
@@ -229,16 +245,21 @@ export function GlobalNotificationsProvider({
 
   useEffect(() => {
     if (initialLoadRef.current && !isLoading) {
-      connectSSE();
+      connectSocket();
     }
 
     return () => {
-      if (eventSourceRef.current) {
-        eventSourceRef.current.close();
-        eventSourceRef.current = null;
+      if (reconnectTimeoutRef.current) {
+        clearTimeout(reconnectTimeoutRef.current);
+        reconnectTimeoutRef.current = null;
+      }
+
+      if (socketRef.current) {
+        socketRef.current.disconnect();
+        socketRef.current = null;
       }
     };
-  }, [connectSSE, isLoading]);
+  }, [connectSocket, isLoading]);
 
   const markAllAsRead = useCallback(() => {
     void markNotificationsAsRead();
