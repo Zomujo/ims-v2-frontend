@@ -40,6 +40,12 @@ export default function SalesPatientList({
   const patients = useMemo(
     () =>
       data?.map((patient) => {
+        const identificationNumbers = [
+          patient.cardIdentificationNumber,
+          patient.secondaryIdentificationNumber,
+        ]
+          .filter(Boolean)
+          .join(" / ");
         return {
           value: patient.cardIdentificationNumber,
           label: (
@@ -48,11 +54,11 @@ export default function SalesPatientList({
                 {patient.name}
               </span>
               <span className="text-xs text-gray-500">
-                {patient.cardIdentificationNumber}
+                {identificationNumbers}
               </span>
             </div>
           ),
-          searchBy: patient.name,
+          searchBy: `${patient.name} ${identificationNumbers}`,
         };
       }) ?? [],
     [data],

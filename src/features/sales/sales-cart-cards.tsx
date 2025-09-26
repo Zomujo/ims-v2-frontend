@@ -89,6 +89,17 @@ export function SaleCard({
     onChange(quantity - 1);
   };
 
+  const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newQuantity = parseInt(e.target.value, 10);
+    if (e.target.value === "") {
+      onChange(0);
+      return;
+    }
+    if (!isNaN(newQuantity) && newQuantity > 0) {
+      onChange(newQuantity);
+    }
+  };
+
   return (
     <div className="space-y-4 rounded-2xl border p-4 text-xs">
       <div className="flex w-full items-center justify-between">
@@ -130,7 +141,12 @@ export function SaleCard({
           >
             <Minus className="text-sm" />
           </button>
-          <span className="w-4 text-center font-bold">{quantity}</span>
+          <input
+            type="number"
+            value={quantity === 0 ? "" : quantity}
+            onChange={handleQuantityChange}
+            className="w-8 border text-center font-bold"
+          />
           <button
             onClick={handleAdd}
             type="button"
