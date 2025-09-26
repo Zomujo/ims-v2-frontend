@@ -17,7 +17,6 @@ import { ImsButton } from "@features/shared/components/ims-button";
 import { exportFile } from "@features/shared/actions/export.actions";
 import { ImsPopover } from "@features/shared/components/ims-popover";
 import { ExportType } from "@features/shared/types/utitls.types";
-import { useGlobalNotifications } from "@features/notifications/notifications-context";
 import { useOnlineStatus } from "@/features/shared/hooks/useOnlineStatus";
 
 export default function SearchWithFilter() {

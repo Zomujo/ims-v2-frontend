@@ -18,6 +18,7 @@ export default function NewPatientForm() {
     defaultValues: {
       name: "",
       cardIdentificationNumber: "",
+      secondaryIdentificationNumber: "",
       dateOfBirth: "",
     },
   });
@@ -71,6 +72,19 @@ export default function NewPatientForm() {
           <HookFormField
             formControl={form.control}
             name="cardIdentificationNumber"
+            label="OPD Number"
+            renderInput={({ field }) => (
+              <Input
+                {...field}
+                className="focus-visible:ring-ims-blue-300 bg-white"
+                type="text"
+                placeholder="OPD number"
+              />
+            )}
+          />
+          <HookFormField
+            formControl={form.control}
+            name="secondaryIdentificationNumber"
             label="National Health Insurance Scheme Number"
             renderInput={({ field }) => (
               <Input

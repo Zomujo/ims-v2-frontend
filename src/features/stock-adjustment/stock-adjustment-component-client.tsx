@@ -40,7 +40,7 @@ export function StockAdjustmentFormInputs({
   });
   const itemOptions = items.map((item) => ({
     value: item.id,
-    label: item.name,
+    label: item.itemFullName,
   }));
   const batchOptions = (
     Array.isArray(batches)

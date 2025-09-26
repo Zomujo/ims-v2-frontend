@@ -7,6 +7,7 @@ import { BatchMarkup } from "@features/shared/types/action.types";
 export type Patient = {
   id: string;
   cardIdentificationNumber: string;
+  secondaryIdentificationNumber: string;
   name: string;
 };
 

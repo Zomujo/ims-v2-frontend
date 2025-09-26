@@ -9,10 +9,9 @@ import {
   PaginationPrevious,
 } from "@/features/ui/pagination";
 import { cn } from "@/lib/utils";
-
 import { useRouter, useSearchParams } from "next/navigation";
-import { useGlobalNotifications } from "@features/notifications/notifications-context";
 import { useMemo } from "react";
+import { useOnlineStatus } from "@features/shared/hooks/useOnlineStatus";
 
 type DynamicPaginationProps = {
   totalPages: number;
@@ -31,16 +30,16 @@ export function DynamicPagination({
   const activePage = searchParams.get("page")
     ? +(searchParams.get("page") as string)
     : 1;
-  const { isConnected } = useGlobalNotifications();
+  const { isOnline } = useOnlineStatus();
 
   const currentPage = useMemo(
     () =>
-      isConnected
+      isOnline
         ? Math.max(1, Math.min(activePage, totalPages))
         : clientPage
           ? clientPage
           : 1,
-    [isConnected, clientPage, activePage, totalPages],
+    [isOnline, clientPage, activePage, totalPages],
   );
 
   const router = useRouter();
@@ -77,7 +76,7 @@ export function DynamicPagination({
   };
 
   const onPageChange = (newPage: number) => {
-    if (isConnected) {
+    if (isOnline) {
       const params = new URLSearchParams(searchParams.toString());
       params.set("page", newPage.toString());
 
