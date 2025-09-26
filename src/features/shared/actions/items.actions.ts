@@ -169,7 +169,6 @@ export async function getItemsNoPaginate() {
     url: API_ENDPOINTS.ITEMS_NO_PAGINATE,
     method: "GET",
     headers: {},
-    cache: "force-cache",
     next: { tags: [API_ENDPOINT_TAGS.ITEMS] },
   };
 

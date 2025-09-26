@@ -72,18 +72,33 @@ export function Combobox({
           </Button>
         </PopoverTrigger>
         <PopoverContent className="p-0">
-          <Command>
+          <Command
+            filter={(filterValue, search) => {
+              const item = items.find((i) => i.value === filterValue);
+              const valuesToSearch = [
+                item?.value,
+                typeof item?.label === "string" ? item.label : undefined,
+                item?.searchBy,
+              ]
+                .filter(Boolean)
+                .join(" ");
+
+              if (valuesToSearch.toLowerCase().includes(search.toLowerCase())) {
+                return 1;
+              }
+              return 0;
+            }}
+          >
             <CommandInput placeholder={selectPlaceholder} className="h-9" />
             <CommandList className={dropdownClassName}>
               <CommandEmpty>No {moduleName ?? "item"} found.</CommandEmpty>
               <CommandGroup>
-                {items.map(({ searchBy, value: itemValue, label }) => (
+                {items.map(({ value: itemValue, label }) => (
                   <CommandItem
                     key={itemValue}
                     value={itemValue}
-                    onSelect={(currentValue) => {
-                      const newValue =
-                        currentValue === value ? "" : currentValue;
+                    onSelect={() => {
+                      const newValue = itemValue === value ? "" : itemValue;
                       setOpen(false);
                       onSelected?.(newValue, newValue && label);
                     }}

@@ -27,6 +27,7 @@ export type ApiErrorResponse = {
 export type IdData = {
   id: string;
   name: string;
+  itemFullName: string;
 };
 
 export type GetNotificationDto = {
