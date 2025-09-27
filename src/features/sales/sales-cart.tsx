@@ -307,6 +307,7 @@ export default function SalesCart({
                 <ImsSelect
                   showSearch={true}
                   showNone={false}
+                  searchPlaceholder="Start typing to search"
                   moduleName=" diagnosis (icd)"
                   options={icdCodeOption}
                   value={field.value}
