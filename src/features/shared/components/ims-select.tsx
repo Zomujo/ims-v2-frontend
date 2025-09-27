@@ -23,6 +23,7 @@ type ImsSelectProps = {
   showNone?: boolean;
   noResultsText?: string;
   showSearch?: boolean;
+  searchPlaceholder?: string;
   loading?: boolean;
   apiSearch?: boolean;
   apiSearchChange?: (search: string) => void;
@@ -42,6 +43,7 @@ export function ImsSelect({
   loading,
   apiSearch = false,
   apiSearchChange = () => {},
+  searchPlaceholder,
   apiLoading = false,
   ...props
 }: Readonly<ImsSelectProps>) {
@@ -78,7 +80,7 @@ export function ImsSelect({
           <div className="relative px-2 py-2">
             <input
               type="text"
-              placeholder="Search..."
+              placeholder={searchPlaceholder ?? "Search..."}
               value={searchTerm}
               onChange={(e) => {
                 setSearchTerm(e.target.value);

@@ -133,7 +133,7 @@ export function SaleCard({
       </div>
       <div className="flex w-full items-center justify-between">
         <span>{getSellingPrice()}</span>
-        <div className="flex gap-2">
+        <div className="flex items-center gap-2">
           <button
             onClick={handleSubtract}
             type="button"
@@ -145,7 +145,7 @@ export function SaleCard({
             type="number"
             value={quantity === 0 ? "" : quantity}
             onChange={handleQuantityChange}
-            className="w-8 border text-center font-bold"
+            className="h-8 w-10 border text-center font-bold"
           />
           <button
             onClick={handleAdd}
