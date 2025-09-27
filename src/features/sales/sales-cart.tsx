@@ -64,9 +64,9 @@ export default function SalesCart({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { handleRequests, isOnline } = useOnlineStatus();
-  const [searchIcdCode, setSearchIcdCodes] = useState("a");
-  const [icdCodeOption, setIcdCodeOption] = useState<SelectOption[]>([]);
-  const [isIcdApiSearchLoading, setIsIcdApiSearchLoading] = useState(false);
+  // const [searchIcdCode, setSearchIcdCodes] = useState("a");
+  // const [icdCodeOption, setIcdCodeOption] = useState<SelectOption[]>([]);
+  // const [isIcdApiSearchLoading, setIsIcdApiSearchLoading] = useState(false);
 
   const form = useHookForm({
     resolver: salesCartSchema,
@@ -192,21 +192,21 @@ export default function SalesCart({
     void fetchSaleData();
   }, []);
 
-  useEffect(() => {
-    async function fetchIcdCode() {
-      try {
-        setIsIcdApiSearchLoading(true);
-        const res = (await getIcdCodes({
-          terms: searchIcdCode.length ? searchIcdCode : "a",
-        })) as SelectOption[];
-        setIcdCodeOption(res);
-        setIsIcdApiSearchLoading(false);
-      } catch {
-        setIcdCodeOption([]);
-      }
-    }
-    fetchIcdCode();
-  }, [searchIcdCode]);
+  // useEffect(() => {
+  //   async function fetchIcdCode() {
+  //     try {
+  //       setIsIcdApiSearchLoading(true);
+  //       const res = (await getIcdCodes({
+  //         terms: searchIcdCode.length ? searchIcdCode : "a",
+  //       })) as SelectOption[];
+  //       setIcdCodeOption(res);
+  //       setIsIcdApiSearchLoading(false);
+  //     } catch {
+  //       setIcdCodeOption([]);
+  //     }
+  //   }
+  //   fetchIcdCode();
+  // }, [searchIcdCode]);
   const handleSubmit = async (data: unknown) => {
     const dataWithPatientId = { ...(data as SaleCartFormData), patientCardId };
     if (!isOnline) {
@@ -299,28 +299,29 @@ export default function SalesCart({
               variant="inverted"
               labelName="Payment option"
             />
-            <HookFormField
-              formControl={form.control}
-              name="icdCode"
-              label="Diagnosis (ICD)"
-              renderInput={({ field }) => (
-                <ImsSelect
-                  showSearch={true}
-                  showNone={false}
-                  searchPlaceholder="Start typing to search"
-                  moduleName=" diagnosis (icd)"
-                  options={icdCodeOption}
-                  value={field.value}
-                  onChange={(value) => field.onChange(value)}
-                  className="focus-visible:ring-ims-blue-300 !h-11 bg-white"
-                  apiSearch={true}
-                  apiSearchChange={(value) => {
-                    setSearchIcdCodes(value);
-                  }}
-                  apiLoading={isIcdApiSearchLoading}
-                />
-              )}
-            />
+            {/*May reintroduce*/}
+            {/*<HookFormField*/}
+            {/*  formControl={form.control}*/}
+            {/*  name="icdCode"*/}
+            {/*  label="Diagnosis (ICD)"*/}
+            {/*  renderInput={({ field }) => (*/}
+            {/*    <ImsSelect*/}
+            {/*      showSearch={true}*/}
+            {/*      showNone={false}*/}
+            {/*      searchPlaceholder="Start typing to search"*/}
+            {/*      moduleName=" diagnosis (icd)"*/}
+            {/*      options={icdCodeOption}*/}
+            {/*      value={field.value}*/}
+            {/*      onChange={(value) => field.onChange(value)}*/}
+            {/*      className="focus-visible:ring-ims-blue-300 !h-11 bg-white"*/}
+            {/*      apiSearch={true}*/}
+            {/*      apiSearchChange={(value) => {*/}
+            {/*        setSearchIcdCodes(value);*/}
+            {/*      }}*/}
+            {/*      apiLoading={isIcdApiSearchLoading}*/}
+            {/*    />*/}
+            {/*  )}*/}
+            {/*/>*/}
             <HookFormField
               formControl={form.control}
               name="insured"
