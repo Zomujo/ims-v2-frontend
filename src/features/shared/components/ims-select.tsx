@@ -84,9 +84,12 @@ export function ImsSelect({
               value={searchTerm}
               onChange={(e) => {
                 setSearchTerm(e.target.value);
-                apiSearch && debounce?.(e.target.value);
+                if (apiSearch) {
+                  debounce?.(e.target.value);
+                }
               }}
               onKeyDown={handleInputKeyDown}
+              onMouseDown={(e) => e.stopPropagation()} // Prevent dropdown from closing on input focus
               className="w-full rounded-md border px-2 py-1 text-sm outline-none focus:border-blue-500"
             />
             {apiLoading && (
