@@ -145,7 +145,7 @@ export function SaleCard({
             type="number"
             value={quantity === 0 ? "" : quantity}
             onChange={handleQuantityChange}
-            className="h-8 w-10 border text-center font-bold"
+            className="h-8 w-12 border text-center font-bold"
           />
           <button
             onClick={handleAdd}
