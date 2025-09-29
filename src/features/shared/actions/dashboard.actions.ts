@@ -23,7 +23,6 @@ export async function getGeneralOverview(
     url: generateUrlWithQueryParams(API_ENDPOINTS.DASHBOARD_GENERAL, params),
     method: "GET",
     headers: {},
-    cache: "force-cache",
     next: { tags: [API_ENDPOINT_TAGS.DASHBOARD_GENERAL] },
   };
   return (
@@ -41,7 +40,6 @@ export async function getSalesTrend(
     ),
     method: "GET",
     headers: {},
-    cache: "force-cache",
     next: { tags: [API_ENDPOINT_TAGS.DASHBOARD_SALES_TREND] },
   };
 
@@ -58,7 +56,6 @@ export async function getTopSellingItems(
     ),
     method: "GET",
     headers: {},
-    cache: "force-cache",
     next: { tags: [API_ENDPOINT_TAGS.DASHBOARD_TOP_SELLING_ITEMS] },
   };
 
@@ -78,7 +75,6 @@ export async function getLeastSellingItems(
     ),
     method: "GET",
     headers: {},
-    cache: "force-cache",
     next: { tags: [API_ENDPOINT_TAGS.DASHBOARD_LEAST_SELLING_ITEMS] },
   };
 
@@ -99,7 +95,6 @@ export async function getDailySales(
     ),
     method: "GET",
     headers: {},
-    cache: "force-cache",
     next: { tags: [API_ENDPOINT_TAGS.DASHBOARD_SALES_DAILY] },
   };
 
@@ -120,7 +115,6 @@ export async function getSellingCategories(
     ),
     method: "GET",
     headers: {},
-    cache: "force-cache",
     next: { tags: [API_ENDPOINT_TAGS.DASHBOARD_ITEMS_CATEGORIES_TOP_SELLING] },
   };
 
@@ -141,7 +135,6 @@ export async function getSalePaymentMethod(
     ),
     method: "GET",
     headers: {},
-    cache: "force-cache",
     next: { tags: [API_ENDPOINT_TAGS.DASHBOARD_PAYMENT_METHODS] },
   };
 
@@ -162,7 +155,6 @@ export async function getSaleInsuranceMarkup(
     ),
     method: "GET",
     headers: {},
-    cache: "force-cache",
     next: { tags: [API_ENDPOINT_TAGS.DASHBOARD_SALES_MARKUP] },
   };
 
