@@ -11,7 +11,7 @@ import {
 } from "react";
 import { useFieldArray } from "react-hook-form";
 import { useIsClient, useLocalStorage } from "usehooks-ts";
-import { createSaleAction, getIcdCodes } from "../shared/actions/sales.action";
+import { createSaleAction } from "../shared/actions/sales.action";
 import { getSale, updateSale } from "../shared/actions/sales.actions";
 import HookFormField from "../shared/components/hook-form-filed";
 import { ImsButton } from "../shared/components/ims-button";
@@ -19,7 +19,6 @@ import { ImsForm } from "../shared/components/ims-forms";
 import { ImsSelect } from "../shared/components/ims-select";
 import useHookForm from "../shared/hooks/use-hook-form";
 import { SaleItem } from "../shared/types/sales-action.types";
-import { SelectOption } from "../shared/types/utitls.types";
 import { ScrollArea } from "../ui/scroll-area";
 import { Textarea } from "../ui/textarea";
 import {
