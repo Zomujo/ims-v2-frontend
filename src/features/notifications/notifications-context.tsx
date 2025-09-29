@@ -181,7 +181,7 @@ export function GlobalNotificationsProvider({
         setIsConnected(true);
         setError(null);
 
-        const deptPart = departmentId ? `:${departmentId}:` : "";
+        const deptPart = departmentId ? `:${departmentId}` : "";
         const topic = `${facilityId}${deptPart}`;
         socketRef.current?.emit("subscribe", { topic });
         console.log(`Subscribed to topic: ${topic}`);
