@@ -33,7 +33,6 @@ export default function ItemsList() {
     searchField: "itemFullName",
   });
   const items = data?.rows ?? [];
-  console.log("items", items);
   const {
     state,
     isEditMode,

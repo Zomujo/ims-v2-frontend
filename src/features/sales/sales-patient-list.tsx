@@ -87,14 +87,14 @@ export default function SalesPatientList({
         }}
         dropdownClassName="pb-5"
       >
-        <div className="fixed bottom-0 left-0 w-full border-t bg-white">
+        <div className="fixed bottom-0 left-0 w-full border-t">
           <Button
             onClick={handleAddNewPatient}
-            variant="ghost"
             className="w-full justify-start"
+            variant="imsPrimary"
           >
             Add New Patient
-            <Icon icon="hugeicons:add-circle-half-dot" />
+            <Icon color="white" icon="hugeicons:add-circle-half-dot" />
           </Button>
         </div>
       </Combobox>
