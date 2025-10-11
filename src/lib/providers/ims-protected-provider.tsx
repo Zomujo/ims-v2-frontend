@@ -14,13 +14,9 @@ export function ImsProtectedProvider({
   const router = useRouter();
 
   useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      if (!isLoading && !isAuthenticated) {
-        router.push(AUTH_PAGE_ROUTES.LOG_IN);
-      }
-    }, 1000);
-
-    return () => clearTimeout(timeoutId);
+    if (!isLoading && !isAuthenticated) {
+      router.push(AUTH_PAGE_ROUTES.LOG_IN);
+    }
   }, [isAuthenticated, isLoading]);
 
   if (isLoading) {
