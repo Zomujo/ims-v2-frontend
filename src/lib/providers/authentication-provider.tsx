@@ -13,9 +13,14 @@ function authenticationProvider(Component: FC, byPass = false) {
 
     useEffect(() => {
       if (!byPass && !isLoading && isAuthenticated) {
-        router.push("/dashboard");
+        router.replace("/dashboard");
       }
     }, [isAuthenticated, isLoading, router, byPass]);
+
+    // Don't render login page if already authenticated and loading is done
+    if (!byPass && !isLoading && isAuthenticated) {
+      return <></>;
+    }
 
     return <Component {...props} />;
   };

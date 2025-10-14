@@ -25,13 +25,17 @@ interface SessionContextType {
 const SessionContext = createContext<SessionContextType | undefined>(undefined);
 
 export function SessionProvider({ children }: { children: ReactNode }) {
-  const [session, setSession] = useState<ImsSession | null>(null);
+  // Initialize with actual session state to prevent flickering
+  const [session, setSession] = useState<ImsSession | null>(() => {
+    if (typeof window !== "undefined") {
+      return getImsSession();
+    }
+    return null;
+  });
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Set session immediately to prevent flickering
-    const initialSession = getImsSession();
-    setSession(initialSession);
+    // Immediately mark as loaded since we initialized with the session
     setIsLoading(false);
 
     // Enable storage event listener for cross-tab synchronization
