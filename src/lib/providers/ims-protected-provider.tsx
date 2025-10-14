@@ -15,15 +15,12 @@ export function ImsProtectedProvider({
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
-      router.push(AUTH_PAGE_ROUTES.LOG_IN);
+      router.replace(AUTH_PAGE_ROUTES.LOG_IN);
     }
   }, [isAuthenticated, isLoading, router]);
 
-  if (isLoading) {
-    return <></>;
-  }
-
-  if (!isAuthenticated) {
+  // Don't render anything until we know authentication status
+  if (isLoading || !isAuthenticated) {
     return <></>;
   }
 
