@@ -29,12 +29,10 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Add a delay before setting session and isLoading
-    const timeoutId = setTimeout(() => {
-      const initialSession = getImsSession();
-      setSession(initialSession);
-      setIsLoading(false);
-    }, 1000);
+    // Set session immediately to prevent flickering
+    const initialSession = getImsSession();
+    setSession(initialSession);
+    setIsLoading(false);
 
     // Enable storage event listener for cross-tab synchronization
     const handler = () => {
@@ -44,7 +42,6 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     window.addEventListener("storage", handler);
 
     return () => {
-      clearTimeout(timeoutId);
       window.removeEventListener("storage", handler);
     };
   }, []);

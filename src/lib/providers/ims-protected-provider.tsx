@@ -17,7 +17,7 @@ export function ImsProtectedProvider({
     if (!isLoading && !isAuthenticated) {
       router.push(AUTH_PAGE_ROUTES.LOG_IN);
     }
-  }, [isAuthenticated, isLoading]);
+  }, [isAuthenticated, isLoading, router]);
 
   if (isLoading) {
     return <></>;
