@@ -8,13 +8,15 @@ function authenticationProvider(Component: FC, byPass = false) {
   return function AuthenticationProvider(
     props: JSX.IntrinsicAttributes,
   ): JSX.Element {
-    const { isAuthenticated } = useSessionData();
+    const { isAuthenticated, isLoading } = useSessionData();
     const router = useRouter();
+
     useEffect(() => {
-      if (!byPass && isAuthenticated) {
+      if (!byPass && !isLoading && isAuthenticated) {
         router.push("/dashboard");
       }
-    }, [isAuthenticated]);
+    }, [isAuthenticated, isLoading, router, byPass]);
+
     return <Component {...props} />;
   };
 }

@@ -29,6 +29,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    // Set session immediately to prevent flickering
     const initialSession = getImsSession();
     setSession(initialSession);
     setIsLoading(false);
@@ -39,7 +40,10 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       setSession(updatedSession);
     };
     window.addEventListener("storage", handler);
-    return () => window.removeEventListener("storage", handler);
+
+    return () => {
+      window.removeEventListener("storage", handler);
+    };
   }, []);
 
   const setSessionState = useCallback((imsSession: ImsSession) => {
