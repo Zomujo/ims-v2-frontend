@@ -25,7 +25,6 @@ interface SessionContextType {
 const SessionContext = createContext<SessionContextType | undefined>(undefined);
 
 export function SessionProvider({ children }: { children: ReactNode }) {
-  // Initialize with actual session state to prevent flickering
   const [session, setSession] = useState<ImsSession | null>(() => {
     if (typeof window !== "undefined") {
       return getImsSession();
@@ -35,8 +34,12 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Immediately mark as loaded since we initialized with the session
-    setIsLoading(false);
+    // Small delay to ensure storage is fully initialized
+    const timer = setTimeout(() => {
+      const currentSession = getImsSession();
+      setSession(currentSession);
+      setIsLoading(false);
+    }, 100);
 
     // Enable storage event listener for cross-tab synchronization
     const handler = () => {
@@ -46,6 +49,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     window.addEventListener("storage", handler);
 
     return () => {
+      clearTimeout(timer);
       window.removeEventListener("storage", handler);
     };
   }, []);

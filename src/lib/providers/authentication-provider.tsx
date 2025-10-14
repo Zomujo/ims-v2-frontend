@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { JSX, FC, useEffect } from "react";
+import { JSX, FC, useEffect, useRef } from "react";
 import { useSessionData } from "@/hooks/useSessionData";
 
 function authenticationProvider(Component: FC, byPass = false) {
@@ -10,15 +10,20 @@ function authenticationProvider(Component: FC, byPass = false) {
   ): JSX.Element {
     const { isAuthenticated, isLoading } = useSessionData();
     const router = useRouter();
+    const hasRedirected = useRef(false);
 
     useEffect(() => {
-      if (!byPass && !isLoading && isAuthenticated) {
+      if (!byPass && !isLoading && isAuthenticated && !hasRedirected.current) {
+        hasRedirected.current = true;
         router.replace("/dashboard");
       }
-    }, [isAuthenticated, isLoading, router, byPass]);
+    }, [isAuthenticated, isLoading, byPass]);
 
-    // Don't render login page if already authenticated and loading is done
-    if (!byPass && !isLoading && isAuthenticated) {
+    if (isLoading) {
+      return <></>;
+    }
+
+    if (!byPass && isAuthenticated) {
       return <></>;
     }
 
