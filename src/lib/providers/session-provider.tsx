@@ -37,6 +37,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     // Small delay to ensure storage is fully initialized
     const timer = setTimeout(() => {
       const currentSession = getImsSession();
+      console.log("SessionProvider initialized with session:", currentSession);
       setSession(currentSession);
       setIsLoading(false);
     }, 100);
@@ -44,6 +45,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     // Enable storage event listener for cross-tab synchronization
     const handler = () => {
       const updatedSession = getImsSession();
+      console.log("Session updated from another tab:", updatedSession);
       setSession(updatedSession);
     };
     window.addEventListener("storage", handler);
