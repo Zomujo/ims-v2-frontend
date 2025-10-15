@@ -1,8 +1,8 @@
 import { ENV_VARIABLES } from "@/lib/config/env.config";
-import { AUTH_PAGE_ROUTES } from "@/lib/constant";
-import { redirect } from "next/navigation";
+// import { AUTH_PAGE_ROUTES } from "@/lib/constant";
+// import { redirect } from "next/navigation";
 import { FetchApi } from "../types/ims-api-action.types";
-import { headers as nextHeaders } from "next/headers";
+// import { headers as nextHeaders } from "next/headers";
 import { imsServerSession } from "@/lib/config/ims-server-session";
 
 export const imsApiWithAuth = async <T>({
@@ -14,9 +14,9 @@ export const imsApiWithAuth = async <T>({
   next,
 }: FetchApi) => {
   const userId = await imsServerSession();
-  if (!userId) {
-    redirect(AUTH_PAGE_ROUTES.LOG_IN);
-  }
+  // if (!userId) {
+  //   redirect(AUTH_PAGE_ROUTES.LOG_IN);
+  // }
   const response = await fetchApi({
     url,
     method,
@@ -37,9 +37,9 @@ export const imsApiWithAuthBlob = async ({
   next,
 }: FetchApi) => {
   const userId = await imsServerSession();
-  if (userId) {
-    redirect(AUTH_PAGE_ROUTES.LOG_IN);
-  }
+  // if (userId) {
+  //   redirect(AUTH_PAGE_ROUTES.LOG_IN);
+  // }
   const response = await fetchApi({
     url,
     method,
@@ -120,13 +120,13 @@ const fetchApi = async ({
   if (!response.ok) {
     const errorData = await response.json();
 
-    if (errorData.message === "TOKEN_EXPIRED" && errorData.statusCode === 401) {
-      const headerList = await nextHeaders();
-      const refererUrl = headerList.get("referer");
-      redirect(
-        `${AUTH_PAGE_ROUTES.LOG_IN}?redirect=${encodeURIComponent(refererUrl ?? "")}`,
-      );
-    }
+    // if (errorData.message === "TOKEN_EXPIRED" && errorData.statusCode === 401) {
+    //   const headerList = await nextHeaders();
+    //   const refererUrl = headerList.get("referer");
+    //   redirect(
+    //     `${AUTH_PAGE_ROUTES.LOG_IN}?redirect=${encodeURIComponent(refererUrl ?? "")}`,
+    //   );
+    // }
 
     throw new Error(errorData.message);
   }
