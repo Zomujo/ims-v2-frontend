@@ -25,7 +25,6 @@ export default function SalesItemList({
     cacheKey: CacheKey.SalesItemList,
   });
   const salesItems = data?.rows ?? [];
-  console.log("Sales items here", salesItems);
   const [addedSalesItems, setSalesItem] = useLocalStorage<SaleItem[]>(
     salesItemLocalStorageKey,
     [],
