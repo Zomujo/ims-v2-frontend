@@ -43,13 +43,13 @@ const handleSalesItem = (saleItems: SaleItem, isEditMode?: boolean) => {
   };
 };
 type SalesCartProps = {
-  patientCardId?: string;
+  patientId?: string;
   addedToCartAction?: () => void;
   patientInfo?: string | ReactNode;
   setRefetchSalesAction: Dispatch<SetStateAction<boolean>>;
 };
 export default function SalesCart({
-  patientCardId,
+  patientId,
   addedToCartAction,
   patientInfo,
   setRefetchSalesAction,
@@ -207,7 +207,7 @@ export default function SalesCart({
   //   fetchIcdCode();
   // }, [searchIcdCode]);
   const handleSubmit = async (data: unknown) => {
-    const dataWithPatientId = { ...(data as SaleCartFormData), patientCardId };
+    const dataWithPatientId = { ...(data as SaleCartFormData), patientId };
     if (!isOnline) {
       handleRequests(
         isEditMode

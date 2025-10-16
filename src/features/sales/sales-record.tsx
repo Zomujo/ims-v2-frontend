@@ -28,7 +28,7 @@ export default function SalesRecord() {
 
       <div className="hidden w-full max-w-md min-w-sm lg:block">
         <SalesCart
-          patientCardId={patientId}
+          patientId={patientId}
           patientInfo={patientInfo}
           setRefetchSalesAction={setRefetchSales}
         />
@@ -38,7 +38,7 @@ export default function SalesRecord() {
         open={isCartVisible}
       >
         <SalesCart
-          patientCardId={patientId}
+          patientId={patientId}
           addedToCartAction={() => setIsCartVisible(false)}
           patientInfo={patientInfo}
           setRefetchSalesAction={setRefetchSales}

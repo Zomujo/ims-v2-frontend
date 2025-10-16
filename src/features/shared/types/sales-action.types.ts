@@ -47,6 +47,7 @@ export type Item = {
   dosageForm: string;
   code: string;
   fdaApproval: string;
+  itemFullName: string;
   ISO: string;
   reorderPoint: number;
   strength: string;

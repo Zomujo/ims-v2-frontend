@@ -7,10 +7,23 @@ import { NotebookText } from "lucide-react";
 export const salesTableColumns: ColumnDef<GetSalesDto>[] = [
   {
     accessorKey: "patient.cardIdentificationNumber",
-    header: "NHIS ID",
+    header: "Patient / NHIS ID",
     cell: ({ row }) => {
       const patientId = row.original.patient?.cardIdentificationNumber;
-      return patientId ?? "N/A";
+      const patientName = row.original.patient?.name;
+
+      if (!patientId && !patientName) {
+        return "N/A";
+      }
+
+      return (
+        <div className="flex flex-col">
+          {patientName && <span className="font-medium">{patientName}</span>}
+          {patientId && (
+            <span className="text-sm text-gray-500">{patientId}</span>
+          )}
+        </div>
+      );
     },
   },
   {
@@ -75,7 +88,7 @@ export const salesItemsColumns: ColumnDef<SaleItem>[] = [
     accessorKey: "name",
     header: "Item",
     cell: ({ row }) => {
-      const itemName = row.original.item?.name;
+      const itemName = row.original.item?.itemFullName;
       return itemName ?? "N/A";
     },
   },
