@@ -28,7 +28,7 @@ export const salesTableColumns: ColumnDef<GetSalesDto>[] = [
   },
   {
     header: "Item(s)",
-    accessorKey: "saleItem.item.name",
+    accessorKey: "saleItem.item.itemFullName",
     cell: ({ row, getValue }) => {
       const items = getValue() as string;
       const remainderItems = row.original.remainderItems;
