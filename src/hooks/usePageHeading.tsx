@@ -37,6 +37,10 @@ export const pageHeadingMap = {
     title: "Sales",
     description: "View and manage your sales records.",
   },
+  record: {
+    title: "Record Sale",
+    description: "Record a new sale here.",
+  },
   "department-requests": {
     title: "Department Requests",
     description: "Manage department requests here.",
@@ -97,6 +101,7 @@ export function PageHeadingProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const paths = pathname.split("/");
     const titleFromPath = paths[3] ?? paths[2] ?? paths[1];
+    console.log("Title path", titleFromPath);
     const headingMaps = { ...pageHeadingMap, ...settingPagesDescription };
     // Always prioritize mapped values, then custom, then fallback
     let title: string;

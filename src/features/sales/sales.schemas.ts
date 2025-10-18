@@ -6,9 +6,7 @@ export const newPatientSchema = z
       .string()
       .min(1, { message: "Please enter your fullname" })
       .min(3, { message: "Full name should not be less than 3 characters" }),
-    cardIdentificationNumber: z
-      .string()
-      .min(1, { message: "Please add OPD number" }),
+    cardIdentificationNumber: z.string().optional(),
     secondaryIdentificationNumber: z.string().optional(),
     dateOfBirth: z.string().min(1, {
       message: "Please select date of birth",

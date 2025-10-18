@@ -47,7 +47,7 @@ export default function SalesPatientList({
           .filter(Boolean)
           .join(" / ");
         return {
-          value: patient.cardIdentificationNumber,
+          value: patient.id,
           label: (
             <div className="flex flex-col items-start">
               <span className="text-sm font-semibold text-gray-800">

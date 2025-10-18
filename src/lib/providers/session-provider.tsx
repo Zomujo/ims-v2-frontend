@@ -25,21 +25,35 @@ interface SessionContextType {
 const SessionContext = createContext<SessionContextType | undefined>(undefined);
 
 export function SessionProvider({ children }: { children: ReactNode }) {
-  const [session, setSession] = useState<ImsSession | null>(null);
+  const [session, setSession] = useState<ImsSession | null>(() => {
+    if (typeof window !== "undefined") {
+      return getImsSession();
+    }
+    return null;
+  });
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const initialSession = getImsSession();
-    setSession(initialSession);
-    setIsLoading(false);
+    // Small delay to ensure storage is fully initialized
+    const timer = setTimeout(() => {
+      const currentSession = getImsSession();
+      console.log("SessionProvider initialized with session:", currentSession);
+      setSession(currentSession);
+      setIsLoading(false);
+    }, 100);
 
     // Enable storage event listener for cross-tab synchronization
     const handler = () => {
       const updatedSession = getImsSession();
+      console.log("Session updated from another tab:", updatedSession);
       setSession(updatedSession);
     };
     window.addEventListener("storage", handler);
-    return () => window.removeEventListener("storage", handler);
+
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener("storage", handler);
+    };
   }, []);
 
   const setSessionState = useCallback((imsSession: ImsSession) => {

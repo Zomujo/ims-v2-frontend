@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { JSX, ReactNode, useEffect } from "react";
+import { JSX, ReactNode, useEffect, useRef } from "react";
 import { useSessionData } from "@/hooks/useSessionData";
 import { AUTH_PAGE_ROUTES } from "@/lib/constant";
 
@@ -12,22 +12,19 @@ export function ImsProtectedProvider({
 }): JSX.Element {
   const { isAuthenticated, isLoading } = useSessionData();
   const router = useRouter();
+  const hasRedirected = useRef(false);
 
   useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      if (!isLoading && !isAuthenticated) {
-        router.push(AUTH_PAGE_ROUTES.LOG_IN);
-      }
-    }, 1000);
+    console.log("Auth status:", { isAuthenticated, isLoading });
+    console.log("Has redirected:", hasRedirected.current);
+    if (!isLoading && !isAuthenticated && !hasRedirected.current) {
+      hasRedirected.current = true;
+      router.replace(AUTH_PAGE_ROUTES.LOG_IN);
+    }
+  }, [isAuthenticated, isLoading, router]);
 
-    return () => clearTimeout(timeoutId);
-  }, [isAuthenticated, isLoading]);
-
-  if (isLoading) {
-    return <></>;
-  }
-
-  if (!isAuthenticated) {
+  // Don't render anything until we know authentication status
+  if (isLoading || !isAuthenticated) {
     return <></>;
   }
 

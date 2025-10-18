@@ -1,20 +1,32 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { JSX, FC, useEffect } from "react";
+import { JSX, FC, useEffect, useRef } from "react";
 import { useSessionData } from "@/hooks/useSessionData";
 
 function authenticationProvider(Component: FC, byPass = false) {
   return function AuthenticationProvider(
     props: JSX.IntrinsicAttributes,
   ): JSX.Element {
-    const { isAuthenticated } = useSessionData();
+    const { isAuthenticated, isLoading } = useSessionData();
     const router = useRouter();
+    const hasRedirected = useRef(false);
+
     useEffect(() => {
-      if (!byPass && isAuthenticated) {
-        router.push("/dashboard");
+      if (!byPass && !isLoading && isAuthenticated && !hasRedirected.current) {
+        hasRedirected.current = true;
+        router.replace("/dashboard");
       }
-    }, [isAuthenticated]);
+    }, [isAuthenticated, isLoading, byPass]);
+
+    if (isLoading) {
+      return <></>;
+    }
+
+    if (!byPass && isAuthenticated) {
+      return <></>;
+    }
+
     return <Component {...props} />;
   };
 }
