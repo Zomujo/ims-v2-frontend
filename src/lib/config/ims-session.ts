@@ -25,9 +25,11 @@ export function setImsSession(session: ImsSession) {
   )}; path=/; ${expiresString}`;
 }
 
-export function clearImsSession() {
+export function clearImsSession(reload = true) {
   if (typeof window === "undefined") return;
   localStorage.removeItem(SESSION_KEY);
   document.cookie = `${SESSION_KEY}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
-  window.location.reload();
+  if (reload) {
+    window.location.reload();
+  }
 }
