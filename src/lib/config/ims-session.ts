@@ -14,15 +14,22 @@ export function setImsSession(session: ImsSession) {
   if (typeof window === "undefined") return;
 
   localStorage.setItem(SESSION_KEY, JSON.stringify(session));
-  document.cookie = `${SESSION_KEY}=${session.id}; path=/;`;
+
+  const expires = new Date();
+  expires.setFullYear(expires.getFullYear() + 10);
+  const expiresString = `expires=${expires.toUTCString()}`;
+
+  document.cookie = `${SESSION_KEY}=${session.id}; path=/; ${expiresString}`;
   document.cookie = `${PERMISSION_KEY}=${encodeURIComponent(
     JSON.stringify(session.permissions),
-  )}; path=/;`;
+  )}; path=/; ${expiresString}`;
 }
 
-export function clearImsSession() {
+export function clearImsSession(reload = true) {
   if (typeof window === "undefined") return;
   localStorage.removeItem(SESSION_KEY);
   document.cookie = `${SESSION_KEY}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
-  window.location.reload();
+  if (reload) {
+    window.location.reload();
+  }
 }
