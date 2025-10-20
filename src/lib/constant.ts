@@ -43,6 +43,7 @@ export const AUTH_PAGE_ROUTES = {
   FORGOT_PASSWORD: "/auth/forgot-password",
   RESET_PASSWORD: "/auth/reset-password",
   FORGOT_PASSWORD_VERIFY: "/auth/forgot-password/verify-code",
+  SESSION_EXPIRY: "session-expired",
 } as const;
 
 export const PAGE_ROUTES = {

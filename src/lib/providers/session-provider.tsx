@@ -20,6 +20,7 @@ interface SessionContextType {
   isLoading: boolean;
   setSessionState: (session: ImsSession) => void;
   clearSession: () => void;
+  clearSessionNoReload: () => void;
 }
 
 const SessionContext = createContext<SessionContextType | undefined>(undefined);
@@ -67,6 +68,11 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     clearImsSession();
   }, []);
 
+  const clearSessionNoReload = useCallback(() => {
+    setSession(null);
+    clearImsSession(false);
+  }, []);
+
   return (
     <SessionContext.Provider
       value={{
@@ -74,6 +80,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
         isLoading,
         setSessionState,
         clearSession,
+        clearSessionNoReload,
       }}
     >
       {children}
