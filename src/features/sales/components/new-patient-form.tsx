@@ -24,9 +24,14 @@ export default function NewPatientForm() {
   });
 
   const handleSubmit = async (data: unknown) => {
-    const res = createNewPatientAction(
-      data as z.infer<typeof newPatientSchema>,
-    );
+    const dataTyped = data as z.infer<typeof newPatientSchema>;
+    const formattedData = {
+      ...dataTyped,
+      cardIdentificationNumber: dataTyped.cardIdentificationNumber || undefined,
+      secondaryIdentificationNumber:
+        dataTyped.secondaryIdentificationNumber || undefined,
+    };
+    const res = createNewPatientAction(formattedData);
     res.then(() => {
       form.reset();
       removeSearchParams(UI_STATE);
