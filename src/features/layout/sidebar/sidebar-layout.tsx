@@ -57,7 +57,9 @@ export default function SidebarLayout() {
         <SidebarHeader className="bg-white p-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
-              <span className="text-lg font-bold text-gray-800">Stealth</span>
+              <span className="text-lg font-bold text-gray-800">
+                Inyabon MedSync
+              </span>
               <Badge variant="destructive" className="text-xs">
                 BETA
               </Badge>
@@ -190,7 +192,7 @@ export default function SidebarLayout() {
           {/*  <Moon className="h-5 w-5" />*/}
           {/*</div>*/}
           <p className="text-xs text-gray-500">
-            Stealth {new Date().getFullYear()} - ALL rights reserved
+            Inyabon MedSync {new Date().getFullYear()} - ALL rights reserved
           </p>
         </SidebarFooter>
       </Sidebar>

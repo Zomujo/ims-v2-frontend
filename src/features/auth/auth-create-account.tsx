@@ -118,7 +118,7 @@ function AuthCreateAccountActions({
         Create Account
       </ImsButton>
       <p className="text-sm text-gray-500">
-        By creating an account, you agree to Stealth{" "}
+        By creating an account, you agree to Inyabon MedSync{" "}
         <Link
           href={AUTH_PAGE_ROUTES.FORGOT_PASSWORD}
           className="text-center font-medium underline"
