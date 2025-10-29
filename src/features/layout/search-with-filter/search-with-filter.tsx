@@ -61,7 +61,7 @@ export default function SearchWithFilter() {
           .split("T")
           .join("_")
           .slice(0, 19);
-        link.download = `Stealth_${searchParams.get("exportFileName") || exportBtnData.fileName}_${timestamp}.${exportType}`;
+        link.download = `inyabon-med-sync_${searchParams.get("exportFileName") || exportBtnData.fileName}_${timestamp}.${exportType}`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
