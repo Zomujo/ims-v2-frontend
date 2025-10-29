@@ -1,9 +1,9 @@
 {
-  "id": "zomujo-stealth-inventory",
+  "id": "inyabon-med-sync",
   "dir": "ltr",
   "lang": "en",
-  "name": "Zomujo Stealth - Inventory Management System",
-  "short_name": "Zomujo Stealth",
+  "name": "Inyabon MedSync - Inventory Management System",
+  "short_name": "Inyabon MedSync",
   "prefer_related_applications": false,
   "iarc_rating_id": "13",
   "icons": [

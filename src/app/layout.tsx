@@ -4,11 +4,11 @@ import "./globals.css";
 import { ReactNode } from "react";
 import { SessionProvider } from "@/lib/providers/session-provider";
 
-const APP_NAME = "Zomujo Stealth";
-const APP_DEFAULT_TITLE = "Zomujo Stealth - Inventory Management System";
-const APP_TITLE_TEMPLATE = "%s - Zomujo Stealth";
+const APP_NAME = "Inyabon MedSync";
+const APP_DEFAULT_TITLE = "Inyabon MedSync - Inventory Management System";
+const APP_TITLE_TEMPLATE = "%s - Inyabon MedSync";
 const APP_DESCRIPTION =
-  "Zomujo Stealth is an inventory management system designed to help you track and manage your medicine inventory efficiently.";
+  "Inyabon MedSync is an inventory management system designed to help you track and manage your medicine inventory efficiently.";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://medsyncgh.com"),

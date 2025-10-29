@@ -92,7 +92,7 @@ export default function Footer() {
       </div>
 
       <div className="mt-32 flex flex-col items-center justify-between px-8 pt-6 text-sm text-white md:flex-row">
-        <p>© Copyright 2025 Stealth. All rights reserved.</p>
+        <p>© Copyright 2025 Inyabon MedSync. All rights reserved.</p>
         <div className="mt-10 flex space-x-6 md:mt-0">
           <Link href="#" className="hover:underline">
             Privacy policy
