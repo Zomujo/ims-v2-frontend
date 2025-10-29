@@ -103,7 +103,7 @@ export function SaleCard({
   return (
     <div className="space-y-4 rounded-2xl border p-4 text-xs">
       <div className="flex w-full items-center justify-between">
-        <span>{activeAddedSalesItem?.item?.name}</span>
+        <span>{activeAddedSalesItem?.item?.itemFullName}</span>
         <ImsDropdownMenu
           trigger={
             <button
