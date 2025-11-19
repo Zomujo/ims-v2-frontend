@@ -11,6 +11,7 @@ import {
 } from "react";
 import { useFieldArray } from "react-hook-form";
 import { useIsClient, useLocalStorage } from "usehooks-ts";
+import { toast } from "sonner";
 import { createSaleAction } from "../shared/actions/sales.action";
 import { getSale, updateSale } from "../shared/actions/sales.actions";
 import HookFormField from "../shared/components/hook-form-filed";
@@ -207,6 +208,26 @@ export default function SalesCart({
   //   fetchIcdCode();
   // }, [searchIcdCode]);
   const handleSubmit = async (data: unknown) => {
+    // Validate that no item exceeds available stock
+    const formData = data as SaleCartFormData;
+    const hasExceededQuantity = formData.saleItems?.some(
+      (saleItem: { batchId: string; quantity: number }) => {
+        const item = addedSalesItemsMap.get(saleItem.batchId);
+        const availableQuantity = item?.quantity ?? 0;
+        return saleItem.quantity > availableQuantity;
+      },
+    );
+
+    if (hasExceededQuantity) {
+      toast.error(
+        "One or more items exceed the available stock. Please reduce the quantity and try again.",
+        {
+          duration: 7000,
+        },
+      );
+      return;
+    }
+
     const dataWithPatientId = { ...(data as SaleCartFormData), patientId };
     if (!isOnline) {
       handleRequests(
@@ -266,10 +287,10 @@ export default function SalesCart({
   };
 
   return (
-    <ScrollArea className="relative h-[99%] w-full flex-[0.4] rounded-xl border bg-white py-5">
+    <ScrollArea className="h-full w-full rounded-xl border bg-white py-5">
       {isLoading && <LoadingOverlay />}
       <ImsForm
-        className="gap-y-0 px-4 py-2 pb-2"
+        className="h-full gap-y-0 overflow-scroll px-4 py-2 pb-2"
         form={form}
         handleAuthSubmit={handleSubmit}
         inputSectionClassName="space-y-3 pt-12"
@@ -388,7 +409,7 @@ export default function SalesCart({
             disabled={isSubmitting || !form.formState.isValid}
             variant="imsPrimary"
             type="submit"
-            className=" "
+            className="mb-24"
           >
             {isEditMode ? "Update Sale" : " Save Sale"}
           </ImsButton>

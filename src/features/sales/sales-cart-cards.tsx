@@ -25,6 +25,9 @@ export function SaleCard({
     string | null
   >(null);
 
+  const availableQuantity = salesItem.quantity ?? 0;
+  const isQuantityExceeded = quantity > availableQuantity;
+
   const handleItemDelete = () => {
     remove(index);
     setAddedSalesItems(
@@ -82,6 +85,7 @@ export function SaleCard({
   };
 
   const handleAdd = () => {
+    if (quantity >= availableQuantity) return;
     onChange(quantity + 1);
   };
   const handleSubtract = () => {
@@ -145,20 +149,34 @@ export function SaleCard({
             type="number"
             value={quantity === 0 ? "" : quantity}
             onChange={handleQuantityChange}
-            className="h-8 w-12 border text-center font-bold"
+            className={`h-8 w-12 border text-center font-bold ${isQuantityExceeded ? "border-red-500 bg-red-50" : ""}`}
           />
           <button
             onClick={handleAdd}
             type="button"
-            className="flex h-4 w-4 cursor-pointer items-center justify-center bg-slate-200"
+            disabled={quantity >= availableQuantity}
+            className={`flex h-4 w-4 items-center justify-center ${quantity >= availableQuantity ? "cursor-not-allowed bg-slate-100 opacity-50" : "cursor-pointer bg-slate-200"}`}
           >
             <Plus className="text-sm" />
           </button>
         </div>
       </div>
-      <span className="mt-2 text-xs text-red-400">
-        {alternativeBatchMessage && alternativeBatchMessage}
-      </span>
+      <div className="text-xs text-gray-600">
+        <span>
+          Available in stock: <strong>{availableQuantity}</strong>
+        </span>
+      </div>
+      {isQuantityExceeded && (
+        <div className="rounded-lg bg-red-50 p-2 text-xs text-red-600">
+          ⚠️ Quantity exceeds available stock ({availableQuantity} units).
+          Please reduce the quantity.
+        </div>
+      )}
+      {alternativeBatchMessage && (
+        <span className="mt-2 text-xs text-amber-600">
+          {alternativeBatchMessage}
+        </span>
+      )}
     </div>
   );
 }
