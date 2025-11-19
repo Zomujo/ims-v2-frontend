@@ -48,9 +48,14 @@ export const createNewPatientAction = async <T>(data: T) => {
       body: JSON.stringify(data),
     });
     revalidateTag(API_ENDPOINTS_OLD.PATIENTS);
+    if (res.error) {
+      throw new Error(res.error);
+    }
     return res;
   } catch (error) {
-    return error as AuthApiStandardResponse;
+    return {
+      error: (error as Error).message,
+    } as AuthApiStandardResponse;
   }
 };
 
