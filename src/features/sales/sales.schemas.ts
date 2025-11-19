@@ -8,9 +8,22 @@ export const newPatientSchema = z
       .min(3, { message: "Full name should not be less than 3 characters" }),
     cardIdentificationNumber: z.string().optional(),
     secondaryIdentificationNumber: z.string().optional(),
-    dateOfBirth: z.string().min(1, {
-      message: "Please select date of birth",
-    }),
+    dateOfBirth: z
+      .string()
+      .min(1, {
+        message: "Please select date of birth",
+      })
+      .refine(
+        (date) => {
+          const selectedDate = new Date(date);
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
+          return selectedDate <= today;
+        },
+        {
+          message: "Date of birth cannot be in the future",
+        },
+      ),
   })
   .transform((data) => {
     return {
