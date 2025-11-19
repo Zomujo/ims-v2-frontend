@@ -56,7 +56,12 @@ export const handleRequestState = ({
 }: HandleRequestState) => {
   toast.promise(res, {
     loading: loadingMsg ?? "Loading...",
-    success: (data) => successMsg ?? (data.message as string),
+    success: (data) => {
+      if (data.error) {
+        throw new Error(data.error as string);
+      }
+      return successMsg ?? (data.message as string);
+    },
     error: (error) => {
       return errorMsg ?? apiErrorResponse(error).message;
     },

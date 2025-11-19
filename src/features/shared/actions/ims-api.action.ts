@@ -17,15 +17,23 @@ export const imsApiWithAuth = async <T>({
   if (!userId) {
     redirect(AUTH_PAGE_ROUTES.SESSION_EXPIRY);
   }
-  const response = await fetchApi({
-    url,
-    method,
-    body,
-    headers: { ...headers, Authorization: `Bearer ${userId}` },
-    cache,
-    next,
-  });
-  return fetchJson<T>(response);
+  try {
+    const response = await fetchApi({
+      url,
+      method,
+      body,
+      headers: { ...headers, Authorization: `Bearer ${userId}` },
+      cache,
+      next,
+    });
+    return fetchJson<T>(response);
+  } catch (e) {
+    console.error("IMS API Error:", e);
+    return {
+      data: null,
+      error: e instanceof Error ? e.message : "An unknown error occurred",
+    } as T;
+  }
 };
 
 export const imsApiWithAuthBlob = async ({
