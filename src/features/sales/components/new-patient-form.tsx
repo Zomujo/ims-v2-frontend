@@ -110,6 +110,7 @@ export default function NewPatientForm() {
                 className="focus-visible:ring-ims-blue-300 flex h-11 flex-col justify-between bg-white pt-2.5"
                 placeholder="Select date of birth"
                 type="date"
+                max={new Date().toISOString().split("T")[0]}
               />
             )}
           />

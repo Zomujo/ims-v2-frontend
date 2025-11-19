@@ -1,4 +1,4 @@
-import { camelCaseToSentence, capitalize, formateDate } from "@/lib/utils";
+import { camelCaseToSentence, capitalize, formatDateTime } from "@/lib/utils";
 import { ColumnDef } from "@tanstack/react-table";
 import { AuditLog } from "@features/shared/types/activity.types";
 
@@ -25,7 +25,7 @@ export const auditLogsTableColumns: ColumnDef<AuditLog>[] = [
   },
   {
     accessorKey: "createdAt",
-    header: "Date",
-    cell: ({ row }) => formateDate(row.original.createdAt),
+    header: "Date & Time",
+    cell: ({ row }) => formatDateTime(row.original.createdAt),
   },
 ];

@@ -27,9 +27,12 @@ export const setLocalStorage = <T>(key: string, value: T): void => {
 };
 
 export const apiErrorResponse = (error: unknown) => {
+  if (typeof error === "string") {
+    return { message: error };
+  }
   if (error instanceof Error) {
     try {
-      return JSON.parse(error.message) as AuthApiStandardResponse;
+      return { message: error.message } as AuthApiStandardResponse;
     } catch (error) {
       console.error("Error parsing error message", error);
       return { message: "Something went wrong" };
@@ -131,6 +134,18 @@ export const formateDate = (date: string | number | Date) => {
     year: "numeric",
     month: "long",
     day: "numeric",
+  });
+};
+
+export const formatDateTime = (date: string | number | Date) => {
+  const newDate = new Date(date);
+  return newDate.toLocaleString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
   });
 };
 
