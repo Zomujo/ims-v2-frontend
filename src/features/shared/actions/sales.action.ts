@@ -10,6 +10,7 @@ import {
 } from "../types/sales-action.types";
 import { AuthApiStandardResponse } from "../types/auth-action.types";
 import { revalidateTag } from "next/cache";
+import { safeRequest } from "@features/shared/actions/base.actions";
 
 export const getSalesAction = async (searchParams?: GenerateQueryParams) => {
   const queryParams = generateQueryParams(searchParams);
@@ -41,22 +42,13 @@ export const getSalesPatientListAction = async (
 };
 
 export const createNewPatientAction = async <T>(data: T) => {
-  try {
-    const res = await imsApiWithAuth<AuthApiStandardResponse>({
+  return safeRequest(() =>
+    imsApiWithAuth<AuthApiStandardResponse>({
       url: `${API_ENDPOINTS_OLD.PATIENTS}`,
       method: "POST",
       body: JSON.stringify(data),
-    });
-    revalidateTag(API_ENDPOINTS_OLD.PATIENTS);
-    if (res.error) {
-      throw new Error(res.error);
-    }
-    return res;
-  } catch (error) {
-    return {
-      error: (error as Error).message,
-    } as AuthApiStandardResponse;
-  }
+    }),
+  ).then(() => revalidateTag(API_ENDPOINTS_OLD.PATIENTS));
 };
 
 export const getSalesItemsAction = async (
@@ -74,33 +66,25 @@ export const getSalesItemsAction = async (
 };
 
 export const createSaleAction = async (sale: unknown) => {
-  try {
-    const res = await imsApiWithAuth<AuthApiStandardResponse>({
+  return safeRequest(() =>
+    imsApiWithAuth<AuthApiStandardResponse>({
       url: API_ENDPOINTS_OLD.SALES,
       method: "POST",
       body: JSON.stringify({
         ...(sale as object),
         insured: (sale as { insured: "true" | "false" }).insured === "true", // Convert insured to boolean
       }),
-    });
-    revalidateTag(API_ENDPOINTS_OLD.SALES);
-    return res;
-  } catch (error) {
-    return error as AuthApiStandardResponse;
-  }
+    }),
+  ).then(() => revalidateTag(API_ENDPOINTS_OLD.SALES));
 };
 
 export const deleteSaleAction = async (saleId: string) => {
-  try {
-    const res = await imsApiWithAuth<AuthApiStandardResponse>({
+  return safeRequest(() =>
+    imsApiWithAuth<AuthApiStandardResponse>({
       url: `${API_ENDPOINTS_OLD.SALES}/${saleId}`,
       method: "DELETE",
-    });
-    revalidateTag(API_ENDPOINTS_OLD.SALES);
-    return res;
-  } catch (error) {
-    return error as AuthApiStandardResponse;
-  }
+    }),
+  ).then(() => revalidateTag(API_ENDPOINTS_OLD.SALES));
 };
 
 export const getIcdCodes = async (searchParam?: GenerateQueryParams) => {
