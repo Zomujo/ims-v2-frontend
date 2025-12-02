@@ -9,7 +9,6 @@ import {
   GetSalesItemsAPIResponse,
 } from "../types/sales-action.types";
 import { AuthApiStandardResponse } from "../types/auth-action.types";
-import { revalidateTag } from "next/cache";
 import { safeRequest } from "@features/shared/actions/base.actions";
 
 export const getSalesAction = async (searchParams?: GenerateQueryParams) => {
@@ -48,7 +47,7 @@ export const createNewPatientAction = async <T>(data: T) => {
       method: "POST",
       body: JSON.stringify(data),
     }),
-  ).then(() => revalidateTag(API_ENDPOINTS_OLD.PATIENTS));
+  );
 };
 
 export const getSalesItemsAction = async (
@@ -75,7 +74,7 @@ export const createSaleAction = async (sale: unknown) => {
         insured: (sale as { insured: "true" | "false" }).insured === "true", // Convert insured to boolean
       }),
     }),
-  ).then(() => revalidateTag(API_ENDPOINTS_OLD.SALES));
+  );
 };
 
 export const deleteSaleAction = async (saleId: string) => {
@@ -84,7 +83,7 @@ export const deleteSaleAction = async (saleId: string) => {
       url: `${API_ENDPOINTS_OLD.SALES}/${saleId}`,
       method: "DELETE",
     }),
-  ).then(() => revalidateTag(API_ENDPOINTS_OLD.SALES));
+  );
 };
 
 export const getIcdCodes = async (searchParam?: GenerateQueryParams) => {

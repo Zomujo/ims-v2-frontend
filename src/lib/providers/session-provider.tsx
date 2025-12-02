@@ -38,7 +38,6 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     // Small delay to ensure storage is fully initialized
     const timer = setTimeout(() => {
       const currentSession = getImsSession();
-      console.log("SessionProvider initialized with session:", currentSession);
       setSession(currentSession);
       setIsLoading(false);
     }, 100);
