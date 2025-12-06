@@ -1,6 +1,5 @@
 "use client";
 import { ColumnDef } from "@tanstack/react-table";
-import { CrudPageProps } from "../settings/settings.types";
 import { IMSDataTable } from "../shared/components/ims-data-table";
 import ImsSearchBar from "../shared/components/ims-search-bar";
 import { SaleItem } from "../shared/types/sales-action.types";
@@ -11,7 +10,7 @@ import useFetchData from "../shared/hooks/use-fetch-data";
 import { getSalesItemsAction } from "../shared/actions/sales.action";
 import { CacheKey } from "@/lib/cache/cache-data";
 import { Dispatch, SetStateAction, useEffect } from "react";
-import { Plus } from "lucide-react";
+import { Plus, Minus } from "lucide-react";
 
 export default function SalesItemList({
   refetchSales,
@@ -35,7 +34,7 @@ export default function SalesItemList({
       refetch();
       setRefetchSales(false);
     }
-  }, [refetch]);
+  }, [refetch, refetchSales, setRefetchSales]);
 
   return (
     <div className="h-full pt-4">
@@ -46,16 +45,8 @@ export default function SalesItemList({
           totalPages={data?.totalPages ?? 0}
           columns={salesItemsColumns.concat(
             getActionColumn<SaleItem, unknown>({
-              actions: (item) => [
-                {
-                  label: "Add",
-                  icon: "mdi:plus",
-                  action: () => {
-                    setSalesItem([...addedSalesItems, item]);
-                  },
-                },
-              ],
               addedSalesItems,
+              setSalesItem,
             }),
           )}
           data={salesItems}
@@ -66,43 +57,58 @@ export default function SalesItemList({
 }
 
 const getActionColumn = <TData, TValue>({
-  actions,
   addedSalesItems,
+  setSalesItem,
 }: Readonly<{
-  actions: CrudPageProps<TData>["actions"];
   addedSalesItems: SaleItem[];
+  setSalesItem: Dispatch<SetStateAction<SaleItem[]>>;
 }>): ColumnDef<TData, TValue> => {
   return {
     id: "actions",
     cell: ({ row }) => {
-      const item = row.original;
+      const item = row.original as SaleItem;
       const isAdded = !!addedSalesItems.find(
-        (addedItem) => addedItem.batchId === (item as SaleItem).batchId,
+        (addedItem) => addedItem.batchId === item.batchId,
       );
+      const actionItem = isAdded
+        ? {
+            label: "Remove",
+            action: () => {
+              setSalesItem(
+                addedSalesItems.filter(
+                  (addedItem) => addedItem.batchId !== item.batchId,
+                ),
+              );
+            },
+          }
+        : {
+            label: "Add",
+            action: () => {
+              setSalesItem([...addedSalesItems, item]);
+            },
+          };
       return (
-        <>
-          {actions(item)?.map((actionItem) => {
-            return (
-              <Button
-                disabled={isAdded}
-                key={actionItem?.label}
-                onClick={() => actionItem?.action()}
-                variant="ghost"
-                className="w-max border bg-indigo-600 p-0 text-xs text-white"
-              >
-                {isAdded ? (
-                  <span className="px-4">Added</span>
-                ) : (
-                  <>
-                    <Plus />
-                    <span>{actionItem?.label}</span>
-                  </>
-                )}
-                <span className="sr-only">Add item</span>
-              </Button>
-            );
-          })}
-        </>
+        <Button
+          key={actionItem.label}
+          onClick={() => actionItem.action()}
+          variant="ghost"
+          className="w-max border bg-indigo-600 p-0 text-xs text-white"
+        >
+          {isAdded ? (
+            <>
+              <Minus />
+              <span>{actionItem.label}</span>
+            </>
+          ) : (
+            <>
+              <Plus />
+              <span>{actionItem.label}</span>
+            </>
+          )}
+          <span className="sr-only">
+            {isAdded ? "Remove item" : "Add item"}
+          </span>
+        </Button>
       );
     },
   };

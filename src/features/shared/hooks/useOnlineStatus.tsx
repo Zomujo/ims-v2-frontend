@@ -12,6 +12,7 @@ import {
   sendPendingRequests,
   SyncPayloadDto,
 } from "@features/shared/actions/sync.actions";
+import { offlinePatientKey } from "@features/sales/components/patient.model";
 
 // A simple singleton to manage the sync process and prevent race conditions.
 const createSyncManager = () => {
@@ -69,6 +70,7 @@ export function useOnlineStatus() {
   useEffect(() => {
     if (isConnected) {
       void syncManager.run(sendPendingRequestsToQueue);
+      localStorage.removeItem(offlinePatientKey);
     }
   }, [isConnected]);
 

@@ -17,6 +17,10 @@ import { CRUDACTION } from "../shared/types/utitls.types";
 import { Button } from "../ui/button";
 import { Combobox } from "../ui/combobox";
 import { CacheKey } from "@/lib/cache/cache-data";
+import {
+  OfflinePatientsProvider,
+  useOfflinePatients,
+} from "@/hooks/useOfflinePatients";
 
 const NewPatientForm = lazy(() => import("./components/new-patient-form"));
 
@@ -26,11 +30,12 @@ type SalesPatientLIstProps = {
   setPatientInfo?: Dispatch<SetStateAction<ReactNode | string>>;
 };
 
-export default function SalesPatientList({
+function SalesPatientListContent({
   setPatientIdAction,
   patientId,
   setPatientInfo,
 }: SalesPatientLIstProps) {
+  const { addedPatients, setPatient: setAddedPatients } = useOfflinePatients();
   const { setSearchParams, removeSearchParams, getSearchParams } =
     useImsSearchParams();
   const { data } = useFetchData({
@@ -39,7 +44,7 @@ export default function SalesPatientList({
   });
   const patients = useMemo(
     () =>
-      data?.map((patient) => {
+      [...addedPatients, ...(data ?? [])]?.map((patient) => {
         const identificationNumbers = [
           patient.cardIdentificationNumber,
           patient.secondaryIdentificationNumber,
@@ -61,7 +66,7 @@ export default function SalesPatientList({
           searchBy: `${patient.name} ${identificationNumbers}`,
         };
       }) ?? [],
-    [data],
+    [data, addedPatients],
   );
 
   const state = getSearchParams("state");
@@ -105,9 +110,20 @@ export default function SalesPatientList({
         description={"Create new patient"}
       >
         <Suspense fallback={<div>Loading...</div>}>
-          <NewPatientForm />
+          <NewPatientForm
+            addedPatients={addedPatients}
+            setPatient={setAddedPatients}
+          />
         </Suspense>
       </ImsSheet>
     </div>
+  );
+}
+
+export default function SalesPatientList(props: SalesPatientLIstProps) {
+  return (
+    <OfflinePatientsProvider>
+      <SalesPatientListContent {...props} />
+    </OfflinePatientsProvider>
   );
 }

@@ -15,8 +15,6 @@ export function ImsProtectedProvider({
   const hasRedirected = useRef(false);
 
   useEffect(() => {
-    console.log("Auth status:", { isAuthenticated, isLoading });
-    console.log("Has redirected:", hasRedirected.current);
     if (!isLoading && !isAuthenticated && !hasRedirected.current) {
       hasRedirected.current = true;
       router.replace(AUTH_PAGE_ROUTES.LOG_IN);

@@ -10,8 +10,19 @@ import useHookForm from "../../shared/hooks/use-hook-form";
 import useImsSearchParams from "../../shared/hooks/use-ims-search-params";
 import { Input } from "../../ui/input";
 import { newPatientSchema } from "../sales.schemas";
+import { useOnlineStatus } from "@features/shared/hooks/useOnlineStatus";
+import { API_ENDPOINTS } from "@/lib/api-constants";
+import { Patient } from "@features/shared/types/sales-action.types";
+import { OfflinePatientsProvider } from "@/hooks/useOfflinePatients";
 
-export default function NewPatientForm() {
+export default function NewPatientForm({
+  addedPatients,
+  setPatient,
+}: {
+  addedPatients: Patient[];
+  setPatient: (patients: Patient[]) => void;
+}) {
+  const { handleRequests, isOnline } = useOnlineStatus();
   const { removeSearchParams } = useImsSearchParams();
   const form = useHookForm({
     resolver: newPatientSchema,
@@ -31,6 +42,33 @@ export default function NewPatientForm() {
       secondaryIdentificationNumber:
         dataTyped.secondaryIdentificationNumber || undefined,
     };
+    if (!isOnline) {
+      const offlinePatientId = crypto.randomUUID();
+      const patient: Patient = {
+        ...formattedData,
+        id: offlinePatientId,
+        cardIdentificationNumber: String(
+          formattedData.cardIdentificationNumber,
+        ),
+        secondaryIdentificationNumber: String(
+          formattedData.secondaryIdentificationNumber,
+        ),
+      };
+      setPatient([...addedPatients, patient]);
+      handleRequests(
+        API_ENDPOINTS.PATIENTS,
+        {
+          ...formattedData,
+          queueUniqueId: offlinePatientId,
+        },
+        {
+          method: "POST",
+        },
+      );
+      form.reset();
+      removeSearchParams(UI_STATE);
+      return;
+    }
     const res = createNewPatientAction(formattedData);
     res.then(() => {
       form.reset();
@@ -42,85 +80,87 @@ export default function NewPatientForm() {
 
   const dateOfBirth = form.watch("dateOfBirth");
   return (
-    <ImsForm
-      className="overflow-y-auto [&>*]:px-4"
-      inputSectionClassName="overflow-y-auto"
-      form={form}
-      handleAuthSubmit={handleSubmit}
-      RenderActions={
-        <ImsButton
-          isLoading={form.formState.isSubmitting}
-          isLoadingLabel="Adding new patient..."
-          variant="imsPrimary"
-          type="submit"
-        >
-          Save patient
-        </ImsButton>
-      }
-      RenderInputs={
-        <>
-          <HookFormField
-            formControl={form.control}
-            name="name"
-            label="Full Name"
-            renderInput={({ field }) => {
-              return (
+    <OfflinePatientsProvider>
+      <ImsForm
+        className="overflow-y-auto [&>*]:px-4"
+        inputSectionClassName="overflow-y-auto"
+        form={form}
+        handleAuthSubmit={handleSubmit}
+        RenderActions={
+          <ImsButton
+            isLoading={form.formState.isSubmitting}
+            isLoadingLabel="Adding new patient..."
+            variant="imsPrimary"
+            type="submit"
+          >
+            Save patient
+          </ImsButton>
+        }
+        RenderInputs={
+          <>
+            <HookFormField
+              formControl={form.control}
+              name="name"
+              label="Full Name"
+              renderInput={({ field }) => {
+                return (
+                  <Input
+                    {...field}
+                    className="focus-visible:ring-ims-blue-300 bg-white"
+                    type="text"
+                    placeholder="eg. John Doe"
+                  />
+                );
+              }}
+            />
+            <HookFormField
+              formControl={form.control}
+              name="cardIdentificationNumber"
+              label="OPD Number"
+              renderInput={({ field }) => (
                 <Input
                   {...field}
                   className="focus-visible:ring-ims-blue-300 bg-white"
                   type="text"
-                  placeholder="eg. John Doe"
+                  placeholder="OPD number"
                 />
-              );
-            }}
-          />
-          <HookFormField
-            formControl={form.control}
-            name="cardIdentificationNumber"
-            label="OPD Number"
-            renderInput={({ field }) => (
-              <Input
-                {...field}
-                className="focus-visible:ring-ims-blue-300 bg-white"
-                type="text"
-                placeholder="OPD number"
-              />
+              )}
+            />
+            <HookFormField
+              formControl={form.control}
+              name="secondaryIdentificationNumber"
+              label="National Health Insurance Scheme Number"
+              renderInput={({ field }) => (
+                <Input
+                  {...field}
+                  className="focus-visible:ring-ims-blue-300 bg-white"
+                  type="text"
+                  placeholder="NHIS number"
+                />
+              )}
+            />
+            <HookFormField
+              formControl={form.control}
+              name="dateOfBirth"
+              label="Date of Birth"
+              renderInput={({ field }) => (
+                <Input
+                  {...field}
+                  className="focus-visible:ring-ims-blue-300 flex h-11 flex-col justify-between bg-white pt-2.5"
+                  placeholder="Select date of birth"
+                  type="date"
+                  max={new Date().toISOString().split("T")[0]}
+                />
+              )}
+            />
+            {!!dateOfBirth && (
+              <span className="text-gray-600">
+                Age: {getAgeFromDate(dateOfBirth)} years
+              </span>
             )}
-          />
-          <HookFormField
-            formControl={form.control}
-            name="secondaryIdentificationNumber"
-            label="National Health Insurance Scheme Number"
-            renderInput={({ field }) => (
-              <Input
-                {...field}
-                className="focus-visible:ring-ims-blue-300 bg-white"
-                type="text"
-                placeholder="NHIS number"
-              />
-            )}
-          />
-          <HookFormField
-            formControl={form.control}
-            name="dateOfBirth"
-            label="Date of Birth"
-            renderInput={({ field }) => (
-              <Input
-                {...field}
-                className="focus-visible:ring-ims-blue-300 flex h-11 flex-col justify-between bg-white pt-2.5"
-                placeholder="Select date of birth"
-                type="date"
-                max={new Date().toISOString().split("T")[0]}
-              />
-            )}
-          />
-          {!!dateOfBirth && (
-            <span className="text-gray-600">
-              Age: {getAgeFromDate(dateOfBirth)} years
-            </span>
-          )}
-        </>
-      }
-    />
+          </>
+        }
+      />
+    </OfflinePatientsProvider>
   );
 }
