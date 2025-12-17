@@ -35,7 +35,7 @@ export const exportActionButtonData = {
     permission: `${PermissionModules.ITEMS}:${PermissionActions.READ}`,
   },
   [PAGE_ROUTES.STOCK_ADJUSTMENT.VIEW]: {
-    label: "Export Stock Adjustments",
+    label: "Export Adjustments",
     fileName: "Stock_Adjustments",
     endpoint: API_ENDPOINTS.STOCK_ADJUSTMENTS_EXPORT,
     icon: "solar:file-download-linear",
@@ -94,7 +94,7 @@ export const actionButtonData = {
     permission: `${PermissionModules.ITEMS_CATEGORIES}:${PermissionActions.WRITE}`,
   },
   [PAGE_ROUTES.STOCK_ADJUSTMENT.VIEW]: {
-    label: "Add New Adjustment",
+    label: "Add Adjustment",
     href: PAGE_ROUTES.STOCK_ADJUSTMENT.CREATE,
     icon: "solar:delivery-bold-duotone",
     permission: `${PermissionModules.STOCK_ADJUSTMENT}:${PermissionActions.WRITE}`,

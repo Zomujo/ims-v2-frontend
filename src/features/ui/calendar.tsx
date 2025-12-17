@@ -202,12 +202,10 @@ function Calendar({
         hidden: _hiddenClassName,
       }}
       components={{
-        // eslint-disable-next-line react/prop-types
         Chevron: ({ orientation }) => {
           const Icon = orientation === "left" ? ChevronLeft : ChevronRight;
           return <Icon className="h-4 w-4" />;
         },
-        // eslint-disable-next-line react/prop-types,no-shadow
         Nav: ({ className }) => (
           <Nav
             className={className}
@@ -219,7 +217,6 @@ function Calendar({
             onPrevClick={onPrevClick}
           />
         ),
-        // eslint-disable-next-line no-shadow
         CaptionLabel: (props) => (
           <CaptionLabel
             showYearSwitcher={showYearSwitcher}
@@ -229,7 +226,6 @@ function Calendar({
             {...props}
           />
         ),
-        // eslint-disable-next-line react/prop-types,no-shadow
         MonthGrid: ({ className, children, ...props }) => (
           <MonthGrid
             className={className}

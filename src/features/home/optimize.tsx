@@ -10,8 +10,8 @@ export default function OptimizeInventory() {
           Optimizing Inventory for Healthcare Providers
         </h3>
         <p className="tracking-wide opacity-60">
-          Whether you're a hospital or a local pharmacy, IMS streamlines stock
-          management, enhances operational efficiency, and ensures
+          Whether you&#39;re a hospital or a local pharmacy, IMS streamlines
+          stock management, enhances operational efficiency, and ensures
           compliance—helping you deliver exceptional care to your community.
         </p>
       </div>

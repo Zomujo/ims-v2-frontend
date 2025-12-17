@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-require-imports */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   PHASE_DEVELOPMENT_SERVER,
   PHASE_PRODUCTION_BUILD,
@@ -7,15 +5,8 @@ import {
 import type { NextConfig } from "next";
 import withSerwist from "@serwist/next";
 
-// eslint-disable-next-line import/no-anonymous-default-export
 export default async (phase: string) => {
-  const nextConfig: NextConfig = {
-    eslint: {
-      dirs: ["src"],
-      ignoreDuringBuilds: true,
-    },
-  };
-
+  const nextConfig: NextConfig = {};
   if (phase === PHASE_DEVELOPMENT_SERVER || phase === PHASE_PRODUCTION_BUILD) {
     return withSerwist({
       swSrc: "public/service-worker/sw.ts",

@@ -2,7 +2,6 @@
 
 import { API_ENDPOINT_TAGS, API_ENDPOINTS } from "@/lib/api-constants";
 import { generateUrlWithQueryParams } from "@/lib/utils";
-import { revalidateTag } from "next/cache";
 import {
   AdjustPriceDto,
   ApiSuccessResponseDto,
@@ -34,10 +33,7 @@ export async function addItem(data: CreateItemDto) {
     body: JSON.stringify(data),
   };
 
-  const result =
-    await imsApiWithAuth<ApiSuccessResponseDto<OneItem>>(fetchOptions);
-  revalidateTag(API_ENDPOINT_TAGS.ITEMS);
-  return result;
+  return await imsApiWithAuth<ApiSuccessResponseDto<OneItem>>(fetchOptions);
 }
 
 export async function getItems(
@@ -67,7 +63,6 @@ export async function getItemsExpiry(params?: GenerateQueryParams) {
     url: generateUrlWithQueryParams(API_ENDPOINTS.ITEMS_VALIDITY, params ?? {}),
     method: "GET",
     headers: {},
-    cache: "force-cache",
     next: { tags: [API_ENDPOINT_TAGS.ITEMS_VALIDITY] },
   };
 
@@ -83,11 +78,7 @@ export async function addBatch(data: CreateBatchDto) {
     body: JSON.stringify(data),
   };
 
-  const result =
-    await imsApiWithAuth<ApiSuccessResponseDto<OneBatch>>(fetchOptions);
-  revalidateTag(API_ENDPOINT_TAGS.ITEMS_BATCHES);
-  revalidateTag(API_ENDPOINT_TAGS.ITEMS);
-  return result;
+  return await imsApiWithAuth<ApiSuccessResponseDto<OneBatch>>(fetchOptions);
 }
 
 export async function getBatchesNoPaginate(itemId: string) {
@@ -98,7 +89,6 @@ export async function getBatchesNoPaginate(itemId: string) {
     url: API_ENDPOINTS.ITEMS_BATCHES_NO_PAGINATE.replace(":itemId", itemId),
     method: "GET",
     headers: {},
-    cache: "force-cache",
     next: { tags: [API_ENDPOINT_TAGS.ITEMS_BATCHES] },
   };
 
@@ -130,7 +120,6 @@ export async function getBatch(id: string) {
     url: API_ENDPOINTS.ITEM_BATCH.replace(":id", id),
     method: "GET",
     headers: {},
-    cache: "force-cache",
     next: { tags: [API_ENDPOINT_TAGS.ITEMS_BATCHES] },
   };
 
@@ -147,9 +136,7 @@ export async function updateBatch(id: string, data: UpdateBatchDto) {
     body: JSON.stringify(data),
   };
 
-  const result = await imsApiWithAuth<ApiSuccessResponseNoData>(fetchOptions);
-  revalidateTag(API_ENDPOINT_TAGS.ITEMS_BATCHES);
-  return result;
+  return await imsApiWithAuth<ApiSuccessResponseNoData>(fetchOptions);
 }
 
 export async function removalMarkupFromBatch(batchId: string) {
@@ -159,9 +146,7 @@ export async function removalMarkupFromBatch(batchId: string) {
     headers: {},
   };
 
-  const result = await imsApiWithAuth<ApiSuccessResponseNoData>(fetchOptions);
-  revalidateTag(API_ENDPOINT_TAGS.ITEMS_BATCHES);
-  return result;
+  return await imsApiWithAuth<ApiSuccessResponseNoData>(fetchOptions);
 }
 
 export async function getItemsNoPaginate() {
@@ -181,7 +166,6 @@ export async function getItemAnalytics(id: string) {
     url: API_ENDPOINTS.ITEM_ANALYTICS.replace(":id", id),
     method: "GET",
     headers: {},
-    cache: "force-cache",
     next: { tags: [API_ENDPOINT_TAGS.ITEMS] },
   };
 
@@ -195,7 +179,6 @@ export async function getItemCounts() {
     url: API_ENDPOINTS.ITEM_COUNTS,
     method: "GET",
     headers: {},
-    cache: "force-cache",
     next: { tags: [API_ENDPOINT_TAGS.ITEMS] },
   };
 
@@ -208,7 +191,6 @@ export async function getItem(id: string) {
     url: API_ENDPOINTS.ITEM.replace(":id", id),
     method: "GET",
     headers: {},
-    cache: "force-cache",
     next: { tags: [API_ENDPOINT_TAGS.ITEMS] },
   };
 
@@ -223,9 +205,7 @@ export async function updateItem(id: string, data: UpdateItemDto) {
     body: JSON.stringify(data),
   };
 
-  const result = await imsApiWithAuth<ApiSuccessResponseNoData>(fetchOptions);
-  revalidateTag(API_ENDPOINT_TAGS.ITEMS);
-  return result;
+  return await imsApiWithAuth<ApiSuccessResponseNoData>(fetchOptions);
 }
 
 export async function deleteItem(id: string) {
@@ -235,9 +215,7 @@ export async function deleteItem(id: string) {
     headers: {},
   };
 
-  const result = await imsApiWithAuth<ApiSuccessResponseNoData>(fetchOptions);
-  revalidateTag(API_ENDPOINT_TAGS.ITEMS);
-  return result;
+  return await imsApiWithAuth<ApiSuccessResponseNoData>(fetchOptions);
 }
 
 export async function adjustItemPrices(id: string, data: AdjustPriceDto) {
@@ -248,7 +226,5 @@ export async function adjustItemPrices(id: string, data: AdjustPriceDto) {
     body: JSON.stringify(data),
   };
 
-  const result = await imsApiWithAuth<ApiSuccessResponseNoData>(fetchOptions);
-  revalidateTag(API_ENDPOINT_TAGS.ITEMS);
-  return result;
+  return await imsApiWithAuth<ApiSuccessResponseNoData>(fetchOptions);
 }

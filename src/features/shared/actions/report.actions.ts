@@ -1,16 +1,15 @@
 "use server";
 
-import { API_ENDPOINTS, API_ENDPOINT_TAGS } from "@/lib/api-constants";
-import { revalidateTag } from "next/cache";
+import { API_ENDPOINT_TAGS, API_ENDPOINTS } from "@/lib/api-constants";
 import {
-  CreateReportDto,
   ApiSuccessResponseDto,
+  ApiSuccessResponseNoData,
+  CreateReportDto,
+  GetReportDataDto,
   GetReportDto,
+  GetSaleDto,
   PaginatedResponse,
   UpdateReportDto,
-  ApiSuccessResponseNoData,
-  GetReportDataDto,
-  GetSaleDto,
 } from "../types/action.types";
 import { FetchApi } from "../types/ims-api-action.types";
 import { imsApiWithAuth } from "./ims-api.action";
@@ -25,10 +24,9 @@ export async function addReport(data: CreateReportDto) {
     body: JSON.stringify(data),
   };
 
-  const result =
-    await imsApiWithAuth<ApiSuccessResponseDto<GetReportDto>>(fetchOptions);
-  revalidateTag(API_ENDPOINT_TAGS.REPORTS);
-  return result;
+  return await imsApiWithAuth<ApiSuccessResponseDto<GetReportDto>>(
+    fetchOptions,
+  );
 }
 
 export async function getReports(params?: GenerateQueryParams) {
@@ -36,7 +34,6 @@ export async function getReports(params?: GenerateQueryParams) {
     url: generateUrlWithQueryParams(API_ENDPOINTS.REPORTS, params ?? {}),
     method: "GET",
     headers: {},
-    cache: "force-cache",
     next: { tags: [API_ENDPOINT_TAGS.REPORTS] },
   };
 
@@ -49,7 +46,6 @@ export async function getReport(id: string) {
     url: API_ENDPOINTS.REPORT.replace(":id", id),
     method: "GET",
     headers: {},
-    cache: "force-cache",
     next: { tags: [API_ENDPOINT_TAGS.REPORTS] },
   };
 
@@ -66,9 +62,7 @@ export async function updateReport(id: string, data: UpdateReportDto) {
     body: JSON.stringify(data),
   };
 
-  const result = await imsApiWithAuth<ApiSuccessResponseNoData>(fetchOptions);
-  revalidateTag(API_ENDPOINT_TAGS.REPORTS);
-  return result;
+  return await imsApiWithAuth<ApiSuccessResponseNoData>(fetchOptions);
 }
 
 export async function deleteReport(id: string) {
@@ -78,9 +72,7 @@ export async function deleteReport(id: string) {
     headers: {},
   };
 
-  const result = await imsApiWithAuth<ApiSuccessResponseNoData>(fetchOptions);
-  revalidateTag(API_ENDPOINT_TAGS.REPORTS);
-  return result;
+  return await imsApiWithAuth<ApiSuccessResponseNoData>(fetchOptions);
 }
 
 export async function getReportData(id: string) {
@@ -88,7 +80,6 @@ export async function getReportData(id: string) {
     url: API_ENDPOINTS.REPORT_DATA.replace(":id", id),
     method: "GET",
     headers: {},
-    cache: "force-cache",
     next: { tags: [API_ENDPOINT_TAGS.REPORTS] },
   };
 
@@ -102,7 +93,6 @@ export async function getSalesReport() {
     url: API_ENDPOINTS.REPORT_SALES,
     method: "GET",
     headers: {},
-    cache: "force-cache",
     next: { tags: [API_ENDPOINT_TAGS.REPORTS] },
   };
 
@@ -123,7 +113,6 @@ export async function getCategorizedReport(
     ),
     method: "GET",
     headers: {},
-    cache: "force-cache",
     next: { tags: [API_ENDPOINT_TAGS.REPORTS] },
   };
 

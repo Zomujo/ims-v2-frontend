@@ -10,8 +10,8 @@ export default function Pricing() {
     >
       <div className="flex w-full flex-col items-center justify-center max-md:px-8">
         <h2 className="mb-4 w-full max-w-lg text-center text-4xl font-bold text-[#000000] lg:text-5xl">
-          Pick a plan that's <span className="text-[#415BE6]">right</span> for
-          you
+          Pick a plan that&#39;s <span className="text-[#415BE6]">right</span>{" "}
+          for you
         </h2>
         <p className="mb-12 max-w-2xl text-center text-lg text-gray-600 md:mb-16 lg:mb-20">
           Choose from our two plans — Standard and Premium or contact us for

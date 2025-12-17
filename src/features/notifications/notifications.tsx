@@ -164,7 +164,7 @@ export default function RealtimeNotifications(): JSX.Element {
             {!hasMore && notifications.length > 10 && (
               <div className="flex items-center justify-center py-4 text-gray-500">
                 <span className="text-sm">
-                  You've reached the end of notifications
+                  You&#39;ve reached the end of notifications
                 </span>
               </div>
             )}

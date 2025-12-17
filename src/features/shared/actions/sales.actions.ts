@@ -1,17 +1,16 @@
 "use server";
 
-import { API_ENDPOINTS, API_ENDPOINT_TAGS } from "@/lib/api-constants";
-import { revalidateTag } from "next/cache";
+import { API_ENDPOINT_TAGS, API_ENDPOINTS } from "@/lib/api-constants";
 import {
-  CreateSaleDto,
   ApiSuccessResponseDto,
-  CreateSaleResponseDto,
-  PaginatedResponse,
-  GetSalesDto,
-  GetSaleDto,
-  UpdateSalesDto,
   ApiSuccessResponseNoData,
+  CreateSaleDto,
+  CreateSaleResponseDto,
+  GetSaleDto,
+  GetSalesDto,
   GetSalesItemsDto,
+  PaginatedResponse,
+  UpdateSalesDto,
 } from "../types/action.types";
 import { FetchApi } from "../types/ims-api-action.types";
 import { imsApiWithAuth } from "./ims-api.action";
@@ -26,12 +25,9 @@ export async function addSale(data: CreateSaleDto) {
     body: JSON.stringify(data),
   };
 
-  const result =
-    await imsApiWithAuth<ApiSuccessResponseDto<CreateSaleResponseDto>>(
-      fetchOptions,
-    );
-  revalidateTag(API_ENDPOINT_TAGS.SALES);
-  return result;
+  return await imsApiWithAuth<ApiSuccessResponseDto<CreateSaleResponseDto>>(
+    fetchOptions,
+  );
 }
 
 export async function getSales(params?: GenerateQueryParams) {
@@ -39,7 +35,6 @@ export async function getSales(params?: GenerateQueryParams) {
     url: generateUrlWithQueryParams(API_ENDPOINTS.SALES, params ?? {}),
     method: "GET",
     headers: {},
-    cache: "force-cache",
     next: { tags: [API_ENDPOINT_TAGS.SALES] },
   };
 
@@ -52,7 +47,6 @@ export async function getSale(id: string) {
     url: API_ENDPOINTS.SALE.replace(":id", id),
     method: "GET",
     headers: {},
-    cache: "force-cache",
     next: { tags: [API_ENDPOINT_TAGS.SALES] },
   };
 
@@ -70,9 +64,7 @@ export async function updateSale(id: string, data: UpdateSalesDto) {
     }),
   };
 
-  const result = await imsApiWithAuth<ApiSuccessResponseNoData>(fetchOptions);
-  revalidateTag(API_ENDPOINT_TAGS.SALES);
-  return result;
+  return await imsApiWithAuth<ApiSuccessResponseNoData>(fetchOptions);
 }
 
 export async function deleteSale(id: string) {
@@ -82,9 +74,7 @@ export async function deleteSale(id: string) {
     headers: {},
   };
 
-  const result = await imsApiWithAuth<ApiSuccessResponseNoData>(fetchOptions);
-  revalidateTag(API_ENDPOINT_TAGS.SALES);
-  return result;
+  return await imsApiWithAuth<ApiSuccessResponseNoData>(fetchOptions);
 }
 
 export async function getSaleItems(id: string) {
@@ -92,7 +82,6 @@ export async function getSaleItems(id: string) {
     url: API_ENDPOINTS.SALE_ITEMS.replace(":id", id),
     method: "GET",
     headers: {},
-    cache: "force-cache",
     next: { tags: [API_ENDPOINT_TAGS.SALES] },
   };
 
@@ -108,7 +97,5 @@ export async function returnSale(id: string) {
     headers: {},
   };
 
-  const result = await imsApiWithAuth<ApiSuccessResponseNoData>(fetchOptions);
-  revalidateTag(API_ENDPOINT_TAGS.SALES);
-  return result;
+  return await imsApiWithAuth<ApiSuccessResponseNoData>(fetchOptions);
 }

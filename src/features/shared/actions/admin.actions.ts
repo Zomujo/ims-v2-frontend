@@ -2,7 +2,6 @@
 
 import { API_ENDPOINT_TAGS, API_ENDPOINTS } from "@/lib/api-constants";
 import { generateUrlWithQueryParams } from "@/lib/utils";
-import { revalidateTag } from "next/cache";
 import {
   ApiSuccessResponseDto,
   CreateUserDto,
@@ -23,10 +22,9 @@ export async function createUser(data: CreateUserDto) {
     body: JSON.stringify(data),
   };
 
-  const result =
-    await imsApiWithAuth<ApiSuccessResponseDto<GetAdminUserDto>>(fetchOptions);
-  revalidateTag(API_ENDPOINT_TAGS.ADMIN_USERS);
-  return result;
+  return await imsApiWithAuth<ApiSuccessResponseDto<GetAdminUserDto>>(
+    fetchOptions,
+  );
 }
 
 export async function getFacilityPersonnel(params: GenerateQueryParams) {
@@ -34,7 +32,6 @@ export async function getFacilityPersonnel(params: GenerateQueryParams) {
     url: generateUrlWithQueryParams(API_ENDPOINTS.ADMIN_USERS, params),
     method: "GET",
     headers: {},
-    cache: "force-cache",
     next: { tags: [API_ENDPOINT_TAGS.ADMIN_USERS] },
   };
 
@@ -46,7 +43,6 @@ export async function getUsersNoPaginate() {
     method: "GET",
     headers: {},
     next: { tags: [API_ENDPOINTS.USERS_NO_PAGINATE] },
-    cache: "force-cache",
   };
   return (await imsApiWithAuth<{ data: AuthIMSUserProfile[] }>(fetchOptions))
     .data;
@@ -58,7 +54,6 @@ export async function getDepartmentsNoPaginate() {
     method: "GET",
     headers: {},
     next: { tags: [API_ENDPOINTS.DEPARTMENTS_NO_PAGINATE] },
-    cache: "force-cache",
   };
   return (await imsApiWithAuth<{ data: Department[] }>(fetchOptions)).data;
 }

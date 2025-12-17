@@ -60,13 +60,15 @@ export default async function SettingsPages({
         permission={page}
         freePass={["general", "security", "notifications", "expiry"]}
       >
-        <SettingsSearchWithFilter />
-        {pageWithDrawerUI.includes(page) && hasPermission && (
-          <SettingsCreateButton
-            state="create"
-            label={createBtnLabel[page as keyof typeof createBtnLabel]}
-          />
-        )}
+        <div className="flex w-full flex-wrap gap-y-4">
+          <SettingsSearchWithFilter />
+          {pageWithDrawerUI.includes(page) && hasPermission && (
+            <SettingsCreateButton
+              state="create"
+              label={createBtnLabel[page as keyof typeof createBtnLabel]}
+            />
+          )}
+        </div>
         <Suspense fallback={<div>Loading...</div>}>
           <SettingsPage />
         </Suspense>

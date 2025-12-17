@@ -1,24 +1,23 @@
 "use server";
 
 import { API_ENDPOINT_TAGS, API_ENDPOINTS } from "@/lib/api-constants";
-import { revalidateTag } from "next/cache";
 import {
   AdminSignUpDto,
   ApiSuccessResponseDto,
-  LoginTokenDto,
   ApiSuccessResponseNoData,
-  LoginDto,
-  GetUserDto,
-  CreateLoginSessionDto,
-  RefreshTokenDto,
-  SendForgotPasswordEmailDto,
-  CheckCodeDto,
-  ResetPasswordDto,
-  UpdateUserDto,
   ChangePasswordDto,
+  CheckCodeDto,
+  CreateLoginSessionDto,
+  GetUserDto,
+  LoginDto,
+  LoginTokenDto,
+  RefreshTokenDto,
+  ResetPasswordDto,
+  SendForgotPasswordEmailDto,
+  UpdateUserDto,
 } from "../types/action.types";
 import { FetchApi } from "../types/ims-api-action.types";
-import { imsApiWithoutAuth, imsApiWithAuth } from "./ims-api.action";
+import { imsApiWithAuth, imsApiWithoutAuth } from "./ims-api.action";
 
 export async function signUp(data: AdminSignUpDto) {
   const fetchOptions: FetchApi = {
@@ -44,9 +43,7 @@ export async function uploadProfilePicture(file: File) {
     body: formData,
   };
 
-  const result = await imsApiWithAuth<ApiSuccessResponseNoData>(fetchOptions);
-  revalidateTag(API_ENDPOINT_TAGS.AUTH_USER);
-  return result;
+  return await imsApiWithAuth<ApiSuccessResponseNoData>(fetchOptions);
 }
 
 export async function deleteProfilePicture() {
@@ -56,9 +53,7 @@ export async function deleteProfilePicture() {
     headers: {},
   };
 
-  const result = await imsApiWithAuth<ApiSuccessResponseNoData>(fetchOptions);
-  revalidateTag(API_ENDPOINT_TAGS.AUTH_USER);
-  return result;
+  return await imsApiWithAuth<ApiSuccessResponseNoData>(fetchOptions);
 }
 
 export async function signIn(data: LoginDto) {
@@ -79,7 +74,6 @@ export async function getUser() {
     url: API_ENDPOINTS.AUTH_USER,
     method: "GET",
     headers: {},
-    cache: "force-cache",
     next: { tags: [API_ENDPOINT_TAGS.AUTH_USER] },
   };
 
@@ -91,7 +85,6 @@ export async function getSessions() {
     url: API_ENDPOINTS.AUTH_SESSIONS,
     method: "GET",
     headers: {},
-    cache: "force-cache",
     next: { tags: [API_ENDPOINT_TAGS.AUTH_SESSIONS] },
   };
 
@@ -105,7 +98,6 @@ export async function refreshTokens() {
     url: API_ENDPOINTS.AUTH_REFRESH,
     method: "GET",
     headers: {},
-    cache: "force-cache",
     next: { tags: [API_ENDPOINT_TAGS.AUTH_REFRESH] },
   };
 
@@ -157,9 +149,7 @@ export async function updateUserDetails(data: UpdateUserDto) {
     body: JSON.stringify(data),
   };
 
-  const result = await imsApiWithAuth<ApiSuccessResponseNoData>(fetchOptions);
-  revalidateTag(API_ENDPOINT_TAGS.AUTH_USER);
-  return result;
+  return await imsApiWithAuth<ApiSuccessResponseNoData>(fetchOptions);
 }
 
 export async function sendResetEmail(data: SendForgotPasswordEmailDto) {
@@ -202,7 +192,5 @@ export async function deleteSession(id: string) {
     headers: {},
   };
 
-  const result = await imsApiWithAuth<ApiSuccessResponseNoData>(fetchOptions);
-  revalidateTag(API_ENDPOINT_TAGS.AUTH_SESSIONS);
-  return result;
+  return await imsApiWithAuth<ApiSuccessResponseNoData>(fetchOptions);
 }

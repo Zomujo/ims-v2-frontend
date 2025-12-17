@@ -1,13 +1,12 @@
 "use server";
 
-import { API_ENDPOINTS, API_ENDPOINT_TAGS } from "@/lib/api-constants";
+import { API_ENDPOINT_TAGS, API_ENDPOINTS } from "@/lib/api-constants";
 import { generateUrlWithQueryParams } from "@/lib/utils";
-import { revalidateTag } from "next/cache";
 import {
   ApiSuccessResponseDto,
   ApiSuccessResponseNoData,
-  CreateStockAdjustmentDto,
   CreatedAdjustmentResponseDto,
+  CreateStockAdjustmentDto,
   OneStockAdjustment,
   PaginatedResponse,
   UpdateStockAdjustmentDto,
@@ -24,12 +23,9 @@ export async function createStockAdjustment(data: CreateStockAdjustmentDto) {
     body: JSON.stringify(data),
   };
 
-  const result =
-    await imsApiWithAuth<ApiSuccessResponseDto<CreatedAdjustmentResponseDto>>(
-      fetchOptions,
-    );
-  revalidateTag(API_ENDPOINT_TAGS.STOCK_ADJUSTMENTS);
-  return result;
+  return await imsApiWithAuth<
+    ApiSuccessResponseDto<CreatedAdjustmentResponseDto>
+  >(fetchOptions);
 }
 
 export async function getStockAdjustments(params?: GenerateQueryParams) {
@@ -54,7 +50,6 @@ export async function getStockAdjustment(id: string) {
     url: API_ENDPOINTS.STOCK_ADJUSTMENT.replace(":id", id),
     method: "GET",
     headers: {},
-    cache: "force-cache",
     next: { tags: [API_ENDPOINT_TAGS.STOCK_ADJUSTMENTS] },
   };
 
@@ -74,9 +69,7 @@ export async function updateStockAdjustment(
     body: JSON.stringify(data),
   };
 
-  const result = await imsApiWithAuth<ApiSuccessResponseNoData>(fetchOptions);
-  revalidateTag(API_ENDPOINT_TAGS.STOCK_ADJUSTMENTS);
-  return result;
+  return await imsApiWithAuth<ApiSuccessResponseNoData>(fetchOptions);
 }
 
 export async function deleteStockAdjustment(id: string) {
@@ -86,7 +79,5 @@ export async function deleteStockAdjustment(id: string) {
     headers: {},
   };
 
-  const result = await imsApiWithAuth<ApiSuccessResponseNoData>(fetchOptions);
-  revalidateTag(API_ENDPOINT_TAGS.STOCK_ADJUSTMENTS);
-  return result;
+  return await imsApiWithAuth<ApiSuccessResponseNoData>(fetchOptions);
 }

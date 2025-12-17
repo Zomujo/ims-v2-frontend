@@ -1,8 +1,7 @@
 "use server";
 
-import { API_ENDPOINTS, API_ENDPOINT_TAGS } from "@/lib/api-constants";
+import { API_ENDPOINT_TAGS, API_ENDPOINTS } from "@/lib/api-constants";
 import { generateUrlWithQueryParams } from "@/lib/utils";
-import { revalidateTag } from "next/cache";
 import {
   ApiSuccessResponseDto,
   ApiSuccessResponseNoData,
@@ -25,12 +24,9 @@ export async function createItemRequest(data: CreateDepartmentRequestDto) {
     body: JSON.stringify(data),
   };
 
-  const result =
-    await imsApiWithAuth<ApiSuccessResponseDto<CreateDepartmentRequestDto>>(
-      fetchOptions,
-    );
-  revalidateTag(API_ENDPOINT_TAGS.ITEM_REQUESTS);
-  return result;
+  return await imsApiWithAuth<
+    ApiSuccessResponseDto<CreateDepartmentRequestDto>
+  >(fetchOptions);
 }
 
 export async function getItemRequests(params?: GenerateQueryParams) {
@@ -38,7 +34,6 @@ export async function getItemRequests(params?: GenerateQueryParams) {
     url: generateUrlWithQueryParams(API_ENDPOINTS.ITEM_REQUESTS, params ?? {}),
     method: "GET",
     headers: {},
-    cache: "force-cache",
     next: { tags: [API_ENDPOINT_TAGS.ITEM_REQUESTS] },
   };
 
@@ -53,7 +48,6 @@ export async function getItemRequest(id: string) {
     url: API_ENDPOINTS.ITEM_REQUEST.replace(":id", id),
     method: "GET",
     headers: {},
-    cache: "force-cache",
     next: { tags: [API_ENDPOINT_TAGS.ITEM_REQUESTS] },
   };
 
@@ -73,9 +67,7 @@ export async function updateItemRequest(
     body: JSON.stringify(data),
   };
 
-  const result = await imsApiWithAuth<ApiSuccessResponseNoData>(fetchOptions);
-  revalidateTag(API_ENDPOINT_TAGS.ITEM_REQUESTS);
-  return result;
+  return await imsApiWithAuth<ApiSuccessResponseNoData>(fetchOptions);
 }
 
 export async function deleteItemRequest(id: string) {
@@ -85,7 +77,5 @@ export async function deleteItemRequest(id: string) {
     headers: {},
   };
 
-  const result = await imsApiWithAuth<ApiSuccessResponseNoData>(fetchOptions);
-  revalidateTag(API_ENDPOINT_TAGS.ITEM_REQUESTS);
-  return result;
+  return await imsApiWithAuth<ApiSuccessResponseNoData>(fetchOptions);
 }

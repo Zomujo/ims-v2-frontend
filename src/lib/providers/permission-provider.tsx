@@ -27,7 +27,7 @@ const ForbiddenPage = () => {
       </div>
       <h1 className="mb-4 text-4xl font-bold text-gray-900">Access Denied</h1>
       <p className="mb-8 max-w-md text-lg text-gray-600">
-        You don't have permission to access this page. Please contact your
+        You don&#39;t have permission to access this page. Please contact your
         administrator if you believe this is an error.
       </p>
       <ImsButton onClick={handleGoBack}>Go Back</ImsButton>

@@ -16,7 +16,6 @@ export const getSalesAction = async (searchParams?: GenerateQueryParams) => {
   const res = await imsApiWithAuth<GetSalesAPIResponse>({
     url: `${API_ENDPOINTS_OLD.SALES}${searchParams ? "/?" + queryParams : ""}`,
     method: "GET",
-    cache: "force-cache",
     next: {
       tags: [queryParams],
     },
