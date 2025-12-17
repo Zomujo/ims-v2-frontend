@@ -78,13 +78,14 @@ export default function SettingsNotification() {
   };
 
   useEffect(() => {
-    if (data?.data) {
+    const settingsData = data?.data;
+    if (settingsData) {
       const {
         emailItemLowStocks,
         emailItemOutOfStock,
         emailDepartmentRequests,
         emailItemStocked,
-      } = data?.data;
+      } = settingsData;
       setEmailNotificationOptionsState({
         departmentRequests: emailDepartmentRequests,
         restocked: emailItemStocked,
@@ -134,8 +135,6 @@ export default function SettingsNotification() {
                     }
                     return !prev;
                   });
-                  if (!emailNotification) {
-                  }
                   void submitEmailNotificationOptions();
                 }}
               />

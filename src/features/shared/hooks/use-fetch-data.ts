@@ -60,13 +60,14 @@ export default function useFetchData<T>({
           start: today,
           end: new Date(today.getTime() + 24 * 60 * 60 * 1000 - 1),
         };
-      case "this_week":
+      case "this_week": {
         const startOfWeek = new Date(today);
         startOfWeek.setDate(today.getDate() - today.getDay());
         return {
           start: startOfWeek,
           end: new Date(startOfWeek.getTime() + 7 * 24 * 60 * 60 * 1000 - 1),
         };
+      }
       case "this_month":
         return {
           start: new Date(now.getFullYear(), now.getMonth(), 1),
@@ -163,7 +164,7 @@ export default function useFetchData<T>({
               const dateFilter = getDateRangeFilter(value);
               if (
                 dateFilter &&
-                item.hasOwnProperty("createdAt") &&
+                Object.prototype.hasOwnProperty.call(item, "createdAt") &&
                 item.createdAt
               ) {
                 const itemDate = new Date(item.createdAt);
@@ -189,7 +190,10 @@ export default function useFetchData<T>({
               return true;
             }
 
-            if (item.hasOwnProperty(key) && item[key] != null) {
+            if (
+              Object.prototype.hasOwnProperty.call(item, key) &&
+              item[key] != null
+            ) {
               return String(item[key])
                 .toLowerCase()
                 .includes(String(value).toLowerCase());
