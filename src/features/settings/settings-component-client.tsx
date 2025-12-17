@@ -101,7 +101,7 @@ export function SettingsCreateButton({
     <ButtonLink
       href={{ query: { state } }}
       replace
-      className="absolute top-8 right-8 order-last cursor-pointer justify-self-end md:order-none"
+      className="cursor-pointer"
       variant={"imsPrimary"}
     >
       {label}

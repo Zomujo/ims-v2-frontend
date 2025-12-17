@@ -1,7 +1,6 @@
 "use server";
 import { API_ENDPOINTS_OLD } from "@/lib/constant";
 import { generateQueryParams } from "@/lib/utils";
-import { revalidateTag } from "next/cache";
 import {
   AuthApiStandardResponse,
   AuthUserProfileActionResponse,
@@ -24,13 +23,11 @@ export const changeAccountInfoAction = async ({
   phoneNumber: string;
 }) => {
   try {
-    const res = await imsApiWithAuth<AuthApiStandardResponse>({
+    return await imsApiWithAuth<AuthApiStandardResponse>({
       url: API_ENDPOINTS_OLD.CHANGE_ACCOUNT_INFO,
       method: "PATCH",
       body: JSON.stringify({ fullName, phoneNumber }),
     });
-    revalidateTag(API_ENDPOINTS_OLD.USER_PROFILE);
-    return res;
   } catch (error) {
     return error as AuthApiStandardResponse;
   }
@@ -68,13 +65,11 @@ export const verifyChangeMailOtpAction = async ({
   email: string;
 }) => {
   try {
-    const res = await imsApiWithAuth<AuthApiStandardResponse>({
+    return await imsApiWithAuth<AuthApiStandardResponse>({
       url: API_ENDPOINTS_OLD.CHANGE_EMAIL.VERIFY_OTP,
       method: "POST",
       body: JSON.stringify({ code: otp, email }),
     });
-    revalidateTag(API_ENDPOINTS_OLD.USER_PROFILE);
-    return res;
   } catch (error) {
     return error as AuthApiStandardResponse;
   }
@@ -84,14 +79,11 @@ export const uploadAvatarAction = async (file: File) => {
   const formData = new FormData();
   formData.append("file", file);
   try {
-    const res = await imsApiWithAuth<AuthApiStandardResponse>({
+    return await imsApiWithAuth<AuthApiStandardResponse>({
       url: API_ENDPOINTS_OLD.UPLOAD_PROFILE_PICTURE,
       method: "PUT",
       body: formData,
-      cache: "no-store",
     });
-    revalidateTag(API_ENDPOINTS_OLD.USER_PROFILE);
-    return res;
   } catch (error) {
     return error as AuthApiStandardResponse;
   }
@@ -118,13 +110,11 @@ export const updateDepartmentAction = async ({
   name: string;
 }) => {
   try {
-    const res = await imsApiWithAuth<AuthApiStandardResponse>({
+    return await imsApiWithAuth<AuthApiStandardResponse>({
       url: `${API_ENDPOINTS_OLD.DEPARTMENTS}/${id}`,
       method: "PATCH",
       body: JSON.stringify({ name }),
     });
-    revalidateTag(API_ENDPOINTS_OLD.DEPARTMENTS);
-    return res;
   } catch (error) {
     return error as AuthApiStandardResponse;
   }
@@ -132,12 +122,10 @@ export const updateDepartmentAction = async ({
 
 export const deleteDepartmentAction = async ({ id }: { id: string }) => {
   try {
-    const res = await imsApiWithAuth<AuthApiStandardResponse>({
+    return await imsApiWithAuth<AuthApiStandardResponse>({
       url: `${API_ENDPOINTS_OLD.DEPARTMENTS}/${id}`,
       method: "DELETE",
     });
-    revalidateTag(API_ENDPOINTS_OLD.DEPARTMENTS);
-    return res;
   } catch (error) {
     return error as AuthApiStandardResponse;
   }
@@ -145,13 +133,11 @@ export const deleteDepartmentAction = async ({ id }: { id: string }) => {
 
 export const createDepartmentAction = async ({ name }: { name: string }) => {
   try {
-    const res = await imsApiWithAuth<AuthApiStandardResponse>({
+    return await imsApiWithAuth<AuthApiStandardResponse>({
       url: API_ENDPOINTS_OLD.DEPARTMENTS,
       method: "POST",
       body: JSON.stringify({ name }),
     });
-    revalidateTag(API_ENDPOINTS_OLD.DEPARTMENTS);
-    return res;
   } catch (error) {
     return error as AuthApiStandardResponse;
   }
@@ -171,7 +157,6 @@ export const getUserAction = async ({ id }: { id: string }) => {
   const res = await imsApiWithAuth<AuthUserProfileActionResponse>({
     url: `${API_ENDPOINTS_OLD.ADMIN.USERS}/${id}`,
     method: "GET",
-    cache: "force-cache",
     next: {
       tags: [id],
     },
@@ -185,19 +170,16 @@ export const getRolesAction = async (searchParams?: GenerateQueryParams) => {
     url:
       API_ENDPOINTS_OLD.ADMIN.ROLES + (searchParams ? "/?" + queryParams : ""),
     method: "GET",
-    cache: "force-cache",
   });
 };
 
 export const addUserAction = async <T>(newUser: T) => {
   try {
-    const res = await imsApiWithAuth<AuthApiStandardResponse>({
+    return await imsApiWithAuth<AuthApiStandardResponse>({
       url: API_ENDPOINTS_OLD.ADMIN.USER,
       method: "POST",
       body: JSON.stringify(newUser),
     });
-    revalidateTag(API_ENDPOINTS_OLD.ADMIN.USERS);
-    return res;
   } catch (error) {
     return error as AuthApiStandardResponse;
   }
@@ -211,13 +193,11 @@ export const editUserRoleAction = async ({
   newUserRole: unknown;
 }) => {
   try {
-    const res = await imsApiWithAuth<AuthApiStandardResponse>({
+    return await imsApiWithAuth<AuthApiStandardResponse>({
       url: API_ENDPOINTS_OLD.ADMIN.UPDATE_USER_ROLE.replace("[id]", id),
       method: "PATCH",
       body: JSON.stringify(newUserRole),
     });
-    revalidateTag(API_ENDPOINTS_OLD.ADMIN.USERS);
-    return res;
   } catch (error) {
     return error as AuthApiStandardResponse;
   }
@@ -225,12 +205,10 @@ export const editUserRoleAction = async ({
 
 export const deactivateUserAction = async (id: string) => {
   try {
-    const res = await imsApiWithAuth<AuthApiStandardResponse>({
+    return await imsApiWithAuth<AuthApiStandardResponse>({
       url: API_ENDPOINTS_OLD.ADMIN.DEACTIVATE_USER.replace("[id]", id),
       method: "PATCH",
     });
-    revalidateTag(API_ENDPOINTS_OLD.ADMIN.USERS);
-    return res;
   } catch (error) {
     return error as AuthApiStandardResponse;
   }
@@ -238,12 +216,10 @@ export const deactivateUserAction = async (id: string) => {
 
 export const activateUserAction = async (id: string) => {
   try {
-    const res = await imsApiWithAuth<AuthApiStandardResponse>({
+    return await imsApiWithAuth<AuthApiStandardResponse>({
       url: API_ENDPOINTS_OLD.ADMIN.ACTIVATE_USER.replace("[id]", id),
       method: "PATCH",
     });
-    revalidateTag(API_ENDPOINTS_OLD.ADMIN.USERS);
-    return res;
   } catch (error) {
     return error as AuthApiStandardResponse;
   }
@@ -251,11 +227,10 @@ export const activateUserAction = async (id: string) => {
 
 export const getExpirySettings = async () => {
   try {
-    const res = await imsApiWithAuth<ApiSuccessResponseDto<ExpirySettingsDto>>({
+    return await imsApiWithAuth<ApiSuccessResponseDto<ExpirySettingsDto>>({
       url: API_ENDPOINTS_OLD.SETTINGS_EXPIRY,
       method: "GET",
     });
-    return res;
   } catch (error) {
     return error as ApiSuccessResponseDto<ExpirySettingsDto>;
   }
@@ -265,13 +240,11 @@ export const updateExpirySettings = async (
   expirySettings: Partial<ExpirySettingsDto>,
 ) => {
   try {
-    const res = await imsApiWithAuth<ApiSuccessResponseDto<ExpirySettingsDto>>({
+    return await imsApiWithAuth<ApiSuccessResponseDto<ExpirySettingsDto>>({
       url: API_ENDPOINTS_OLD.SETTINGS_EXPIRY,
       method: "PATCH",
       body: JSON.stringify(expirySettings),
     });
-    revalidateTag(API_ENDPOINTS_OLD.SETTINGS_EXPIRY);
-    return res;
   } catch (error) {
     return error as ApiSuccessResponseDto<ExpirySettingsDto>;
   }

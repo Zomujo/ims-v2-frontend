@@ -1,8 +1,7 @@
 "use server";
 
-import { API_ENDPOINTS, API_ENDPOINT_TAGS } from "@/lib/api-constants";
+import { API_ENDPOINT_TAGS, API_ENDPOINTS } from "@/lib/api-constants";
 import { generateUrlWithQueryParams } from "@/lib/utils";
-import { revalidateTag } from "next/cache";
 import {
   ApiSuccessResponseDto,
   ApiSuccessResponseNoData,
@@ -27,11 +26,9 @@ export async function addSupplier(data: Partial<CreateSupplierDto>) {
     body: JSON.stringify(data),
   };
 
-  const result =
-    await imsApiWithAuth<ApiSuccessResponseDto<SupplierResponse>>(fetchOptions);
-  revalidateTag(API_ENDPOINT_TAGS.SUPPLIERS);
-  revalidateTag(API_ENDPOINT_TAGS.SUPPLIERS_NO_PAGINATE);
-  return result;
+  return await imsApiWithAuth<ApiSuccessResponseDto<SupplierResponse>>(
+    fetchOptions,
+  );
 }
 
 export async function getSuppliers(params?: GenerateQueryParams) {
@@ -80,10 +77,7 @@ export async function updateSupplier(id: string, data: UpdateSupplierDto) {
     body: JSON.stringify(data),
   };
 
-  const result = await imsApiWithAuth<ApiSuccessResponseNoData>(fetchOptions);
-  revalidateTag(API_ENDPOINT_TAGS.SUPPLIERS);
-  revalidateTag(API_ENDPOINT_TAGS.SUPPLIERS_NO_PAGINATE);
-  return result;
+  return await imsApiWithAuth<ApiSuccessResponseNoData>(fetchOptions);
 }
 export async function deleteSupplier(id: string) {
   const fetchOptions: FetchApi = {
@@ -92,10 +86,7 @@ export async function deleteSupplier(id: string) {
     headers: {},
   };
 
-  const result = await imsApiWithAuth<ApiSuccessResponseNoData>(fetchOptions);
-  revalidateTag(API_ENDPOINT_TAGS.SUPPLIERS);
-  revalidateTag(API_ENDPOINT_TAGS.SUPPLIERS_NO_PAGINATE);
-  return result;
+  return await imsApiWithAuth<ApiSuccessResponseNoData>(fetchOptions);
 }
 
 export const activateDeactivateSuppliersAction = async (
@@ -103,12 +94,10 @@ export const activateDeactivateSuppliersAction = async (
   action: CRUDACTION,
 ) => {
   try {
-    const res = await imsApiWithAuth<AuthApiStandardResponse>({
+    return await imsApiWithAuth<AuthApiStandardResponse>({
       url: `${API_ENDPOINTS.SUPPLIERS}/${supplyId}/${action}`,
       method: "PATCH",
     });
-    revalidateTag(API_ENDPOINTS.SUPPLIERS);
-    return res;
   } catch (error) {
     return error as AuthApiStandardResponse;
   }

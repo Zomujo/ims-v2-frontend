@@ -1,16 +1,15 @@
 "use server";
 
-import { API_ENDPOINTS, API_ENDPOINT_TAGS } from "@/lib/api-constants";
-import { revalidateTag } from "next/cache";
+import { API_ENDPOINT_TAGS, API_ENDPOINTS } from "@/lib/api-constants";
 import {
-  CreatePatientDto,
   ApiSuccessResponseDto,
+  ApiSuccessResponseNoData,
+  CreatePatientDto,
   CreatePatientResponseDto,
   PaginatedResponse,
-  RetrievePatientsDto,
   RetrievePatientDto,
+  RetrievePatientsDto,
   UpdatePatientDto,
-  ApiSuccessResponseNoData,
 } from "../types/action.types";
 import { FetchApi } from "../types/ims-api-action.types";
 import { imsApiWithAuth } from "./ims-api.action";
@@ -25,12 +24,9 @@ export async function addPatient(data: CreatePatientDto) {
     body: JSON.stringify(data),
   };
 
-  const result =
-    await imsApiWithAuth<ApiSuccessResponseDto<CreatePatientResponseDto>>(
-      fetchOptions,
-    );
-  revalidateTag(API_ENDPOINT_TAGS.PATIENTS);
-  return result;
+  return await imsApiWithAuth<ApiSuccessResponseDto<CreatePatientResponseDto>>(
+    fetchOptions,
+  );
 }
 
 export async function getPatients(params: GenerateQueryParams) {
@@ -38,7 +34,6 @@ export async function getPatients(params: GenerateQueryParams) {
     url: generateUrlWithQueryParams(API_ENDPOINTS.PATIENTS, params),
     method: "GET",
     headers: {},
-    cache: "force-cache",
     next: { tags: [API_ENDPOINT_TAGS.PATIENTS] },
   };
 
@@ -52,7 +47,6 @@ export async function getPatient(id: string) {
     url: API_ENDPOINTS.PATIENT.replace(":id", id),
     method: "GET",
     headers: {},
-    cache: "force-cache",
     next: { tags: [API_ENDPOINT_TAGS.PATIENTS] },
   };
 
@@ -69,9 +63,7 @@ export async function updatePatient(id: string, data: UpdatePatientDto) {
     body: JSON.stringify(data),
   };
 
-  const result = await imsApiWithAuth<ApiSuccessResponseNoData>(fetchOptions);
-  revalidateTag(API_ENDPOINT_TAGS.PATIENTS);
-  return result;
+  return await imsApiWithAuth<ApiSuccessResponseNoData>(fetchOptions);
 }
 
 export async function deletePatient(id: string) {
@@ -81,7 +73,5 @@ export async function deletePatient(id: string) {
     headers: {},
   };
 
-  const result = await imsApiWithAuth<ApiSuccessResponseNoData>(fetchOptions);
-  revalidateTag(API_ENDPOINT_TAGS.PATIENTS);
-  return result;
+  return await imsApiWithAuth<ApiSuccessResponseNoData>(fetchOptions);
 }

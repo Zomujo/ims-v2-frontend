@@ -20,7 +20,6 @@ export async function getAuditLogs(
     ),
     method: "GET",
     headers: {},
-    cache: "force-cache",
     next: { tags: [API_ENDPOINT_TAGS.AUDITS] },
   };
 

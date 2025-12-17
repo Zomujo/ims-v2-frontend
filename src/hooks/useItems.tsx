@@ -20,7 +20,6 @@ export function useItems() {
     deps: [canFetch],
   });
 
-  console.log("Data", data);
   return {
     items: data ?? [],
     loading: canFetch && loading,

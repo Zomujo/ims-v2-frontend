@@ -1,8 +1,7 @@
 "use server";
 
-import { API_ENDPOINTS, API_ENDPOINT_TAGS } from "@/lib/api-constants";
+import { API_ENDPOINT_TAGS, API_ENDPOINTS } from "@/lib/api-constants";
 import { generateUrlWithQueryParams } from "@/lib/utils";
-import { revalidateTag } from "next/cache";
 import {
   ApiSuccessResponseDto,
   ApiSuccessResponseNoData,
@@ -23,12 +22,9 @@ export async function addFacility(data: CreateFacilityDto) {
     body: JSON.stringify(data),
   };
 
-  const result =
-    await imsApiWithoutAuth<ApiSuccessResponseDto<FacilityResponse>>(
-      fetchOptions,
-    );
-  revalidateTag(API_ENDPOINT_TAGS.FACILITIES);
-  return result;
+  return await imsApiWithoutAuth<ApiSuccessResponseDto<FacilityResponse>>(
+    fetchOptions,
+  );
 }
 
 export async function getFacilities(params: GenerateQueryParams) {
@@ -36,7 +32,6 @@ export async function getFacilities(params: GenerateQueryParams) {
     url: generateUrlWithQueryParams(API_ENDPOINTS.FACILITIES, params),
     method: "GET",
     headers: {},
-    cache: "force-cache",
     next: { tags: [API_ENDPOINT_TAGS.FACILITIES] },
   };
 
@@ -50,7 +45,6 @@ export async function getFacility(id: string) {
     url: API_ENDPOINTS.FACILITY.replace(":id", id),
     method: "GET",
     headers: {},
-    cache: "force-cache",
     next: { tags: [API_ENDPOINT_TAGS.FACILITIES] },
   };
 
@@ -67,9 +61,7 @@ export async function updateFacility(id: string, data: UpdateFacilityDto) {
     body: JSON.stringify(data),
   };
 
-  const result = await imsApiWithAuth<ApiSuccessResponseNoData>(fetchOptions);
-  revalidateTag(API_ENDPOINT_TAGS.FACILITIES);
-  return result;
+  return await imsApiWithAuth<ApiSuccessResponseNoData>(fetchOptions);
 }
 
 export async function deleteFacility(id: string) {
@@ -79,7 +71,5 @@ export async function deleteFacility(id: string) {
     headers: {},
   };
 
-  const result = await imsApiWithAuth<ApiSuccessResponseNoData>(fetchOptions);
-  revalidateTag(API_ENDPOINT_TAGS.FACILITIES);
-  return result;
+  return await imsApiWithAuth<ApiSuccessResponseNoData>(fetchOptions);
 }

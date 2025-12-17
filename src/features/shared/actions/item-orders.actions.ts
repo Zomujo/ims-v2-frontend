@@ -1,16 +1,15 @@
 "use server";
 
-import { API_ENDPOINTS, API_ENDPOINT_TAGS } from "@/lib/api-constants";
-import { revalidateTag } from "next/cache";
+import { API_ENDPOINT_TAGS, API_ENDPOINTS } from "@/lib/api-constants";
 import {
-  CreateItemOrderDto,
   ApiSuccessResponseDto,
-  PaginatedResponse,
-  GetItemOrdersResponseDto,
-  GetItemOrderResponseDto,
-  UpdateItemOrderDto,
   ApiSuccessResponseNoData,
   ChangeOrderStatusDto,
+  CreateItemOrderDto,
+  GetItemOrderResponseDto,
+  GetItemOrdersResponseDto,
+  PaginatedResponse,
+  UpdateItemOrderDto,
 } from "../types/action.types";
 import { FetchApi } from "../types/ims-api-action.types";
 import { imsApiWithAuth } from "./ims-api.action";
@@ -26,12 +25,9 @@ export async function createItemOrder<T>(data: T) {
     body: JSON.stringify(data),
   };
 
-  const result =
-    await imsApiWithAuth<ApiSuccessResponseDto<CreateItemOrderDto>>(
-      fetchOptions,
-    );
-  revalidateTag(API_ENDPOINT_TAGS.ITEM_ORDERS);
-  return result;
+  return await imsApiWithAuth<ApiSuccessResponseDto<CreateItemOrderDto>>(
+    fetchOptions,
+  );
 }
 
 export async function getItemOrders(params?: GenerateQueryParams) {
@@ -39,7 +35,6 @@ export async function getItemOrders(params?: GenerateQueryParams) {
     url: generateUrlWithQueryParams(API_ENDPOINTS.ITEM_ORDERS, params ?? {}),
     method: "GET",
     headers: {},
-    cache: "force-cache",
     next: { tags: [API_ENDPOINT_TAGS.ITEM_ORDERS] },
   };
 
@@ -56,7 +51,6 @@ export async function getItemOrder(id: string) {
     url: API_ENDPOINTS.ITEM_ORDER.replace(":id", id),
     method: "GET",
     headers: {},
-    cache: "force-cache",
     next: { tags: [API_ENDPOINT_TAGS.ITEM_ORDERS] },
   };
 
@@ -73,9 +67,7 @@ export async function updateItemOrder(id: string, data: UpdateItemOrderDto) {
     body: JSON.stringify(data),
   };
 
-  const result = await imsApiWithAuth<ApiSuccessResponseNoData>(fetchOptions);
-  revalidateTag(API_ENDPOINT_TAGS.ITEM_ORDERS);
-  return result;
+  return await imsApiWithAuth<ApiSuccessResponseNoData>(fetchOptions);
 }
 
 export async function deleteItemOrder(id: string) {
@@ -85,9 +77,7 @@ export async function deleteItemOrder(id: string) {
     headers: {},
   };
 
-  const result = await imsApiWithAuth<ApiSuccessResponseNoData>(fetchOptions);
-  revalidateTag(API_ENDPOINT_TAGS.ITEM_ORDERS);
-  return result;
+  return await imsApiWithAuth<ApiSuccessResponseNoData>(fetchOptions);
 }
 
 // Server Action for /api/v1/item-orders/state/{id}
@@ -102,7 +92,5 @@ export async function changeItemOrderState(
     body: JSON.stringify(data),
   };
 
-  const result = await imsApiWithAuth<ApiSuccessResponseNoData>(fetchOptions);
-  revalidateTag(API_ENDPOINT_TAGS.ITEM_ORDERS);
-  return result;
+  return await imsApiWithAuth<ApiSuccessResponseNoData>(fetchOptions);
 }
