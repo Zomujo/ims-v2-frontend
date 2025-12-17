@@ -16,7 +16,7 @@ export const SettingsSearchWithFilter = () => {
     return null;
   }
   return (
-    <div className="flex w-full items-center gap-x-4">
+    <div className="flex w-full max-w-lg flex-wrap items-center gap-4">
       <ImsSearchBar />
       <ImsFilters>
         <FilterForms />
