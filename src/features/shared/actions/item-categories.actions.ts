@@ -2,7 +2,6 @@
 
 import { API_ENDPOINT_TAGS, API_ENDPOINTS } from "@/lib/api-constants";
 import { generateUrlWithQueryParams } from "@/lib/utils";
-import { revalidateTag } from "next/cache";
 import {
   ApiSuccessResponseDto,
   ApiSuccessResponseNoData,
@@ -23,13 +22,9 @@ export async function addItemCategory(data: CreateItemsCategoryDto) {
     body: JSON.stringify(data),
   };
 
-  const result =
-    await imsApiWithAuth<ApiSuccessResponseDto<ItemCategoryResponse>>(
-      fetchOptions,
-    );
-  revalidateTag(API_ENDPOINT_TAGS.ITEM_CATEGORIES);
-  revalidateTag(API_ENDPOINTS.ITEM_CATEGORIES_NO_PAGINATE);
-  return result;
+  return await imsApiWithAuth<ApiSuccessResponseDto<ItemCategoryResponse>>(
+    fetchOptions,
+  );
 }
 
 export async function getItemCategories(params?: GenerateQueryParams) {
@@ -40,7 +35,6 @@ export async function getItemCategories(params?: GenerateQueryParams) {
     ),
     method: "GET",
     headers: {},
-    cache: "force-cache",
     next: { tags: [API_ENDPOINT_TAGS.ITEM_CATEGORIES] },
   };
 
@@ -56,7 +50,6 @@ export async function getItemCategoriesNoPaginate() {
     ),
     method: "GET",
     headers: {},
-    cache: "force-cache",
     next: { tags: [API_ENDPOINTS.ITEM_CATEGORIES_NO_PAGINATE] },
   };
 
@@ -69,7 +62,6 @@ export async function getItemCategory(id: string) {
     url: API_ENDPOINTS.ITEM_CATEGORY.replace(":id", id),
     method: "GET",
     headers: {},
-    cache: "force-cache",
     next: { tags: [API_ENDPOINT_TAGS.ITEM_CATEGORIES] },
   };
 
@@ -89,10 +81,7 @@ export async function updateItemCategory(
     body: JSON.stringify(data),
   };
 
-  const result = await imsApiWithAuth<ApiSuccessResponseNoData>(fetchOptions);
-  revalidateTag(API_ENDPOINT_TAGS.ITEM_CATEGORIES);
-  revalidateTag(API_ENDPOINTS.ITEM_CATEGORIES_NO_PAGINATE);
-  return result;
+  return await imsApiWithAuth<ApiSuccessResponseNoData>(fetchOptions);
 }
 
 export async function deleteItemCategory(id: string) {
@@ -102,8 +91,5 @@ export async function deleteItemCategory(id: string) {
     headers: {},
   };
 
-  const result = await imsApiWithAuth<ApiSuccessResponseNoData>(fetchOptions);
-  revalidateTag(API_ENDPOINT_TAGS.ITEM_CATEGORIES);
-  revalidateTag(API_ENDPOINTS.ITEM_CATEGORIES_NO_PAGINATE);
-  return result;
+  return await imsApiWithAuth<ApiSuccessResponseNoData>(fetchOptions);
 }

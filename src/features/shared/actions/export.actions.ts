@@ -12,7 +12,6 @@ export async function exportFile(
     url: generateUrlWithQueryParams(endpoint, params),
     method: "GET",
     headers: {},
-    cache: "force-cache",
   };
   return await imsApiWithAuthBlob(fetchOptions);
 }

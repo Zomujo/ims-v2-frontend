@@ -1,7 +1,6 @@
 "use server";
 
-import { API_ENDPOINTS, API_ENDPOINT_TAGS } from "@/lib/api-constants";
-import { revalidateTag } from "next/cache";
+import { API_ENDPOINT_TAGS, API_ENDPOINTS } from "@/lib/api-constants";
 import {
   ApiSuccessResponseDto,
   ApiSuccessResponseNoData,
@@ -18,7 +17,6 @@ export async function fetchNotifications(page = 1) {
     url: `${API_ENDPOINTS.NOTIFICATIONS}?page=${page}`,
     method: "GET",
     headers: {},
-    cache: "force-cache",
     next: { tags: [API_ENDPOINT_TAGS.NOTIFICATIONS] },
   };
 
@@ -36,9 +34,7 @@ export async function markNotificationsAsRead() {
     headers: {},
   };
 
-  const result = await imsApiWithAuth<ApiSuccessResponseNoData>(fetchOptions);
-  revalidateTag(API_ENDPOINT_TAGS.NOTIFICATIONS);
-  return result;
+  return await imsApiWithAuth<ApiSuccessResponseNoData>(fetchOptions);
 }
 
 export async function markNotificationAsRead(id: string) {
@@ -48,9 +44,7 @@ export async function markNotificationAsRead(id: string) {
     headers: {},
   };
 
-  const result = await imsApiWithAuth<ApiSuccessResponseNoData>(fetchOptions);
-  revalidateTag(API_ENDPOINT_TAGS.NOTIFICATIONS);
-  return result;
+  return await imsApiWithAuth<ApiSuccessResponseNoData>(fetchOptions);
 }
 
 export async function deleteNotification(id: string) {
@@ -60,7 +54,5 @@ export async function deleteNotification(id: string) {
     headers: {},
   };
 
-  const result = await imsApiWithAuth<ApiSuccessResponseNoData>(fetchOptions);
-  revalidateTag(API_ENDPOINT_TAGS.NOTIFICATIONS);
-  return result;
+  return await imsApiWithAuth<ApiSuccessResponseNoData>(fetchOptions);
 }

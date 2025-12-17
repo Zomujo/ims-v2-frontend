@@ -1,11 +1,10 @@
 "use server";
 
-import { API_ENDPOINTS, API_ENDPOINT_TAGS } from "@/lib/api-constants";
-import { revalidateTag } from "next/cache";
+import { API_ENDPOINT_TAGS, API_ENDPOINTS } from "@/lib/api-constants";
 import {
-  CreateSettingsDto,
-  ApiSuccessResponseNoData,
   ApiSuccessResponseDto,
+  ApiSuccessResponseNoData,
+  CreateSettingsDto,
   GetSettingsDto,
 } from "../types/action.types";
 import { FetchApi } from "../types/ims-api-action.types";
@@ -19,9 +18,7 @@ export async function addSettings(data: CreateSettingsDto) {
     body: JSON.stringify(data),
   };
 
-  const result = await imsApiWithAuth<ApiSuccessResponseNoData>(fetchOptions);
-  revalidateTag(API_ENDPOINT_TAGS.USER_SETTINGS);
-  return result;
+  return await imsApiWithAuth<ApiSuccessResponseNoData>(fetchOptions);
 }
 
 export async function findSettings() {
@@ -29,7 +26,6 @@ export async function findSettings() {
     url: API_ENDPOINTS.USER_SETTINGS,
     method: "GET",
     headers: {},
-    cache: "force-cache",
     next: { tags: [API_ENDPOINT_TAGS.USER_SETTINGS] },
   };
 
