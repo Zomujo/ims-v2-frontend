@@ -62,7 +62,6 @@ export const authLoginAction = async ({
       message: "",
     };
   } catch (error) {
-    console.error("Error here", error);
     return {
       error: String(error),
       data: undefined,
