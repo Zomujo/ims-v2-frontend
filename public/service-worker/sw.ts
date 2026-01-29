@@ -118,6 +118,20 @@ const serwist = new Serwist({
         networkTimeoutSeconds: 10,
       }),
     },
+    {
+      matcher: ({ request }) => request.destination === "script",
+      handler: new NetworkFirst({
+        cacheName: "scripts-cache",
+        networkTimeoutSeconds: 10,
+      }),
+    },
+    {
+      matcher: ({ request }) => request.destination === "image",
+      handler: new NetworkFirst({
+        cacheName: "images-cache",
+        networkTimeoutSeconds: 10,
+      }),
+    },
     ...defaultCache,
     {
       matcher: ({ request }) => request.mode === "navigate",
