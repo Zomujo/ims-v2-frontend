@@ -1,11 +1,9 @@
-import { defaultCache } from "@serwist/next/worker";
 import {
   Serwist,
   NetworkFirst,
   PrecacheEntry,
   SerwistGlobalConfig,
-  NetworkOnly,
-  ExpirationPlugin,
+  CacheFirst,
 } from "serwist";
 import { ITEMS_STATUS } from "@features/shared/types/action.types";
 
@@ -106,53 +104,37 @@ const serwist = new Serwist({
   clientsClaim: true,
   navigationPreload: true,
   runtimeCaching: [
-    {
-      matcher: /\/api\/auth\/.*/,
-      handler: new NetworkOnly({
-        plugins: [
-          new ExpirationPlugin({
-            maxEntries: 16,
-            maxAgeSeconds: 24 * 60 * 60, // 24 hours
-          }),
-        ],
-        networkTimeoutSeconds: 10,
-      }),
-    },
-    {
-      matcher: ({ request }) => request.destination === "script",
-      handler: new NetworkFirst({
-        cacheName: "scripts-cache",
-        networkTimeoutSeconds: 10,
-      }),
-    },
-    {
-      matcher: ({ request }) => request.destination === "image",
-      handler: new NetworkFirst({
-        cacheName: "images-cache",
-        networkTimeoutSeconds: 10,
-      }),
-    },
-    ...defaultCache,
-    {
-      matcher: ({ request }) => request.mode === "navigate",
-      handler: new NetworkFirst({
-        cacheName: "pages-cache",
-        networkTimeoutSeconds: 2,
-      }),
-    },
     // {
-    //   matcher: ({ url }) => url.pathname === "/api/auth/session",
-    //   handler: new NetworkFirst({
-    //     cacheName: "session-cache",
-    //     networkTimeoutSeconds: 3,
+    //   matcher: /\/api\/auth\/.*/,
+    //   handler: new NetworkOnly({
+    //     plugins: [
+    //       new ExpirationPlugin({
+    //         maxEntries: 16,
+    //         maxAgeSeconds: 24 * 60 * 60, // 24 hours
+    //       }),
+    //     ],
+    //     networkTimeoutSeconds: 10,
     //   }),
     // },
+    {
+      matcher: ({ url }) => url.pathname.startsWith("/_next/static/"),
+      handler: new CacheFirst({ cacheName: "next-static" }),
+    },
+    {
+      matcher: ({ url }) => url.pathname.startsWith("/_next/image"),
+      handler: new CacheFirst({ cacheName: "next-images" }),
+    },
     {
       matcher: ({ url }) =>
         url.pathname.startsWith("/api/") &&
         !url.pathname.startsWith("/api/auth/session"),
+      handler: new NetworkFirst({ cacheName: "api-cache" }),
+    },
+    {
+      matcher: ({ request }) => request.mode === "navigate",
       handler: new NetworkFirst({
-        cacheName: "api-cache",
+        cacheName: "pages-cache",
+        networkTimeoutSeconds: 5,
       }),
     },
   ],
