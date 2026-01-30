@@ -5,7 +5,6 @@ import {
   SerwistGlobalConfig,
   CacheFirst,
 } from "serwist";
-import { ITEMS_STATUS } from "@features/shared/types/action.types";
 
 declare global {
   interface ServiceWorkerGlobalScope extends SerwistGlobalConfig {
@@ -15,51 +14,51 @@ declare global {
 
 declare const self: ServiceWorkerGlobalScope;
 
-const revision = crypto.randomUUID();
+// const revision = crypto.randomUUID();
 
-const urlsToPrecache: PrecacheEntry[] = [
-  { url: "/", revision },
-  { url: "/dashboard", revision },
-  { url: "/items", revision },
-  { url: `/items?status=${ITEMS_STATUS.LOW}`, revision },
-  { url: `/items?status=${ITEMS_STATUS.OUT_OF_STOCK}`, revision },
-  { url: "/items?state=create", revision },
-  { url: "/items?state=edit", revision },
-  { url: "/items/batches", revision },
-  { url: "/items/batches?state=create", revision },
-  { url: "/items/batches?state=edit", revision },
-  { url: "/categories", revision },
-  { url: "/categories?state=create", revision },
-  { url: "/categories?state=edit", revision },
-  { url: "/stock-adjustment", revision },
-  { url: "/stock-adjustment?state=create", revision },
-  { url: "/stock-adjustment?state=edit", revision },
-  { url: "/expiry", revision },
-  { url: "/item-orders", revision },
-  { url: "/item-orders?state=create", revision },
-  { url: "/item-orders?state=edit", revision },
-  { url: "/suppliers", revision },
-  { url: "/suppliers?state=create", revision },
-  { url: "/suppliers?state=edit", revision },
-  { url: "/sales", revision },
-  { url: "/sales?todaySales=true", revision },
-  { url: "/sales/record", revision },
-  { url: "/department-requests", revision },
-  { url: "/reports", revision },
-  { url: "/audit-logs", revision },
-  { url: "/tutorials", revision },
-  { url: "/settings/general", revision },
-  { url: "/settings/security", revision },
-  { url: "/settings/departments", revision },
-  { url: "/settings/users", revision },
-  { url: "/settings/notifications", revision },
-  { url: "/settings/expiry", revision },
-  { url: "/reports/stock-level-report", revision },
-  { url: "/reports/stock-movement-report", revision },
-  { url: "/reports/earnings-overview", revision },
-  { url: "/ussd-codes", revision },
-  { url: "/~offline", revision },
-];
+// const urlsToPrecache: PrecacheEntry[] = [
+//   { url: "/", revision },
+//   { url: "/dashboard", revision },
+//   { url: "/items", revision },
+//   // { url: `/items?status=${ITEMS_STATUS.LOW}`, revision },
+//   // { url: `/items?status=${ITEMS_STATUS.OUT_OF_STOCK}`, revision },
+//   // { url: "/items?state=create", revision },
+//   // { url: "/items?state=edit", revision },
+//   { url: "/items/batches", revision },
+//   { url: "/items/batches?state=create", revision },
+//   { url: "/items/batches?state=edit", revision },
+//   { url: "/categories", revision },
+//   { url: "/categories?state=create", revision },
+//   { url: "/categories?state=edit", revision },
+//   { url: "/stock-adjustment", revision },
+//   { url: "/stock-adjustment?state=create", revision },
+//   { url: "/stock-adjustment?state=edit", revision },
+//   { url: "/expiry", revision },
+//   { url: "/item-orders", revision },
+//   { url: "/item-orders?state=create", revision },
+//   { url: "/item-orders?state=edit", revision },
+//   { url: "/suppliers", revision },
+//   { url: "/suppliers?state=create", revision },
+//   { url: "/suppliers?state=edit", revision },
+//   { url: "/sales", revision },
+//   { url: "/sales?todaySales=true", revision },
+//   { url: "/sales/record", revision },
+//   { url: "/department-requests", revision },
+//   { url: "/reports", revision },
+//   { url: "/audit-logs", revision },
+//   { url: "/tutorials", revision },
+//   { url: "/settings/general", revision },
+//   { url: "/settings/security", revision },
+//   { url: "/settings/departments", revision },
+//   { url: "/settings/users", revision },
+//   { url: "/settings/notifications", revision },
+//   { url: "/settings/expiry", revision },
+//   { url: "/reports/stock-level-report", revision },
+//   { url: "/reports/stock-movement-report", revision },
+//   { url: "/reports/earnings-overview", revision },
+//   { url: "/ussd-codes", revision },
+//   { url: "/~offline", revision },
+// ];
 
 // const sessionCachePlugins = [
 //   {
@@ -99,7 +98,7 @@ self.addEventListener("message", (event: any) => {
 });
 
 const serwist = new Serwist({
-  precacheEntries: [...(self.__SW_MANIFEST || []), ...urlsToPrecache],
+  precacheEntries: [...(self.__SW_MANIFEST || [])],
   skipWaiting: true,
   clientsClaim: true,
   navigationPreload: true,
