@@ -26,7 +26,6 @@
 *.pem
 
 public/sw*
-public/workbox-1bb06f5e.js
 public/swe-worker*
 
 # debug
