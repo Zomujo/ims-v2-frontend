@@ -1,0 +1,28 @@
+version: "3.9"
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_CLINICAL_TABLES: ${NEXT_PUBLIC_CLINICAL_TABLES}
+        NEXT_PUBLIC_FIREBASE_S3_STORAGE: ${NEXT_PUBLIC_FIREBASE_S3_STORAGE}
+        NEXT_PUBLIC_IMS_API_URL: ${NEXT_PUBLIC_IMS_API_URL}
+        NEXT_PUBLIC_IMS_API_URL_BASE: ${NEXT_PUBLIC_IMS_API_URL_BASE}
+    image: ims-v2-frontend:latest
+    container_name: ims-v2-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      # Runtime-only secrets (not baked into the image layer)
+      - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
+      - NEXTAUTH_URL=${NEXTAUTH_URL}
+    restart: unless-stopped
+    # Optional health-check — adjust the path if you expose a /health route
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
