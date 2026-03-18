@@ -34,7 +34,7 @@ jobs:
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/stealth-client:${{ steps.vars.outputs.sha_short }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          # Injecting the Build Args required by your Stage 2 (Builder)
+          # Injecting the Build Args required by your Stage 2 (Builders)
           build-args: |
             NEXT_PUBLIC_CLINICAL_TABLES=${{ secrets.NEXT_PUBLIC_CLINICAL_TABLES }}
             NEXT_PUBLIC_FIREBASE_S3_STORAGE=${{ secrets.NEXT_PUBLIC_FIREBASE_S3_STORAGE }}
