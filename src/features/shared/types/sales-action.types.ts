@@ -2,13 +2,16 @@ import {
   IMSApiActionPaginationResponse,
   IMSApiActionResponse,
 } from "./ims-api-action.types";
-import { BatchMarkup } from "@features/shared/types/action.types";
+import { BatchMarkup, Gender } from "@features/shared/types/action.types";
 
 export type Patient = {
   id: string;
   cardIdentificationNumber: string;
   secondaryIdentificationNumber: string;
   name: string;
+  gender?: Gender;
+  diagnosis?: string;
+  weight?: number;
 };
 
 export type SaleItem = {

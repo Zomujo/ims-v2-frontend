@@ -27,14 +27,14 @@ const NewPatientForm = lazy(() => import("./components/new-patient-form"));
 type SalesPatientLIstProps = {
   patientId: string | undefined;
   setPatientIdAction: Dispatch<SetStateAction<string | undefined>>;
-  setPatientInfo?: Dispatch<SetStateAction<ReactNode | string>>;
+  setPatientInfoAction?: Dispatch<SetStateAction<ReactNode | string>>;
 };
 
 function SalesPatientListContent({
   setPatientIdAction,
   patientId,
-  setPatientInfo,
-}: SalesPatientLIstProps) {
+  setPatientInfoAction,
+}: Readonly<SalesPatientLIstProps>) {
   const { addedPatients, setPatient: setAddedPatients } = useOfflinePatients();
   const { setSearchParams, removeSearchParams, getSearchParams } =
     useImsSearchParams();
@@ -88,7 +88,7 @@ function SalesPatientListContent({
         value={patientId ?? ""}
         onSelected={(value, label) => {
           setPatientIdAction(value);
-          setPatientInfo?.(label);
+          setPatientInfoAction?.(label);
         }}
         dropdownClassName="pb-5"
       >
@@ -120,7 +120,9 @@ function SalesPatientListContent({
   );
 }
 
-export default function SalesPatientList(props: SalesPatientLIstProps) {
+export default function SalesPatientList(
+  props: Readonly<SalesPatientLIstProps>,
+) {
   return (
     <OfflinePatientsProvider>
       <SalesPatientListContent {...props} />
