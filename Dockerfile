@@ -1,10 +1,10 @@
 # syntax=docker/dockerfile:1.4
 # Node.js version — update this manually to match .nvmrc when upgrading.
-# Current: 24.13.0
+# Current: 24.15.0
 # =============================================================================
 # Stage 1: deps — install node_modules with Yarn
 # =============================================================================
-FROM node:24.13.0-alpine AS deps
+FROM node:24.15.0-alpine AS deps
 
 # Install libc compatibility for native binaries
 RUN apk add --no-cache libc6-compat
