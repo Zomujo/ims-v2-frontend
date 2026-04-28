@@ -197,8 +197,6 @@ export type GetSuppliersResponse = {
   city: string;
 };
 
-export type GetSupplierResponse = SupplierResponse;
-
 export type UpdateSupplierDto = {
   name?: string;
   brandTradeName?: string;
@@ -597,6 +595,12 @@ export enum StockAdjustmentStatus {
   REJECTED = "REJECTED",
 }
 
+export enum Gender {
+  MALE = "MALE",
+  FEMALE = "FEMALE",
+  OTHER = "OTHER",
+}
+
 export type CreateDepartmentRequestDto = {
   itemId: string;
   quantity: number;
@@ -736,6 +740,9 @@ export type CreatePatientDto = {
   name: string;
   cardIdentificationNumber: string;
   dateOfBirth: string;
+  gender?: Gender;
+  diagnosis?: string;
+  weight?: number;
 };
 
 export type RetrievePatientsDto = {
@@ -759,6 +766,9 @@ export type UpdatePatientDto = {
   name?: string;
   cardIdentificationNumber?: string;
   dateOfBirth?: string;
+  gender?: Gender;
+  diagnosis?: string;
+  weight?: number;
 };
 
 export enum RequestStatus {

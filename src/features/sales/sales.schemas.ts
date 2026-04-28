@@ -1,4 +1,11 @@
 import { z } from "zod";
+import { Gender } from "@features/shared/types/action.types";
+
+export const GENDER_OPTIONS = [
+  { label: "Male", value: Gender.MALE },
+  { label: "Female", value: Gender.FEMALE },
+  { label: "Other", value: Gender.OTHER },
+] as const;
 
 export const newPatientSchema = z
   .object({
@@ -24,6 +31,19 @@ export const newPatientSchema = z
           message: "Date of birth cannot be in the future",
         },
       ),
+    gender: z.nativeEnum(Gender).optional(),
+    diagnosis: z.string().optional(),
+    weight: z.preprocess(
+      (val) =>
+        val === "" || val === null || val === undefined
+          ? undefined
+          : Number(val),
+      z
+        .number({ invalid_type_error: "Weight must be a number" })
+        .positive({ message: "Weight must be greater than 0" })
+        .max(500, { message: "Please enter a valid weight" })
+        .optional(),
+    ),
   })
   .transform((data) => {
     return {

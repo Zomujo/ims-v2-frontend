@@ -9,9 +9,13 @@ export default [
   {
     ignores: [".next/**", "node_modules/**", "public/**"],
   },
+  pluginJs.configs.recommended,
+  ...tseslint.configs.recommended,
   {
+    ...pluginReact.configs.flat.recommended,
     files: ["**/*.{js,jsx,ts,tsx}"],
     languageOptions: {
+      ...pluginReact.configs.flat.recommended.languageOptions,
       ecmaVersion: "latest",
       sourceType: "module",
       parser: tseslint.parser,
@@ -27,18 +31,13 @@ export default [
       },
     },
     plugins: {
+      ...pluginReact.configs.flat.recommended.plugins,
       "@typescript-eslint": tseslint.plugin,
-      react: pluginReact,
       "react-hooks": pluginReactHooks,
       prettier: pluginPrettier,
     },
     rules: {
-      ...pluginJs.configs.recommended.rules,
-      ...tseslint.configs.recommended.reduce(
-        (acc, config) => ({ ...acc, ...config.rules }),
-        {},
-      ),
-      ...pluginReact.configs.recommended.rules,
+      ...pluginReact.configs.flat.recommended.rules,
       "react/react-in-jsx-scope": "off",
       "react/jsx-uses-react": "off",
       "react/prop-types": "off",

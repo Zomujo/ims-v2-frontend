@@ -6,10 +6,12 @@ import { createNewPatientAction } from "../../shared/actions/sales.action";
 import HookFormField from "../../shared/components/hook-form-filed";
 import { ImsButton } from "../../shared/components/ims-button";
 import { ImsForm } from "../../shared/components/ims-forms";
+import { ImsSelect } from "../../shared/components/ims-select";
 import useHookForm from "../../shared/hooks/use-hook-form";
 import useImsSearchParams from "../../shared/hooks/use-ims-search-params";
 import { Input } from "../../ui/input";
-import { newPatientSchema } from "../sales.schemas";
+import { Textarea } from "../../ui/textarea";
+import { newPatientSchema, GENDER_OPTIONS } from "../sales.schemas";
 import { useOnlineStatus } from "@features/shared/hooks/useOnlineStatus";
 import { API_ENDPOINTS } from "@/lib/api-constants";
 import { Patient } from "@features/shared/types/sales-action.types";
@@ -18,10 +20,10 @@ import { OfflinePatientsProvider } from "@/hooks/useOfflinePatients";
 export default function NewPatientForm({
   addedPatients,
   setPatient,
-}: {
+}: Readonly<{
   addedPatients: Patient[];
   setPatient: (patients: Patient[]) => void;
-}) {
+}>) {
   const { handleRequests, isOnline } = useOnlineStatus();
   const { removeSearchParams } = useImsSearchParams();
   const form = useHookForm({
@@ -31,6 +33,9 @@ export default function NewPatientForm({
       cardIdentificationNumber: "",
       secondaryIdentificationNumber: "",
       dateOfBirth: "",
+      gender: undefined,
+      diagnosis: "",
+      weight: undefined,
     },
   });
 
@@ -41,6 +46,7 @@ export default function NewPatientForm({
       cardIdentificationNumber: dataTyped.cardIdentificationNumber || undefined,
       secondaryIdentificationNumber:
         dataTyped.secondaryIdentificationNumber || undefined,
+      diagnosis: dataTyped.diagnosis || undefined,
     };
     if (!isOnline) {
       const offlinePatientId = crypto.randomUUID();
@@ -82,7 +88,7 @@ export default function NewPatientForm({
   return (
     <OfflinePatientsProvider>
       <ImsForm
-        className="overflow-y-auto [&>*]:px-4"
+        className="overflow-y-auto *:px-4"
         inputSectionClassName="overflow-y-auto"
         form={form}
         handleAuthSubmit={handleSubmit}
@@ -115,6 +121,67 @@ export default function NewPatientForm({
             />
             <HookFormField
               formControl={form.control}
+              name="gender"
+              label="Gender"
+              renderInput={({ field }) => (
+                <ImsSelect
+                  options={GENDER_OPTIONS.map((o) => ({
+                    label: o.label,
+                    value: o.value,
+                  }))}
+                  moduleName="gender"
+                  showNone={false}
+                  value={field.value ?? ""}
+                  onChange={field.onChange}
+                  className="focus-visible:ring-ims-blue-300 h-11! bg-white"
+                />
+              )}
+            />
+            <div className="grid grid-cols-2 gap-3">
+              <HookFormField
+                formControl={form.control}
+                name="weight"
+                label="Weight"
+                renderInput={({ field }) => (
+                  <div className="relative">
+                    <Input
+                      {...field}
+                      value={field.value ?? ""}
+                      onChange={(e) => field.onChange(e.target.value)}
+                      className="focus-visible:ring-ims-blue-300 bg-white pr-10"
+                      type="number"
+                      min={0}
+                      step={0.1}
+                      placeholder="e.g. 70"
+                    />
+                    <span className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-sm text-gray-400">
+                      kg
+                    </span>
+                  </div>
+                )}
+              />
+              <HookFormField
+                formControl={form.control}
+                name="dateOfBirth"
+                label="Date of Birth"
+                renderInput={({ field }) => (
+                  <Input
+                    {...field}
+                    className="focus-visible:ring-ims-blue-300 flex h-11 flex-col justify-between bg-white pt-2.5"
+                    placeholder="Select date of birth"
+                    type="date"
+                    max={new Date().toISOString().split("T")[0]}
+                  />
+                )}
+              />
+            </div>
+            {!!dateOfBirth && (
+              <span className="text-gray-600">
+                Age: {getAgeFromDate(dateOfBirth)} years
+              </span>
+            )}
+            <HookFormField
+              formControl={form.control}
               name="cardIdentificationNumber"
               label="OPD Number"
               renderInput={({ field }) => (
@@ -141,23 +208,16 @@ export default function NewPatientForm({
             />
             <HookFormField
               formControl={form.control}
-              name="dateOfBirth"
-              label="Date of Birth"
+              name="diagnosis"
+              label="Diagnosis"
               renderInput={({ field }) => (
-                <Input
+                <Textarea
                   {...field}
-                  className="focus-visible:ring-ims-blue-300 flex h-11 flex-col justify-between bg-white pt-2.5"
-                  placeholder="Select date of birth"
-                  type="date"
-                  max={new Date().toISOString().split("T")[0]}
+                  className="focus-visible:ring-ims-blue-300 min-h-20 resize-none bg-white"
+                  placeholder="e.g. Hypertension"
                 />
               )}
             />
-            {!!dateOfBirth && (
-              <span className="text-gray-600">
-                Age: {getAgeFromDate(dateOfBirth)} years
-              </span>
-            )}
           </>
         }
       />
