@@ -86,4 +86,4 @@ ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 
 # Next.js standalone server entry point
-CMD ["node", "server.js"]
+ENTRYPOINT ["node", "server.js"]
