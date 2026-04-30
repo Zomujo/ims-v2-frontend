@@ -19,7 +19,7 @@ COPY package.json yarn.lock ./
 # - network-timeout: gives slow/corporate networks more time.
 # - ignore-optional: skips platform-specific optional binaries (e.g. sharp, swc)
 #   that are not needed for the Linux container and often cause DNS failures.
-RUN --mount=type=cache,target=/root/.yarn \
+RUN --mount=type=cache,id=yarn-cache,target=/root/.yarn \
     YARN_CACHE_FOLDER=/root/.yarn \
     yarn install --frozen-lockfile --network-timeout 300000
 
