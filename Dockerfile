@@ -6,7 +6,6 @@
 # =============================================================================
 FROM node:24.15.0-alpine AS deps
 
-# Install libc compatibility for native binaries
 RUN apk add --no-cache libc6-compat
 
 WORKDIR /app
@@ -14,17 +13,12 @@ WORKDIR /app
 # Copy package manifests first to leverage Docker layer caching
 COPY package.json yarn.lock ./
 
-# Install ALL dependencies (including dev) needed for the build.
-# - Cache mount: reuses the yarn cache across builds (no re-downloads).
-# - network-timeout: gives slow/corporate networks more time.
-# - ignore-optional: skips platform-specific optional binaries (e.g. sharp, swc)
-#   that are not needed for the Linux container and often cause DNS failures.
 RUN yarn install --frozen-lockfile --network-timeout 300000
 
 # =============================================================================
 # Stage 2: builder — compile the Next.js application
 # =============================================================================
-FROM node:24.13.0-alpine AS builder
+FROM node:24.15.0-alpine AS builder
 
 RUN apk add --no-cache libc6-compat
 
@@ -55,9 +49,9 @@ ENV NEXT_PUBLIC_IMS_API_URL_BASE=$NEXT_PUBLIC_IMS_API_URL_BASE
 RUN yarn build
 
 # =============================================================================
-# Stage 3: runner — lean production image
+# Stage 3: runner — production image
 # =============================================================================
-FROM node:24.13.0-alpine AS runner
+FROM node:24.15.0-alpine AS runner
 
 RUN apk add --no-cache libc6-compat
 
@@ -70,13 +64,13 @@ RUN addgroup --system --gid 1001 nodejs \
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 
-# Copy only what Next.js needs to serve the app
-COPY --from=builder /app/public ./public
+# Copy node_modules so the `next` binary is available for `yarn start`
+COPY --from=deps /app/node_modules ./node_modules
 
-# Leverage Next.js output file tracing to keep the image small
-# https://nextjs.org/docs/advanced-features/output-file-tracing
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static   ./.next/static
+# Copy built assets
+COPY --from=builder /app/public ./public
+COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
+COPY package.json ./
 
 USER nextjs
 
@@ -85,5 +79,4 @@ EXPOSE 3000
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 
-# Next.js standalone server entry point
-ENTRYPOINT ["node", "server.js"]
+CMD ["yarn", "start"]
