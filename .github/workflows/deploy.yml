@@ -2,7 +2,7 @@ name: Build and Deploy Next.js Stealth
 
 on:
   push:
-    branches: [ "develop" ]
+    branches: [ "production" ]
 
 jobs:
   build-and-push:
