@@ -18,7 +18,7 @@ export default function SalesRecord() {
         <SalesPatientList
           setPatientIdAction={setPatientId}
           patientId={patientId}
-          setPatientInfo={setPatientInfo}
+          setPatientInfoAction={setPatientInfo}
         />
         <SalesItemList
           refetchSales={refetchSales}

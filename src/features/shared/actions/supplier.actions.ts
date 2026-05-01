@@ -6,7 +6,6 @@ import {
   ApiSuccessResponseDto,
   ApiSuccessResponseNoData,
   CreateSupplierDto,
-  GetSupplierResponse,
   GetSuppliersResponse,
   IdData,
   PaginatedResponse,
@@ -64,7 +63,7 @@ export async function getSupplier(id: string) {
     next: { tags: [API_ENDPOINT_TAGS.SUPPLIERS] },
   };
 
-  return await imsApiWithAuth<ApiSuccessResponseDto<GetSupplierResponse>>(
+  return await imsApiWithAuth<ApiSuccessResponseDto<SupplierResponse>>(
     fetchOptions,
   );
 }
